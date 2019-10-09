@@ -1,6 +1,12 @@
 
 \chapter{Bisherige Arbeiten}
 
+\begin{itemize}
+ \item zbrush zfpheref (?): "`Skelett"' mit Kugeln %TODO
+ \item 3D Studio Max bipad: Parameter wie Anzahl Beine, Haltung,\dots einstellbar, generiert dann Skelett (ist aber "`nicht so toll"') %TODO
+\end{itemize}
+
+
 \section{Skelett der Wirbeltiere}
 
 \begin{itemize}
@@ -24,8 +30,9 @@
 
 \begin{enumerate}
  \item Erzeugung eines Wirbeltierskeletts
- \item Erzeugung von Muskeln (optional?)
- \item Erzeugung von Haut (einfache Hülle um das vorhandene Modell) (optional)
+ \item Erzeugung von Muskeln (evtl. eher anderes Thema?)
+ \item Erzeugung von Haut (optional)
+ \item Erzeugung von vielen Skelettvarianten bei Eingabe eines Skeletts
 \end{enumerate}
 
 %---------------
@@ -33,10 +40,14 @@
 
 \begin{itemize}
  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen. Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
- \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe.
+ \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist
+ \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität).
  \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen.
  \item Ein Knochen ist im einfachsten Fall ein Zylinder (Strecke) mit Länge und Radius, kann aber auch eine konvexe Kurve mit einem Radius sein.
  \item Ein Gelenk verbindet hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
+ \item Skelett darf nicht zu abstrakt sein, da es sonst zu wenig Informationen zum konkreten Tier liefert.
+ \item Ein detailliertes Skelett ist für Wesen sinnvoll, die es so noch nicht gibt bzw. wo man keine richtige Vorstellung davon hat wie es "`funktioniert"', z.B. bei mehr Gliedmaßen.
+ \item Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar)
 \end{itemize}
 
 %----------------
@@ -46,7 +57,8 @@
  \item Die "`Hauptmuskeln"' verlaufen bei Wirbeltieren wahrscheinlich ähnlich, relativ zu den Knochen.
  \item Knochen/Gelenke bekommen Zusatzattribute für Start- und Zielpunkte der Muskeln.
  \item Muskeln haben eine "`Dicke"' und aus Start- und Zielpunkt muss Kurve des Muskels generiert werden.
- \item Wie wird genau Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen)
+ \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ eigenes Thema?
+ \item ziva %TODO
 \end{itemize}
 
 %-------------
@@ -55,11 +67,21 @@
 \begin{itemize}
  \item Was für Algorithmen gibt es, die zu einem vorhandenen 3D-Modell eine Hülle mit gewissen Eigenschaften generieren? \\
  es gibt eine solche Funktion z.B. in AutoCAD \url{https://knowledge.autodesk.com/de/support/autocad/learn-explore/caas/CloudHelp/cloudhelp/2016/DEU/AutoCAD-Core/files/GUID-B7F99810-765E-4E7E-ABDD-275C64147CCC-htm.html}
- \item Muskeln sind dafür nicht unbedingt nötig, aber wahrscheinlich hilfreich.
+ \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen $\rightarrow$ wie machen das Forensiker oder Archäologen? %TODO
+\end{itemize}
+
+%-----------------------
+\section{Interaktivität}
+
+\begin{itemize}
+ \item Eine Anwendung, bei der nach Eingabe von Parametern sofort das komplette Tier generiert wird, ist weniger hilfreich als eine, bei der schrittweise Teile davon generiert werden können (und auch rückgängig gemacht werden können)
+ \item Teile, die einem nicht gefallen, sollten geändert werden können
+ \item Änderungen können Auswirkungen auf den Rest des Körpers haben (durch Regeln) bzw. manche Änderungen sind nicht möglich
+ \item Könnte verwendet werden um schnell verschiedene Möglichkeiten zu testen
 \end{itemize}
 
 
-\chapter{Technische Umsetzung Skelett}
+\chapter{Technische Umsetzung}
 
 \begin{itemize}
  \item Repräsentation des Zustands als Baum von einzelnen Zeichen (terminale sowie nichtterminale).
@@ -79,9 +101,11 @@
 \section{Dateiformate}
 
 \begin{itemize}
- \item Welches Format wird am meisten Verwendet? $\rightarrow$ fbx?
- \item Einfachstes Format (aber auch mit kleinstem Funktionsumfang) obj
+ \item Welches Format wird am meisten Verwendet? $\rightarrow$ jeder Editor geht mit Muskeln und Gelenken anders um, verschiedene Dateiformate
+ \item Einfachstes Format (aber auch mit kleinstem Funktionsumfang): obj
  \item Welches Format ist für eine interaktive Anwendung sinnvoll?
+ \item Alembic .abc Format? %TODO
+ \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Hudini
 \end{itemize}
 
 \subsection{OBJ}
@@ -89,6 +113,7 @@
 \begin{itemize}
  \item Beschreibung des Formats: \url{https://www.fileformat.info/format/wavefrontobj/egff.htm}
  \item Erzeugung mit Rust: obj\_exporter \url{https://docs.rs/obj-exporter/0.2.0/obj_exporter/index.html}
+ \item Reicht wahrscheinlich für die ersten Dinge aus. Finetuning wird sowieso mit anderer Software gemacht
 \end{itemize}
 
 \subsection{FBX}
@@ -97,5 +122,6 @@
  \item Verwendung am besten über Autodesk FBX SDK für C++. 
  \item Dokumentation: \url{http://help.autodesk.com/view/FBX/2019/ENU/} und \url{http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html}
  \item Es gibt auch fbxcel, eine FBX library für Rust. Ist aber relativ low level und nicht ganz offensichtlich wie zu verwenden.
+ \item Nur unzureichende Möglichkeiten Einschränkungen für Gelenke zu speichern %TODO
 \end{itemize}
 
