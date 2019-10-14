@@ -1,11 +1,13 @@
 
 \chapter{Bisherige Arbeiten}
 
+\todo{Latexvorlage CG?} %TODO
+
 %--------------------------------
 \section{Skelett der Wirbeltiere}
 
 \begin{itemize}
- \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) $\rightarrow$ über vergleichende Anatomie informieren %TODO Buch in Bib ausleihen
+ \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) \todo{über vergleichende Anatomie informieren} %TODO
  \item "`Von vielen Zoologen wird heute der Begriff Schädeltiere (Craniota) für dieses Taxon bevorzugt. Diese Auffassung berücksichtigt, dass die Rundmäuler, wie auch einige andere Wirbeltiere, als Achsenskelett keine Wirbelsäule, sondern eine Chorda dorsalis haben. Doch allen Wirbeltieren gemein ist ein verknöcherter oder knorpeliger Schädel; sein Vorhandensein gehört somit zu den gemeinsam abgeleiteten Merkmalen (Synapomorphien) dieser Chordaten-Gruppe."' (\url{https://de.wikipedia.org/wiki/Wirbeltiere}) $\rightarrow$ Beschränkung auf Schädeltiere mit Wirbelsäule
 \end{itemize}
 
@@ -59,8 +61,8 @@
 
 \begin{enumerate}
  \item Erzeugung eines Wirbeltierskeletts
- \item Erzeugung von Muskeln (evtl. eher anderes Thema?)
- \item Erzeugung von Haut (optional)
+ \item Erzeugung von Muskeln (future work)
+ \item Erzeugung von Haut (future work / kurz ausprobieren)
  \item Erzeugung von vielen Skelettvarianten bei Eingabe eines Skeletts (nur wenn es relativ leicht möglich ist)
 \end{enumerate}
 
@@ -96,7 +98,7 @@
  \item Die "`Hauptmuskeln"' verlaufen bei Wirbeltieren wahrscheinlich ähnlich, relativ zu den Knochen. Trotzdem unterscheiden sie sich recht stark.
  \item Knochen/Gelenke bekommen Zusatzattribute für Start- und Zielpunkte der Muskeln.
  \item Muskeln haben eine "`Dicke"' und aus Start- und Zielpunkt muss Kurve des Muskels generiert werden.
- \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ eigenes Thema?
+ \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ future work
 \end{itemize}
 
 %-------------
@@ -105,7 +107,7 @@
 \begin{itemize}
  \item Was für Algorithmen gibt es, die zu einem vorhandenen 3D-Modell eine Hülle mit gewissen Eigenschaften generieren? \\
  es gibt eine solche Funktion z.B. in AutoCAD \url{https://knowledge.autodesk.com/de/support/autocad/learn-explore/caas/CloudHelp/cloudhelp/2016/DEU/AutoCAD-Core/files/GUID-B7F99810-765E-4E7E-ABDD-275C64147CCC-htm.html}
- \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen (siehe \url{https://www.proko.com/landmarks-of-the-human-body/})
+ \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen (siehe \url{https://www.proko.com/landmarks-of-the-human-body/}) oder "`bone weights"'
 \end{itemize}
 
 %-----------------------
@@ -129,7 +131,6 @@
      \item Welches Dateiformat? (siehe unten)
      \item Geht das mit Rust oder braucht man noch einen Zwischenschritt? Oder doch besser andere Programmiersprache?
     \end{itemize}
- \item Wie sieht Benutzereingabe aus? "`Interaktivität"' zunächst über Kommandozeile?
 \end{itemize}
 
 
@@ -140,7 +141,12 @@
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
  \item Welches Format ist für eine interaktive Anwendung sinnvoll?
- \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source)
+ \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
+ \begin{itemize}
+  \item Vorschlag von Jo:
+  \item "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
+ \end{itemize}
+
 \end{itemize}
 
 %- - - - - - - - - -
@@ -188,4 +194,12 @@
  \item Für Rust gibt es keine Bibliothek (?)
 \end{itemize}
 
+%-----------------------
+\section{Interaktivität}
+
+\begin{itemize}
+ \item Verwendung von imgui (opengl/vulcan/3D view integriert): \url{https://github.com/ocornut/imgui} \todo{in Imgui einarbeiten} %TODO
+ \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2} \todo{taugt das was?} %TODO
+ \item Imgui Tutorials \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics} \todo{anschauen} %TODO
+\end{itemize}
 
