@@ -7,7 +7,7 @@
 \section{Skelett der Wirbeltiere}
 
 \begin{itemize}
- \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) \todo{über vergleichende Anatomie informieren} %TODO
+ \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) \todo{über vergleichende Anatomie informieren} \cite{Vergleichende_Anatomie} %TODO
  \item "`Von vielen Zoologen wird heute der Begriff Schädeltiere (Craniota) für dieses Taxon bevorzugt. Diese Auffassung berücksichtigt, dass die Rundmäuler, wie auch einige andere Wirbeltiere, als Achsenskelett keine Wirbelsäule, sondern eine Chorda dorsalis haben. Doch allen Wirbeltieren gemein ist ein verknöcherter oder knorpeliger Schädel; sein Vorhandensein gehört somit zu den gemeinsam abgeleiteten Merkmalen (Synapomorphien) dieser Chordaten-Gruppe."' (\url{https://de.wikipedia.org/wiki/Wirbeltiere}) $\rightarrow$ Beschränkung auf Schädeltiere mit Wirbelsäule
 \end{itemize}
 
@@ -72,7 +72,13 @@
 \begin{itemize}
  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
  \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
- \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität).
+ \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
+ \begin{itemize}
+  \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
+  \item Proportionen (länge der Extremitäten, Kopfgröße,\dots)
+  \item Anzahl vorhandener Gliedmaßen / Zehen / \dots
+ \end{itemize}
+
  \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen.
  \item Ein Knochen ist im einfachsten Fall ein Zylinder (Strecke) mit Länge und Radius, kann aber auch eine konvexe Kurve mit einem Radius sein.
  \item Ein Gelenk hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
