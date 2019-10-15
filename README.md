@@ -1,1 +1,1 @@
-# sceleton-generation
+# skeleton-generation
