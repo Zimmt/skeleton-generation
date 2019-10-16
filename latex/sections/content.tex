@@ -3,14 +3,6 @@
 
 \todo{Latexvorlage CG?} %TODO
 
-%--------------------------------
-\section{Skelett der Wirbeltiere}
-
-\begin{itemize}
- \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) \todo{über vergleichende Anatomie informieren} \cite{Vergleichende_Anatomie} %TODO
- \item "`Von vielen Zoologen wird heute der Begriff Schädeltiere (Craniota) für dieses Taxon bevorzugt. Diese Auffassung berücksichtigt, dass die Rundmäuler, wie auch einige andere Wirbeltiere, als Achsenskelett keine Wirbelsäule, sondern eine Chorda dorsalis haben. Doch allen Wirbeltieren gemein ist ein verknöcherter oder knorpeliger Schädel; sein Vorhandensein gehört somit zu den gemeinsam abgeleiteten Merkmalen (Synapomorphien) dieser Chordaten-Gruppe."' (\url{https://de.wikipedia.org/wiki/Wirbeltiere}) $\rightarrow$ Beschränkung auf Schädeltiere mit Wirbelsäule
-\end{itemize}
-
 %-------------
 \section{Ziva}
 
@@ -56,7 +48,18 @@
  \item Zunächst Generierung von äußerem 3D-Modell, dann Anpassung der Knochen.
 \end{itemize}
 
+%-----------------
+%-----------------
+\chapter{Biologie}
 
+\begin{itemize}
+ \item "`Wirbeltiere (Vertebrata) [\dots] Von vielen Zoologen wird heute der Begriff Schädeltiere (Craniota) für dieses Taxon bevorzugt. Diese Auffassung berücksichtigt, dass die Rundmäuler, wie auch einige andere Wirbeltiere, als Achsenskelett keine Wirbelsäule, sondern eine Chorda dorsalis haben. Doch allen Wirbeltieren gemein ist ein verknöcherter oder knorpeliger Schädel; sein Vorhandensein gehört somit zu den gemeinsam abgeleiteten Merkmalen (Synapomorphien) dieser Chordaten-Gruppe."' (\url{https://de.wikipedia.org/wiki/Wirbeltiere}) $\rightarrow$ Beschränkung auf Schädeltiere mit Wirbelsäule
+ \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) Notizen zu \cite{Vergleichende_Anatomie} siehe Anhang \ref{appendix_vergleichende_anatomie}.
+ \item Das Skelett eines Wirbeltiers ist nicht unbedingt zusammenhängend. \todo{Repräsentation / Erzeugung?} %TODO
+\end{itemize}
+
+%-------------
+%-------------
 \chapter{Idee}
 
 \begin{enumerate}
@@ -71,7 +74,8 @@
 
 \begin{itemize}
  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
- \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln} %TODO
+ \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\%TODO
+ Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie).
  \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
  \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
  \begin{itemize}
