@@ -75,8 +75,10 @@
 \begin{itemize}
  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
  \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\%TODO
- Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie).
+ Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). Muss es das? Wenn ja, unzusammenhängende Fälle ausschließen. \todo{Wann ist Skelett unzusammenhängend?} %TODO
  \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
+ \item Darstellung des Skeletts in "`sinnvoller"' Pose.
+ \item Beachte, dass Tier nicht umfällt: Schwerpunkte sinnvoll,\dots $\rightarrow$ Algorithmus überlegen (dafür sind auch Gelenkinformationen wichtig!)
  \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
  \begin{itemize}
   \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
@@ -89,7 +91,7 @@
  \item Ein Gelenk hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
  \item Skelett darf nicht zu abstrakt sein, da es sonst zu wenig Informationen zum konkreten Tier liefert.
  \item Ein detailliertes Skelett ist für Wesen sinnvoll, die es so noch nicht gibt bzw. wo man keine richtige Vorstellung davon hat wie es "`funktioniert"', z.B. bei mehr Gliedmaßen.
- \item Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar)
+ \item Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar oder ineinander überführbar)
 \end{itemize}
 
 %- - - - - - - - - - - - 
@@ -135,13 +137,9 @@
 \chapter{Technische Umsetzung}
 
 \begin{itemize}
- \item Repräsentation des Zustands als Baum von einzelnen Zeichen (terminale sowie nichtterminale).
- \item Programmiersprache: Rust?
- \item Übersetzung in ein 3D-Modell
-    \begin{itemize}
-     \item Welches Dateiformat? (siehe unten)
-     \item Geht das mit Rust oder braucht man noch einen Zwischenschritt? Oder doch besser andere Programmiersprache?
-    \end{itemize}
+ \item Repräsentation des Zustands als Baum von einzelnen Zeichen (terminale sowie nichtterminale). \todo{Andere Darstellung besser?} %TODO
+ \item Programmiersprache: Rust (?)
+ \item Übersetzung in ein 3D-Modell: zunächst .obj, später Verwendung von OpenGL mit vertex shadern etc.\
 \end{itemize}
 
 
@@ -150,14 +148,10 @@
 
 \begin{itemize}
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
+ \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach: Knoten/Gelenke mit Linien verbinden \todo{Grundgerüst mit Rust aufsetzen} %TODO
  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
- \item Welches Format ist für eine interaktive Anwendung sinnvoll?
  \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
- \begin{itemize}
-  \item Vorschlag von Jo:
-  \item "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
- \end{itemize}
-
+\item Vorschlag von Jo: "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
 \end{itemize}
 
 %- - - - - - - - - -
@@ -210,7 +204,7 @@
 
 \begin{itemize}
  \item Verwendung von imgui (opengl/vulcan/3D view integriert): \url{https://github.com/ocornut/imgui} \todo{in OpenGL und Imgui einarbeiten} %TODO
- \item Daten direkt mit OpenGL erzeugen oder: import file $\rightarrow$ OpenGL: Assimp library \url{https://learnopengl.com/Model-Loading/Assimp}
+ \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array) oder: import file $\rightarrow$ OpenGL: Assimp library \url{https://learnopengl.com/Model-Loading/Assimp} \todo{Nur für Windows?} %TODO
  \item OpenGL scene $\rightarrow$ imgui: \url{https://gamedev.stackexchange.com/questions/140693/how-can-i-render-an-opengl-scene-into-an-imgui-window}
  \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2}
  \item SDL + OpenGL Tutorials \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
