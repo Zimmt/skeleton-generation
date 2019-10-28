@@ -47,4 +47,5 @@ Cargo.lock
 
 ### Intellij ###
 skeleton_generation/.idea/
+java_skeleton_generation/.idea/
 *.iml
