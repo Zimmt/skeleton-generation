@@ -131,13 +131,21 @@
  \item Könnte verwendet werden um schnell verschiedene Möglichkeiten zu testen
 \end{itemize}
 
-
+%-----------------------------
+%-----------------------------
 \chapter{Technische Umsetzung}
 
 \begin{itemize}
  \item Repräsentation des Zustands als Baum von einzelnen Zeichen (terminale sowie nichtterminale). \todo{Andere Darstellung besser?} %TODO
- \item Programmiersprache: Rust (?)
  \item Übersetzung in ein 3D-Modell: zunächst .obj, später Verwendung von OpenGL mit vertex shadern etc.\
+\end{itemize}
+
+
+\section{Programmiersprache}
+
+\begin{itemize}
+ \item Rust: nicht geeignet, da Datenstrukturen die zyklische Referenzen auf veränderbare Objekte verwenden nicht oder nur kompliziert umsetzbar sind.
+ \item Java: \todo{testen} %TODO
 \end{itemize}
 
 
@@ -146,7 +154,7 @@
 
 \begin{itemize}
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
- \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach: Knoten/Gelenke mit Linien verbinden \todo{Grundgerüst mit Rust aufsetzen} %TODO
+ \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach: Knoten/Gelenke mit Linien verbinden \todo{Grundgerüst mit ? aufsetzen} %TODO
  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
  \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
 \item Vorschlag von Jo: "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
@@ -172,6 +180,7 @@
 \begin{itemize}
  \item Beschreibung des Formats: \url{https://www.fileformat.info/format/wavefrontobj/egff.htm}
  \item Erzeugung mit Rust: obj\_exporter \url{https://docs.rs/obj-exporter/0.2.0/obj_exporter/index.html}
+ \item Erzeugung mit Java: javagl Obj \url{https://github.com/javagl/Obj}
  \item Reicht wahrscheinlich für die ersten Dinge aus. Finetuning wird sowieso mit anderer Software gemacht
 \end{itemize}
 
@@ -201,10 +210,25 @@
 \section{Interaktivität}
 
 \begin{itemize}
- \item Verwendung von imgui (opengl/vulcan/3D view integriert): \url{https://github.com/ocornut/imgui} \todo{in OpenGL und Imgui einarbeiten} %TODO
- \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array) oder: import file $\rightarrow$ OpenGL: Assimp library \url{https://learnopengl.com/Model-Loading/Assimp} \todo{Nur für Windows?} %TODO
- \item OpenGL scene $\rightarrow$ imgui: \url{https://gamedev.stackexchange.com/questions/140693/how-can-i-render-an-opengl-scene-into-an-imgui-window}
- \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2}
- \item SDL + OpenGL Tutorials \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
+ \item OpenGL
+ \begin {itemize}
+  \item SDL + OpenGL Tutorials \\ \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \\ \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
+  \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array) oder: import file $\rightarrow$ OpenGL: Assimp library \url{https://learnopengl.com/Model-Loading/Assimp} \todo{Nur für Windows?} %TODO
+ \end {itemize}
+
+ \item Benutzeroberfläche
+ \begin{itemize}
+  \item imgui (opengl/vulcan/3D view integriert) mit Rust oder C++: \url{https://github.com/ocornut/imgui}
+  
+  \begin{itemize}
+   \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2}
+   \item es gibt Java Bindings (\url{https://github.com/ice1000/jimgui}), aber Swing ist wahrscheinlich einfacher
+   \item OpenGL scene $\rightarrow$ imgui: \url{https://gamedev.stackexchange.com/questions/140693/how-can-i-render-an-opengl-scene-into-an-imgui-window}
+  \end{itemize}
+
+  
+  \item Java Swing Bibliothek und JOGL (Java OpenGL Binding) (\url{http://www.jogl.info})
+ \end{itemize}
+
 \end{itemize}
 
