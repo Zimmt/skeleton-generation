@@ -49,3 +49,7 @@ Cargo.lock
 skeleton_generation/.idea/
 java_skeleton_generation/.idea/
 *.iml
+
+### Java ###
+java_skeleton_generation/out/
+
