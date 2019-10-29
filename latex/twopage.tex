@@ -1,0 +1,145 @@
+\documentclass{thesisclass}
+% Based on thesisclass.cls of Timo Rohrberg, 2009
+% ----------------------------------------------------------------
+% Thesis - Main document
+% ----------------------------------------------------------------
+% No empty in-between chapters, remove this line if desired for double-page printing
+\let\cleardoublepage\clearpage
+
+%% -------------------------------
+%% |  Information for PDF file   |
+%% -------------------------------
+\hypersetup{
+ pdfauthor={Nina Zimbel},
+ pdftitle={Generierung von Wirbeltierskeletten},
+ pdfsubject={Not set},
+ pdfkeywords={Not set}
+}
+
+
+%% ---------------------------------
+%% | Information about the thesis  |
+%% ---------------------------------
+
+\newcommand{\myname}{Nina Zimbel}
+\newcommand{\mytitle}{Generierung von Wirbeltierskeletten}
+\newcommand{\myinstitute}{Institut für Visualisierung und Datenanalyse,\\ Lehrstuhl für Computergrafik}
+
+\newcommand{\reviewerone}{?}
+\newcommand{\reviewertwo}{?}
+\newcommand{\advisor}{Dr. Johannes Schudeiske}
+\newcommand{\advisortwo}{?}
+
+\newcommand{\timestart}{01. Dezember 2019}
+\newcommand{\timeend}{31. Mai 2020}
+\newcommand{\submissiontime}{DD. MM. 20XX}
+
+
+%% ---------------------------------
+%% | ToDo Marker - only for draft! |
+%% ---------------------------------
+% Remove this section for final version!
+\setlength{\marginparwidth}{20mm}
+
+\newcommand{\margtodo}
+{\marginpar{\textbf{\textcolor{red}{ToDo}}}{}}
+
+\newcommand{\todo}[1]
+{{\textbf{\textcolor{red}{(\margtodo{}#1)}}}{}}
+
+
+%% --------------------------------
+%% | Old Marker - only for draft! |
+%% --------------------------------
+% Remove this section for final version!
+\newenvironment{deprecated}
+{\begin{color}{gray}}
+{\end{color}}
+
+
+%% --------------------------------
+%% | Settings for word separation |
+%% --------------------------------
+% Help for separation:
+% In german package the following hints are additionally available:
+% "- = Additional separation
+% "| = Suppress ligation and possible separation (e.g. Schaf"|fell)
+% "~ = Hyphenation without separation (e.g. bergauf und "~ab)
+% "= = Hyphenation with separation before and after
+% "" = Separation without a hyphenation (e.g. und/""oder)
+
+% Describe separation hints here:
+\hyphenation{
+% Pro-to-koll-in-stan-zen
+% Ma-na-ge-ment  Netz-werk-ele-men-ten
+% Netz-werk Netz-werk-re-ser-vie-rung
+% Netz-werk-adap-ter Fein-ju-stier-ung
+% Da-ten-strom-spe-zi-fi-ka-tion Pa-ket-rumpf
+% Kon-troll-in-stanz
+}
+
+%% --------------------------------
+%% | Shorcuts                     |
+%% --------------------------------
+\newcommand{\zb}{z.\,B.\ }
+\newcommand{\dash}{d.\,h.\ }
+
+%% --------------------------------
+%% | Bibliography                 |
+%% --------------------------------
+
+%% Use biber instead of BibTeX, see README
+\usepackage[citestyle=numeric,style=numeric,backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+
+
+%% ------------------------
+%% |    Including files   |
+%% ------------------------
+% Only files listed here will be included!
+% Userful command for partially translating the document (for bug-fixing e.g.)
+\includeonly{%
+titlepage,
+twopagecontent
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Here, main documents begins %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Remove the following line for German text
+%\selectlanguage{ngerman}
+
+\frontmatter
+\pagenumbering{roman}
+\include{titlepage}
+\blankpage
+
+
+%% -------------------
+%% |   Directories   |
+%% -------------------
+\tableofcontents
+\blankpage
+
+
+%% -----------------
+%% |   Main part   |
+%% -----------------
+\mainmatter
+\pagenumbering{arabic}
+\include{twopagecontent}
+
+
+
+%% --------------------
+%% |   Bibliography   |
+%% --------------------
+
+%% Add entry to the table of contents for the bibliography
+\printbibliography[heading=bibintoc]
+
+\Erklaerung
+\end{document}

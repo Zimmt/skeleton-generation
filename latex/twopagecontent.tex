@@ -1,0 +1,31 @@
+
+%-------------
+\chapter{Idee}
+
+Das Ziel dieser Arbeit ist es einen Algorithmus zu entwerfen, der Wirbeltierskelette erzeugt. Evolutionär bedingt sind sich Wirbeltierskelette grundsätzlich relativ ähnlich. Sie bestehen in den meisen Fällen aus den gleichen Knochen, die aber unterschiedlich stark ausgeprägt sein können oder teilweise sogar fehlen. Das soll beim Entwurf des Algorithmus ausgenutzt werden. Eine genauere Betrachtung der Anatomie von Wirbeltieren und der evolutionäre Zusammenhang verschiedener Merkmale ist \zb hier \cite{Vergleichende_Anatomie} zu finden. 
+
+Als Eingabe erhält der Algorithmus Zahlen, die die Generierung und Proportionen der Knochen beeinflussen. Diese Zahlen sind zufällig generiert oder stammen aus einer Benutzereingabe. Sie können beispielsweise den Lebensraum oder die Anzahl von Gliedmaßen beschreiben.
+
+Der Algorithmus soll so ähnlich wie eine probabilistische kontextfreie Grammatik funktionieren\footnote{Eventuell sind in diesem Zusammenhang parametrische L-Systeme \cite{Paramteric_L-Systems} hilfreich.} Er startet mit einem maximal generischen Skelett, dass dann iterativ immer weiter verfeinert wird. Das Ergebnis ist dann ein konkretes Skelett mit Knochen und Glenken sowie deren Positionen. Zu Knochen gibt es jeweils die Information um was für einen Knochen es sich handelt und mit welchen Gelenken er verbunden ist. Zu Gelenken ist sinnvoll zu wissen wie sie bewegt werden können und mit welchen Knochen sie verbunden sind.
+
+Für die Darstellung des erzeugten Skeletts werden die oben genannten Informationen verwendet und ein entsprechendes 3D-Modell zusammengesetzt.
+Das erzeugte Skelett sollte zusätzlich zu einem Tier gehören, das, nach gewissen Kriterien, funktional ist oder zumindest so wirkt und es sollte in einer Pose dargestellt werden, die eine Ruhepose für das Tier sein könnte. In beiden Punkten ist es sinnvoll sich über die Balance Gedanken zu machen. \todo{Findet sich da ein Paper / Algorithmus?} %TODO
+
+Im Zuge dieser Arbeit soll auch eine interaktive (Java?) Anwendung entstehen, die den Algorithmus umsetzt. Die Benutzereingabe erfolgt über eine einfache Benutzeroberfläche. Zunächst soll eine einfache .obj-Datei erzeugt werden, die das Skelett darstellt. Später soll die Anwendung es auch erlauben Zwischenschritte visuell dazustellen. Das ist wichtig um eine sinnvolle Benutzereingabe zu ermöglichen.
+
+Wenn es leicht umzusetzen ist, ist es zusätzlich sinnvoll eine Funktion in den Algoritmus einzubauen, die es erlaubt ein bestehendes Skelett leicht zu variieren. Damit wäre es möglich zu einem Skelett viele ähnliche Skelette zu bekommen. Das könnte verwendet werden um schnell viele verschiedene Möglichkeiten auszuprobieren.
+
+
+%---------------------------
+\chapter{Bisherige Arbeiten}
+
+Das Computerspiel "`No Man's Sky"' verwendet prozedurale Generierung um Tiere zu erzeugen, die auf verschiedenen Planeten mit unterschiedlichen Lebensräumen zu finden sind \cite{NoMansSky}. Hier wird aber nicht zuerst das Skelett des Tieres generiert, sondern die "`Außenhaut"'. Für verschiedene Tiergruppen gibt es eine Anzahl an Modellen, die miteinander kombiniert werden, um neue Tiere zu erhalten. Danach wird das Skelett an den generierten Körper angepasst. Da das Skelett nur für die Animation des Tiermodells notwenig ist, ist es wahrscheinlich relativ simpel und nicht mit dem zu vergleichen was diese Arbeit versucht zu erreichen.
+
+%----------------------------
+\chapter{Zukünftige Arbeiten}
+
+\begin{itemize}
+ \item Generierung von Muskeln
+ \item Generierung von Haut
+\end{itemize}
+
