@@ -1,19 +1,16 @@
 package skeleton;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class SkeletonGenerator {
-    private List<TerminalElement> terminalParts;
-    private List<NonTerminalElement> nonTerminalParts;
+    private ArrayList<TerminalElement> terminalParts;
+    private ArrayList<NonTerminalElement> nonTerminalParts;
     private Random random;
     private int stepCount;
 
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
-        this.nonTerminalParts = Collections.singletonList(new InitialElement());
+        this.nonTerminalParts = new ArrayList<>(Collections.singletonList(new InitialElement()));
         this.random = new Random();
     }
 

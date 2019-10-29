@@ -1,25 +1,29 @@
 package util;
 
 public class Position {
-    private double x;
-    private double y;
-    private double z;
+    private float x;
+    private float y;
+    private float z;
 
-    public Position(double x, double y, double z) {
+    public Position(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public double getX() {
+    public String objData() {
+        return String.format("v %f %f %f", x, y, z);
+    }
+
+    public float x() {
         return x;
     }
 
-    public double getY() {
+    public float y() {
         return y;
     }
 
-    public double getZ() {
+    public float z() {
         return z;
     }
 }
