@@ -53,7 +53,7 @@
 \begin{itemize}
  \item "`Wirbeltiere (Vertebrata) [\dots] Von vielen Zoologen wird heute der Begriff Schädeltiere (Craniota) für dieses Taxon bevorzugt. Diese Auffassung berücksichtigt, dass die Rundmäuler, wie auch einige andere Wirbeltiere, als Achsenskelett keine Wirbelsäule, sondern eine Chorda dorsalis haben. Doch allen Wirbeltieren gemein ist ein verknöcherter oder knorpeliger Schädel; sein Vorhandensein gehört somit zu den gemeinsam abgeleiteten Merkmalen (Synapomorphien) dieser Chordaten-Gruppe."' (\url{https://de.wikipedia.org/wiki/Wirbeltiere}) $\rightarrow$ Beschränkung auf Schädeltiere mit Wirbelsäule
  \item "`Dem Skelett der Wirbeltiere sind viele Gemeinsamkeiten ansehbar, trotzdem unterscheidet es sich, je nach Lebensraum und Anforderungen, teilweise erheblich. Mit diesen Gemeinsamkeiten und Unterschieden beschäftigt sich die Vergleichende Anatomie."' (\url{https://de.wikipedia.org/wiki/Skelett#Wirbeltiere}) Notizen zu \cite{Vergleichende_Anatomie} siehe Anhang \ref{appendix_vergleichende_anatomie}.
- \item Das Skelett eines Wirbeltiers ist nicht unbedingt zusammenhängend. \todo{Repräsentation / Erzeugung?} %TODO
+ \item Das Skelett eines Wirbeltiers ist nicht unbedingt zusammenhängend.
 \end{itemize}
 
 %-------------
@@ -73,10 +73,10 @@
 \begin{itemize}
  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
  \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\%TODO
- Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). Muss es das? Wenn ja, unzusammenhängende Fälle ausschließen. \todo{Wann ist Skelett unzusammenhängend?} %TODO
+ Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). $\rightarrow$ Darauf achten, dass das nicht von Algorithmus verlangt wird
  \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
  \item Darstellung des Skeletts in "`sinnvoller"' Pose.
- \item Beachte, dass Tier nicht umfällt: Schwerpunkte sinnvoll,\dots Dafür sind aber Muskeln wichtig $\rightarrow$ Algorithmus für eine sinnvolle Annäherung (dafür sind auch Gelenkinformationen wichtig!)  \todo{Ideen?} %TODO
+ \item Beachte, dass Tier nicht umfällt: berechne Drehmomente um Kontaktpunkte mit Boden. Dafür sind aber Muskeln bzw.\ Masse wichtig $\rightarrow$ Schätzung der Masse anhand der Knochengröße bzw.\ Größe der Bounding Box?
  \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
  \begin{itemize}
   \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
@@ -136,7 +136,7 @@
 \chapter{Technische Umsetzung}
 
 \begin{itemize}
- \item Repräsentation des Zustands als Baum von einzelnen Zeichen (terminale sowie nichtterminale). \todo{Andere Darstellung besser?} %TODO
+ \item Repräsentation des Zustands als Hierarchie von einzelnen Komponenten (terminale sowie nichtterminale).
  \item Übersetzung in ein 3D-Modell: zunächst .obj, später Verwendung von OpenGL mit vertex shadern etc.\
 \end{itemize}
 
@@ -145,7 +145,7 @@
 
 \begin{itemize}
  \item Rust: nicht geeignet, da Datenstrukturen die zyklische Referenzen auf veränderbare Objekte verwenden nicht oder nur kompliziert umsetzbar sind.
- \item Java: \todo{testen} %TODO
+ \item Java: scheint gut zu funktionieren. Es gibt Bibliotheken zum im-/exportieren von obj-Dateien und Unterstützung für OpenGL
 \end{itemize}
 
 
@@ -154,7 +154,7 @@
 
 \begin{itemize}
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
- \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach: Knoten/Gelenke mit Linien verbinden \todo{Grundgerüst mit ? aufsetzen} %TODO
+ \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach Knochen als Bounding Box darstellen
  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
  \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
 \item Vorschlag von Jo: "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
@@ -213,7 +213,7 @@
  \item OpenGL
  \begin {itemize}
   \item SDL + OpenGL Tutorials \\ \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \\ \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
-  \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array) oder: import file $\rightarrow$ OpenGL: Assimp library \url{https://learnopengl.com/Model-Loading/Assimp} \todo{Nur für Windows?} %TODO
+  \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array)
  \end {itemize}
 
  \item Benutzeroberfläche
@@ -235,10 +235,11 @@
 \section{Datenstrukturen}
 
 \begin{itemize}
- \item Nichtterminale als Bounding Box und Terminale zunächst auch (später Ersetzung durch Knochenmodelle)
+ \item Nichtterminale als Bounding Box und Terminale zunächst auch. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
  \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt). Schätzwert für anhängende Masse wahrscheinlich auch nötig für Balance. Schätzwert für Masse einfach direkt abhängig von Knochengröße?
  \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.
  \item Gelenke: Position, verbundene Knochen, Bewegungseinschränkungen für alle drei Richtungen; \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich?}, %TODO 
+ Wenn Skelett nur dargestellt werden soll und nicht bewegt: \todo{Bewegungseinschränkungen überhaupt nötig}, %TODO
  kein 3D-Modell nötig (?)
  \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert.
  \item Nichtterminale speichern: Bounding Box, Gewicht [min, max] (falls Einschränkungen vorhanden)  
