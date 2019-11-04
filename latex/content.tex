@@ -229,6 +229,25 @@
   
   \item Java Swing Bibliothek und JOGL (Java OpenGL Binding) (\url{http://www.jogl.info})
  \end{itemize}
-
 \end{itemize}
+
+%------------------------
+\section{Datenstrukturen}
+
+\begin{itemize}
+ \item Nichtterminale als Bounding Box und Terminale zunächst auch (später Ersetzung durch Knochenmodelle)
+ \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt). Schätzwert für anhängende Masse wahrscheinlich auch nötig für Balance. Schätzwert für Masse einfach direkt abhängig von Knochengröße?
+ \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.
+ \item Gelenke: Position, verbundene Knochen, Bewegungseinschränkungen für alle drei Richtungen; \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich?}, %TODO 
+ kein 3D-Modell nötig (?)
+ \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert.
+ \item Nichtterminale speichern: Bounding Box, Gewicht [min, max] (falls Einschränkungen vorhanden)  
+ \item Berechnung der Blance: Kontaktpunkte mit dem Boden, Drehmomente der Knochenmittelpunkte (reicht das als Annäherung?)\\
+ Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$
+ (\url{https://de.wikipedia.org/wiki/Drehmoment})
+ \item Zuerst Kontaktpunkte mit dem Boden bestimmen, da sie als Bezugspunkte für das Drehmoment gebraucht werden. Damit ist die Berechnung der Balance während weiterer Erzeugung immer sinnvoll.
+ \item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
+ \item Kombination von Wirbelsäule und Kontaktpunkte mit dem Boden ergeben Lage der Beine.
+\end{itemize}
+
 
