@@ -236,18 +236,29 @@
 
 \begin{itemize}
  \item Nichtterminale als Bounding Box und Terminale zunächst auch. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
- \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt). Schätzwert für anhängende Masse wahrscheinlich auch nötig für Balance. Schätzwert für Masse einfach direkt abhängig von Knochengröße?
+ \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt). Schätzwert für anhängende Masse nötig für Balance nötig (einfach direkt abhängig von Knochengröße?)
  \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.
  \item Gelenke: Position, verbundene Knochen, Bewegungseinschränkungen für alle drei Richtungen; \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich?}, %TODO 
  Wenn Skelett nur dargestellt werden soll und nicht bewegt: \todo{Bewegungseinschränkungen überhaupt nötig}, %TODO
  kein 3D-Modell nötig (?)
  \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert.
  \item Nichtterminale speichern: Bounding Box, Gewicht [min, max] (falls Einschränkungen vorhanden)  
- \item Berechnung der Blance: Kontaktpunkte mit dem Boden, Drehmomente der Knochenmittelpunkte (reicht das als Annäherung?)\\
- Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$
- (\url{https://de.wikipedia.org/wiki/Drehmoment})
- \item Zuerst Kontaktpunkte mit dem Boden bestimmen, da sie als Bezugspunkte für das Drehmoment gebraucht werden. Damit ist die Berechnung der Balance während weiterer Erzeugung immer sinnvoll.
- \item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
+ \item Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht)
+  \begin{itemize}
+   \item Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$. Betrag des Drehmoments $M = r \cdot F \cdot \text{sin}(\alpha)$, mit dem Winkel $\alpha$ zwischen $\vec{F}$ und $\vec{r}$.\\
+   (\url{https://de.wikipedia.org/wiki/Drehmoment})
+   
+   \item Kraft, die auf Knochen wirkt: resultierende Kraft der Streckenlast, die durch zugewiesenes Gewicht erzeugt wird. Der Einfachheit halber einfach rechteckige Streckenlast annehmen, dann greift Kraft am Mittelpunkt der Strecke und $\vec{F} = \frac{1}{2} m g$\footnote{Die Formel zu rechteckigen Streckenlasten, die man so findet ist $\vec{F} = \frac{1}{2} L q_0$, mit Länge der Strecke $L$ und den auf der Strecke verteilten Einzellasten $q_0$, aber $L q_0 = m g$. Daraus folgt obige Formel.}, mit Masse $m$ und Erdbeschleunigung $g$\\ (\url{https://www.der-wirtschaftsingenieur.de/index.php/streckenlast/}, \url{https://www.youtube.com/watch?v=T1Sf8GPD4dc})
+   
+   \item Reduzierung des Problems auf zwei Dimensionen, da Körper so aufgebaut ist, dass er nur nach vorne oder hinten umkippen kann und nicht zur Seite.
+   
+   \item Damit Körper immer in Balance ist, muss auch nicht terminalen Teilen ein Drehmoment (und damit auch implizit ein Gewicht) zugewiesen werden. Werden aus diesen Nichtterminalen dann neue Teile generiert, so muss das Drehmoment bzw.\ die Summe der einzelnen Drehmomente gleich bleiben.
+   
+   \item Der Bezugspunkt für die Berechnung der Drehmomente ist der Schwerpunkt des Körpers, da sich dort alle durch das Eigengewicht wirkenden Drehmomente des Körpers zu null aufaddieren.\\ (\url{https://www.grund-wissen.de/physik/mechanik/drehmoment-und-gleichgewicht.html})\\
+   Das heißt zu Beginn der Generierung muss der Schwerpunkt des Körpers festgelegt werden, damit die Drehmomente berechnet werden können. Das ist am Anfang aber sehr einfach, da das initiale Element die Bounding Box des Gesamten Skeletts ist. Also ist der Schwerpunkt der Mittelpunkt.
+  \end{itemize}
+
+ \item Lage der Wirbelsäule am Anfang festlegen (?), da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
  \item Kombination von Wirbelsäule und Kontaktpunkte mit dem Boden ergeben Lage der Beine.
 \end{itemize}
 
