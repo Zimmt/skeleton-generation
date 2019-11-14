@@ -1,32 +1,45 @@
 package skeleton;
 
-import util.Position;
+import util.BoundingBox;
 
-import java.util.List;
+import javax.media.j3d.Transform3D;
 
-public class SimpleBone implements TerminalElement, SkeletonPart {
-    private Position start;
-    private Position end;
-    private List<Joint> joints;
+public class SimpleBone implements TerminalElement {
+    private Transform3D relativePosition;
+    private BoundingBox boundingBox;
+    private String id;
+    private double weight;
+    private SkeletonPart parent;
 
-    public SimpleBone(Position start, Position end) {
-        this.start = start;
-        this.end = end;
+    public SimpleBone(Transform3D relativePosition, BoundingBox boundingBox, String id, double weight, SkeletonPart parent) {
+        this.relativePosition = relativePosition;
+        this.boundingBox = boundingBox;
+        this.id = id;
+        this.weight = weight;
+        this.parent = parent;
     }
 
-    public void addJoints(List<Joint> addJoints) {
-        this.joints.addAll(addJoints);
+    public Transform3D getTransform() {
+        return relativePosition;
     }
 
-    public Position getStart() {
-        return start;
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
-    public Position getEnd() {
-        return end;
+    public String getID() {
+        return id;
     }
 
-    public List<Joint> getJoints() {
-        return joints;
+    public double getWeight() {
+        return weight;
+    }
+
+    public SkeletonPart getParent() {
+        return parent;
+    }
+
+    public boolean hasParent() {
+        return parent != null;
     }
 }

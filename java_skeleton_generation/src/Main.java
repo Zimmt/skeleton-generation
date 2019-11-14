@@ -1,3 +1,5 @@
+import skeleton.InitialElement;
+import skeleton.SimpleBone;
 import skeleton.SkeletonGenerator;
 import util.ObjGenerator;
 
@@ -5,17 +7,10 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        SkeletonGenerator skeletonGenerator = new SkeletonGenerator();
-        int maxSteps = 5;
+        SimpleBone bone = new InitialElement().toSimpleBone();
+        SkeletonGenerator skeletonGenerator = new SkeletonGenerator(bone);
 
-        while (!skeletonGenerator.isFinished() && skeletonGenerator.getStepCount() < maxSteps) {
-            skeletonGenerator.doOneStep();
-        }
-        if (skeletonGenerator.isFinished()) {
-            ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator);
-        } else {
-            System.err.println("Skeleton was not finished after maximum number of steps.");
-        }
+        ObjGenerator objGenerator = new ObjGenerator();
+        objGenerator.generateObjFrom(skeletonGenerator);
     }
 }

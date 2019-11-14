@@ -52,4 +52,5 @@ java_skeleton_generation/.idea/
 
 ### Java ###
 java_skeleton_generation/out/
+java_skeleton_generation/*.obj
 

@@ -3,11 +3,12 @@ package util;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjWriter;
 import de.javagl.obj.Objs;
-import skeleton.Joint;
 import skeleton.SimpleBone;
 import skeleton.SkeletonGenerator;
+import skeleton.SkeletonPart;
 import skeleton.TerminalElement;
 
+import javax.media.j3d.Transform3D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,24 +27,26 @@ public class ObjGenerator {
 
         List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
         Obj obj = Objs.create();
-        int vertexCount = -1;
 
         for (TerminalElement element : skeletonParts) {
             if (element instanceof SimpleBone) {
                 SimpleBone bone = (SimpleBone) element;
-                Position s = bone.getStart();
-                Position e = bone.getEnd();
+                BoundingBox boundingBox = bone.getBoundingBox().cloneBox();
+                SkeletonPart part = bone;
 
-                obj.addVertex(s.x(), s.y(), s.z()); vertexCount++;
-                obj.addVertex(e.x(), e.y(), e.z()); vertexCount++;
-                obj.addFace(vertexCount-1, vertexCount);
+                // find absolute position of bounding box
+                Transform3D transform = new Transform3D(part.getTransform());
+                transform.invert();
+                boundingBox.transform(transform);
 
-            } else if (element instanceof Joint) {
-                Joint joint = (Joint) element;
-                Position p = joint.getPosition();
+                while (part.hasParent()) {
+                    part = part.getParent();
+                    transform = new Transform3D(part.getTransform());
+                    transform.invert();
+                    boundingBox.transform(transform);
+                }
 
-                obj.addVertex(p.x(), p.y(), p.z()); vertexCount++;
-                obj.addFace(vertexCount);
+                boundingBox.addDataToObj(obj);
 
             } else {
                 System.err.println("Unknown skeleton part found.");
@@ -54,5 +57,4 @@ public class ObjGenerator {
         OutputStream objOutputStream = new FileOutputStream(path);
         ObjWriter.write(obj, objOutputStream);
     }
-
 }
