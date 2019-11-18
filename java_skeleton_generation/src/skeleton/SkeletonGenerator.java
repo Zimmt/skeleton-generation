@@ -41,7 +41,12 @@ public class SkeletonGenerator {
     }
 
     private StringBuilder recursiveToString(StringBuilder depth, SkeletonPart currentElement, StringBuilder skeleton) {
-        skeleton.append(depth + currentElement.getID() + "\n");
+
+        if (currentElement.isTerminal()) {
+            skeleton.append(depth + currentElement.getID() + "\n");
+        } else {
+            skeleton.append(depth + "*" + currentElement.getID() + "\n");
+        }
         List<SkeletonPart> children = currentElement.getChildren();
         for (SkeletonPart child : children) {
             skeleton = recursiveToString(depth.append(" "), child, skeleton);

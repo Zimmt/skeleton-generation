@@ -12,4 +12,5 @@ public interface SkeletonPart {
     boolean hasParent();
     List<SkeletonPart> getChildren();
     boolean hasChildren();
+    boolean isTerminal();
 }
