@@ -3,13 +3,13 @@ package skeleton;
 import util.BoundingBox;
 
 import javax.media.j3d.Transform3D;
+import java.util.List;
 
 public interface SkeletonPart {
 
-    BoundingBox getBoundingBox();
-    Transform3D getTransform();
     String getID();
-    double getWeight();
     SkeletonPart getParent();
     boolean hasParent();
+    List<SkeletonPart> getChildren();
+    boolean hasChildren();
 }

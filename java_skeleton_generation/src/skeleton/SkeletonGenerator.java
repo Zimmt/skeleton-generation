@@ -13,12 +13,6 @@ public class SkeletonGenerator {
         this.nonTerminalParts = new ArrayList<>(Collections.singletonList(new InitialElement()));
     }
 
-    // for testing
-    public SkeletonGenerator(SimpleBone bone) {
-        this.terminalParts = new ArrayList<>(Collections.singletonList(bone));
-        this.nonTerminalParts = new ArrayList<>();
-    }
-
     public boolean isFinished() {
         return nonTerminalParts.isEmpty();
     }
