@@ -7,10 +7,13 @@ public class SkeletonGenerator {
     private ArrayList<NonTerminalElement> nonTerminalParts;
     private static Random random = new Random();
     private int stepCount = 0;
+    private SkeletonPart rootElement;
 
     public SkeletonGenerator() {
+        InitialElement initialElement = new InitialElement();
+        this.rootElement = initialElement;
         this.terminalParts = new ArrayList<>();
-        this.nonTerminalParts = new ArrayList<>(Collections.singletonList(new InitialElement()));
+        this.nonTerminalParts = new ArrayList<>(Collections.singletonList(initialElement));
     }
 
     public boolean isFinished() {
@@ -27,5 +30,22 @@ public class SkeletonGenerator {
 
     public int getStepCount() {
         return stepCount;
+    }
+
+    public String toString() {
+        if (!isFinished()) {
+            return "";
+        }
+        StringBuilder skeleton = recursiveToString(new StringBuilder(), rootElement, new StringBuilder());
+        return skeleton.toString();
+    }
+
+    private StringBuilder recursiveToString(StringBuilder depth, SkeletonPart currentElement, StringBuilder skeleton) {
+        skeleton.append(depth + currentElement.getID() + "\n");
+        List<SkeletonPart> children = currentElement.getChildren();
+        for (SkeletonPart child : children) {
+            skeleton = recursiveToString(depth.append(" "), child, skeleton);
+        }
+        return skeleton;
     }
 }
