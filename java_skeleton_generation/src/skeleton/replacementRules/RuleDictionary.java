@@ -29,6 +29,7 @@ public class RuleDictionary {
     }
 
     private void initializeRules() {
-        // TODO
+        WholeBodyRule wholeBodyRule = new WholeBodyRule();
+        map.put(wholeBodyRule.getInputID(), Collections.singletonList(wholeBodyRule));
     }
 }

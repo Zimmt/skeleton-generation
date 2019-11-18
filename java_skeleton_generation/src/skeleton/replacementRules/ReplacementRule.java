@@ -1,11 +1,15 @@
 package skeleton.replacementRules;
 
-import skeleton.SkeletonPart;
+import skeleton.elements.SkeletonPart;
 
 import java.util.List;
 
-public interface ReplacementRule {
+public abstract class ReplacementRule {
 
-    String getInputID();
-    List<SkeletonPart> apply(SkeletonPart part);
+    public abstract String getInputID();
+    public abstract List<SkeletonPart> apply(SkeletonPart part);
+
+    public boolean isApplicableTo(SkeletonPart part) {
+        return getInputID().equals(part.getID());
+    }
 }
