@@ -1,6 +1,6 @@
-package skeleton.elements;
+package skeleton.elements.terminal;
 
-import java.util.List;
+import skeleton.elements.SkeletonPart;
 
 public abstract class TerminalElement extends SkeletonPart {
 

@@ -1,4 +1,4 @@
-package skeleton.elements;
+package skeleton.elements.nonterminal;
 
 public class WholeBody extends NonTerminalElement {
 
@@ -11,4 +11,6 @@ public class WholeBody extends NonTerminalElement {
     public String getID() {
         return id;
     }
+
+    public boolean isMirrored() { return false; }
 }

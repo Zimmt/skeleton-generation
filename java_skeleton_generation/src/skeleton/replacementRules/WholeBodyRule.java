@@ -1,9 +1,9 @@
 package skeleton.replacementRules;
 
-import skeleton.elements.BackPart;
-import skeleton.elements.FrontPart;
+import skeleton.elements.nonterminal.BackPart;
+import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.Torso;
+import skeleton.elements.nonterminal.Torso;
 
 import java.util.Arrays;
 import java.util.Collections;

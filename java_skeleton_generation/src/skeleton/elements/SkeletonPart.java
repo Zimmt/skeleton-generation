@@ -16,6 +16,7 @@ public abstract class SkeletonPart {
 
     public abstract String getID();
     public abstract boolean isTerminal();
+    public abstract boolean isMirrored();
 
     public boolean addChild(SkeletonPart child) {
         return children.add(child);

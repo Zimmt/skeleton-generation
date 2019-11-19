@@ -1,9 +1,9 @@
 package skeleton;
 
-import skeleton.elements.WholeBody;
-import skeleton.elements.NonTerminalElement;
+import skeleton.elements.nonterminal.WholeBody;
+import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.TerminalElement;
+import skeleton.elements.terminal.TerminalElement;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 
@@ -91,11 +91,15 @@ public class SkeletonGenerator {
 
     private StringBuilder recursiveToString(String depth, SkeletonPart currentElement, StringBuilder skeleton) {
 
-        if (currentElement.isTerminal()) {
-            skeleton.append(depth).append(currentElement.getID()).append("\n");
-        } else {
-            skeleton.append(depth).append("*").append(currentElement.getID()).append("\n");
+        skeleton.append(depth);
+        if (currentElement.isMirrored()) {
+            skeleton.append("2x ");
         }
+        if (!currentElement.isTerminal()) {
+            skeleton.append("*");
+        }
+        skeleton.append(currentElement.getID()).append("\n");
+
         List<SkeletonPart> children = currentElement.getChildren();
         for (SkeletonPart child : children) {
             String newDepth = depth + " ";

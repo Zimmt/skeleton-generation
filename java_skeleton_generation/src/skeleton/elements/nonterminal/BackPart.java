@@ -1,4 +1,6 @@
-package skeleton.elements;
+package skeleton.elements.nonterminal;
+
+import skeleton.elements.SkeletonPart;
 
 public class BackPart extends NonTerminalElement {
 
@@ -11,4 +13,6 @@ public class BackPart extends NonTerminalElement {
     public String getID() {
         return id;
     }
+
+    public boolean isMirrored() { return false; }
 }

@@ -1,4 +1,6 @@
-package skeleton.elements;
+package skeleton.elements.nonterminal;
+
+import skeleton.elements.SkeletonPart;
 
 import java.util.List;
 
