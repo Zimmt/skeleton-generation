@@ -18,7 +18,8 @@ public class SkeletonGenerator {
 
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
-        this.nonTerminalParts = new ArrayList<>(Collections.singletonList(new WholeBody()));
+        this.nonTerminalParts = new ArrayList<>();
+        this.nonTerminalParts.add(new WholeBody());
         this.ruleDictionary = new RuleDictionary();
     }
 
@@ -31,8 +32,8 @@ public class SkeletonGenerator {
         NonTerminalElement nonTerminalElement = nonTerminalParts.remove(nonTerminalParts.size() - 1);
 
         List<ReplacementRule> rules = ruleDictionary.getRules(nonTerminalElement.getID());
-        if (rules.isEmpty()) {
-            System.err.println("Non terminal has no applicable rule!");
+        if (rules == null || rules.isEmpty()) {
+            System.err.println("Non terminal " + nonTerminalElement.getID() + " has no applicable rule!");
             nonTerminalParts.add(nonTerminalElement);
             return;
         }
@@ -85,13 +86,12 @@ public class SkeletonGenerator {
 
     public String toString() {
         SkeletonPart rootElement = getRootElement();
-        StringBuilder skeleton = recursiveToString("", rootElement, new StringBuilder());
-        return skeleton.toString();
+        return recursiveToString("|-- ", rootElement);
     }
 
-    private StringBuilder recursiveToString(String depth, SkeletonPart currentElement, StringBuilder skeleton) {
+    private String recursiveToString(String depth, SkeletonPart currentElement) {
 
-        skeleton.append(depth);
+        StringBuilder skeleton = new StringBuilder(depth);
         if (currentElement.isMirrored()) {
             skeleton.append("2x ");
         }
@@ -102,9 +102,8 @@ public class SkeletonGenerator {
 
         List<SkeletonPart> children = currentElement.getChildren();
         for (SkeletonPart child : children) {
-            String newDepth = depth + " ";
-            skeleton = recursiveToString(newDepth, child, skeleton);
+            skeleton.append(recursiveToString("    " + depth, child));
         }
-        return skeleton;
+        return skeleton.toString();
     }
 }

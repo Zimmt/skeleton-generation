@@ -3,11 +3,14 @@ package skeleton.replacementRules;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.Vertebra;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
-public class NeckRule extends ReplacementRule {
+public class TailRule extends ReplacementRule {
 
-    private final String inputID = "neck";
+    private final String inputID = "tail";
     private final int minVertebraCount = 1;
     private final int maxVertebraCount = 1;
     private Random random = new Random();
@@ -16,21 +19,21 @@ public class NeckRule extends ReplacementRule {
         return inputID;
     }
 
-    public List<SkeletonPart> apply(SkeletonPart neck) {
+    public List<SkeletonPart> apply(SkeletonPart tail) {
         // if rule is not compatible return element unchanged
-        if (!isApplicableTo(neck)) {
-            return Arrays.asList(neck);
+        if (!isApplicableTo(tail)) {
+            return Arrays.asList(tail);
         }
 
         //System.out.println("Apply " + inputID + " rule");
 
-        if (!neck.hasChildren()) {
-            System.err.println("Neck should have children before this rule is applied.");
+        if (tail.hasChildren()) {
+            System.err.println("Tail should not have children before this rule is applied.");
         }
 
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
-        Vertebra parent = new Vertebra(neck.getParent());
-        neck.getParent().replaceChild(neck, parent);
+        Vertebra parent = new Vertebra(tail.getParent());
+        tail.getParent().replaceChild(tail, parent);
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
@@ -40,8 +43,6 @@ public class NeckRule extends ReplacementRule {
             generatedParts.add(child);
             parent = child;
         }
-
-        generatedParts.get(generatedParts.size() - 1).addChildren(neck.getChildren());
 
         return generatedParts;
     }

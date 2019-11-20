@@ -2,6 +2,9 @@ package skeleton.elements.terminal;
 
 import skeleton.elements.SkeletonPart;
 
+/**
+ * Wirbel
+ */
 public class Vertebra extends TerminalElement {
 
     private final String id = "vertebra";

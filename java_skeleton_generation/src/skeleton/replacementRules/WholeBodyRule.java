@@ -6,7 +6,6 @@ import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Torso;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class WholeBodyRule extends ReplacementRule {
@@ -20,8 +19,10 @@ public class WholeBodyRule extends ReplacementRule {
     public List<SkeletonPart> apply(SkeletonPart wholeBody) {
         // if rule is not compatible return element unchanged
         if (!isApplicableTo(wholeBody)) {
-            return Collections.singletonList(wholeBody);
+            return Arrays.asList(wholeBody);
         }
+
+        //System.out.println("Apply " + inputID + " rule");
 
         if (wholeBody.hasChildren()) {
             System.err.println("Whole body should not have children before this rule is applied.");
@@ -31,8 +32,7 @@ public class WholeBodyRule extends ReplacementRule {
         FrontPart front = new FrontPart(torso);
         BackPart back = new BackPart(torso);
         torso.addChildren(front, back);
-        List<SkeletonPart> generatedParts = Arrays.asList(torso, front, back);
 
-        return generatedParts;
+        return Arrays.asList(torso, front, back);
     }
 }

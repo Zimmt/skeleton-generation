@@ -26,12 +26,20 @@ public abstract class SkeletonPart {
         return children.addAll(Arrays.asList(parts));
     }
 
+    public boolean addChildren(List<SkeletonPart> parts) {
+        return children.addAll(parts);
+    }
+
     public boolean removeChild(SkeletonPart child) {
         return children.remove(child);
     }
 
     public boolean replaceChild(SkeletonPart oldChild, SkeletonPart newChild) {
         return removeChild(oldChild) && addChild(newChild);
+    }
+
+    public void setParent(SkeletonPart parent) {
+        this.parent = parent;
     }
 
     public SkeletonPart getParent() {
