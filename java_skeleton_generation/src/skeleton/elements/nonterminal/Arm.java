@@ -6,8 +6,8 @@ public class Arm extends NonTerminalElement {
 
     private final String id = "arm";
 
-    public Arm(SkeletonPart parent) {
-        super(parent);
+    public Arm(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

@@ -32,13 +32,13 @@ public class TailRule extends ReplacementRule {
         }
 
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
-        Vertebra parent = new Vertebra(tail.getParent());
+        Vertebra parent = new Vertebra(tail.getParent(), tail);
         tail.getParent().replaceChild(tail, parent);
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            Vertebra child = new Vertebra(parent);
+            Vertebra child = new Vertebra(parent, tail);
             parent.addChild(child);
             generatedParts.add(child);
             parent = child;

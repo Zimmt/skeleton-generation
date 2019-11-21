@@ -5,7 +5,7 @@ public class WholeBody extends NonTerminalElement {
     private final String id = "whole body";
 
     public WholeBody() {
-        super(null);
+        super(null, null);
     }
 
     public String getID() {

@@ -28,11 +28,11 @@ public class FrontPartRule extends ReplacementRule {
             System.err.println("front part should not have children before this rule is applied.");
         }
 
-        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(frontPart.getParent());
+        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(frontPart.getParent(), frontPart);
         frontPart.getParent().replaceChild(frontPart, shoulderGirdle);
-        Neck neck = new Neck(shoulderGirdle);
+        Neck neck = new Neck(shoulderGirdle, frontPart);
         shoulderGirdle.addChild(neck);
-        Head head = new Head(neck);
+        Head head = new Head(neck, frontPart);
         neck.addChild(head);
 
         return Arrays.asList(shoulderGirdle, neck, head);

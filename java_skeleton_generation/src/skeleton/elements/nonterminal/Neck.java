@@ -6,8 +6,8 @@ public class Neck extends NonTerminalElement {
 
     private final String id = "neck";
 
-    public Neck(SkeletonPart parent) {
-        super(parent);
+    public Neck(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

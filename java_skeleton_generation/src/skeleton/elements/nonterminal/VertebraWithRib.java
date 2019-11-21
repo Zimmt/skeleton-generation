@@ -6,8 +6,8 @@ public class VertebraWithRib extends NonTerminalElement {
 
     private final String id = "vertebra with rib";
 
-    public VertebraWithRib(SkeletonPart parent) {
-        super(parent);
+    public VertebraWithRib(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

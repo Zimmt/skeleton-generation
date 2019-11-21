@@ -91,14 +91,24 @@ public class SkeletonGenerator {
 
     private String recursiveToString(String depth, SkeletonPart currentElement) {
 
-        StringBuilder skeleton = new StringBuilder(depth);
+        StringBuilder skeleton = new StringBuilder("\u001B[32m").append(depth);
         if (currentElement.isMirrored()) {
             skeleton.append("2x ");
         }
         if (!currentElement.isTerminal()) {
             skeleton.append("*");
         }
-        skeleton.append(currentElement.getID()).append("\n");
+        skeleton.append(currentElement.getID()).append("\u001B[90m").append(" (");
+
+        SkeletonPart ancestor = currentElement.getAncestor();
+        while (ancestor != null) {
+            skeleton.append(ancestor.getID());
+            if (ancestor.hasAncestor()) {
+                skeleton.append(", ");
+            }
+            ancestor = ancestor.getAncestor();
+        }
+        skeleton.append(")").append("\u001B[0m").append("\n"); // reset color to white
 
         List<SkeletonPart> children = currentElement.getChildren();
         for (SkeletonPart child : children) {

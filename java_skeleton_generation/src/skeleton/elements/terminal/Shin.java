@@ -9,8 +9,8 @@ public class Shin extends TerminalElement {
 
     private final String id = "shin";
 
-    public Shin(SkeletonPart parent) {
-        super(parent);
+    public Shin(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

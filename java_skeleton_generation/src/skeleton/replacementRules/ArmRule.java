@@ -28,11 +28,11 @@ public class ArmRule extends ReplacementRule {
             System.err.println("Arm should not have children before this rule is applied.");
         }
 
-        UpperArm upperArm = new UpperArm(arm.getParent());
+        UpperArm upperArm = new UpperArm(arm.getParent(), arm);
         arm.getParent().replaceChild(arm, upperArm);
-        LowerArm lowerArm = new LowerArm(upperArm);
+        LowerArm lowerArm = new LowerArm(upperArm, arm);
         upperArm.addChild(lowerArm);
-        Hand hand = new Hand(lowerArm);
+        Hand hand = new Hand(lowerArm, arm);
         lowerArm.addChild(hand);
 
         return Arrays.asList(upperArm, lowerArm, hand);

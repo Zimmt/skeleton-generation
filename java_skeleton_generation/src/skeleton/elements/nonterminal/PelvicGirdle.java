@@ -9,8 +9,8 @@ public class PelvicGirdle extends NonTerminalElement {
 
     private final String id = "pelvic girdle";
 
-    public PelvicGirdle(SkeletonPart parent) {
-        super(parent);
+    public PelvicGirdle(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

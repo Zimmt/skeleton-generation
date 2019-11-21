@@ -29,13 +29,13 @@ public class NeckRule extends ReplacementRule {
         }
 
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
-        Vertebra parent = new Vertebra(neck.getParent());
+        Vertebra parent = new Vertebra(neck.getParent(), neck);
         neck.getParent().replaceChild(neck, parent);
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            Vertebra child = new Vertebra(parent);
+            Vertebra child = new Vertebra(parent, neck);
             parent.addChild(child);
             generatedParts.add(child);
             parent = child;

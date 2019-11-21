@@ -6,8 +6,8 @@ public class Hand extends TerminalElement {
 
     private final String id = "hand";
 
-    public Hand(SkeletonPart parent) {
-        super(parent);
+    public Hand(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

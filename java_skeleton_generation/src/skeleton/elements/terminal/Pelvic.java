@@ -9,8 +9,8 @@ public class Pelvic extends TerminalElement {
 
     private final String id = "pelvic";
 
-    public Pelvic(SkeletonPart parent) {
-        super(parent);
+    public Pelvic(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

@@ -1,11 +1,13 @@
 package skeleton.elements.nonterminal;
 
+import skeleton.elements.SkeletonPart;
+
 public class Torso extends NonTerminalElement {
 
     private final String id = "torso";
 
-    public Torso() {
-        super(null);
+    public Torso(SkeletonPart ancestor) {
+        super(null, ancestor);
     }
 
     public String getID() {

@@ -6,8 +6,8 @@ public class Shoulder extends TerminalElement {
 
     private final String id = "shoulder";
 
-    public Shoulder(SkeletonPart parent) {
-        super(parent);
+    public Shoulder(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

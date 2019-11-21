@@ -28,9 +28,9 @@ public class WholeBodyRule extends ReplacementRule {
             System.err.println("Whole body should not have children before this rule is applied.");
         }
 
-        Torso torso = new Torso();
-        FrontPart front = new FrontPart(torso);
-        BackPart back = new BackPart(torso);
+        Torso torso = new Torso(wholeBody);
+        FrontPart front = new FrontPart(torso, wholeBody);
+        BackPart back = new BackPart(torso, wholeBody);
         torso.addChildren(front, back);
 
         return Arrays.asList(torso, front, back);

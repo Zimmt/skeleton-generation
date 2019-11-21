@@ -27,13 +27,13 @@ public class PelvicGirdleRule extends ReplacementRule {
             System.err.println("Pelvic girdle should have children before this rule is applied.");
         }
 
-        Pelvic pelvic = new Pelvic(pelvicGirdle.getParent());
+        Pelvic pelvic = new Pelvic(pelvicGirdle.getParent(), pelvicGirdle);
         pelvicGirdle.getParent().replaceChild(pelvicGirdle, pelvic);
         pelvic.addChildren(pelvicGirdle.getChildren());
         for (SkeletonPart child : pelvicGirdle.getChildren()) {
             child.setParent(pelvic);
         }
-        Leg leg = new Leg(pelvic);
+        Leg leg = new Leg(pelvic, pelvicGirdle);
         pelvic.addChild(leg);
 
         return Arrays.asList(pelvic, leg);

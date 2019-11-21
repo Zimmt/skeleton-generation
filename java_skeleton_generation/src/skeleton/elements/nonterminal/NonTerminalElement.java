@@ -2,12 +2,10 @@ package skeleton.elements.nonterminal;
 
 import skeleton.elements.SkeletonPart;
 
-import java.util.List;
-
 public abstract class NonTerminalElement extends SkeletonPart {
 
-    public NonTerminalElement(SkeletonPart parent) {
-        super(parent);
+    public NonTerminalElement(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public boolean isTerminal() {

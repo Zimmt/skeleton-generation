@@ -9,8 +9,8 @@ public class Vertebra extends TerminalElement {
 
     private final String id = "vertebra";
 
-    public Vertebra(SkeletonPart parent) {
-        super(parent);
+    public Vertebra(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

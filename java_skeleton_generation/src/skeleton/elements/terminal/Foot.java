@@ -6,8 +6,8 @@ public class Foot extends TerminalElement {
 
     private final String id = "foot";
 
-    public Foot(SkeletonPart parent) {
-        super(parent);
+    public Foot(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

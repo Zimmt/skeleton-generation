@@ -6,8 +6,8 @@ public class ShoulderGirdle extends NonTerminalElement {
 
     private final String id = "shoulder girdle";
 
-    public ShoulderGirdle(SkeletonPart parent) {
-        super(parent);
+    public ShoulderGirdle(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

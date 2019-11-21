@@ -29,13 +29,13 @@ public class ChestRule extends ReplacementRule {
         }
 
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
-        VertebraWithRib parent = new VertebraWithRib(chest.getParent());
+        VertebraWithRib parent = new VertebraWithRib(chest.getParent(), chest);
         chest.getParent().replaceChild(chest, parent);
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            VertebraWithRib child = new VertebraWithRib(parent);
+            VertebraWithRib child = new VertebraWithRib(parent, chest);
             parent.addChild(child);
             generatedParts.add(child);
             parent = child;

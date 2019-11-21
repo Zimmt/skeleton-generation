@@ -6,12 +6,14 @@ import java.util.List;
 
 public abstract class SkeletonPart {
 
-    private SkeletonPart parent;
-    private List<SkeletonPart> children;
+    private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
+    private List<SkeletonPart> children; // in hierarchy of body parts
+    private SkeletonPart ancestor; // element of which this part was created by a replacement rule
 
-    public SkeletonPart(SkeletonPart parent) {
+    public SkeletonPart(SkeletonPart parent, SkeletonPart ancestor) {
         this.parent = parent;
         this.children = new ArrayList<>();
+        this.ancestor = ancestor;
     }
 
     public abstract String getID();
@@ -56,5 +58,13 @@ public abstract class SkeletonPart {
 
     public boolean hasChildren() {
         return children.size() > 0;
+    }
+
+    public SkeletonPart getAncestor() {
+        return ancestor;
+    }
+
+    public boolean hasAncestor() {
+        return ancestor != null;
     }
 }

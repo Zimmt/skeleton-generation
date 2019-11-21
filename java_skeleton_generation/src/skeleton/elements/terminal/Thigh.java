@@ -9,8 +9,8 @@ public class Thigh extends TerminalElement {
 
     private final String id = "thigh";
 
-    public Thigh(SkeletonPart parent) {
-        super(parent);
+    public Thigh(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

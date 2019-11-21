@@ -27,10 +27,10 @@ public class ShoulderGirdleRule extends ReplacementRule {
             System.err.println("Shoulder girdle should have children before this rule is applied.");
         }
 
-        Shoulder shoulder = new Shoulder(shoulderGirdle.getParent());
+        Shoulder shoulder = new Shoulder(shoulderGirdle.getParent(), shoulderGirdle);
         shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
         shoulder.addChildren(shoulderGirdle.getChildren());
-        Arm arm = new Arm(shoulder);
+        Arm arm = new Arm(shoulder, shoulderGirdle);
         shoulder.addChild(arm);
 
         return Arrays.asList(shoulder, arm);

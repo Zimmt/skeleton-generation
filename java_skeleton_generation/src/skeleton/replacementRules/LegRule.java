@@ -28,11 +28,11 @@ public class LegRule extends ReplacementRule {
             System.err.println("Leg should not have children before this rule is applied.");
         }
 
-        Thigh thigh = new Thigh(leg.getParent());
+        Thigh thigh = new Thigh(leg.getParent(), leg);
         leg.getParent().replaceChild(leg, thigh);
-        Shin shin = new Shin(thigh);
+        Shin shin = new Shin(thigh, leg);
         thigh.addChild(shin);
-        Foot foot = new Foot(shin);
+        Foot foot = new Foot(shin, leg);
         shin.addChild(foot);
 
         return Arrays.asList(thigh, shin, foot);

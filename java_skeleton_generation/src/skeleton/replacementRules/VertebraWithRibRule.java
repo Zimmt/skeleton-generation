@@ -28,13 +28,13 @@ public class VertebraWithRibRule extends ReplacementRule {
             System.err.println("'Vertebra with rib' should have children before this rule is applied.");
         }
 
-        Vertebra vertebra = new Vertebra(vertebraWithRib.getParent());
+        Vertebra vertebra = new Vertebra(vertebraWithRib.getParent(), vertebraWithRib);
         vertebraWithRib.getParent().replaceChild(vertebraWithRib, vertebra);
         vertebra.addChildren(vertebraWithRib.getChildren());
         for (SkeletonPart child : vertebraWithRib.getChildren()) {
             child.setParent(vertebra);
         }
-        Rib rib = new Rib(vertebra);
+        Rib rib = new Rib(vertebra, vertebraWithRib);
         vertebra.addChild(rib);
 
         return Arrays.asList(vertebra, rib);

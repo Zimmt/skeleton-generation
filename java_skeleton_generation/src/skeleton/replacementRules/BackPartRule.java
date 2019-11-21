@@ -27,9 +27,9 @@ public class BackPartRule extends ReplacementRule {
             System.err.println("Back part should not have children before this rule is applied.");
         }
 
-        PelvicGirdle pelvicGirdle = new PelvicGirdle(backPart.getParent());
+        PelvicGirdle pelvicGirdle = new PelvicGirdle(backPart.getParent(), backPart);
         backPart.getParent().replaceChild(backPart, pelvicGirdle);
-        Tail tail = new Tail(pelvicGirdle);
+        Tail tail = new Tail(pelvicGirdle, backPart);
         pelvicGirdle.addChild(tail);
 
         return Arrays.asList(pelvicGirdle, tail);

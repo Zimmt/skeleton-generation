@@ -46,8 +46,8 @@ public class TorsoRule extends ReplacementRule {
             backChild = children.get(0);
         }
 
-        Vertebra parent = new Vertebra(null); // root (TODO: is this always a good position?)
-        Chest chest = new Chest(parent);
+        Vertebra parent = new Vertebra(null, torso); // root (TODO: is this always a good position?)
+        Chest chest = new Chest(parent, torso);
         chest.addChild(frontChild);
         frontChild.setParent(chest);
         parent.addChild(chest);
@@ -57,7 +57,7 @@ public class TorsoRule extends ReplacementRule {
         generatedParts.add(parent);
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
         for (int i = 1; i < vertebraCount; i++) {
-            Vertebra child = new Vertebra(parent);
+            Vertebra child = new Vertebra(parent, torso);
             parent.addChild(child);
             generatedParts.add(child);
             parent = child;

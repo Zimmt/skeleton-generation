@@ -6,8 +6,8 @@ public class LowerArm extends TerminalElement {
 
     private final String id = "lower arm";
 
-    public LowerArm(SkeletonPart parent) {
-        super(parent);
+    public LowerArm(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {

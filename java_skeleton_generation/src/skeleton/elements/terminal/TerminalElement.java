@@ -4,8 +4,8 @@ import skeleton.elements.SkeletonPart;
 
 public abstract class TerminalElement extends SkeletonPart {
 
-    public TerminalElement(SkeletonPart parent) {
-        super(parent);
+    public TerminalElement(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public boolean isTerminal() {

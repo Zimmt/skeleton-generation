@@ -6,8 +6,8 @@ public class FrontPart extends NonTerminalElement {
 
     private final String id = "front part";
 
-    public FrontPart(SkeletonPart parent) {
-        super(parent);
+    public FrontPart(SkeletonPart parent, SkeletonPart ancestor) {
+        super(parent, ancestor);
     }
 
     public String getID() {
