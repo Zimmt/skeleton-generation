@@ -1,7 +1,5 @@
 package skeleton.replacementRules;
 
-import skeleton.elements.nonterminal.Neck;
-
 import java.util.*;
 
 public class RuleDictionary {
@@ -33,6 +31,8 @@ public class RuleDictionary {
     private void initializeRules() {
         List<ReplacementRule> rules = new ArrayList<>();
         rules.add(new WholeBodyRule());
+        rules.add(new TorsoRule());
+        /*rules.add(new WholeBodyRule());
         rules.add(new FrontPartRule());
         rules.add(new ShoulderGirdleRule());
         rules.add(new ArmRule());
@@ -43,7 +43,7 @@ public class RuleDictionary {
         rules.add(new BackPartRule());
         rules.add(new PelvicGirdleRule());
         rules.add(new LegRule());
-        rules.add(new TailRule());
+        rules.add(new TailRule());*/
 
         for (ReplacementRule rule : rules) {
             // for each input id at most one rule

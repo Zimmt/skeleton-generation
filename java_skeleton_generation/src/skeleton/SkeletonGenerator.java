@@ -6,7 +6,10 @@ import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
+import util.BoundingBox;
+import util.TransformationMatrix;
 
+import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class SkeletonGenerator {
@@ -19,7 +22,7 @@ public class SkeletonGenerator {
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
-        this.nonTerminalParts.add(new WholeBody());
+        this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), BoundingBox.defaultBox().scale(new Vector3f(10f, 1f, 1f))));
         this.ruleDictionary = new RuleDictionary();
     }
 

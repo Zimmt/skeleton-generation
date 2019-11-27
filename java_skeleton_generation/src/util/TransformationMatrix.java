@@ -9,8 +9,22 @@ public class TransformationMatrix {
     // first rotation then translation
     private Transform3D transform;
 
+    public TransformationMatrix() {
+        this.transform = new Transform3D();
+    }
     public TransformationMatrix(Transform3D transform) {
         this.transform = transform;
+    }
+
+    public TransformationMatrix(TransformationMatrix transformationMatrix) {
+        this.transform = transformationMatrix.transform;
+    }
+
+    public TransformationMatrix(Vector3f translation) {
+        Matrix3f identity = new Matrix3f(); // all zero matrix
+        identity.setIdentity();
+
+        this.transform = new Transform3D(identity, translation, 1f);
     }
 
     public TransformationMatrix translate(Vector3f t) {
