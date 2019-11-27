@@ -1,16 +1,27 @@
 package skeleton.elements;
 
+import util.BoundingBox;
+import util.TransformationMatrix;
+
+import javax.media.j3d.Transform3D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class SkeletonPart {
 
+    private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
+    // joint constraints for the joint between this part and parent can optionally be added here
+    // (these constraints may not be needed at all levels of abstraction)
+    private BoundingBox boundingBox;
+
     private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
     private SkeletonPart ancestor; // element of which this part was created by a replacement rule
 
-    public SkeletonPart(SkeletonPart parent, SkeletonPart ancestor) {
+    protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        this.boundingBox = boundingBox;
+        this.transform  = transform;
         this.parent = parent;
         this.children = new ArrayList<>();
         this.ancestor = ancestor;
@@ -19,6 +30,10 @@ public abstract class SkeletonPart {
     public abstract String getID();
     public abstract boolean isTerminal();
     public abstract boolean isMirrored();
+
+    public TransformationMatrix getTransform() { return transform; }
+
+    public BoundingBox getBoundingBox() { return boundingBox; }
 
     public boolean addChild(SkeletonPart child) {
         return children.add(child);
@@ -40,6 +55,14 @@ public abstract class SkeletonPart {
         return removeChild(oldChild) && addChild(newChild);
     }
 
+    public List<SkeletonPart> getChildren() {
+        return children;
+    }
+
+    public boolean hasChildren() {
+        return children.size() > 0;
+    }
+
     public void setParent(SkeletonPart parent) {
         this.parent = parent;
     }
@@ -50,14 +73,6 @@ public abstract class SkeletonPart {
 
     public boolean hasParent() {
         return parent != null;
-    }
-
-    public List<SkeletonPart> getChildren() {
-        return children;
-    }
-
-    public boolean hasChildren() {
-        return children.size() > 0;
     }
 
     public SkeletonPart getAncestor() {

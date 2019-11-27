@@ -1,13 +1,15 @@
 package skeleton.elements.nonterminal;
 
 import skeleton.elements.SkeletonPart;
+import util.BoundingBox;
+import util.TransformationMatrix;
 
 public class Neck extends NonTerminalElement {
 
     private final String id = "neck";
 
-    public Neck(SkeletonPart parent, SkeletonPart ancestor) {
-        super(parent, ancestor);
+    public Neck(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getID() {

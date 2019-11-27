@@ -1,13 +1,15 @@
 package skeleton.elements.terminal;
 
 import skeleton.elements.SkeletonPart;
+import util.BoundingBox;
+import util.TransformationMatrix;
 
 public class Hand extends TerminalElement {
 
     private final String id = "hand";
 
-    public Hand(SkeletonPart parent, SkeletonPart ancestor) {
-        super(parent, ancestor);
+    public Hand(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getID() {

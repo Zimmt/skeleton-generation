@@ -4,7 +4,6 @@ import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.Rib;
 import skeleton.elements.terminal.Vertebra;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

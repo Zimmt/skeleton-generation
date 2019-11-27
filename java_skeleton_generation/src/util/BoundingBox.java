@@ -19,6 +19,15 @@ public class BoundingBox {
         this.zCorner = zCorner;
     }
 
+    public static BoundingBox defaultBox() {
+        return new BoundingBox(
+                new Vector3f(0f, 0f, 0f),
+                new Vector3f(1f, 0f, 0f),
+                new Vector3f(0f, 1f, 0f),
+                new Vector3f(0f, 0f, 1f)
+        );
+    }
+
     public BoundingBox cloneBox() {
         return new BoundingBox(boxOrigin, xCorner, yCorner, zCorner);
     }

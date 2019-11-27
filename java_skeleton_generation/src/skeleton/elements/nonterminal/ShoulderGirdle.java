@@ -1,13 +1,15 @@
 package skeleton.elements.nonterminal;
 
 import skeleton.elements.SkeletonPart;
+import util.BoundingBox;
+import util.TransformationMatrix;
 
 public class ShoulderGirdle extends NonTerminalElement {
 
     private final String id = "shoulder girdle";
 
-    public ShoulderGirdle(SkeletonPart parent, SkeletonPart ancestor) {
-        super(parent, ancestor);
+    public ShoulderGirdle(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getID() {

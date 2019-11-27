@@ -1,13 +1,15 @@
 package skeleton.elements.terminal;
 
 import skeleton.elements.SkeletonPart;
+import util.BoundingBox;
+import util.TransformationMatrix;
 
 public class Rib extends TerminalElement {
 
     private final String id = "rib";
 
-    public Rib(SkeletonPart parent, SkeletonPart ancestor) {
-        super(parent, ancestor);
+    public Rib(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getID() {
