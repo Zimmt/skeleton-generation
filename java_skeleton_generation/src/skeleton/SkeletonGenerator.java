@@ -115,14 +115,7 @@ public class SkeletonGenerator {
         }*/
 
         // position
-        TransformationMatrix transform = currentElement.getTransform();
-        SkeletonPart parent = currentElement;
-        while (parent.hasParent()) {
-            parent = parent.getParent();
-            transform = TransformationMatrix.multiply(transform, parent.getTransform());
-        }
-        Point3f position = new Point3f(); // origin
-        transform.apply(position);
+        Point3f position = currentElement.getWorldPosition();
         skeleton.append("position: ").append(position);
 
         // bounding box dimensions

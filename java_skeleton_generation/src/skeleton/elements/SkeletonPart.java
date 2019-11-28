@@ -4,6 +4,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,19 @@ public abstract class SkeletonPart {
     public abstract boolean isMirrored();
 
     public TransformationMatrix getTransform() { return transform; }
+
+    public Point3f getWorldPosition() {
+        TransformationMatrix t = new TransformationMatrix(transform);
+        SkeletonPart parent = this;
+        while (parent.hasParent()) {
+            parent = parent.getParent();
+            t = TransformationMatrix.multiply(t, parent.getTransform());
+        }
+        Point3f position = new Point3f(); // origin
+        t.apply(position);
+
+        return position;
+    }
 
     public BoundingBox getBoundingBox() { return boundingBox; }
 

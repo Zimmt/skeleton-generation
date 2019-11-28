@@ -30,14 +30,14 @@ public class TorsoRule extends ReplacementRule {
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
 
         BoundingBox parentBoundingBox = torso.getBoundingBox().cloneBox();
-        parentBoundingBox.scale(new Vector3f(1f / vertebraCount, 1f, 1f));
+        parentBoundingBox.setXLength((parentBoundingBox.getXLength() - vertebraCount + 1) / vertebraCount);
 
         Vertebra parent = new Vertebra(torso.getTransform(), parentBoundingBox, null, torso); // root
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            TransformationMatrix childTransform = new TransformationMatrix(new Vector3f(parentBoundingBox.getXLength(), 0f, 0f));
+            TransformationMatrix childTransform = new TransformationMatrix(new Vector3f(parentBoundingBox.getXLength() + 1, 0f, 0f));
             BoundingBox childBox = parentBoundingBox.cloneBox();
 
             Vertebra child = new Vertebra(childTransform, childBox, parent, torso);

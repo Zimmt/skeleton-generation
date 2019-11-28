@@ -42,6 +42,36 @@ public class BoundingBox {
         return this;
     }
 
+    public BoundingBox setXLength(float xLength) {
+        xCorner.normalize();
+        xCorner.scale(xLength);
+        return this;
+    }
+
+    public BoundingBox setYLength(float yLength) {
+        yCorner.normalize();
+        yCorner.scale(yLength);
+        return this;
+    }
+
+    public BoundingBox setZLength(float zLength) {
+        zCorner.normalize();
+        zCorner.scale(zLength);
+        return this;
+    }
+
+    public Vector3f getXVector() {
+        return xCorner;
+    }
+
+    public Vector3f getYVector() {
+        return yCorner;
+    }
+
+    public Vector3f getZVector() {
+        return zCorner;
+    }
+
     public float getXLength() {
         return xCorner.length();
     }
