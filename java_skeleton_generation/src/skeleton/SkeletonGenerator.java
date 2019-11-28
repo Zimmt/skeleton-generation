@@ -9,6 +9,7 @@ import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
@@ -103,14 +104,34 @@ public class SkeletonGenerator {
         }
         skeleton.append(currentElement.getID()).append("\u001B[90m").append(" (");
 
-        SkeletonPart ancestor = currentElement.getAncestor();
+        // ancestors
+        /*SkeletonPart ancestor = currentElement.getAncestor();
         while (ancestor != null) {
             skeleton.append(ancestor.getID());
             if (ancestor.hasAncestor()) {
                 skeleton.append(", ");
             }
             ancestor = ancestor.getAncestor();
+        }*/
+
+        // position
+        TransformationMatrix transform = currentElement.getTransform();
+        SkeletonPart parent = currentElement;
+        while (parent.hasParent()) {
+            parent = parent.getParent();
+            transform = TransformationMatrix.multiply(transform, parent.getTransform());
         }
+        Point3f position = new Point3f(); // origin
+        transform.apply(position);
+        skeleton.append("position: ").append(position);
+
+        // bounding box dimensions
+        skeleton.append(", bounding box scale: ");
+        BoundingBox boundingBox = currentElement.getBoundingBox();
+        skeleton.append(boundingBox.getXLength()).append(", ");
+        skeleton.append(boundingBox.getYLength()).append(", ");
+        skeleton.append(boundingBox.getZLength());
+
         skeleton.append(")").append("\u001B[0m").append("\n"); // reset color to white
 
         List<SkeletonPart> children = currentElement.getChildren();

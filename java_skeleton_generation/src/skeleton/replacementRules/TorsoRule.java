@@ -5,15 +5,14 @@ import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class TorsoRule extends ReplacementRule {
 
     private final String inputID = "torso";
-    private final int minVertebraCount = 1;
-    private final int maxVertebraCount = 1;
+    private final int minVertebraCount = 5;
+    private final int maxVertebraCount = 5;
     private Random random = new Random();
 
     public String getInputID() {
@@ -38,9 +37,6 @@ public class TorsoRule extends ReplacementRule {
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            Matrix3f identity = new Matrix3f(); // all zero matrix
-            identity.setIdentity();
-
             TransformationMatrix childTransform = new TransformationMatrix(new Vector3f(parentBoundingBox.getXLength(), 0f, 0f));
             BoundingBox childBox = parentBoundingBox.cloneBox();
 

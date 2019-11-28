@@ -2,6 +2,7 @@ package util;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 public class TransformationMatrix {
@@ -25,6 +26,12 @@ public class TransformationMatrix {
         identity.setIdentity();
 
         this.transform = new Transform3D(identity, translation, 1f);
+    }
+
+    // transforms p and places result back into p, the fourth coordinate is assumed to be 1
+    // (when it is applied on a vector the fourth coordinate would be assumed to be 0!)
+    public void apply(Point3f p) {
+        transform.transform(p);
     }
 
     public TransformationMatrix translate(Vector3f t) {
