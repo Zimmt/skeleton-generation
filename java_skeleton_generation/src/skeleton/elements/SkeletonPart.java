@@ -1,5 +1,6 @@
 package skeleton.elements;
 
+import skeleton.SkeletonGenerator;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -19,6 +20,16 @@ public abstract class SkeletonPart {
     private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
     private SkeletonPart ancestor; // element of which this part was created by a replacement rule
+    private SkeletonGenerator generator;
+
+    protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
+        this.boundingBox = boundingBox;
+        this.transform = transform;
+        this.parent = null;
+        this.children = new ArrayList<>();
+        this.ancestor = null;
+        this.generator = generator;
+    }
 
     protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
         this.boundingBox = boundingBox;
@@ -26,6 +37,7 @@ public abstract class SkeletonPart {
         this.parent = parent;
         this.children = new ArrayList<>();
         this.ancestor = ancestor;
+        this.generator = ancestor.getGenerator();
     }
 
     public abstract String getID();
@@ -95,5 +107,9 @@ public abstract class SkeletonPart {
 
     public boolean hasAncestor() {
         return ancestor != null;
+    }
+
+    public SkeletonGenerator getGenerator() {
+        return this.generator;
     }
 }

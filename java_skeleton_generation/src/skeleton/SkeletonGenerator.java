@@ -7,6 +7,7 @@ import skeleton.elements.terminal.TerminalElement;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
+import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
@@ -19,12 +20,18 @@ public class SkeletonGenerator {
     private static Random random = new Random();
     private int stepCount = 0;
     private RuleDictionary ruleDictionary;
+    private CubicBezierCurve spineLocation;
 
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
-        this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), BoundingBox.defaultBox().scale(new Vector3f(10f, 1f, 1f))));
+        this.nonTerminalParts.add(new WholeBody(
+                new TransformationMatrix(),
+                BoundingBox.defaultBox().scale(new Vector3f(14f, 8f, 1f)
+                ),
+                this));
         this.ruleDictionary = new RuleDictionary();
+        this.spineLocation = generateSpine();
     }
 
     public void doOneStep() {
@@ -88,6 +95,10 @@ public class SkeletonGenerator {
         return stepCount;
     }
 
+    public CubicBezierCurve getSpineLocation() {
+        return spineLocation;
+    }
+
     public String toString() {
         SkeletonPart rootElement = getRootElement();
         return recursiveToString("|-- ", rootElement);
@@ -132,5 +143,14 @@ public class SkeletonGenerator {
             skeleton.append(recursiveToString("    " + depth, child));
         }
         return skeleton.toString();
+    }
+
+    private CubicBezierCurve generateSpine() {
+        Point3f p0 = new Point3f(2f, 6f, 0f);
+        Point3f p1 = new Point3f(4f, 2f, 0f);
+        Point3f p2 = new Point3f(10f, 6f, 0f);
+        Point3f p3 = new Point3f(12f, 2f, 0f);
+
+        return new CubicBezierCurve(p0, p1, p2, p3);
     }
 }
