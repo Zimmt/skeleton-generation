@@ -13,12 +13,13 @@ public class TransformationMatrix {
     public TransformationMatrix() {
         this.transform = new Transform3D();
     }
+
     public TransformationMatrix(Transform3D transform) {
-        this.transform = transform;
+        this.transform = new Transform3D(transform);
     }
 
     public TransformationMatrix(TransformationMatrix transformationMatrix) {
-        this.transform = transformationMatrix.transform;
+        this.transform = new Transform3D(transformationMatrix.transform);
     }
 
     public TransformationMatrix(Vector3f translation) {
