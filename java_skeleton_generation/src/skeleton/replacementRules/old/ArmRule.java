@@ -1,9 +1,10 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.Hand;
 import skeleton.elements.terminal.LowerArm;
 import skeleton.elements.terminal.UpperArm;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Chest;
@@ -6,6 +6,7 @@ import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Shoulder;
 import skeleton.elements.terminal.Vertebra;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.*;
 

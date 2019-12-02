@@ -1,7 +1,8 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.VertebraWithRib;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.*;
 

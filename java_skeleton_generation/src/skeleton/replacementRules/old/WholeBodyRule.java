@@ -1,9 +1,10 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Torso;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.Arrays;
 import java.util.List;

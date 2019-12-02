@@ -1,9 +1,10 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Neck;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Head;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.Arrays;
 import java.util.List;

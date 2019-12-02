@@ -1,9 +1,10 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.Arrays;
 import java.util.List;

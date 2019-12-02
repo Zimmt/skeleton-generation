@@ -1,8 +1,9 @@
-package skeleton.replacementRules;
+package skeleton.replacementRules.old;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.PelvicGirdle;
 import skeleton.elements.nonterminal.Tail;
+import skeleton.replacementRules.ReplacementRule;
 
 import java.util.Arrays;
 import java.util.List;
