@@ -10,6 +10,7 @@ import util.BoundingBox;
 import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
@@ -146,10 +147,10 @@ public class SkeletonGenerator {
     }
 
     private CubicBezierCurve generateSpine() {
-        Point3f p0 = new Point3f(2f, 6f, 0f);
-        Point3f p1 = new Point3f(4f, 2f, 0f);
-        Point3f p2 = new Point3f(10f, 6f, 0f);
-        Point3f p3 = new Point3f(12f, 2f, 0f);
+        Point2f p0 = new Point2f(2f, 6f);
+        Point2f p1 = new Point2f(4f, 2f);
+        Point2f p2 = new Point2f(10f, 6f);
+        Point2f p3 = new Point2f(12f, 2f);
 
         return new CubicBezierCurve(p0, p1, p2, p3);
     }

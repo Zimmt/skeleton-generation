@@ -12,8 +12,8 @@ import java.util.*;
 public class TorsoRule extends ReplacementRule {
 
     private final String inputID = "torso";
-    private final int minVertebraCount = 10;
-    private final int maxVertebraCount = 10;
+    private final int minVertebraCount = 5;
+    private final int maxVertebraCount = 5;
     private Random random = new Random();
 
     public String getInputID() {
@@ -33,20 +33,33 @@ public class TorsoRule extends ReplacementRule {
         BoundingBox parentBoundingBox = BoundingBox.defaultBox();
         parentBoundingBox.setXLength(1f);
 
-        CubicBezierCurve spinePosition = torso.getGenerator().getSpineLocation();
-        TransformationMatrix parentTransform = new TransformationMatrix(torso.getTransform());
-        Vector3f diff = new Vector3f(spinePosition.apply(0f));
-        diff.sub(torso.getWorldPosition());
-        parentTransform.translate(diff);
+        CubicBezierCurve spine = torso.getGenerator().getSpineLocation();
+
+        // transform
+        TransformationMatrix parentTransform = new TransformationMatrix();
+        float parentAngle = (float) Math.atan(spine.applyDerivation(0f).y);
+        parentTransform.rotateAroundZ(parentAngle);
+
+        Vector3f position = new Vector3f(spine.apply3d(0f)); // world position (= local position)
+        parentTransform.translate(position);
+
 
         Vertebra parent = new Vertebra(parentTransform, parentBoundingBox, null, torso); // root
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
         generatedParts.add(parent);
 
         for (int i = 1; i < vertebraCount; i++) {
-            Vector3f childPosition = new Vector3f(spinePosition.apply((float) i / (float) vertebraCount)); // world position
-            childPosition.sub(parent.getWorldPosition()); // local position
-            TransformationMatrix childTransform = new TransformationMatrix(childPosition);
+            float childT = (float) i / (float) vertebraCount;
+
+            // we have the world position of the spine and we have to get something that is relative to parent
+            TransformationMatrix childTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+
+            float childAngle = (float) Math.atan(spine.applyDerivation(childT).y);
+            childTransform.rotateAroundZ(childAngle);
+
+            Vector3f childPosition = new Vector3f(spine.apply3d(childT)); // world position
+            childTransform.translate(childPosition);
+
             BoundingBox childBox = parentBoundingBox.cloneBox();
 
             Vertebra child = new Vertebra(childTransform, childBox, parent, torso);

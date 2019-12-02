@@ -31,22 +31,38 @@ public class TransformationMatrix {
 
     // transforms p and places result back into p, the fourth coordinate is assumed to be 1
     // (when it is applied on a vector the fourth coordinate would be assumed to be 0!)
-    public void apply(Point3f p) {
+    public void applyOnPoint(Point3f p) {
         transform.transform(p);
     }
 
+    public void applyOnVector(Vector3f v) {
+        transform.transform(v);
+    }
+
     public TransformationMatrix translate(Vector3f t) {
-        Vector3f translation = new Vector3f();
-        transform.get(translation);
-        translation.add(t);
-        transform.setTranslation(translation);
+        Matrix3f identity = new Matrix3f();
+        identity.setIdentity();
+        Transform3D translation = new Transform3D(identity, t, 1f);
+        transform.mul(translation, transform); // new transform = translation * old transform
+        return this;
+    }
+
+    public TransformationMatrix clearTranslation() {
+        transform.setTranslation(new Vector3f());
         return this;
     }
 
     public TransformationMatrix rotate(Matrix3f rot) {
-        Transform3D rotation = new Transform3D(rot, new Vector3f(0f, 0f, 0f), 1);
+        Transform3D rotation = new Transform3D(rot, new Vector3f(0f, 0f, 0f), 1f);
         transform.mul(rotation, transform); // new transform = rotation * old transform
         return this;
+    }
+
+    // counter clockwise rotation of the existing matrix around the local z axis
+    public TransformationMatrix rotateAroundZ(float angle) {
+        Matrix3f rotation = new Matrix3f();
+        rotation.rotZ(angle);
+        return this.rotate(rotation);
     }
 
     public static TransformationMatrix multiply(TransformationMatrix t1, TransformationMatrix t2) {

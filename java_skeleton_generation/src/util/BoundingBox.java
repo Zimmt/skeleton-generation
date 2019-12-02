@@ -1,6 +1,5 @@
 package util;
 
-import javax.media.j3d.Transform3D;
 import javax.vecmath.Vector3f;
 
 public class BoundingBox {
@@ -24,14 +23,16 @@ public class BoundingBox {
     }
 
     public BoundingBox cloneBox() {
-        return new BoundingBox(xCorner, yCorner, zCorner);
+        return new BoundingBox(
+                new Vector3f(xCorner), new Vector3f(yCorner), new Vector3f(zCorner));
     }
 
-    public BoundingBox transform(Transform3D matrix) {
-        matrix.setTranslation(new Vector3f()); // there is no point in translating when the bounding box itself does not store an origin
-        matrix.transform(xCorner);
-        matrix.transform(yCorner);
-        matrix.transform(zCorner);
+    public BoundingBox transform(TransformationMatrix matrix) {
+        TransformationMatrix transform = new TransformationMatrix(matrix);
+        transform.clearTranslation(); // there is no point in translating when the bounding box itself does not store an origin
+        transform.applyOnVector(xCorner);
+        transform.applyOnVector(yCorner);
+        transform.applyOnVector(zCorner);
         return this;
     }
 
