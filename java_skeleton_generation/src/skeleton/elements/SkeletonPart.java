@@ -8,7 +8,6 @@ import javax.vecmath.Point3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class SkeletonPart {
 
@@ -16,7 +15,6 @@ public abstract class SkeletonPart {
     // joint constraints for the joint between this part and parent can optionally be added here
     // (these constraints may not be needed at all levels of abstraction)
     private BoundingBox boundingBox;
-    private Optional<TransformationMatrix> worldTransform;
 
     private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
@@ -26,7 +24,6 @@ public abstract class SkeletonPart {
     protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
         this.transform = transform;
         this.boundingBox = boundingBox;
-        this.worldTransform = Optional.empty();
         this.parent = null;
         this.children = new ArrayList<>();
         this.ancestor = null;
@@ -36,7 +33,6 @@ public abstract class SkeletonPart {
     protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
         this.transform  = transform;
         this.boundingBox = boundingBox;
-        this.worldTransform = Optional.empty();
         this.parent = parent;
         this.children = new ArrayList<>();
         this.ancestor = ancestor;
@@ -57,17 +53,18 @@ public abstract class SkeletonPart {
         return position;
     }
 
+    /**
+     * @return the transformation matrix that transforms from the local coordinate system of this skeleton part
+     * to the world space
+     */
     public TransformationMatrix getWorldTransform() {
-        if (worldTransform.isEmpty()) {
-            TransformationMatrix t = new TransformationMatrix(transform);
-            SkeletonPart parent = this;
-            while (parent.hasParent()) {
-                parent = parent.getParent();
-                t = TransformationMatrix.multiply(t, parent.getTransform());
-            }
-            worldTransform = Optional.of(t);
+        TransformationMatrix worldTransform = new TransformationMatrix(transform);
+        SkeletonPart parent = this;
+        while (parent.hasParent()) {
+            parent = parent.getParent();
+            worldTransform = TransformationMatrix.multiply(worldTransform, parent.getTransform());
         }
-        return worldTransform.get();
+        return worldTransform;
     }
 
     public BoundingBox getBoundingBox() { return boundingBox; }

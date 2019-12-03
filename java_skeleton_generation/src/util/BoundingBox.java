@@ -2,6 +2,9 @@ package util;
 
 import javax.vecmath.Vector3f;
 
+/**
+ * In the local coordinates of a skeleton part this should not be rotated
+ */
 public class BoundingBox {
 
     private Vector3f xCorner;
