@@ -5,6 +5,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,17 +13,20 @@ import java.util.List;
 public abstract class SkeletonPart {
 
     private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
-    // joint constraints for the joint between this part and parent can optionally be added here
-    // (these constraints may not be needed at all levels of abstraction)
+    private Point3f jointRotationPoint; // rotation center of the joint between this part and it's parent in the coordinate system of the parent
     private BoundingBox boundingBox;
 
     private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
     private SkeletonPart ancestor; // element of which this part was created by a replacement rule
+
     private SkeletonGenerator generator;
 
+    /* Use this constructor only if this skeleton part has no ancestor (and therefore no parent)
+     */
     protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
         this.transform = transform;
+        this.jointRotationPoint = null;
         this.boundingBox = boundingBox;
         this.parent = null;
         this.children = new ArrayList<>();
@@ -30,8 +34,13 @@ public abstract class SkeletonPart {
         this.generator = generator;
     }
 
-    protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+    /* Use this constructor only if this skeleton part _has_ an ancestor.
+     * The ancestor is used to set the skeleton generator attribute.
+     */
+    protected SkeletonPart(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox,
+                           SkeletonPart parent, SkeletonPart ancestor) {
         this.transform  = transform;
+        this.jointRotationPoint = jointRotationPoint;
         this.boundingBox = boundingBox;
         this.parent = parent;
         this.children = new ArrayList<>();
@@ -44,14 +53,6 @@ public abstract class SkeletonPart {
     public abstract boolean isMirrored();
 
     public TransformationMatrix getTransform() { return transform; }
-
-    public Point3f getWorldPosition() {
-        TransformationMatrix t = getWorldTransform();
-        Point3f position = new Point3f(); // origin
-        t.applyOnPoint(position);
-
-        return position;
-    }
 
     /**
      * @return the transformation matrix that transforms from the local coordinate system of this skeleton part
@@ -67,7 +68,34 @@ public abstract class SkeletonPart {
         return worldTransform;
     }
 
+    public Point3f getWorldPosition() {
+        TransformationMatrix t = getWorldTransform();
+        Point3f position = new Point3f(); // origin
+        t.applyOnPoint(position);
+
+        return position;
+    }
+
+    public void rotateAroundXAxisOfJoint(float angle) {
+        translateJointRotationPointToOriginOfParent();
+        transform.rotateAroundX(angle);
+        translateOriginOfParentToJointRotationPoint();
+    }
+
+    public void rotateAroundYAxisOfJoint(float angle) {
+        translateJointRotationPointToOriginOfParent();
+        transform.rotateAroundY(angle);
+        translateOriginOfParentToJointRotationPoint();
+    }
+
+    public void rotateAroundZAxisOfJoint(float angle) {
+        translateJointRotationPointToOriginOfParent();
+        transform.rotateAroundZ(angle);
+        translateOriginOfParentToJointRotationPoint();
+    }
+
     public BoundingBox getBoundingBox() { return boundingBox; }
+
 
     public boolean addChild(SkeletonPart child) {
         return children.add(child);
@@ -119,5 +147,16 @@ public abstract class SkeletonPart {
 
     public SkeletonGenerator getGenerator() {
         return this.generator;
+    }
+
+
+    private void translateJointRotationPointToOriginOfParent() {
+        Vector3f translationToOrigin = new Vector3f(jointRotationPoint);
+        translationToOrigin.scale(-1f);
+        transform.translate(translationToOrigin);
+    }
+
+    private void translateOriginOfParentToJointRotationPoint() {
+        transform.translate(new Vector3f(jointRotationPoint));
     }
 }

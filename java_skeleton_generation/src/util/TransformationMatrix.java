@@ -58,6 +58,20 @@ public class TransformationMatrix {
         return this;
     }
 
+    // counter clockwise rotation of the existing matrix around the local x axis
+    public TransformationMatrix rotateAroundX(float angle) {
+        Matrix3f rotation = new Matrix3f();
+        rotation.rotX(angle);
+        return this.rotate(rotation);
+    }
+
+    // counter clockwise rotation of the existing matrix around the local y axis
+    public TransformationMatrix rotateAroundY(float angle) {
+        Matrix3f rotation = new Matrix3f();
+        rotation.rotY(angle);
+        return this.rotate(rotation);
+    }
+
     // counter clockwise rotation of the existing matrix around the local z axis
     public TransformationMatrix rotateAroundZ(float angle) {
         Matrix3f rotation = new Matrix3f();
