@@ -1,4 +1,6 @@
-package util;
+package test.util;
+
+import util.TransformationMatrix;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
