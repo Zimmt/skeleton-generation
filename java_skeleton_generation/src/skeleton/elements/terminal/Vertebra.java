@@ -4,6 +4,8 @@ import skeleton.elements.SkeletonPart;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+
 /**
  * Wirbel
  */
@@ -11,8 +13,8 @@ public class Vertebra extends TerminalElement {
 
     private final String id = "vertebra";
 
-    public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
-        super(transform, boundingBox, parent, ancestor);
+    public Vertebra(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
     public String getID() {

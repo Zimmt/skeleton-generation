@@ -6,6 +6,7 @@ import util.BoundingBox;
 import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
@@ -41,7 +42,7 @@ public class TorsoRule extends ReplacementRule {
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
 
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
-        Vertebra parent = new Vertebra(new TransformationMatrix(), parentBoundingBox, null, torso); // dummy parent
+        Vertebra parent = new Vertebra(new TransformationMatrix(), new Point3f(), parentBoundingBox, null, torso); // dummy parent
 
         for (int i = 0; i < vertebraCount; i++) {
             float childT = (float) i / (float) vertebraCount;
@@ -59,9 +60,9 @@ public class TorsoRule extends ReplacementRule {
 
             Vertebra child;
             if (i == 0) { // this is the real parent (dummy parent was used to calculate it)
-                child = new Vertebra(childTransform, childBox, null, torso); // root
+                child = new Vertebra(childTransform, new Point3f(), childBox, null, torso); // root
             } else {
-                child = new Vertebra(childTransform, childBox, parent, torso);
+                child = new Vertebra(childTransform, new Point3f(), childBox, parent, torso);
                 parent.addChild(child);
             }
 

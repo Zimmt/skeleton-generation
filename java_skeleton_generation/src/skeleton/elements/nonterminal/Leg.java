@@ -4,12 +4,14 @@ import skeleton.elements.SkeletonPart;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+
 public class Leg extends NonTerminalElement {
 
     private final String id = "leg";
 
-    public Leg(TransformationMatrix transform, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
-        super(transform, boundingBox, parent, ancestor);
+    public Leg(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
     public String getID() {
