@@ -1,12 +1,12 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.nonterminal.Torso;
 import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
@@ -14,8 +14,8 @@ import java.util.*;
 public class TorsoRule extends ReplacementRule {
 
     private final String inputID = "torso";
-    private final int minVertebraCount = 10;
-    private final int maxVertebraCount = 10;
+    private final int minVertebraCount = 4;
+    private final int maxVertebraCount = 4;
     private Random random = new Random();
 
     public String getInputID() {
@@ -26,43 +26,52 @@ public class TorsoRule extends ReplacementRule {
      * Fits vertebrae on spine so that the spine pierces the bounding boxes in the middle of the left and the right
      * side. (They are only rotated around the z-axis.)
      */
-    public List<SkeletonPart> apply(SkeletonPart torso) {
+    public List<SkeletonPart> apply(SkeletonPart skeletonPart) {
         // if rule is not compatible return element unchanged
-        if (!isApplicableTo(torso)) {
-            return Arrays.asList(torso);
+        if (!isApplicableTo(skeletonPart)) {
+            return Arrays.asList(skeletonPart);
         }
+        Torso torso = (Torso) skeletonPart;
 
         //System.out.println("Apply " + inputID + " rule");
 
-        BoundingBox parentBoundingBox = BoundingBox.defaultBox();
-        parentBoundingBox.setXLength(1f);
-        Vector3f negativeHalfBoxHeight = new Vector3f(0f, -parentBoundingBox.getYLength() / 2f, 0f);
+        BoundingBox boundingBox = BoundingBox.defaultBox();
+        boundingBox.setXLength(1f);
+        Vector3f negativeHalfBoxHeight = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f);
 
         CubicBezierCurve spine = torso.getGenerator().getSpineLocation();
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
 
         ArrayList<SkeletonPart> generatedParts = new ArrayList<>();
-        Vertebra parent = new Vertebra(new TransformationMatrix(), new Point3f(), parentBoundingBox, null, torso); // dummy parent
+        Vertebra parent = new Vertebra(new TransformationMatrix(), new Point3f(), boundingBox, null, torso); // dummy parent
 
         for (int i = 0; i < vertebraCount; i++) {
-            float childT = (float) i / (float) vertebraCount;
-            float childTplus1 = (float) (i+1) / (float) vertebraCount;
+            float t = torso.getSpineInterval().x + (float) i / (float) vertebraCount * torso.getSpineIntervalLength();
+            float tPlus1 = t + 1f / (float) vertebraCount * torso.getSpineIntervalLength();
 
             // we have the world position of the spine and we have to get something that is relative to parent
-            TransformationMatrix childTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+            TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
 
-            float childAngle = getSpineAngle(spine, childT, childTplus1);
-            childTransform.rotateAroundZ(childAngle);
-            Vector3f childPosition = new Vector3f(spine.apply3d(childT)); // world position
-            childTransform.translate(childPosition);
+            float angle = getSpineAngle(spine, t, tPlus1);
+            transform.rotateAroundZ(angle);
+            Vector3f position = new Vector3f(spine.apply3d(t)); // world position
+            transform.translate(position);
 
-            BoundingBox childBox = parentBoundingBox.cloneBox();
+            BoundingBox childBox = boundingBox.cloneBox();
+
+            Point3f jointRotationPoint = new Point3f(position);
+            Vector3f offset = new Vector3f(childBox.getYVector());
+            offset.add(childBox.getZVector());
+            offset.scale(0.5f);
+            offset.add(childBox.getXVector());
+            jointRotationPoint.add(offset);
+
 
             Vertebra child;
             if (i == 0) { // this is the real parent (dummy parent was used to calculate it)
-                child = new Vertebra(childTransform, new Point3f(), childBox, null, torso); // root
+                child = new Vertebra(transform, jointRotationPoint, childBox, null, torso); // root
             } else {
-                child = new Vertebra(childTransform, new Point3f(), childBox, parent, torso);
+                child = new Vertebra(transform, jointRotationPoint, childBox, parent, torso);
                 parent.addChild(child);
             }
 

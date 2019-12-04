@@ -28,7 +28,7 @@ public class WholeBodyRule extends ReplacementRule {
             System.err.println("Whole body should not have children before this rule is applied.");
         }
 
-        Tuple2f spineInterval = new Point2f(0f, 1f);
+        Tuple2f spineInterval = new Point2f(1f/3f, 2f/3f); // TODO think of a rule
         Torso torso = new Torso(spineInterval, wholeBody.getTransform(), wholeBody.getBoundingBox(), wholeBody);
         return Arrays.asList(torso);
     }
