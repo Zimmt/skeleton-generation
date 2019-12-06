@@ -239,17 +239,27 @@
 \section{Datenstrukturen}
 
 \begin{itemize}
- \item Nichtterminale als Bounding Box und Terminale zunächst auch. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
- \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt). Schätzwert für anhängende Masse nötig für Balance nötig (einfach direkt abhängig von Knochengröße?)
- \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.
- \item Gelenke: Position, verbundene Knochen, Bewegungseinschränkungen für alle drei Richtungen; \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich?}, %TODO 
- Wenn Skelett nur dargestellt werden soll und nicht bewegt: \todo{Bewegungseinschränkungen überhaupt nötig}, %TODO
- kein 3D-Modell nötig (?)
- \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert.
- \item Nichtterminale speichern: Bounding Box, Gewicht [min, max] (falls Einschränkungen vorhanden)  
- \item Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht)
+ \item Terminale zunächst als Bounding Box. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
+ 
+ \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt).
+ 
+ \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.\\
+ Bei der Erzeugung von Elementen auf der Wirbelsäule ist das nicht einfacher. \todo{Hie\-rarchie nur von Elementen, die von der Wirbelsäule "`abzweigen"'? Oder ist gewisse Hierarchie in "`Endprodukt"' gewollt?} %TODO
+ 
+ \item Gelenke: Position, Bewegungseinschränkungen für alle drei Richtungen. In einer Hierarchie verbindet das Gelenk ein Kindelement mit seinem Elternelement. Gelenk ist hier ein Punkt, der im Koordinatensystem des Elternelements angegeben wird, und um den das Koordinatensystem des Kindelements gedreht werden kann/soll. \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich? Wie Einschränkungen erzeugen?}, %TODO 
+ 
+ \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert. (SkeletonGenerator)
+ 
+ \item \todo{Bounding Boxen auch für Nichtterminale?} %TODO
+ 
+ \item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. \todo{Wie genau sieht das aus?}\\ %TODO
+ Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.
+ 
+ \item Ansatzpunkte der Extremitäten an der Wirbelsäule: \todo{bestimme Bereich mit Steigung nahe null?} %TODO
+ 
+ \item Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht) $\rightarrow$ zunächst nicht nötig, da Position  der Wirbelsäule zu beginn mit Beziérkurve festgelegt wird
   \begin{itemize}
-   \item Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$. Betrag des Drehmoments $M = r \cdot F \cdot \text{sin}(\alpha)$, mit dem Winkel $\alpha$ zwischen $\vec{F}$ und $\vec{r}$.\\
+   \item Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$. Betrag des Drehmoments $M = r \cdot F \cdot \textrm{sin}(\alpha)$, mit dem Winkel $\alpha$ zwischen $\vec{F}$ und $\vec{r}$.\\
    (\url{https://de.wikipedia.org/wiki/Drehmoment})
    
    \item Kraft, die auf Knochen wirkt: resultierende Kraft der Streckenlast, die durch zugewiesenes Gewicht erzeugt wird. Der Einfachheit halber einfach rechteckige Streckenlast annehmen, dann greift Kraft am Mittelpunkt der Strecke und $\vec{F} = \frac{1}{2} m g$\footnote{Die Formel zu rechteckigen Streckenlasten, die man so findet ist $\vec{F} = \frac{1}{2} L q_0$, mit Länge der Strecke $L$ und den auf der Strecke verteilten Einzellasten $q_0$, aber $L q_0 = m g$. Daraus folgt obige Formel.}, mit Masse $m$ und Erdbeschleunigung $g$\\ (\url{https://www.der-wirtschaftsingenieur.de/index.php/streckenlast/}, \url{https://www.youtube.com/watch?v=T1Sf8GPD4dc})
