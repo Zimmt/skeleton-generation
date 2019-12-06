@@ -2,6 +2,8 @@ package util;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CubicBezierCurve {
     Point2f controlPoint0;
@@ -60,5 +62,36 @@ public class CubicBezierCurve {
         result.scale(3);
 
         return result;
+    }
+
+    /**
+     * Calculates all intervals of the curve where the gradient is in the interval [-epsilon, +epsilon]
+     * by testing the derivation with the step size of 0.01
+     */
+    public List<Float> getIntervalsByGradientEpsilon(float epsilon) {
+
+        List<Float> intervals = new ArrayList<>();
+        boolean inInterval = false;
+
+        for (float t = 0f; t <= 1f; t += 0.01) {
+            float gradient = applyDerivation(t).y;
+
+            if (!inInterval && Math.abs(gradient) <= epsilon) {
+                intervals.add(t);
+                inInterval = true;
+
+            } else if (inInterval && Math.abs(gradient) > epsilon) {
+                intervals.add(t);
+                inInterval = false;
+            }
+        }
+        if (inInterval) { // interval not closed
+            intervals.add(1f);
+        }
+        if (intervals.size() % 2 != 0) {
+            System.err.println("Spine interval calculation wrong!");
+        }
+
+        return intervals;
     }
 }
