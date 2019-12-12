@@ -238,6 +238,9 @@
 %------------------------
 \section{Datenstrukturen}
 
+%- - - - - - - - - - -
+\subsection{Terminale}
+
 \begin{itemize}
  \item Terminale zunächst als Bounding Box. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
  
@@ -246,18 +249,34 @@
  \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.\\
  Bei der Erzeugung von Elementen auf der Wirbelsäule ist das nicht einfacher. \todo{Hie\-rarchie nur von Elementen, die von der Wirbelsäule "`abzweigen"'? Oder ist gewisse Hierarchie in "`Endprodukt"' gewollt?} %TODO
  
- \item Gelenke: Position, Bewegungseinschränkungen für alle drei Richtungen. In einer Hierarchie verbindet das Gelenk ein Kindelement mit seinem Elternelement. Gelenk ist hier ein Punkt, der im Koordinatensystem des Elternelements angegeben wird, und um den das Koordinatensystem des Kindelements gedreht werden kann/soll. \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich? Wie Einschränkungen erzeugen?}, %TODO 
+ \item Gelenke: Position, Bewegungseinschränkungen für alle drei Richtungen. In einer Hierarchie verbindet das Gelenk ein Kindelement mit seinem Elternelement. Gelenk ist hier ein Punkt, der im Koordinatensystem des Elternelements angegeben wird, und um den das Koordinatensystem des Kindelements gedreht werden kann/soll.\\
+ Das macht es sinnvoll ein Kindelement erst zu erzeugen, wenn das dazugehörige Elternelement terminal ist. Sonst weiß man noch nicht so genau wie das Gelenk aussehen soll. Mit etwas mehr Aufwand lässt sich das aber auch im Nachhinein noch anpassen\dots\\
+ \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich? Wie Einschränkungen erzeugen?}, %TODO 
  
  \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert. (SkeletonGenerator)
+ \end{itemize}
  
- \item \todo{Bounding Boxen auch für Nichtterminale?} %TODO
+%- - - - - - - - - - - -
+\subsection{"`Wachstum"'}
  
- \item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. \todo{Wie genau sieht das aus?}\\ %TODO
- Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.
+\begin{itemize}
+
+\item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
+  
+\item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.\\
+Regel, die zunächst sinnvoll klingt: Ansatzpunkte der Extremitäten an der Wirbelsäule können nur in Bereichen der Kurve sein, an denen die Steigung nahe null ist.
+
+\item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\ Bounding Box für Nichtterminale ist dafür aber nicht nötig.
+  
+\item Die Knochen sollen eine Hierarchie (Baum) bilden. Am besten ist ein Knochen in der Nähe es Schwerpunkts (oft wird die Hüfte verwendet). Die Hüfte gibt es aber nicht immer. Verwende ersten Wirbel nach dem Brustkorb (fals existent).
+\end{itemize}
+
  
- \item Ansatzpunkte der Extremitäten an der Wirbelsäule: \todo{bestimme Bereich mit Steigung nahe null?} %TODO
- 
- \item Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht) $\rightarrow$ zunächst nicht nötig, da Position  der Wirbelsäule zu beginn mit Beziérkurve festgelegt wird
+%- - - - - - - - - -
+\subsection{Balance} 
+
+Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht) $\rightarrow$ zunächst nicht nötig, da Position  der Wirbelsäule zu beginn mit Beziérkurve festgelegt wird
+
   \begin{itemize}
    \item Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$. Betrag des Drehmoments $M = r \cdot F \cdot \textrm{sin}(\alpha)$, mit dem Winkel $\alpha$ zwischen $\vec{F}$ und $\vec{r}$.\\
    (\url{https://de.wikipedia.org/wiki/Drehmoment})
@@ -270,11 +289,8 @@
    
    \item Der Bezugspunkt für die Berechnung der Drehmomente ist der Schwerpunkt des Körpers, da sich dort alle durch das Eigengewicht wirkenden Drehmomente des Körpers zu null aufaddieren.\\ (\url{https://www.grund-wissen.de/physik/mechanik/drehmoment-und-gleichgewicht.html})\\
    Das heißt zu Beginn der Generierung muss der Schwerpunkt des Körpers festgelegt werden, damit die Drehmomente berechnet werden können. Das ist am Anfang aber sehr einfach, da das initiale Element die Bounding Box des Gesamten Skeletts ist. Also ist der Schwerpunkt der Mittelpunkt.
+   
   \end{itemize}
 
- \item Lage der Wirbelsäule am Anfang festlegen (?), da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
- \item Kombination von Wirbelsäule und Kontaktpunkte mit dem Boden ergeben Lage der Beine.
- \item Die Knochen sollen eine Hierarchie (Baum) bilden. Was ist am sinnvollsten für den Wurzelknoten? $\rightarrow$ teste mit einem Wirbel in der Nähe es Schwerpunkts (eine Hüfte gibt es bspw.\ nicht bei allen Tieren)
-\end{itemize}
 
 
