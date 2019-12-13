@@ -31,7 +31,6 @@ public class RuleDictionary {
     private void initializeRules() {
         List<ReplacementRule> rules = new ArrayList<>();
         rules.add(new WholeBodyRule());
-        rules.add(new TorsoRule());
         /*rules.add(new WholeBodyRule());
         rules.add(new FrontPartRule());
         rules.add(new ShoulderGirdleRule());

@@ -1,8 +1,8 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.nonterminal.Torso;
 import skeleton.elements.nonterminal.WholeBody;
+import skeleton.elements.terminal.Head;
 import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.CubicBezierCurve;
@@ -41,7 +41,7 @@ public class WholeBodyRule extends ReplacementRule {
         List<Float> intervals = wholeBody.getGenerator().getSpineLocation().getIntervalsByGradientEpsilon(0.5f);
         System.out.println("spine intervals: " + intervals);
 
-        Tuple2f spineInterval = null;
+        /*Tuple2f spineInterval = null;
         if (intervals.isEmpty()) {
             spineInterval = new Point2f(1f/3f, 2f/3f); // this should not happen
             System.out.println("no appropriate spine interval found");
@@ -60,15 +60,40 @@ public class WholeBodyRule extends ReplacementRule {
                 int i = intervals.size() - 2;
                 spineInterval = new Point2f(intervals.get(i), intervals.get(i+1));
             }
-        }
+        }*/
 
-        spineInterval = new Point2f(0f, 1f);
+        List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        //Torso torso = new Torso(spineInterval, wholeBody.getTransform(), wholeBody.getBoundingBox(), wholeBody);
-        //return Arrays.asList(torso);
-
+        // spine
+        Tuple2f spineInterval = new Point2f(0f, 1f);
         Vertebra dummyParent = new Vertebra(new TransformationMatrix(), new Point3f(), BoundingBox.defaultBox(), null, wholeBody); // dummy parent
-        return generateVertebraInInterval(wholeBody, spineInterval, 10, dummyParent, true, Optional.empty());
+        List<SkeletonPart> vertebrae = generateVertebraInInterval(wholeBody, spineInterval, 10,
+                dummyParent, true, Optional.empty());
+
+        generatedParts.addAll(vertebrae);
+
+        // head
+        Head head = generateHead(wholeBody, new Vector3f(2f, 1f, 1.5f), vertebrae.get(0));
+        generatedParts.add(head);
+
+        return generatedParts;
+    }
+
+    private Head generateHead(WholeBody wholeBody, Vector3f boundingBoxScale, SkeletonPart parent) {
+        BoundingBox headBox = BoundingBox.defaultBox();
+        headBox.scale(boundingBoxScale);
+
+        // we have the world position of the spine and we have to get something that is relative to the parent
+        TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+        Point2f spineStartPoint = wholeBody.getGenerator().getSpineLocation().apply(0f);
+        Point2f headPosition = new Point2f(spineStartPoint);
+        headPosition.sub(new Point2f(headBox.getXLength(), headBox.getYLength() / 2f));
+        headTransform.translate(new Vector3f(headPosition.x, headPosition.y, -headBox.getZLength() / 2f));
+
+        Head head = new Head(headTransform, new Point3f(spineStartPoint.x, spineStartPoint.y, 0f), headBox, parent, wholeBody);
+        parent.addChild(head);
+
+        return head;
     }
 
     /**
