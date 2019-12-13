@@ -8,15 +8,15 @@ import javax.vecmath.Point3f;
 
 public class BackPart extends NonTerminalElement {
 
-    private final String id = "back part";
+    private final String kind = "back part";
 
     public BackPart(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox,
                     SkeletonPart parent, SkeletonPart ancestor) {
         super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
-    public String getID() {
-        return id;
+    public String getKind() {
+        return kind;
     }
 
     public boolean isMirrored() { return false; }

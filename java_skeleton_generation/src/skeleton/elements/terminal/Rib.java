@@ -8,14 +8,14 @@ import javax.vecmath.Point3f;
 
 public class Rib extends TerminalElement {
 
-    private final String id = "rib";
+    private final String kind = "rib";
 
     public Rib(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
         super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
-    public String getID() {
-        return id;
+    public String getKind() {
+        return kind;
     }
 
     public boolean isMirrored() { return true; }

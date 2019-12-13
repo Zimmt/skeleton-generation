@@ -10,6 +10,6 @@ public abstract class ReplacementRule {
     public abstract List<SkeletonPart> apply(SkeletonPart part);
 
     public boolean isApplicableTo(SkeletonPart part) {
-        return getInputID().equals(part.getID());
+        return getInputID().equals(part.getKind());
     }
 }

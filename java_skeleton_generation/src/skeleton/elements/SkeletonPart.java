@@ -12,6 +12,8 @@ import java.util.List;
 
 public abstract class SkeletonPart {
 
+    private int id;
+
     private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
     private Point3f jointRotationPoint; // rotation center of the joint between this part and it's parent in the coordinate system of the parent
     private BoundingBox boundingBox;
@@ -25,6 +27,7 @@ public abstract class SkeletonPart {
     /* Use this constructor only if this skeleton part has no ancestor (and therefore no parent)
      */
     protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
+        this.id = generator.getNextBoneId();
         this.transform = transform;
         this.jointRotationPoint = null;
         this.boundingBox = boundingBox;
@@ -46,11 +49,16 @@ public abstract class SkeletonPart {
         this.children = new ArrayList<>();
         this.ancestor = ancestor;
         this.generator = ancestor.getGenerator();
+        this.id = this.generator.getNextBoneId();
     }
 
-    public abstract String getID();
+    public abstract String getKind();
     public abstract boolean isTerminal();
     public abstract boolean isMirrored();
+
+    public int getId() {
+        return id;
+    }
 
     public TransformationMatrix getTransform() { return transform; }
 

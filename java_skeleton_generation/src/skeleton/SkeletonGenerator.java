@@ -16,12 +16,15 @@ import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class SkeletonGenerator {
+
     private ArrayList<TerminalElement> terminalParts;
     private ArrayList<NonTerminalElement> nonTerminalParts;
-    private static Random random = new Random();
-    private int stepCount = 0;
     private RuleDictionary ruleDictionary;
     private CubicBezierCurve spineLocation;
+
+    private static Random random = new Random();
+    private int stepCount = 0;
+    private int nextBoneId = 0;
 
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
@@ -43,9 +46,9 @@ public class SkeletonGenerator {
         stepCount++;
         NonTerminalElement nonTerminalElement = nonTerminalParts.remove(nonTerminalParts.size() - 1);
 
-        List<ReplacementRule> rules = ruleDictionary.getRules(nonTerminalElement.getID());
+        List<ReplacementRule> rules = ruleDictionary.getRules(nonTerminalElement.getKind());
         if (rules == null || rules.isEmpty()) {
-            System.err.println("Non terminal " + nonTerminalElement.getID() + " has no applicable rule!");
+            System.err.println("Non terminal " + nonTerminalElement.getKind() + " has no applicable rule!");
             nonTerminalParts.add(nonTerminalElement);
             return;
         }
@@ -58,6 +61,11 @@ public class SkeletonGenerator {
                 nonTerminalParts.add((NonTerminalElement) part);
             }
         }
+    }
+
+    public int getNextBoneId() {
+        nextBoneId++;
+        return nextBoneId - 1;
     }
 
     public boolean isFinished() {
@@ -114,7 +122,7 @@ public class SkeletonGenerator {
         if (!currentElement.isTerminal()) {
             skeleton.append("*");
         }
-        skeleton.append(currentElement.getID()).append("\u001B[90m").append(" (");
+        skeleton.append(currentElement.getKind()).append("\u001B[90m").append(" (");
 
         // ancestors
         /*SkeletonPart ancestor = currentElement.getAncestor();

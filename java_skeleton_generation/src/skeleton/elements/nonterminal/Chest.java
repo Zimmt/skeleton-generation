@@ -8,14 +8,14 @@ import javax.vecmath.Point3f;
 
 public class Chest extends NonTerminalElement {
 
-    private final String id = "chest";
+    private final String kind = "chest";
 
     public Chest(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
         super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
-    public String getID() {
-        return id;
+    public String getKind() {
+        return kind;
     }
 
     public boolean isMirrored() { return false; }

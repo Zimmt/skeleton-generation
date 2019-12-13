@@ -11,14 +11,14 @@ import javax.vecmath.Point3f;
  */
 public class Pelvic extends TerminalElement {
 
-    private final String id = "pelvic";
+    private final String kind = "pelvic";
 
     public Pelvic(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
         super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 
-    public String getID() {
-        return id;
+    public String getKind() {
+        return kind;
     }
 
     public boolean isMirrored() { return false; }

@@ -8,7 +8,7 @@ import javax.vecmath.Tuple2f;
 
 public class Torso extends NonTerminalElement {
 
-    private final String id = "torso";
+    private final String kind = "torso";
     private Tuple2f spineInterval; // first and last parameter for the curve of the spine that lies inside of the torso
 
     // the transform here specifies the position in relation to the origin
@@ -18,8 +18,8 @@ public class Torso extends NonTerminalElement {
         this.spineInterval = spineInterval;
     }
 
-    public String getID() {
-        return id;
+    public String getKind() {
+        return kind;
     }
 
     public Tuple2f getSpineInterval() {
