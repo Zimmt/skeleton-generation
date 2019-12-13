@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.List;
 
 public class ObjGenerator {
@@ -39,6 +40,7 @@ public class ObjGenerator {
             Point3f xyzCorner = new Point3f(xyCorner); xyzCorner.add(boundingBox.getZVector());
 
             int zero = obj.getNumVertices();
+            obj.setActiveGroupNames(Collections.singletonList(element.getKind() + element.getId()));
 
             // 0. origin, 1. x, 2. y, 3. z, 4. xy, 5. xz, 6. yz, 7. xyz
             obj.addVertex(position.x, position.y, position.z);
