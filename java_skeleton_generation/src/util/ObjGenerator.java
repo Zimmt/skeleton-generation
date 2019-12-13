@@ -6,6 +6,7 @@ import de.javagl.obj.Objs;
 import skeleton.SkeletonGenerator;
 import skeleton.elements.terminal.TerminalElement;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,8 +24,22 @@ public class ObjGenerator {
             return;
         }
 
-        List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
         Obj obj = Objs.create();
+
+        CubicBezierCurve spine = skeleton.getSpineLocation();
+        obj.setActiveGroupNames(Collections.singletonList("spine"));
+
+        int precision = 20;
+        for (int i = 0; i <= precision; i++) {
+            float t = (float) i / precision;
+            Point2f spinePoint = spine.apply(t);
+            obj.addVertex(spinePoint.x, spinePoint.y, 0f);
+            if (i > 0) {
+                obj.addFace(i-1, i);
+            }
+        }
+
+        List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
 
         for (TerminalElement element : skeletonParts) {
             Point3f position = element.getWorldPosition();

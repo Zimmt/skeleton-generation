@@ -37,7 +37,6 @@ public class TorsoRule extends ReplacementRule {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.setXLength(1f);
-        Vector3f negativeHalfBoxHeight = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f);
 
         CubicBezierCurve spine = torso.getGenerator().getSpineLocation();
         int vertebraCount = random.nextInt(maxVertebraCount + 1 - minVertebraCount) + minVertebraCount;
@@ -82,9 +81,14 @@ public class TorsoRule extends ReplacementRule {
             // the bounding box in the center of the left and right side.
             // Do this after the generation of the child to be able to use
             // the world transform method of the child.
-            Vector3f transformedNegativeBoxHeight = new Vector3f(negativeHalfBoxHeight);
-            child.getWorldTransform().applyOnVector(transformedNegativeBoxHeight);
-            child.getTransform().translate(transformedNegativeBoxHeight);
+            Vector3f negativeHalfBoxHeight = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f);
+            Vector3f negativeHalfBoxWidth = new Vector3f(0f, 0f, -boundingBox.getZLength() / 2f);
+            Vector3f localBoxTranslation = negativeHalfBoxHeight;
+            localBoxTranslation.add(negativeHalfBoxWidth);
+
+            Vector3f transformedBoxTranslation = new Vector3f(localBoxTranslation);
+            child.getWorldTransform().applyOnVector(transformedBoxTranslation);
+            child.getTransform().translate(transformedBoxTranslation);
 
             parent = child;
         }
