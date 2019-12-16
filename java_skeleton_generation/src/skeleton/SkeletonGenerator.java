@@ -4,6 +4,7 @@ import skeleton.elements.nonterminal.WholeBody;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
@@ -12,6 +13,7 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
@@ -34,9 +36,12 @@ public class SkeletonGenerator {
         this.spineLocation = generateSpine();
     }
 
-    public void doOneStep() {
+    /**
+     * @return if step could be done
+     */
+    public boolean doOneStep() {
         if (isFinished()) {
-            return;
+            return false;
         }
 
         stepCount++;
@@ -46,7 +51,7 @@ public class SkeletonGenerator {
         if (rules == null || rules.isEmpty()) {
             System.err.println("Non terminal " + nonTerminalElement.getKind() + " has no applicable rule!");
             nonTerminalParts.add(nonTerminalElement);
-            return;
+            return false;
         }
         ReplacementRule rule = rules.get(random.nextInt(rules.size()));
         List<SkeletonPart> generatedParts = rule.apply(nonTerminalElement);
@@ -57,6 +62,7 @@ public class SkeletonGenerator {
                 nonTerminalParts.add((NonTerminalElement) part);
             }
         }
+        return true;
     }
 
     public int getNextBoneId() {
@@ -169,5 +175,101 @@ public class SkeletonGenerator {
         Point2f p3 = new Point2f(12f, 2f);
 
         return new CubicBezierCurve(p0, p1, p2, p3);
+    }
+
+    /**
+     * The vertebra are generated from the left side of the interval to the right.
+     * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
+     * @param interval has to contain two floats between 0 and 1
+     * @param vertebraCount number of vertebra that shall be generated (equally spaced)
+     * @param firstParent element that shall be parent of the first vertebra generated or a dummy parent from which only the transform is used
+     * @param dummyParent indicates if the parent of the first generated vertebra shall be the parent or null
+     * @param lastChild if present, the child of the last vertebra generated
+     * @return the generated vertebra
+     */
+    public List<TerminalElement> generateVertebraInInterval(WholeBody wholeBody, Tuple2f interval, int vertebraCount,
+                                                             TerminalElement firstParent, boolean dummyParent, Optional<SkeletonPart> lastChild) {
+
+        TerminalElement parent = firstParent;
+
+        BoundingBox boundingBox = BoundingBox.defaultBox();
+        Vector3f localBoxTranslation = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f); // negative half box height
+        Vector3f negativeHalfBoxWidth = new Vector3f(0f, 0f, -boundingBox.getZLength() / 2f);
+        localBoxTranslation.add(negativeHalfBoxWidth);
+
+        CubicBezierCurve spine = wholeBody.getGenerator().getSpineLocation();
+
+        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
+        float intervalLength = Math.abs(interval.y - interval.x);
+        float sign = interval.y > interval.x ? 1f : -1f;
+
+        for (int i = 0; i < vertebraCount; i++) {
+            float t = interval.x + sign * (float) i / (float) vertebraCount * intervalLength;
+            float tPlus1 = t + sign * 1f / (float) vertebraCount * intervalLength;
+
+            // we have the world position of the spine and we have to get something that is relative to the parent
+            TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
+
+            float angle = getSpineAngle(spine, t, tPlus1);
+            transform.rotateAroundZ(angle);
+            Vector3f position = new Vector3f(spine.apply3d(t)); // world position
+            transform.translate(position);
+
+            BoundingBox childBox = boundingBox.cloneBox();
+
+            Point3f jointRotationPoint = new Point3f(position);
+            Vector3f offset = new Vector3f(childBox.getYVector());
+            offset.add(childBox.getZVector());
+            offset.scale(0.5f);
+            offset.add(childBox.getXVector());
+            jointRotationPoint.add(offset);
+
+            Vertebra child;
+            if (i == 0 && dummyParent) { // this is the real parent (dummy parent was used to calculate it)
+                child = new Vertebra(transform, jointRotationPoint, childBox, null, wholeBody); // root
+            } else {
+                child = new Vertebra(transform, jointRotationPoint, childBox, parent, wholeBody);
+                parent.addChild(child);
+            }
+
+            // Move child down a negative half bounding box height
+            // so that spine is not at the bottom of the vertebra but pierces
+            // the bounding box in the center of the left and right side.
+            // Do this after the generation of the child to be able to use
+            // the world transform method of the child.
+            Vector3f transformedBoxTranslation = new Vector3f(localBoxTranslation);
+            child.getWorldTransform().applyOnVector(transformedBoxTranslation);
+            child.getTransform().translate(transformedBoxTranslation);
+
+            generatedParts.add(child);
+            parent = child;
+        }
+
+        lastChild.ifPresent(
+                skeletonPart -> generatedParts.get(generatedParts.size() - 1).addChild(skeletonPart)
+        );
+
+        return generatedParts;
+    }
+
+    /**
+     * @param t1 first point on spine
+     * @param t2 second point on spine
+     * @return angle between spine vector (from first to second point on spine) and the vector (1,0,0)
+     */
+    private float getSpineAngle(CubicBezierCurve spine, float t1, float t2) {
+        Point3f position1 = spine.apply3d(t1);
+        Point3f position2 = spine.apply3d(t2);
+        Point3f diff = position2;
+        diff.sub(position1);
+        Vector3f spineVector = new Vector3f(diff);
+
+        float angle = spineVector.angle(new Vector3f(1f, 0f, 0f));
+
+        // determine in which direction we should turn
+        if (position1.y > position2.y) {
+            angle = -angle;
+        }
+        return angle;
     }
 }

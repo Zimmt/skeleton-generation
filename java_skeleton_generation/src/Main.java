@@ -8,7 +8,10 @@ public class Main {
 
         SkeletonGenerator skeletonGenerator = new SkeletonGenerator();
         while (!skeletonGenerator.isFinished()) {
-            skeletonGenerator.doOneStep();
+            boolean stepDone = skeletonGenerator.doOneStep();
+            if (!stepDone) { // there might be missing rules
+                break;
+            }
         }
         System.out.println(skeletonGenerator.toString());
 
