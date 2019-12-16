@@ -1,7 +1,6 @@
 package skeleton.elements;
 
 import skeleton.SkeletonGenerator;
-import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
@@ -16,7 +15,6 @@ public abstract class SkeletonPart {
 
     private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
     private Point3f jointRotationPoint; // rotation center of the joint between this part and it's parent in the coordinate system of the parent
-    private BoundingBox boundingBox;
 
     private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
@@ -26,11 +24,10 @@ public abstract class SkeletonPart {
 
     /* Use this constructor only if this skeleton part has no ancestor (and therefore no parent)
      */
-    protected SkeletonPart(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
+    protected SkeletonPart(TransformationMatrix transform, SkeletonGenerator generator) {
         this.id = generator.getNextBoneId();
         this.transform = transform;
         this.jointRotationPoint = null;
-        this.boundingBox = boundingBox;
         this.parent = null;
         this.children = new ArrayList<>();
         this.ancestor = null;
@@ -40,11 +37,10 @@ public abstract class SkeletonPart {
     /* Use this constructor only if this skeleton part _has_ an ancestor.
      * The ancestor is used to set the skeleton generator attribute.
      */
-    protected SkeletonPart(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox,
+    protected SkeletonPart(TransformationMatrix transform, Point3f jointRotationPoint,
                            SkeletonPart parent, SkeletonPart ancestor) {
         this.transform  = transform;
         this.jointRotationPoint = jointRotationPoint;
-        this.boundingBox = boundingBox;
         this.parent = parent;
         this.children = new ArrayList<>();
         this.ancestor = ancestor;
@@ -101,8 +97,6 @@ public abstract class SkeletonPart {
         transform.rotateAroundZ(angle);
         translateOriginOfParentToJointRotationPoint();
     }
-
-    public BoundingBox getBoundingBox() { return boundingBox; }
 
 
     public boolean addChild(SkeletonPart child) {

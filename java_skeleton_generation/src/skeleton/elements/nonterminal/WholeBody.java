@@ -8,9 +8,9 @@ public class WholeBody extends NonTerminalElement {
 
     private final String kind = "whole body";
 
-    // the transform here specifies the position in relation to the origin
-    public WholeBody(TransformationMatrix transform, BoundingBox boundingBox, SkeletonGenerator generator) {
-        super(transform, boundingBox, generator);
+    // the transform here specifies the position in relation to the world origin
+    public WholeBody(TransformationMatrix transform, SkeletonGenerator generator) {
+        super(transform, generator);
     }
 
     public String getKind() {

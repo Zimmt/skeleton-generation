@@ -29,11 +29,7 @@ public class SkeletonGenerator {
     public SkeletonGenerator() {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
-        this.nonTerminalParts.add(new WholeBody(
-                new TransformationMatrix(),
-                BoundingBox.defaultBox().scale(new Vector3f(14f, 8f, 1f)
-                ),
-                this));
+        this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), this));
         this.ruleDictionary = new RuleDictionary();
         this.spineLocation = generateSpine();
     }
@@ -80,21 +76,30 @@ public class SkeletonGenerator {
         return nonTerminalParts;
     }
 
-    public SkeletonPart getRootElement() {
+    public TerminalElement getTerminalRootElement() {
         Object[] partsWithoutParent = terminalParts.stream().filter(part -> !part.hasParent()).toArray();
         if (partsWithoutParent.length > 0) {
             if (partsWithoutParent.length > 1) {
                 System.err.println("Found several skeleton parts without parent!");
             }
-            return (SkeletonPart) partsWithoutParent[0];
+            return (TerminalElement) partsWithoutParent[0];
         }
 
-        partsWithoutParent = nonTerminalParts.stream().filter(part -> !part.hasParent()).toArray();
+        return null;
+    }
+
+    public SkeletonPart getRootElement() {
+        TerminalElement terminalRoot = getTerminalRootElement();
+        if (terminalRoot != null) {
+            return terminalRoot;
+        }
+
+        Object[] partsWithoutParent = nonTerminalParts.stream().filter(part -> !part.hasParent()).toArray();
         if (partsWithoutParent.length > 0) {
             if (partsWithoutParent.length > 1) {
                 System.err.println("Found several skeleton parts without parent!");
             }
-            return (SkeletonPart) partsWithoutParent[0];
+            return (NonTerminalElement) partsWithoutParent[0];
         }
 
         return null;
@@ -139,11 +144,14 @@ public class SkeletonGenerator {
         skeleton.append("position: ").append(position);
 
         // bounding box dimensions
-        skeleton.append(", bounding box scale: ");
-        BoundingBox boundingBox = currentElement.getBoundingBox();
-        skeleton.append(boundingBox.getXLength()).append(", ");
-        skeleton.append(boundingBox.getYLength()).append(", ");
-        skeleton.append(boundingBox.getZLength());
+        if (currentElement.isTerminal()) {
+            TerminalElement currentTerminal = (TerminalElement) currentElement;
+            skeleton.append(", bounding box scale: ");
+            BoundingBox boundingBox = currentTerminal.getBoundingBox();
+            skeleton.append(boundingBox.getXLength()).append(", ");
+            skeleton.append(boundingBox.getYLength()).append(", ");
+            skeleton.append(boundingBox.getZLength());
+        }
 
         skeleton.append(")").append("\u001B[0m").append("\n"); // reset color to white
 
