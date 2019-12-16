@@ -22,7 +22,7 @@ public class SkeletonGenerator {
     private ArrayList<TerminalElement> terminalParts;
     private ArrayList<NonTerminalElement> nonTerminalParts;
     private RuleDictionary ruleDictionary;
-    private CubicBezierCurve spineLocation;
+    private CubicBezierCurve spine;
 
     private static Random random = new Random();
     private int stepCount = 0;
@@ -33,7 +33,7 @@ public class SkeletonGenerator {
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), this));
         this.ruleDictionary = new RuleDictionary();
-        this.spineLocation = generateSpine();
+        this.spine = generateSpine();
     }
 
     /**
@@ -115,8 +115,8 @@ public class SkeletonGenerator {
         return stepCount;
     }
 
-    public CubicBezierCurve getSpineLocation() {
-        return spineLocation;
+    public CubicBezierCurve getSpine() {
+        return spine;
     }
 
     public String toString() {
@@ -184,11 +184,10 @@ public class SkeletonGenerator {
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
      * @param firstParent element that shall be parent of the first vertebra generated or a dummy parent from which only the transform is used
      * @param dummyParent indicates if the parent of the first generated vertebra shall be the parent or null
-     * @param lastChild if present, the child of the last vertebra generated
      * @return the generated vertebra
      */
-    public List<TerminalElement> generateVertebraInInterval(WholeBody wholeBody, Tuple2f interval, int vertebraCount,
-                                                             TerminalElement firstParent, boolean dummyParent, Optional<SkeletonPart> lastChild) {
+    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, Tuple2f interval, int vertebraCount,
+                                                             TerminalElement firstParent, boolean dummyParent) {
 
         TerminalElement parent = firstParent;
 
@@ -197,38 +196,39 @@ public class SkeletonGenerator {
         Vector3f negativeHalfBoxWidth = new Vector3f(0f, 0f, -boundingBox.getZLength() / 2f);
         localBoxTranslation.add(negativeHalfBoxWidth);
 
-        CubicBezierCurve spine = wholeBody.getGenerator().getSpineLocation();
-
         ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         float intervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
 
         for (int i = 0; i < vertebraCount; i++) {
-            float t = interval.x + sign * (float) i / (float) vertebraCount * intervalLength;
-            float tPlus1 = t + sign * 1f / (float) vertebraCount * intervalLength;
+
+            float left = interval.x + sign * (float) i / (float) vertebraCount * intervalLength;
+            float right = left + sign * 1f / (float) vertebraCount * intervalLength;
+
+            Tuple2f currentVertebraInterval;
+            if (sign > 0) {
+                currentVertebraInterval = new Point2f(left, right);
+            } else {
+                currentVertebraInterval = new Point2f(right, left);
+            }
 
             // we have the world position of the spine and we have to get something that is relative to the parent
-            TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
-
-            float angle = getSpineAngle(spine, t, tPlus1);
-            transform.rotateAroundZ(angle);
-            Vector3f position = new Vector3f(spine.apply3d(t)); // world position
-            transform.translate(position);
+            TransformationMatrix transform = generateTransformForElementInSpineInterval(currentVertebraInterval, parent);
 
             BoundingBox childBox = boundingBox.cloneBox();
 
-            Point3f jointRotationPoint = new Point3f(position);
-            Vector3f offset = new Vector3f(childBox.getYVector());
-            offset.add(childBox.getZVector());
-            offset.scale(0.5f);
-            offset.add(childBox.getXVector());
-            jointRotationPoint.add(offset);
+            Point3f jointRotationPoint;
+            if (sign > 0) { // the rotation point is at the right side of the parent
+                jointRotationPoint = new Point3f(childBox.getXLength(), childBox.getYLength() / 2f, childBox.getZLength() / 2f);
+            } else { // the rotation point is at the left side of the parent
+                jointRotationPoint = new Point3f(0f, childBox.getYLength() / 2f, childBox.getZLength() / 2f);
+            }
 
             Vertebra child;
             if (i == 0 && dummyParent) { // this is the real parent (dummy parent was used to calculate it)
-                child = new Vertebra(transform, jointRotationPoint, childBox, null, wholeBody); // root
+                child = new Vertebra(transform, jointRotationPoint, childBox, null, ancestor); // root
             } else {
-                child = new Vertebra(transform, jointRotationPoint, childBox, parent, wholeBody);
+                child = new Vertebra(transform, jointRotationPoint, childBox, parent, ancestor);
                 parent.addChild(child);
             }
 
@@ -245,11 +245,24 @@ public class SkeletonGenerator {
             parent = child;
         }
 
-        lastChild.ifPresent(
-                skeletonPart -> generatedParts.get(generatedParts.size() - 1).addChild(skeletonPart)
-        );
-
         return generatedParts;
+    }
+
+    /**
+     * The position of transform is the left point of the interval.
+     * @param interval [x, y] with x < y
+     */
+    public TransformationMatrix generateTransformForElementInSpineInterval(Tuple2f interval, TerminalElement parent) {
+
+        // we have the world position of the spine and we have to get something that is relative to the parent
+        TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
+
+        float angle = getSpineAngle(interval.x, interval.y);
+        transform.rotateAroundZ(angle);
+        Vector3f position = new Vector3f(spine.apply3d(interval.x)); // world position
+        transform.translate(position);
+
+        return transform;
     }
 
     /**
@@ -257,7 +270,7 @@ public class SkeletonGenerator {
      * @param t2 second point on spine
      * @return angle between spine vector (from first to second point on spine) and the vector (1,0,0)
      */
-    private float getSpineAngle(CubicBezierCurve spine, float t1, float t2) {
+    private float getSpineAngle(float t1, float t2) {
         Point3f position1 = spine.apply3d(t1);
         Point3f position2 = spine.apply3d(t2);
         Point3f diff = position2;
