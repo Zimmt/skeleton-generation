@@ -1,6 +1,6 @@
 package skeleton.elements.nonterminal;
 
-import skeleton.elements.SkeletonPart;
+import skeleton.elements.terminal.TerminalElement;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
@@ -12,7 +12,7 @@ public class PelvicGirdle extends NonTerminalElement {
 
     private final String kind = "pelvic girdle";
 
-    public PelvicGirdle(TransformationMatrix transform, Point3f jointRotationPoint, SkeletonPart parent, SkeletonPart ancestor) {
+    public PelvicGirdle(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor) {
         super(transform, jointRotationPoint, parent, ancestor);
     }
 

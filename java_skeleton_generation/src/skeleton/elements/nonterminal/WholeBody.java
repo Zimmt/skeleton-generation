@@ -1,7 +1,6 @@
 package skeleton.elements.nonterminal;
 
 import skeleton.SkeletonGenerator;
-import util.BoundingBox;
 import util.TransformationMatrix;
 
 public class WholeBody extends NonTerminalElement {

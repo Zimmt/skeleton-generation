@@ -1,6 +1,8 @@
 package skeleton.elements;
 
 import skeleton.SkeletonGenerator;
+import skeleton.elements.nonterminal.NonTerminalElement;
+import skeleton.elements.terminal.TerminalElement;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
@@ -16,9 +18,9 @@ public abstract class SkeletonPart {
     private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
     private Point3f jointRotationPoint; // rotation center of the joint between this part and it's parent in the coordinate system of the parent
 
-    private SkeletonPart parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
+    private TerminalElement parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)
     private List<SkeletonPart> children; // in hierarchy of body parts
-    private SkeletonPart ancestor; // element of which this part was created by a replacement rule
+    private NonTerminalElement ancestor; // element of which this part was created by a replacement rule
 
     private SkeletonGenerator generator;
 
@@ -38,7 +40,7 @@ public abstract class SkeletonPart {
      * The ancestor is used to set the skeleton generator attribute.
      */
     protected SkeletonPart(TransformationMatrix transform, Point3f jointRotationPoint,
-                           SkeletonPart parent, SkeletonPart ancestor) {
+                           TerminalElement parent, NonTerminalElement ancestor) {
         this.transform  = transform;
         this.jointRotationPoint = jointRotationPoint;
         this.parent = parent;
@@ -127,11 +129,7 @@ public abstract class SkeletonPart {
         return children.size() > 0;
     }
 
-    public void setParent(SkeletonPart parent) {
-        this.parent = parent;
-    }
-
-    public SkeletonPart getParent() {
+    public TerminalElement getParent() {
         return parent;
     }
 
@@ -139,7 +137,7 @@ public abstract class SkeletonPart {
         return parent != null;
     }
 
-    public SkeletonPart getAncestor() {
+    public NonTerminalElement getAncestor() {
         return ancestor;
     }
 

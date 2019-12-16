@@ -1,6 +1,7 @@
 package skeleton.elements.terminal;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -11,7 +12,7 @@ public abstract class TerminalElement extends SkeletonPart {
     private BoundingBox boundingBox;
 
     public TerminalElement(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox,
-                           SkeletonPart parent, SkeletonPart ancestor) {
+                           TerminalElement parent, NonTerminalElement ancestor) {
         super(transform, jointRotationPoint, parent, ancestor);
 
         this.boundingBox = boundingBox;

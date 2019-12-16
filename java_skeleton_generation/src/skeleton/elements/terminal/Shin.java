@@ -1,6 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.SkeletonPart;
+import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -13,7 +13,7 @@ public class Shin extends TerminalElement {
 
     private final String kind = "shin";
 
-    public Shin(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, SkeletonPart parent, SkeletonPart ancestor) {
+    public Shin(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
         super(transform, jointRotationPoint, boundingBox, parent, ancestor);
     }
 

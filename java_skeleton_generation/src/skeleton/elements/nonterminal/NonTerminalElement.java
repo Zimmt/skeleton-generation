@@ -2,6 +2,7 @@ package skeleton.elements.nonterminal;
 
 import skeleton.SkeletonGenerator;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.terminal.TerminalElement;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
@@ -13,7 +14,7 @@ public abstract class NonTerminalElement extends SkeletonPart {
     }
 
     public NonTerminalElement(TransformationMatrix transform, Point3f jointRotationPoint,
-                              SkeletonPart parent, SkeletonPart ancestor) {
+                              TerminalElement parent, NonTerminalElement ancestor) {
         super(transform, jointRotationPoint, parent, ancestor);
     }
 
