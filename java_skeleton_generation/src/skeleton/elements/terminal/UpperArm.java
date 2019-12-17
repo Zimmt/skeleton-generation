@@ -19,4 +19,12 @@ public class UpperArm extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public UpperArm calculateMirroredElement(TerminalElement parent) {
+        return new UpperArm(
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }

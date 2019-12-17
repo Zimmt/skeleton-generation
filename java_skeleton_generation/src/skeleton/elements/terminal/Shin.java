@@ -22,4 +22,12 @@ public class Shin extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public Shin calculateMirroredElement(TerminalElement parent) {
+        return new Shin(
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }

@@ -82,6 +82,10 @@ public abstract class SkeletonPart {
         return position;
     }
 
+    public Point3f getJointRotationPoint() {
+        return jointRotationPoint;
+    }
+
     public void rotateAroundXAxisOfJoint(float angle) {
         translateJointRotationPointToOriginOfParent();
         transform.rotateAroundX(angle);

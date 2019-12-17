@@ -23,6 +23,7 @@ public class SkeletonGenerator {
     private ArrayList<NonTerminalElement> nonTerminalParts;
     private RuleDictionary ruleDictionary;
     private CubicBezierCurve spine;
+    private boolean calculatedMirroredElements = false;
 
     private static Random random = new Random();
     private int stepCount = 0;
@@ -166,6 +167,52 @@ public class SkeletonGenerator {
             skeleton.append(recursiveToString("    " + depth, child));
         }
         return skeleton.toString();
+    }
+
+    public void calculateMirroredElements() {
+        if (!isFinished() || calculatedMirroredElements) {
+            System.err.println("Cannot calculate mirrored elements in an unfinished skeleton");
+            return;
+        }
+
+        TerminalElement root = getTerminalRootElement();
+        if (root.isMirrored()) {
+            System.err.println("A root element that has to be mirrored is not allowed!");
+        }
+
+        // call with null is possible as 'parent' is only needed when element is mirrored
+        List<List<TerminalElement>> childrenToAdd = recursiveCalculationOfMirroredElements(null, root);
+
+        for (List<TerminalElement> parentChild : childrenToAdd) { // these are lists with 2 elements
+            parentChild.get(0).addChild(parentChild.get(1));
+            terminalParts.add(parentChild.get(1));
+        }
+
+        calculatedMirroredElements = true;
+    }
+
+    /**
+     * @return a list of tuples (parent, child) where the child should be added to the parent
+     * (to avoid changing objects that are iterated over
+     */
+    private List<List<TerminalElement>> recursiveCalculationOfMirroredElements(TerminalElement parent, TerminalElement currentElement) {
+        List<List<TerminalElement>> childrenToAdd = new ArrayList<>();
+        TerminalElement mirroredElement = currentElement;
+        if (currentElement.isMirrored()) {
+            mirroredElement = currentElement.calculateMirroredElement(parent);
+            childrenToAdd.add(Arrays.asList(parent, mirroredElement));
+        }
+
+        for (SkeletonPart child : currentElement.getChildren()) {
+            if (!child.isTerminal()) {
+                System.err.println("There is a non terminal element in a finished skeleton!");
+                return childrenToAdd;
+            }
+
+            childrenToAdd.addAll(recursiveCalculationOfMirroredElements(mirroredElement, (TerminalElement) child));
+        }
+
+        return childrenToAdd;
     }
 
     private CubicBezierCurve generateSpine() {

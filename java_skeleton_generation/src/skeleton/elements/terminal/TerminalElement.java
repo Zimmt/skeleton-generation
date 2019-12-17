@@ -18,9 +18,32 @@ public abstract class TerminalElement extends SkeletonPart {
         this.boundingBox = boundingBox;
     }
 
+    public abstract TerminalElement calculateMirroredElement(TerminalElement parent);
+
     public BoundingBox getBoundingBox() { return boundingBox; }
+
+    public BoundingBox calculateWorldBoundingBox() {
+        TransformationMatrix worldTransform = this.getWorldTransform();
+        BoundingBox transformedBox = this.getBoundingBox().cloneBox();
+        transformedBox.transform(worldTransform);
+        return transformedBox;
+    }
 
     public boolean isTerminal() {
         return true;
+    }
+
+    protected TransformationMatrix calculateMirroredTransform() {
+        TransformationMatrix mirroredTransform = new TransformationMatrix(this.getTransform());
+        mirroredTransform.reflectZ();
+
+        return mirroredTransform;
+    }
+
+    protected Point3f calculateMirroredJointRotationPoint() {
+        Point3f mirroredJointRotationPoint = new Point3f(this.getJointRotationPoint());
+        TransformationMatrix.reflectZTransform().applyOnPoint(mirroredJointRotationPoint);
+
+        return mirroredJointRotationPoint;
     }
 }

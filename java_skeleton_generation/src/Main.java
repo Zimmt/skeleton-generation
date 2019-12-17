@@ -13,6 +13,7 @@ public class Main {
                 break;
             }
         }
+        skeletonGenerator.calculateMirroredElements();
         System.out.println(skeletonGenerator.toString());
 
         ObjGenerator objGenerator = new ObjGenerator();

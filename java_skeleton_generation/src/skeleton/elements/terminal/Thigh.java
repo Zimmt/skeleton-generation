@@ -22,4 +22,12 @@ public class Thigh extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public Thigh calculateMirroredElement(TerminalElement parent) {
+        return new Thigh(
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }

@@ -53,7 +53,7 @@ public class TransformationMatrix {
     }
 
     public TransformationMatrix rotate(Matrix3f rot) {
-        Transform3D rotation = new Transform3D(rot, new Vector3f(0f, 0f, 0f), 1f);
+        Transform3D rotation = new Transform3D(rot, new Vector3f(), 1f);
         transform.mul(rotation, transform); // new transform = rotation * old transform
         return this;
     }
@@ -79,6 +79,12 @@ public class TransformationMatrix {
         return this.rotate(rotation);
     }
 
+    public TransformationMatrix reflectZ() {
+        Transform3D reflection = internReflectZ();
+        transform.mul(reflection, transform);
+        return this;
+    }
+
     public static TransformationMatrix multiply(TransformationMatrix t1, TransformationMatrix t2) {
         Transform3D newTransform = new Transform3D();
         newTransform.mul(t1.transform, t2.transform);
@@ -89,5 +95,18 @@ public class TransformationMatrix {
         Transform3D transform = new Transform3D(t.transform);
         transform.invert();
         return new TransformationMatrix(transform);
+    }
+
+    public static TransformationMatrix reflectZTransform() {
+         Transform3D reflection = internReflectZ();
+        return new TransformationMatrix(reflection);
+    }
+
+    private static Transform3D internReflectZ() {
+        Matrix3f refX = new Matrix3f();
+        refX.setIdentity();
+        refX.setElement(2, 2, -1f);
+
+        return new Transform3D(refX, new Vector3f(), 1f);
     }
 }

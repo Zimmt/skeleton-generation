@@ -19,4 +19,9 @@ public class Head extends TerminalElement {
     }
 
     public boolean isMirrored() { return false; }
+
+    public Head calculateMirroredElement(TerminalElement parent) {
+        System.out.println("Tried to mirror an element that should not be mirrored!");
+        return null;
+    }
 }

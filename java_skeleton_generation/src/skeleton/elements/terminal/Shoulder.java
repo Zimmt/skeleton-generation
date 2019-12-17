@@ -19,4 +19,12 @@ public class Shoulder extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public Shoulder calculateMirroredElement(TerminalElement parent) {
+        return new Shoulder( // todo debug!
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }

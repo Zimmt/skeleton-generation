@@ -26,7 +26,7 @@ public class ObjGenerator {
 
         Obj obj = Objs.create();
 
-        CubicBezierCurve spine = skeleton.getSpineLocation();
+        CubicBezierCurve spine = skeleton.getSpine();
         obj.setActiveGroupNames(Collections.singletonList("spine"));
 
         int precision = 20;

@@ -22,4 +22,9 @@ public class Vertebra extends TerminalElement {
     }
 
     public boolean isMirrored() { return false; }
+
+    public Vertebra calculateMirroredElement(TerminalElement parent) {
+        System.out.println("Tried to mirror an element that should not be mirrored!");
+        return null;
+    }
 }

@@ -19,4 +19,12 @@ public class LowerArm extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public LowerArm calculateMirroredElement(TerminalElement parent) {
+        return new LowerArm(
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }

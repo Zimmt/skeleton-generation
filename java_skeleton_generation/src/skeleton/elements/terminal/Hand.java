@@ -19,4 +19,12 @@ public class Hand extends TerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public Hand calculateMirroredElement(TerminalElement parent) {
+        return new Hand(
+                calculateMirroredTransform(),
+                calculateMirroredJointRotationPoint(),
+                this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
+                parent, this.getAncestor());
+    }
 }
