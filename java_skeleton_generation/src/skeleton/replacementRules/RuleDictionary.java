@@ -32,6 +32,7 @@ public class RuleDictionary {
         List<ReplacementRule> rules = new ArrayList<>();
         rules.add(new WholeBodyRule());
         rules.add(new FrontPartRule());
+        rules.add(new BackPartRule());
 
         for (ReplacementRule rule : rules) {
             // for each input id at most one rule
