@@ -16,8 +16,13 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Generates
+ * - terminal vertebrae on the spine between the shoulders and the pelvic (TODO chest is still missing)
+ * - non terminal front part (shoulder girdle to head)
+ * - non terminal back part (pelvic girdle to tail)
+ */
 public class WholeBodyRule extends ReplacementRule {
 
     private final String inputID = "whole body";

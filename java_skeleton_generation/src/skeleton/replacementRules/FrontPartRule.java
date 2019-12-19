@@ -15,8 +15,13 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Generates
+ * - terminal shoulder (TODO Arm still missing)
+ * - terminal vertebrae on spine between shoulders and head
+ * - terminal head
+ */
 public class FrontPartRule extends ReplacementRule {
 
     private final String inputID = "front part";
