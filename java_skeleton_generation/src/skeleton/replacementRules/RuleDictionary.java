@@ -33,6 +33,7 @@ public class RuleDictionary {
         rules.add(new WholeBodyRule());
         rules.add(new FrontPartRule());
         rules.add(new BackPartRule());
+        rules.add(new LegRule());
 
         for (ReplacementRule rule : rules) {
             // for each input id at most one rule

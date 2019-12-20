@@ -2,11 +2,13 @@ package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.BackPart;
+import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvic;
 import skeleton.elements.terminal.TerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
@@ -17,7 +19,7 @@ import java.util.List;
 
 /**
  * Generates
- * - terminal pelvic (TODO leg still missing)
+ * - terminal pelvic
  * - terminal vertebrae on spine for tail
  */
 public class BackPartRule extends ReplacementRule {
@@ -39,6 +41,9 @@ public class BackPartRule extends ReplacementRule {
 
         Pelvic pelvic = generatePelvic(backPart, 4f, 1.5f);
         generatedParts.add(pelvic);
+
+        Leg leg = generateLeg(backPart, pelvic);
+        generatedParts.add(leg);
 
         Tuple2f tailInterval = new Point2f(backPart.getPelvicSpineInterval().y, 1f);
         List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, tailInterval, 3, pelvic, false);
@@ -70,5 +75,19 @@ public class BackPartRule extends ReplacementRule {
         parent.replaceChild(backPart, pelvic);
 
         return pelvic;
+    }
+
+    /**
+     * The position of the leg is the same as the position of the pelvic
+     */
+    private Leg generateLeg(BackPart backPart, Pelvic pelvic) {
+
+        TransformationMatrix transform = new TransformationMatrix();
+        Point3f jointRotationPoint = new Point3f(pelvic.getBoundingBox().getXLength() / 2f, 0f, 0f);
+
+        Leg leg = new Leg(transform, jointRotationPoint, pelvic, backPart);
+        pelvic.addChild(leg);
+
+        return leg;
     }
 }
