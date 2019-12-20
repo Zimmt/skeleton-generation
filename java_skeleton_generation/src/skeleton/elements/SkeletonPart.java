@@ -69,7 +69,7 @@ public abstract class SkeletonPart {
         SkeletonPart parent = this;
         while (parent.hasParent()) {
             parent = parent.getParent();
-            worldTransform = TransformationMatrix.multiply(worldTransform, parent.getTransform());
+            worldTransform = TransformationMatrix.multiply(parent.getTransform(), worldTransform);
         }
         return worldTransform;
     }

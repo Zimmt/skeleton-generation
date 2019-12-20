@@ -259,8 +259,8 @@ public class SkeletonGenerator {
                 currentVertebraInterval = new Point2f(right, left);
             }
 
-            // we have the world position of the spine and we have to get something that is relative to the parent
             TransformationMatrix transform = generateTransformForElementInSpineInterval(currentVertebraInterval, parent);
+            transform.translate(localBoxTranslation);
 
             BoundingBox childBox = boundingBox.cloneBox();
 
@@ -279,15 +279,6 @@ public class SkeletonGenerator {
                 parent.addChild(child);
             }
 
-            // Move child down a negative half bounding box height
-            // so that spine is not at the bottom of the vertebra but pierces
-            // the bounding box in the center of the left and right side.
-            // Do this after the generation of the child to be able to use
-            // the world transform method of the child.
-            Vector3f transformedBoxTranslation = new Vector3f(localBoxTranslation);
-            child.getWorldTransform().applyOnVector(transformedBoxTranslation);
-            child.getTransform().translate(transformedBoxTranslation);
-
             generatedParts.add(child);
             parent = child;
         }
@@ -301,15 +292,17 @@ public class SkeletonGenerator {
      */
     public TransformationMatrix generateTransformForElementInSpineInterval(Tuple2f interval, TerminalElement parent) {
 
-        // we have the world position of the spine and we have to get something that is relative to the parent
-        TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
-
         float angle = getSpineAngle(interval.x, interval.y);
-        transform.rotateAroundZ(angle);
         Vector3f position = new Vector3f(spine.apply3d(interval.x)); // world position
-        transform.translate(position);
 
-        return transform;
+        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+
+        TransformationMatrix psi = new TransformationMatrix(position);
+        psi.rotateAroundZ(angle);
+
+        TransformationMatrix result = TransformationMatrix.multiply(inverseParentWorldTransform, psi);
+
+        return result;
     }
 
     /**

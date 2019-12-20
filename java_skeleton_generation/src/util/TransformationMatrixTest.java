@@ -1,4 +1,4 @@
-package test.util;
+package util;
 
 import util.TransformationMatrix;
 
@@ -45,13 +45,13 @@ class TransformationMatrixTest {
         transform.rotate(rotation);
 
         Vector3f translation = new Vector3f(1f, 0f, 0f);
-        transform.translate(translation);
+        transform.translate(translation); //first the point is translated then rotated
 
         Point3f testPoint = new Point3f(1f, 0f, 0f);
         transform.applyOnPoint(testPoint);
 
-        assertEquals(1f, testPoint.x, 0.001);
-        assertEquals(1f, testPoint.y, 0.001);
+        assertEquals(0f, testPoint.x, 0.001);
+        assertEquals(2f, testPoint.y, 0.001);
         assertEquals(0f, testPoint.z, 0.001);
     }
 }
