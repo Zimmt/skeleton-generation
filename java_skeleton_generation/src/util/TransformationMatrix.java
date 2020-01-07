@@ -1,5 +1,7 @@
 package util;
 
+import skeleton.elements.SkeletonPart;
+
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
@@ -23,10 +25,11 @@ public class TransformationMatrix {
     }
 
     public TransformationMatrix(Vector3f translation) {
-        Matrix3f identity = new Matrix3f(); // all zero matrix
-        identity.setIdentity();
+        this(matrix3fIdentity(), translation);
+    }
 
-        this.transform = new Transform3D(identity, translation, 1f);
+    public TransformationMatrix(Matrix3f rotation, Vector3f translation) {
+        this.transform = new Transform3D(rotation, translation, 1f);
     }
 
     // transforms p and places result back into p, the fourth coordinate is assumed to be 1
@@ -40,8 +43,7 @@ public class TransformationMatrix {
     }
 
     public TransformationMatrix translate(Vector3f t) {
-        Matrix3f identity = new Matrix3f();
-        identity.setIdentity();
+        Matrix3f identity = matrix3fIdentity();
         Transform3D translation = new Transform3D(identity, t, 1f);
         transform.mul(transform, translation); // new transform = old transform * translation
         return this;
@@ -79,10 +81,14 @@ public class TransformationMatrix {
         return this.rotate(rotation);
     }
 
-    public TransformationMatrix reflectZ() {
-        Transform3D reflection = internReflectZ();
-        transform.mul(transform, reflection);
-        return this;
+    // generates a new transform, old transform is not changed
+    public static TransformationMatrix reflectTransformAtWorldXYPlane(SkeletonPart element) {
+        TransformationMatrix reflection = reflectionTransformZ();
+        TransformationMatrix childWorldTransform = element.calculateWorldTransform();
+        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(element.getParent().calculateWorldTransform());
+
+        // transform to world coordinates, reflect, then transform to parent coordinates
+        return TransformationMatrix.multiply(TransformationMatrix.multiply(inverseParentWorldTransform, reflection), childWorldTransform);
     }
 
     public static TransformationMatrix multiply(TransformationMatrix t1, TransformationMatrix t2) {
@@ -97,16 +103,15 @@ public class TransformationMatrix {
         return new TransformationMatrix(transform);
     }
 
-    public static TransformationMatrix reflectZTransform() {
-         Transform3D reflection = internReflectZ();
-        return new TransformationMatrix(reflection);
+    private static TransformationMatrix reflectionTransformZ() {
+        Matrix3f refZ = matrix3fIdentity();
+        refZ.setElement(2, 2, -1f);
+        return new TransformationMatrix(refZ, new Vector3f());
     }
 
-    private static Transform3D internReflectZ() {
-        Matrix3f refX = new Matrix3f();
-        refX.setIdentity();
-        refX.setElement(2, 2, -1f);
-
-        return new Transform3D(refX, new Vector3f(), 1f);
+    private static Matrix3f matrix3fIdentity() {
+        Matrix3f matrix = new Matrix3f();
+        matrix.setIdentity();
+        return matrix;
     }
 }

@@ -8,7 +8,6 @@ import skeleton.elements.terminal.TerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.media.j3d.Transform3D;
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
@@ -69,7 +68,7 @@ public class BackPartRule extends ReplacementRule {
         Vector3f translation = new Vector3f(0f, -boundingBox.getYLength() / 2f, -boundingBox.getZLength() / 2f);
 
         Pelvic pelvic = new Pelvic(transform, jointRotationPoint, boundingBox, parent, backPart);
-        pelvic.getWorldTransform().applyOnVector(translation);
+        pelvic.calculateWorldTransform().applyOnVector(translation);
         pelvic.getTransform().translate(translation); // translate down and back half box height in world coordinates
 
         parent.replaceChild(backPart, pelvic);

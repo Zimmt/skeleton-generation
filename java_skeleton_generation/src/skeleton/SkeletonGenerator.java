@@ -197,6 +197,7 @@ public class SkeletonGenerator {
      */
     private List<List<TerminalElement>> recursiveCalculationOfMirroredElements(TerminalElement parent, TerminalElement currentElement) {
         List<List<TerminalElement>> childrenToAdd = new ArrayList<>();
+
         TerminalElement mirroredElement = currentElement;
         if (currentElement.isMirrored()) {
             mirroredElement = currentElement.calculateMirroredElement(parent);
@@ -209,6 +210,8 @@ public class SkeletonGenerator {
                 return childrenToAdd;
             }
 
+            // if current element is mirrored, all children of it that are mirrored
+            // are children of the mirrored version of the current element
             childrenToAdd.addAll(recursiveCalculationOfMirroredElements(mirroredElement, (TerminalElement) child));
         }
 
@@ -295,7 +298,7 @@ public class SkeletonGenerator {
         float angle = getSpineAngle(interval.x, interval.y);
         Vector3f position = new Vector3f(spine.apply3d(interval.x)); // world position
 
-        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
 
         TransformationMatrix psi = new TransformationMatrix(position);
         psi.rotateAroundZ(angle);

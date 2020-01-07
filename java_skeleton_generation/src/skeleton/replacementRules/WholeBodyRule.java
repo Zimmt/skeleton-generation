@@ -85,7 +85,7 @@ public class WholeBodyRule extends ReplacementRule {
     private FrontPart generateFrontPart(WholeBody wholeBody, Tuple2f shoulderSpineInterval, TerminalElement parent) {
 
         // the position of the front part is simply the end of the shoulder spine interval
-        TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
+        TransformationMatrix transform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
         Point3f position = wholeBody.getGenerator().getSpine().apply3d(shoulderSpineInterval.y);
         transform.translate(new Vector3f(position));
 
@@ -100,7 +100,7 @@ public class WholeBodyRule extends ReplacementRule {
     private BackPart generateBackPart(WholeBody wholeBody, Tuple2f pelvicSpineInterval, TerminalElement parent) {
 
         // the position of the back part is simply the beginning of the pelvic spine interval
-        TransformationMatrix transform = TransformationMatrix.getInverse(parent.getWorldTransform());
+        TransformationMatrix transform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
         Point3f position = wholeBody.getGenerator().getSpine().apply3d(pelvicSpineInterval.x);
         transform.translate(new Vector3f(position));
 

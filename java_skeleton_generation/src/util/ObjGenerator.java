@@ -44,7 +44,7 @@ public class ObjGenerator {
         for (TerminalElement element : skeletonParts) {
             Point3f position = element.getWorldPosition();
             BoundingBox boundingBox = element.getBoundingBox().cloneBox();
-            boundingBox.transform(element.getWorldTransform());
+            boundingBox.transform(element.calculateWorldTransform());
 
             Point3f xCorner = new Point3f(position); xCorner.add(boundingBox.getXVector());
             Point3f yCorner = new Point3f(position); yCorner.add(boundingBox.getYVector());

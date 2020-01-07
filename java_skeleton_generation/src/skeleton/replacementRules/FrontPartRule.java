@@ -69,7 +69,7 @@ public class FrontPartRule extends ReplacementRule {
         Vector3f translation = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f);
 
         Shoulder shoulder = new Shoulder(transform, jointRotationPoint, boundingBox, parent, frontPart);
-        shoulder.getWorldTransform().applyOnVector(translation);
+        shoulder.calculateWorldTransform().applyOnVector(translation);
         shoulder.getTransform().translate(translation); // translate down half box height in world coordinates
 
         parent.replaceChild(frontPart, shoulder);
@@ -82,7 +82,7 @@ public class FrontPartRule extends ReplacementRule {
         headBox.scale(boundingBoxScale);
 
         // we have the world position of the spine and we have to get something that is relative to the parent
-        TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.getWorldTransform());
+        TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
         Point2f spineStartPoint = frontPart.getGenerator().getSpine().apply(0f);
         Point2f headPosition = new Point2f(spineStartPoint);
         headPosition.sub(new Point2f(headBox.getXLength(), headBox.getYLength() / 2f));

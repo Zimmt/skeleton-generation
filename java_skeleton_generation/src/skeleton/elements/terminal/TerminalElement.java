@@ -22,27 +22,21 @@ public abstract class TerminalElement extends SkeletonPart {
 
     public BoundingBox getBoundingBox() { return boundingBox; }
 
-    public BoundingBox calculateWorldBoundingBox() {
-        TransformationMatrix worldTransform = this.getWorldTransform();
-        BoundingBox transformedBox = this.getBoundingBox().cloneBox();
-        transformedBox.transform(worldTransform);
-        return transformedBox;
-    }
-
     public boolean isTerminal() {
         return true;
     }
 
     protected TransformationMatrix calculateMirroredTransform() {
-        TransformationMatrix mirroredTransform = new TransformationMatrix(this.getTransform());
-        mirroredTransform.reflectZ();
-
-        return mirroredTransform;
+        return TransformationMatrix.reflectTransformAtWorldXYPlane(this);
     }
 
     protected Point3f calculateMirroredJointRotationPoint() {
-        Point3f mirroredJointRotationPoint = new Point3f(this.getJointRotationPoint());
-        TransformationMatrix.reflectZTransform().applyOnPoint(mirroredJointRotationPoint);
+        TransformationMatrix worldTransform = this.calculateWorldTransform();
+
+        Point3f mirroredJointRotationPoint = new Point3f(this.getJointRotationPoint()); // local coordinates
+        worldTransform.applyOnPoint(mirroredJointRotationPoint); // global coordinates
+        mirroredJointRotationPoint.z = -mirroredJointRotationPoint.z; // global coordinates mirrored
+        TransformationMatrix.getInverse(worldTransform).applyOnPoint(mirroredJointRotationPoint); // local coordinates mirrored
 
         return mirroredJointRotationPoint;
     }

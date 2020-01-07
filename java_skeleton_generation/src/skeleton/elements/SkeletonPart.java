@@ -64,7 +64,7 @@ public abstract class SkeletonPart {
      * @return the transformation matrix that transforms from the local coordinate system of this skeleton part
      * to the world space
      */
-    public TransformationMatrix getWorldTransform() {
+    public TransformationMatrix calculateWorldTransform() {
         TransformationMatrix worldTransform = new TransformationMatrix(transform);
         SkeletonPart parent = this;
         while (parent.hasParent()) {
@@ -75,7 +75,7 @@ public abstract class SkeletonPart {
     }
 
     public Point3f getWorldPosition() {
-        TransformationMatrix t = getWorldTransform();
+        TransformationMatrix t = calculateWorldTransform();
         Point3f position = new Point3f(); // origin
         t.applyOnPoint(position);
 
