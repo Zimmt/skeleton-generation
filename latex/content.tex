@@ -145,6 +145,7 @@
 \end{itemize}
 
 
+%---------------------------
 \section{Programmiersprache}
 
 \begin{itemize}
@@ -291,6 +292,30 @@ Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen u
    Das heißt zu Beginn der Generierung muss der Schwerpunkt des Körpers festgelegt werden, damit die Drehmomente berechnet werden können. Das ist am Anfang aber sehr einfach, da das initiale Element die Bounding Box des Gesamten Skeletts ist. Also ist der Schwerpunkt der Mittelpunkt.
    
   \end{itemize}
+
+%--------------------------------
+%--------------------------------
+\chapter{Implementierungsdetails}
+
+%--------------------------------
+\section{Transformationsmatrizen}
+
+Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Position des Ursprungs seines Koordinatensystems. Um den Überblick über die Transformationsmatrizen bzw. Abbildungen behalten, die vom einen ins andere Koordinatensystem umwandeln, hier zwei Übersichtsgrafiken:
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{graphics/transformation_matrices.eps}
+ \caption{Gegeben sei das Element $e$. Die Abbildung, die die lokalen Koordinaten von $e$ in globale Koordinaten umrechnet sei $T_1$.
+ Jedes Kindelement $k$ von $e$ speichert eine Transformationsmatrix $T_2$, die angibt wo der Ursprung des Koordinatensystems von $k$ relativ zum Koordinatensystem von $e$ liegt. Will mann nun Koordinaten von $k$ in globale Koordinaten umrechnen, benötigt man die Abbildung $T_1 \cdot T_2$.}
+\end{figure}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{graphics/transformation_matrices_spine.eps}
+ \caption{Will man ein Element $k$ erzeugen, das Kindelement von $e$ ist und dessen globale Koordinaten bekannt sind, muss man die Abbildung berechnen, die die relative Position von $k$ angibt. Seien $T_1$ und $T_2$ jeweils die Transformationen in das globale Koordinatensystem von $e$ \bzw $k$. Dann ist die gesuchte Abbildung $T_1^{-1} \cdot T_2$.}
+\end{figure}
+
+
 
 
 
