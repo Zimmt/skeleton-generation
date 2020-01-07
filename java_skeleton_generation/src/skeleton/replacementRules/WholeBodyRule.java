@@ -91,7 +91,8 @@ public class WholeBodyRule extends ReplacementRule {
 
         Point3f jointRotationPoint = new Point3f(0f, parent.getBoundingBox().getYLength() / 2f, 0f);
 
-        FrontPart frontPart = new FrontPart(transform, jointRotationPoint, parent, wholeBody, shoulderSpineInterval);
+        // only use shoulder spine interval to determine where front part starts
+        FrontPart frontPart = new FrontPart(transform, jointRotationPoint, parent, wholeBody, shoulderSpineInterval.y);
         parent.addChild(frontPart);
 
         return frontPart;

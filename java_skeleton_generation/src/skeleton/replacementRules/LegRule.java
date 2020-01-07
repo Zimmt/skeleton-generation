@@ -2,18 +2,20 @@ package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Leg;
-import skeleton.elements.terminal.Foot;
-import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Generates
+ * - terminal thigh
+ * - terminal shin and foot TODO
+ */
 public class LegRule extends ReplacementRule {
 
     private final String inputID = "leg";

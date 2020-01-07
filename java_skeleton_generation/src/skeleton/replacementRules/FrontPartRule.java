@@ -2,8 +2,8 @@ package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.FrontPart;
+import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Head;
-import skeleton.elements.terminal.Shoulder;
 import skeleton.elements.terminal.TerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -18,8 +18,9 @@ import java.util.List;
 
 /**
  * Generates
- * - terminal shoulder (TODO Arm still missing)
- * - terminal vertebrae on spine between shoulders and head
+ * - non terminal shoulder girdle
+ * - terminal vertebra that is parent of shoulder girdle
+ * - terminal vertebrae of neck
  * - terminal head
  */
 public class FrontPartRule extends ReplacementRule {
@@ -39,12 +40,14 @@ public class FrontPartRule extends ReplacementRule {
         FrontPart frontPart = (FrontPart) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Shoulder shoulder = generateShoulder(frontPart, 2f, 1.5f);
-        generatedParts.add(shoulder);
-
-        Tuple2f neckInterval = new Point2f(0f, frontPart.getShoulderSpineInterval().x);
-        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, neckInterval, 3, shoulder, false);
+        Tuple2f neckInterval = new Point2f(frontPart.getFrontPartStartPosition(), 0f);
+        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, neckInterval, 3, frontPart.getParent(), false);
+        frontPart.getParent().removeChild(frontPart);
         generatedParts.addAll(neck);
+
+        TerminalElement shoulderVertebra = neck.get(0);
+        ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, shoulderVertebra);
+        generatedParts.add(shoulderGirdle);
 
         Head head = generateHead(frontPart, new Vector3f(2f, 1f, 1.5f), neck.get(neck.size()-1));
         generatedParts.add(head);
@@ -52,29 +55,16 @@ public class FrontPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Shoulder generateShoulder(FrontPart frontPart, float width, float height) {
+    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, TerminalElement parent) {
 
-        Tuple2f spineInterval = frontPart.getShoulderSpineInterval();
-        Point2f leftSpinePoint = frontPart.getGenerator().getSpine().apply(spineInterval.x);
-        Point2f rightSpinePoint = frontPart.getGenerator().getSpine().apply(spineInterval.y);
-        float xLength = Math.abs(rightSpinePoint.x - leftSpinePoint.x);
+        // the position of the shoulder girdle is the same as the position of the shoulder vertebra (parent element)
+        TransformationMatrix transform = new TransformationMatrix();
+        Point3f jointRotationPoint = new Point3f(parent.getBoundingBox().getXLength() / 2, parent.getBoundingBox().getYLength() / 2, 0f);
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(new Vector3f(xLength, height, width));
+        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(transform, jointRotationPoint, parent, frontPart);
+        parent.addChild(shoulderGirdle);
 
-        TerminalElement parent = frontPart.getParent();
-        Point3f jointRotationPoint = new Point3f(0f, parent.getBoundingBox().getYLength() / 2f, parent.getBoundingBox().getZLength() / 2f);
-
-        TransformationMatrix transform = frontPart.getGenerator().generateTransformForElementInSpineInterval(spineInterval, parent);
-        Vector3f translation = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f);
-
-        Shoulder shoulder = new Shoulder(transform, jointRotationPoint, boundingBox, parent, frontPart);
-        shoulder.calculateWorldTransform().applyOnVector(translation);
-        shoulder.getTransform().translate(translation); // translate down half box height in world coordinates
-
-        parent.replaceChild(frontPart, shoulder);
-
-        return shoulder;
+        return shoulderGirdle;
     }
 
     private Head generateHead(FrontPart frontPart, Vector3f boundingBoxScale, TerminalElement parent) {

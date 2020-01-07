@@ -290,7 +290,7 @@ public class SkeletonGenerator {
     }
 
     /**
-     * The position of transform is the left point of the interval.
+     * The position of transform is the left point of the interval on the spine.
      * @param interval [x, y] with x < y
      */
     public TransformationMatrix generateTransformForElementInSpineInterval(Tuple2f interval, TerminalElement parent) {

@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Generates
  * - terminal pelvic
+ * - non terminal leg
  * - terminal vertebrae on spine for tail
  */
 public class BackPartRule extends ReplacementRule {

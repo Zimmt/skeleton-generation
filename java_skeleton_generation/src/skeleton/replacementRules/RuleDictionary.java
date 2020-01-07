@@ -34,6 +34,7 @@ public class RuleDictionary {
         rules.add(new FrontPartRule());
         rules.add(new BackPartRule());
         rules.add(new LegRule());
+        rules.add(new ShoulderGirdleRule());
 
         for (ReplacementRule rule : rules) {
             // for each input id at most one rule
