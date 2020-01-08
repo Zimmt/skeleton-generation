@@ -1,6 +1,7 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Shoulder;
 import skeleton.elements.terminal.TerminalElement;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Generates
  * - terminal shoulder
- * - non terminal arm TODO
+ * - non terminal arm
  */
 public class ShoulderGirdleRule extends ReplacementRule {
 
@@ -37,6 +38,8 @@ public class ShoulderGirdleRule extends ReplacementRule {
 
         Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(1.5f, 0.5f, 1.5f));
         generatedParts.add(shoulder);
+        Arm arm = generateArm(shoulderGirdle, shoulder);
+        generatedParts.add(arm);
 
         return generatedParts;
     }
@@ -58,5 +61,17 @@ public class ShoulderGirdleRule extends ReplacementRule {
         parent.replaceChild(shoulderGirdle, shoulder);
 
         return shoulder;
+    }
+
+    private Arm generateArm(ShoulderGirdle shoulderGirdle, Shoulder shoulder) {
+        // arm has the same position as shoulder
+        TransformationMatrix transform = new TransformationMatrix();
+
+        Point3f jointRotationPoint = new Point3f(shoulder.getBoundingBox().getXLength()/2, 0f, shoulder.getBoundingBox().getZLength()/2);
+
+        Arm arm = new Arm(transform, jointRotationPoint, shoulder, shoulderGirdle);
+        shoulder.addChild(arm);
+
+        return arm;
     }
 }
