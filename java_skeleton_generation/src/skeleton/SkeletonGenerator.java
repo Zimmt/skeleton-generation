@@ -204,6 +204,7 @@ public class SkeletonGenerator {
             childrenToAdd.add(Arrays.asList(parent, mirroredElement));
         }
 
+        // currentElement and it's children are always "real" elements not mirrored ones
         for (SkeletonPart child : currentElement.getChildren()) {
             if (!child.isTerminal()) {
                 System.err.println("There is a non terminal element in a finished skeleton!");

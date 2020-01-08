@@ -21,6 +21,15 @@ public class Shoulder extends TerminalElement {
     public boolean isMirrored() { return true; }
 
     public Shoulder calculateMirroredElement(TerminalElement parent) {
+        // transformation matrix and joint rotation point must not be changed if parent is mirrored
+        if (parent.isMirrored()) {
+            return new Shoulder(
+                    new TransformationMatrix(this.getTransform()),
+                    new Point3f(this.getJointRotationPoint()),
+                    this.getBoundingBox().cloneBox(),
+                    parent, this.getAncestor()
+            );
+        }
         return new Shoulder(
                 calculateMirroredTransform(),
                 calculateMirroredJointRotationPoint(),

@@ -21,6 +21,15 @@ public class Hand extends TerminalElement {
     public boolean isMirrored() { return true; }
 
     public Hand calculateMirroredElement(TerminalElement parent) {
+        // transformation matrix and joint rotation point must not be changed if parent is mirrored
+        if (parent.isMirrored()) {
+            return new Hand(
+                    new TransformationMatrix(this.getTransform()),
+                    new Point3f(this.getJointRotationPoint()),
+                    this.getBoundingBox().cloneBox(),
+                    parent, this.getAncestor()
+            );
+        }
         return new Hand(
                 calculateMirroredTransform(),
                 calculateMirroredJointRotationPoint(),
