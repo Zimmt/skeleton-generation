@@ -2,6 +2,7 @@ package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Leg;
+import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
@@ -37,7 +38,7 @@ public class LegRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         float thighShinRate = 2f / 3f;
-        float footHeight = 1f;
+        float footHeight = 0.5f;
 
         float thighHeight = (leg.getParent().getWorldPosition().y - footHeight) * thighShinRate;
         float shinHeight = (leg.getParent().getWorldPosition().y - footHeight) - thighHeight;
@@ -46,6 +47,8 @@ public class LegRule extends ReplacementRule {
         generatedParts.add(thigh);
         Shin shin = generateShin(shinHeight, 0.5f, 0.5f, leg, thigh);
         generatedParts.add(shin);
+        Foot foot = generateFoot(footHeight, 2f, 1f, leg, shin);
+        generatedParts.add(foot);
 
         return generatedParts;
     }
@@ -84,5 +87,32 @@ public class LegRule extends ReplacementRule {
         thigh.addChild(shin);
 
         return shin;
+    }
+
+    private Foot generateFoot(float height, float xWidth, float zWidth, Leg leg, Shin shin) {
+
+        Point3f jointRotationPoint = new Point3f(
+                shin.getBoundingBox().getXLength()/2,
+                0f,
+                shin.getBoundingBox().getZLength()/2);
+
+        TransformationMatrix shinWorldTransform = shin.calculateWorldTransform();
+        Point3f worldPosition = new Point3f(); // local origin of shin
+        shinWorldTransform.applyOnPoint(worldPosition); // global origin of shin
+        worldPosition.y = 0f; // projected on xz plane
+        worldPosition.x = worldPosition.x + shin.getBoundingBox().getXLength() - xWidth;
+        worldPosition.z = worldPosition.z + shin.getBoundingBox().getZLength()/2 - zWidth/2;
+
+        TransformationMatrix footWorldTransform = new TransformationMatrix(new Vector3f(worldPosition));
+        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(shinWorldTransform);
+        TransformationMatrix localFootTransform = TransformationMatrix.multiply(inverseParentWorldTransform, footWorldTransform);
+
+        BoundingBox boundingBox = BoundingBox.defaultBox();
+        boundingBox.scale(new Vector3f(xWidth, height, zWidth));
+
+        Foot foot = new Foot(localFootTransform, jointRotationPoint, boundingBox, shin, leg);
+        shin.addChild(foot);
+
+        return foot;
     }
 }
