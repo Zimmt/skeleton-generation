@@ -136,6 +136,20 @@
  \item Könnte verwendet werden um schnell verschiedene Möglichkeiten zu testen
 \end{itemize}
 
+%------------
+\section{PCA}
+
+ \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden wie die Proportionen der Körperteile und vor allem wie die Lage der Wirbelsäule sein muss, damit das Skelett natürlich wirkt.
+ 
+ Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Sie bilden im $d$-dimensionalen Raum einen Ellipsoid.
+ 
+ Das Ziel der PCA ist herauszufinden wo die Achsen des Ellipsoids liegen, also wie die Eingabedimensionen miteinander korreliert sind. Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen.
+ 
+ Um dies zu Berechnen wird zunächst der Mittelpunkt des Ellipsoids berechnet. Das ist der Punkt, der in jeder Dimension den Mittelwert aller Datenpunkte enthält. Dann wird der Mittelpunkt von den Eingabedaten abgezogen, also das Ellipsoid in den Ursprung des Koordinatensystems verschoben. Danach kann die Kovarianzmatrix aufgestellt werden, deren Einträge die Kovarianz zwischen den verschiedenen Achsen beschreibt.
+ Die Eigenvektoren dieser Kovarianzmatrix sind dann die Achsen des Ellipsoids und die zugehörigen Eigenwerte geben an wie weit ausgedehnt das Ellipsoid in dieser Richtung ist.
+ 
+ Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren, und betrachtet dann nur die Dimensionen mit den größten Eigenwerten.
+
 %-----------------------------
 %-----------------------------
 \chapter{Technische Umsetzung}
