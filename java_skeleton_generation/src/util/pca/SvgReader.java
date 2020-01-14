@@ -1,4 +1,4 @@
-package util;
+package util.pca;
 
 import javax.vecmath.Point2d;
 import java.io.*;
@@ -7,7 +7,11 @@ import java.util.List;
 
 public class SvgReader {
 
-    // TODO return double[]
+    /**
+     * Searches the file for all path sections and reads their labels and coordinates
+     * the results are stored in ParsedSvgPath objects
+     * @param inputPath path to the svg file
+     */
     public List<ParsedSvgPath> parseFile(String inputPath) throws IOException {
         File file = new File(inputPath);
         BufferedReader fileReader = new BufferedReader(new FileReader(file));

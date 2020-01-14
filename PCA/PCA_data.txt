@@ -2,4 +2,4 @@
 #
 # svg file name, class, wings, floored_legs, arms, weight
 #
-Pferd, 4, 0, 2, 0, 600
+Pferd,4,0,2,0,600

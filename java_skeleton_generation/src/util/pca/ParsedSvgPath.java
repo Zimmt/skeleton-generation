@@ -1,4 +1,4 @@
-package util;
+package util.pca;
 
 import javax.vecmath.Point2d;
 import java.util.List;

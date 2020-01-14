@@ -1,10 +1,9 @@
-package util;
+package util.pca;
 
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 
 public class PCA {
@@ -12,7 +11,6 @@ public class PCA {
     /**
      * taken from https://stackoverflow.com/questions/10604507/pca-implementation-in-java
      * @param inputData one row represents one data point
-     * @return
      */
     public static EigenDecomposition run(double[][] inputData) {
         if (inputData.length == 0) {
@@ -33,8 +31,8 @@ public class PCA {
         }
         Arrays.sort(sortedEigenvalueIndices, (o1, o2) -> -Double.compare(eigenvalues[o1], eigenvalues[o2]));
         System.out.println("The sorted eigenvalues are:");
-        for (int i = 0; i < sortedEigenvalueIndices.length; i++) {
-            System.out.print(eigenvalues[sortedEigenvalueIndices[i]] + ", ");
+        for (Integer sortedEigenvalueIndex : sortedEigenvalueIndices) {
+            System.out.print(eigenvalues[sortedEigenvalueIndex] + ", ");
         }
 
         System.out.println("\nThe sorted " + eigenvalues.length + " eigenvectors are:");
