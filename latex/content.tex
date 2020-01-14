@@ -139,7 +139,7 @@
 %------------
 \section{PCA}
 
- \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden wie die Proportionen der Körperteile und vor allem wie die Lage der Wirbelsäule sein muss, damit das Skelett natürlich wirkt.
+ \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die "`Hauptdimensionen"' sind, in denen sich Skelette unterscheiden.
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Sie bilden im $d$-dimensionalen Raum einen Ellipsoid.
  
@@ -150,6 +150,16 @@
  
  Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren, und betrachtet dann nur die Dimensionen mit den größten Eigenwerten.
 
+ %- - - - - - - - - - - - - - - - - 
+ \subsection{Erhobene Daten für PCA}
+ 
+ \begin{itemize}
+  \item Gewicht: Durchschnittsgewicht eines ausgewachsenen Tieres in kg. Schwerstes Tier: Blaubwal, Maximum ist also 120 Tonnen \url{http://tierdoku.com/index.php?title=Blauwal}
+  \item Durschnittsgewicht (Warmblut-)Pferd: 600 kg \url{https://www.reitarena.com/de/blog/blog-post/2015/03/03/das-pferd-grundlegende-fakten.html}
+ \end{itemize}
+
+ 
+ 
 %-----------------------------
 %-----------------------------
 \chapter{Technische Umsetzung}
