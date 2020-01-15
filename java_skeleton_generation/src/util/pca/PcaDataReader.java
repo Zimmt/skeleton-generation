@@ -70,7 +70,7 @@ public class PcaDataReader {
                 }
             }
 
-            if (!dataPoint.dataSetMaybeComplete()) {
+            if (!dataPoint.processData() || !dataPoint.dataSetMaybeComplete()) {
                 System.err.println("Data missing.");
             }
             dataPoints.add(dataPoint);

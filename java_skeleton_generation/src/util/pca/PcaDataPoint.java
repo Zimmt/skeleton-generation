@@ -6,14 +6,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class PcaDataPoint {
+    private static final int dimension = 28;
     private static final double coordinateScaleFactor = 1000;
     private static final double animalClassScaleFactor = 4;
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
 
-    private List<Point2d> neck; // if not there empty, else 4 points (1 point is contained in back)
+    private List<Point2d> neck = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
     private List<Point2d> back; // the 4 control points of cubic bezier curve
-    private List<Point2d> tail; // if not there empty, else 4 points (1 point is contained in back)
+    private List<Point2d> tail = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
     private List<Point2d> spine; // is calculated from neck, back and tail, consists of 10 points
 
     private int animalClass = -1; // 0: fish, 1: amphibian, 2: reptilian, 3: bird, 4: mammal
@@ -30,11 +31,60 @@ public class PcaDataPoint {
 
     public PcaDataPoint() {}
 
-    // TODO: get scaled data
-
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
         return spine != null && animalClass > 0 && weight > 0;
+    }
+
+    /**
+     * Need to call this to calculate spine before pca data can be generated!
+     * Generates spine if data set maybe complete
+     * @return true if successful, false otherwise
+     */
+    public boolean processData() {
+        if (back != null && animalClass > 0 && weight > 0) {
+            return calculateSpine();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Over all there are 28 dimensions:
+     * spine: 20 doubles = 10 points
+     * animal class: 1
+     * extremities: 3
+     * extremity lengths: 3
+     * weight: 1
+     * @return array with this dimensions in the order as above
+     */
+    public double[] getScaledDataForPCA() {
+        if (!dataSetMaybeComplete()) {
+            System.err.println("Incomplete data!");
+        }
+
+        double[] data = new double[dimension];
+        int nextIndex = 0;
+
+        for (Point2d p : spine) {
+            data[nextIndex] = p.x / coordinateScaleFactor;
+            data[nextIndex+1] = p.y / coordinateScaleFactor;
+            nextIndex += 2;
+        }
+        data[nextIndex] = animalClass / animalClassScaleFactor; nextIndex++;
+        data[nextIndex] = wings ? 1.0 : 0.0; nextIndex++;
+        data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
+        data[nextIndex] = arms ? 1.0 : 0.0; nextIndex++;
+        data[nextIndex] = lengthFrontLegs / coordinateScaleFactor; nextIndex++;
+        data[nextIndex] = lengthBackLegs / coordinateScaleFactor; nextIndex++;
+        data[nextIndex] = lengthWings / coordinateScaleFactor; nextIndex++;
+        data[nextIndex] = weight / weightScaleFactor;
+
+        return data;
+    }
+
+    public static int getDimension() {
+        return dimension;
     }
 
     public List<Point2d> getNeck() {
@@ -87,7 +137,6 @@ public class PcaDataPoint {
             return;
         }
         this.neck = neck;
-        calculateSpine();
     }
 
     public void setBack(List<Point2d> back) {
@@ -95,7 +144,6 @@ public class PcaDataPoint {
             System.err.println("Back has not correct number of control points.");
         }
         this.back = back;
-        calculateSpine();
     }
 
     public void setTail(List<Point2d> tail) {
@@ -103,7 +151,6 @@ public class PcaDataPoint {
             System.err.println("Tail has not correct number of control points.");
         }
         this.tail = tail;
-        calculateSpine();
     }
 
     public void setAnimalClass(int animalClass) {
@@ -159,28 +206,41 @@ public class PcaDataPoint {
     /**
      * Potentially reverts the order of the points in neck, back and tail.
      * Sorts the points so that they are in the order they appear on the spine.
+     * If neck or tail are empty they are filled with the first or last point of back.
+     * @return true if back is set, false otherwise (then nothing can be calculated)
      */
-    private void calculateSpine() {
-        if (neck == null || back == null || tail == null) {
-            return; // can only calculate this when all data is there
+    private boolean calculateSpine() {
+        if (back == null) {
+            return false; // can only calculate this when all data is there
         }
         List<Point2d> sortedPoints = new ArrayList<>();
+        if (back.get(0).x > back.get(3).x) {
+            Collections.reverse(back);
+        }
 
-        if (neck.get(0).x > neck.get(3).x) {
+        // neck
+        if (neck.isEmpty()) {
+            for (int i = 0; i < 4; i++) {
+                neck.add(back.get(0));
+            }
+        } else if (neck.get(0).x > neck.get(3).x) {
             Collections.reverse(neck);
         }
         sortedPoints.addAll(neck);
 
-        if (back.get(0).x > back.get(3).x) {
-            Collections.reverse(back);
-        }
+        // back
         if (!sortedPoints.get(3).epsilonEquals(back.get(0), 0.1)) {
             System.err.println("Neck and back don't share point!");
         }
         sortedPoints.remove(3);
         sortedPoints.addAll(back);
 
-        if (tail.get(0).x > tail.get(3).x) {
+        //tail
+        if (tail.isEmpty()) {
+            for (int i = 0; i < 4; i++) {
+                tail.add(back.get(3));
+            }
+        } else if (tail.get(0).x > tail.get(3).x) {
             Collections.reverse(tail);
         }
         if (!sortedPoints.get(6).epsilonEquals(tail.get(0), 0.1)) {
@@ -190,5 +250,7 @@ public class PcaDataPoint {
         sortedPoints.addAll(tail);
 
         this.spine = sortedPoints;
+
+        return true;
     }
 }
