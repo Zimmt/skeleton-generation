@@ -174,11 +174,19 @@ public class PcaDataPoint {
         if (back.get(0).x > back.get(3).x) {
             Collections.reverse(back);
         }
+        if (!sortedPoints.get(3).epsilonEquals(back.get(0), 0.1)) {
+            System.err.println("Neck and back don't share point!");
+        }
+        sortedPoints.remove(3);
         sortedPoints.addAll(back);
 
         if (tail.get(0).x > tail.get(3).x) {
             Collections.reverse(tail);
         }
+        if (!sortedPoints.get(6).epsilonEquals(tail.get(0), 0.1)) {
+            System.err.println("Back and tail don't share point!");
+        }
+        sortedPoints.remove(6);
         sortedPoints.addAll(tail);
 
         this.spine = sortedPoints;
