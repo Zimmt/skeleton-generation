@@ -29,19 +29,20 @@ public class PcaDataReader {
 
             String name = lineParts[0];
             int animalClass = Integer.parseInt(lineParts[1]);
-            boolean wings = Boolean.getBoolean(lineParts[2]);
+            boolean wings = Integer.parseInt(lineParts[2]) > 0;
             int flooredLegs = Integer.parseInt(lineParts[3]);
-            boolean arms = Boolean.getBoolean(lineParts[4]);
+            boolean arms = Integer.parseInt(lineParts[4]) > 0;
             double weight = Double.parseDouble(lineParts[5]);
 
             PcaDataPoint dataPoint = new PcaDataPoint();
+            dataPoint.setName(name);
             dataPoint.setAnimalClass(animalClass);
             dataPoint.setWings(wings);
             dataPoint.setFlooredLegs(flooredLegs);
             dataPoint.setArms(arms);
             dataPoint.setWeight(weight);
 
-            String svgFilePath = "../PCA/" + name + ".svg";
+            String svgFilePath = "../PCA/Skelettbilder/" + name + ".svg";
             SvgReader svgReader = new SvgReader();
             List<ParsedSvgPath> parsedSvgPaths = svgReader.parseFile(svgFilePath);
 
@@ -66,7 +67,7 @@ public class PcaDataReader {
                         dataPoint.setLengthWings(getLength(path.getPoints()));
                         break;
                     default:
-                        System.err.println("No valid label.");
+                        System.err.println(path.getLabel() + " is no valid label.");
                 }
             }
 

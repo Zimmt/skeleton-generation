@@ -13,6 +13,7 @@ public class SvgReader {
      * @param inputPath path to the svg file
      */
     public List<ParsedSvgPath> parseFile(String inputPath) throws IOException {
+        System.out.println("Parsing " + inputPath);
         File file = new File(inputPath);
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
         List<ParsedSvgPath> result = new ArrayList<>();
@@ -57,7 +58,11 @@ public class SvgReader {
                     }
                     break;
                 } else if (foundD && line.length() > i+14 && line.substring(i, i + 14).equals("inkscape:label")) {
-                    label = line.substring(i+14+2, line.length()-4);
+                    String[] labelParts = line.split("\"");
+                    if (labelParts.length < 2) {
+                        System.err.println("No valid label found.");
+                    }
+                    label = labelParts[1];
                     foundLabel = true;
                     break;
                 }
@@ -82,22 +87,32 @@ public class SvgReader {
         StringBuilder stringBuilder = new StringBuilder();
         double firstCoordinate = 0f;
         boolean firstCoordinateFound = false;
+        boolean verticalOffset = false;
         List<Point2d> points = new ArrayList<>();
 
         for (int i = 0; i < d.length(); i++) {
 
-            if (!(d.charAt(i) == '-' || Character.isDigit(d.charAt(i)) || d.charAt(i) == '.')) {
-                if (stringBuilder.length() > 0) {
+            if (!(d.charAt(i) == '-' || Character.isDigit(d.charAt(i)) || d.charAt(i) == '.')) { // no part of number
+
+                if (stringBuilder.length() > 0) { // end of number found
                     if (!firstCoordinateFound) {
                         firstCoordinate = Double.parseDouble(stringBuilder.toString());
                         stringBuilder.setLength(0);
                         firstCoordinateFound = true;
+                        if (verticalOffset) {
+                            points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate));
+                            firstCoordinateFound = false;
+                            verticalOffset = false;
+                        }
                     } else {
                         double secondCoordinate = Double.parseDouble(stringBuilder.toString());
                         stringBuilder.setLength(0);
                         points.add(getPoint(firstCoordinate, secondCoordinate));
                         firstCoordinateFound = false;
                     }
+
+                } else if (d.charAt(i) == 'V') {
+                    verticalOffset = true;
                 }
 
             } else {
@@ -109,6 +124,8 @@ public class SvgReader {
             if (firstCoordinateFound) {
                 double secondCoordinate = Double.parseDouble(stringBuilder.toString());
                 points.add(getPoint(firstCoordinate, secondCoordinate));
+            } else if (verticalOffset) {
+                points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate));
             } else {
                 System.err.println("Point could not be parsed completely.");
             }
@@ -120,5 +137,11 @@ public class SvgReader {
     private Point2d getPoint(double firstCoordinate, double secondCoordinate) {
         double fixedSecondCoordinate = 1000 - secondCoordinate; // the y-coordinate in svg files is switched (points from top to bottom)
         return new Point2d(firstCoordinate, fixedSecondCoordinate);
+    }
+
+    private Point2d getPointWithOffset(Point2d previousPoint, double verticalOffset) {
+        double firstCoordinate = previousPoint.x;
+        double secondCoordinate = previousPoint.y + verticalOffset;
+        return getPoint(firstCoordinate, secondCoordinate);
     }
 }

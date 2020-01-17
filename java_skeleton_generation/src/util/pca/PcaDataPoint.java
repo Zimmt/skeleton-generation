@@ -11,6 +11,8 @@ public class PcaDataPoint {
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
 
+    private String name;
+
     private List<Point2d> neck = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
     private List<Point2d> back; // the 4 control points of cubic bezier curve
     private List<Point2d> tail = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
@@ -32,7 +34,7 @@ public class PcaDataPoint {
 
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
-        return spine != null && animalClass != null && weight > 0;
+        return name != null && spine != null && animalClass != null && weight > 0;
     }
 
     /**
@@ -41,7 +43,7 @@ public class PcaDataPoint {
      * @return true if successful, false otherwise
      */
     public boolean processData() {
-        if (back != null && animalClass != null && weight > 0) {
+        if (back != null) {
             return calculateSpine();
         } else {
             return false;
@@ -84,48 +86,8 @@ public class PcaDataPoint {
         return dimension;
     }
 
-    public List<Point2d> getNeck() {
-        return neck;
-    }
-
-    public List<Point2d> getBack() {
-        return back;
-    }
-
-    public List<Point2d> getTail() {
-        return tail;
-    }
-
-    public AnimalClass getAnimalClass() {
-        return animalClass;
-    }
-
-    public boolean hasWings() {
-        return wings;
-    }
-
-    public int getFlooredLegs() {
-        return flooredLegs;
-    }
-
-    public boolean hasArms() {
-        return arms;
-    }
-
-    public double getLengthFrontLegs() {
-        return lengthFrontLegs;
-    }
-
-    public double getLengthBackLegs() {
-        return lengthBackLegs;
-    }
-
-    public double getLengthWings() {
-        return lengthWings;
-    }
-
-    public double getWeight() {
-        return weight;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setNeck(List<Point2d> neck) {
@@ -235,15 +197,15 @@ public class PcaDataPoint {
             for (int i = 0; i < 4; i++) {
                 neck.add(back.get(0));
             }
-        } else if (neck.get(0).x > neck.get(3).x) {
+        } else if (neck.get(0).epsilonEquals(back.get(0), 0.1)) {
             Collections.reverse(neck);
+        }
+        if (!neck.get(3).epsilonEquals(back.get(0), 0.1)) {
+            System.err.println("Neck and back don't share point!");
         }
         sortedPoints.addAll(neck);
 
         // back
-        if (!sortedPoints.get(3).epsilonEquals(back.get(0), 0.1)) {
-            System.err.println("Neck and back don't share point!");
-        }
         sortedPoints.remove(3);
         sortedPoints.addAll(back);
 
@@ -252,7 +214,7 @@ public class PcaDataPoint {
             for (int i = 0; i < 4; i++) {
                 tail.add(back.get(3));
             }
-        } else if (tail.get(0).x > tail.get(3).x) {
+        } else if (tail.get(3).epsilonEquals(back.get(3), 0.1)) {
             Collections.reverse(tail);
         }
         if (!sortedPoints.get(6).epsilonEquals(tail.get(0), 0.1)) {
