@@ -6,9 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PcaDataPoint {
-    private static final int dimension = 28;
+    private static final int dimension = 27;
     private static final double coordinateScaleFactor = 1000;
-    private static final double animalClassScaleFactor = 4;
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
 
@@ -17,7 +16,7 @@ public class PcaDataPoint {
     private List<Point2d> tail = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
     private List<Point2d> spine; // is calculated from neck, back and tail, consists of 10 points
 
-    private int animalClass = -1; // 0: fish, 1: amphibian, 2: reptilian, 3: bird, 4: mammal
+    private AnimalClass animalClass;
 
     private boolean wings;
     private int flooredLegs; // #legs/2, [0,2]
@@ -33,7 +32,7 @@ public class PcaDataPoint {
 
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
-        return spine != null && animalClass > 0 && weight > 0;
+        return spine != null && animalClass != null && weight > 0;
     }
 
     /**
@@ -42,7 +41,7 @@ public class PcaDataPoint {
      * @return true if successful, false otherwise
      */
     public boolean processData() {
-        if (back != null && animalClass > 0 && weight > 0) {
+        if (back != null && animalClass != null && weight > 0) {
             return calculateSpine();
         } else {
             return false;
@@ -50,9 +49,8 @@ public class PcaDataPoint {
     }
 
     /**
-     * Over all there are 28 dimensions:
+     * Over all there are 27 dimensions (animal class is not a dimension for PCA as it has no continuous scala):
      * spine: 20 doubles = 10 points
-     * animal class: 1
      * extremities: 3
      * extremity lengths: 3
      * weight: 1
@@ -71,7 +69,6 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y / coordinateScaleFactor;
             nextIndex += 2;
         }
-        data[nextIndex] = animalClass / animalClassScaleFactor; nextIndex++;
         data[nextIndex] = wings ? 1.0 : 0.0; nextIndex++;
         data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
         data[nextIndex] = arms ? 1.0 : 0.0; nextIndex++;
@@ -99,7 +96,7 @@ public class PcaDataPoint {
         return tail;
     }
 
-    public int getAnimalClass() {
+    public AnimalClass getAnimalClass() {
         return animalClass;
     }
 
@@ -157,7 +154,22 @@ public class PcaDataPoint {
         if (animalClass < 0 || animalClass > 4) {
             System.err.println("Incorrect animal class found.");
         }
-        this.animalClass = animalClass;
+        switch(animalClass) {
+            case 0:
+                this.animalClass = AnimalClass.FISH;
+                break;
+            case 1:
+                this.animalClass = AnimalClass.AMPHIBIAN;
+                break;
+            case 2:
+                this.animalClass = AnimalClass.REPTILIAN;
+                break;
+            case 3:
+                this.animalClass = AnimalClass.BIRD;
+                break;
+            case 4:
+                this.animalClass = AnimalClass.MAMMAL;
+        }
     }
 
     public void setWings(boolean wings) {
