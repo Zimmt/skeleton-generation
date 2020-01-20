@@ -1,3 +1,5 @@
+import org.apache.commons.math3.linear.EigenDecomposition;
+import util.pca.PCA;
 import util.pca.PcaDataPoint;
 import util.pca.PcaDataReader;
 
@@ -25,6 +27,7 @@ public class Main {
         for (int i = 0; i < dataPoints.size(); i++) {
             pcaData[i] = dataPoints.get(i).getScaledDataForPCA();
         }
+        EigenDecomposition ed = PCA.run(pcaData);
 
         System.out.println("Finished");
     }

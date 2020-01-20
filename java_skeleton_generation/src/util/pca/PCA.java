@@ -18,7 +18,7 @@ public class PCA {
             return null;
         }
 
-        RealMatrix data = preprocessData(inputData);
+        RealMatrix data = MatrixUtils.createRealMatrix(inputData);
 
         Covariance covariance = new Covariance(data, false);
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
@@ -35,9 +35,11 @@ public class PCA {
             System.out.print(eigenvalues[sortedEigenvalueIndex] + ", ");
         }
 
-        System.out.println("\nThe sorted " + eigenvalues.length + " eigenvectors are:");
-        for (int i = 0; i < data.getColumnDimension(); i++) {
-            System.out.println(ed.getEigenvector(sortedEigenvalueIndices[i]));
+        int wantedEigenvectors = 6;
+        System.out.println("\nThe first " + wantedEigenvectors + " eigenvectors are:");
+        for (int i = 0; i < wantedEigenvectors && i < data.getColumnDimension(); i++) {
+            System.out.println( "> " + (i+1) + " -------------------------------------------------");
+            printEigenvector(ed.getEigenvector(sortedEigenvalueIndices[i]));
         }
 
         return ed;
@@ -56,6 +58,7 @@ public class PCA {
     }
 
     /**
+     * (This is needed to calculate weighted sum of eigenvectors for data points.)
      * @param inputData one row represents one data point
      * @return new matrix where the mean point is subtracted from each original data point
      */
@@ -76,5 +79,64 @@ public class PCA {
         }
 
         return meanSubMatrix;
+    }
+
+    private static void printEigenvector(RealVector vector) {
+        if (vector.getDimension() != 27) {
+            System.err.println("Eigenvector does not have correct dimension.");
+        }
+
+        Integer[] sortedIndices = new Integer[vector.getDimension()];
+        for (int i = 0; i < sortedIndices.length; i++) {
+            sortedIndices[i] = i;
+        }
+        Arrays.sort(sortedIndices, (o1, o2) -> -Double.compare(Math.abs(vector.getEntry(o1)), Math.abs(vector.getEntry(o2))));
+
+        String yellow = "\u001B[33m";
+        String green = "\u001B[32m";
+        String white = "\u001B[0m";
+
+        for (int i = 0; i < vector.getDimension(); i++) {
+            switch(i) {
+                case 0:
+                    System.out.println("neck");
+                    break;
+                case 6:
+                    System.out.println("back");
+                    break;
+                case 14:
+                    System.out.println("tail");
+                    break;
+                case 20:
+                    System.out.println("wings");
+                    break;
+                case 21:
+                    System.out.println("floored_legs");
+                    break;
+                case 22:
+                    System.out.println("arms");
+                    break;
+                case 23:
+                    System.out.println("length_front_legs");
+                    break;
+                case 24:
+                    System.out.println("length_back_legs");
+                    break;
+                case 25:
+                    System.out.println("length_wings");
+                    break;
+                case 26:
+                    System.out.println("weight");
+                    break;
+            }
+
+            if (i == sortedIndices[0] || i == sortedIndices[1] || i == sortedIndices[2] || i == sortedIndices[3]) { // big number
+                System.out.println(yellow + vector.getEntry(i) + white);
+            } else if (i == sortedIndices[sortedIndices.length-3] || i == sortedIndices[sortedIndices.length - 2] || i == sortedIndices[sortedIndices.length-1]) {
+                System.out.println(green + vector.getEntry(i) + white);
+            } else {
+                System.out.println(vector.getEntry(i));
+            }
+        }
     }
 }
