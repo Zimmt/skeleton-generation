@@ -139,21 +139,56 @@
 %------------
 \section{PCA}
 
- \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die "`Hauptdimensionen"' sind, in denen sich Skelette unterscheiden.
+ \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die Dimensionen sind, in denen sich Skelette am meisten unterscheiden.
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Sie bilden im $d$-dimensionalen Raum einen Ellipsoid.
  
  Das Ziel der PCA ist herauszufinden wo die Achsen des Ellipsoids liegen, also wie die Eingabedimensionen miteinander korreliert sind. Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen.
  
- Um dies zu Berechnen wird zunächst der Mittelpunkt des Ellipsoids berechnet. Das ist der Punkt, der in jeder Dimension den Mittelwert aller Datenpunkte enthält. Dann wird der Mittelpunkt von den Eingabedaten abgezogen, also das Ellipsoid in den Ursprung des Koordinatensystems verschoben. Danach kann die Kovarianzmatrix aufgestellt werden, deren Einträge die Kovarianz zwischen den verschiedenen Achsen beschreibt.
- Die Eigenvektoren dieser Kovarianzmatrix sind dann die Achsen des Ellipsoids und die zugehörigen Eigenwerte geben an wie weit ausgedehnt das Ellipsoid in dieser Richtung ist.
+ Um dies zu Berechnen wird zunächst die Kovarianzmatrix aufgestellt, deren Einträge die Kovarianz zwischen den verschiedenen Achsen beschreibt.
+ Die Eigenvektoren dieser Kovarianzmatrix sind dann die Achsen des Ellipsoids und die zugehörigen Eigenwerte geben an wie weit ausgedehnt das Ellipsoid in dieser Richtung ist. Der Mittelpunkt des Ellipsoids ist der Mittelwert der Daten.
  
- Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren, und betrachtet dann nur die Dimensionen mit den größten Eigenwerten.
+ Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren, und betrachtet dann nur die Dimensionen mit den größten Eigenwerten. Dazu zieht man zunächst den Mittelwert vom Datenpunkt ab und multipliziert ihn dann mit der transponierten Basiswechselmatrix, also der Matrix, in der in den Zeilen die Eigenvektoren stehen.
 
  %- - - - - - - - - - - - - - - - - 
  \subsection{Erhobene Daten für PCA}
  
- Flossen werden weder als Beine (egal ob mit oder ohne Bodenkontakt) noch als Flügel angesehen. \todo{sinnvoll?}
+ Die Eingabedaten für die PCA wurden folgendermaßen erhoben:
+ Das Bild des gewählten Tierskeletts wird so zugeschnitten, dass kein unnötiger Rand dabei ist. Dann wird das Bild möglichst groß und möglichst zentiert in ein $1000 \times 1000$ Pixel große Bildumgebung eingefügt.
+ Ist das geschehen kann die Lage der Wirbelsäule und die Länge der Beine annotiert werden.
+ 
+ Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils einer für Hals, Rücken und Schwanz. Hals und Rücken teilen sich einen Punkt und Rücken und Schwanz. Die Punkte an denen sie ineinander übergehen sind der Schultergürtel und der Beckengürtel.
+ Das sind die ersten $20$ Eingabedimensionen ($10$ zweidimensionale Punkte).
+ 
+ Zusätzlich wird jeweils durch eine Gerade im Bild die Länge der Vorder- und Hinterbeine eingetragen, falls vorhanden. Beine sind Extremitäten, die Bodenkontakt haben und zur Fortbewegung verwendet werden. \todo{auch Arme und/oder Flossen erfassen?} Auch die Flügellänge wird erfasst, aber da die Position und Haltung der Flügel auf Bildern von Skeletten sehr stark variiert, ist das nicht aussagekräftig.
+ 
+ Zusätzlich zum Bild gibt es noch eine Textdatei, in der weitere Daten erfasst werden. Das sind:
+ \begin{itemize}
+  \item Tierklasse (Fisch, Amphibium, Reptil, Vogel oder Säugetier) - dies eignet sich aber nicht als Dimension für die PCA, da es keine kontinuierliche Achse ist (ein Vogel geht \zb nicht kontinuierlich in ein Säugetier über).
+  
+  \item Flügel (ja oder nein) - das Problem hierbei ist, dass dies zu den Datensatz in zwei Teile teilt: Tiere mit und Tiere ohne Flügel. Deshalb ist es sinnvoll die PCA auf beiden Teilen einzeln auszuführen \todo{ist das so?}
+  
+  \item Anzahl der Beine mit Bodenkontakt geteilt durch zwei (da immer symmetrisch)
+  
+  \item Arme \bzw Beine ohne Bodenkontakt (ja oder nein) - hier gibt es wieder das Problem, dass hier nur zwei Werte möglich sind und der Datensatz so in zwei Teile geteilt wird. Außerdem gibt es nur relativ wenige Tiere mit "`Armen"'. Deshalb ist es wahrscheinlich besser dieses Attribut einfach zu ignorieren.
+  
+  \item Gewicht in kg - grob geschätztes Gewicht eines ausgewachsenen Exemplars dieser Art. Das ist oft ein Maximalwert, da oft nur dieser in Artikeln über Tiere angegeben wird. Der größte Wert, der hier möglich ist, beträgt $120$ Tonnen. Das ist das Gewicht des schwersten Wirbeltiers, eines Blauwals.
+ \end{itemize}
+
+ Alle erfassten Dimensionen werden vor der Weiterverarbeitung durch die PCA auf das Intervall $[0, 1]$ skaliert, so dass jede Dimension den gleichen Einfluss auf das Ergebnis hat.
+ 
+ \subsubsection{Schwierigkeiten}
+ 
+ \begin{itemize}
+  \item Bei Fischen ist nicht klar wo Rücken in Schwanz übergeht, da der Beckengürtel sich teilweise beim Kopf befindet oder auch gar nicht vorhanden ist. Bei der Datenerhebung wurde der Übergang ungefähr bei der Rücken- oder der Afterflosse festgelegt, da dies relativ gut zum Algorithmus passt.
+  
+  \item Hals und Schwanz von manchen Tieren ist mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und vom Schwan und der Schwanz vom Ichthyosaurus und vom Koboldmaki. In diesem Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) die im Algorithmus wahrscheinlich sowieso nicht abgebildet werden, einfach wegzulassen.
+  
+  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild irgendwie eingerollt ist.
+  
+ \end{itemize}
+
+
  
  \subsubsection{Skelettbilder}
  
