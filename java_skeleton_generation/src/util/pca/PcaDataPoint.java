@@ -181,6 +181,10 @@ public class PcaDataPoint {
         return wings;
     }
 
+    public boolean hasArms() {
+        return arms;
+    }
+
     /**
      * Potentially reverts the order of the points in neck, back and tail.
      * Sorts the points so that they are in the order they appear on the spine.

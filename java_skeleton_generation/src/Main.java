@@ -25,10 +25,13 @@ public class Main {
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
         List<PcaDataPoint> wingPoints = new ArrayList<>();
+        List<PcaDataPoint> armPoints = new ArrayList<>();
         List<PcaDataPoint> otherPoints = new ArrayList<>();
         for (PcaDataPoint point : dataPoints) {
             if (point.hasWings()) {
                 wingPoints.add(point);
+            } else if (point.hasArms()) {
+                armPoints.add(point);
             } else {
                 otherPoints.add(point);
             }
@@ -41,6 +44,14 @@ public class Main {
             wingPcaData[i] = wingPoints.get(i).getScaledDataForPCA();
         }
         EigenDecomposition edWings = PCA.run(wingPcaData);
+
+        System.out.println("ARM PCA***************************");
+        System.out.println(armPoints.size() + " data points");
+        double[][] armPcaData = new double[armPoints.size()][PcaDataPoint.getDimension()];
+        for (int i = 0; i < armPoints.size(); i++) {
+            armPcaData[i] = armPoints.get(i).getScaledDataForPCA();
+        }
+        EigenDecomposition edArms = PCA.run(armPcaData);
 
         System.out.println("OTHER PCA****************************");
         System.out.println(otherPoints.size() + " data points");
