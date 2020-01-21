@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PcaDataPoint {
-    private static final int dimension = 27;
+    private static final int dimension = 26; //TODO
     private static final double coordinateScaleFactor = 1000;
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
@@ -54,7 +54,7 @@ public class PcaDataPoint {
      * Over all there are 27 dimensions (animal class is not a dimension for PCA as it has no continuous scala):
      * spine: 20 doubles = 10 points
      * extremities: 3
-     * extremity lengths: 3
+     * extremity lengths: 3 TODO: 2?
      * weight: 1
      * @return array with this dimensions in the order as above
      */
@@ -76,7 +76,7 @@ public class PcaDataPoint {
         data[nextIndex] = arms ? 1.0 : 0.0; nextIndex++;
         data[nextIndex] = lengthFrontLegs / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthBackLegs / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthWings / coordinateScaleFactor; nextIndex++;
+        //data[nextIndex] = lengthWings / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = weight / weightScaleFactor;
 
         return data;
@@ -197,10 +197,10 @@ public class PcaDataPoint {
             for (int i = 0; i < 4; i++) {
                 neck.add(back.get(0));
             }
-        } else if (neck.get(0).epsilonEquals(back.get(0), 0.1)) {
+        } else if (neck.get(0).epsilonEquals(back.get(0), 0.2)) {
             Collections.reverse(neck);
         }
-        if (!neck.get(3).epsilonEquals(back.get(0), 0.1)) {
+        if (!neck.get(3).epsilonEquals(back.get(0), 0.2)) {
             System.err.println("Neck and back don't share point!");
         }
         sortedPoints.addAll(neck);
@@ -214,10 +214,10 @@ public class PcaDataPoint {
             for (int i = 0; i < 4; i++) {
                 tail.add(back.get(3));
             }
-        } else if (tail.get(3).epsilonEquals(back.get(3), 0.1)) {
+        } else if (tail.get(3).epsilonEquals(sortedPoints.get(6), 0.2)) {
             Collections.reverse(tail);
         }
-        if (!sortedPoints.get(6).epsilonEquals(tail.get(0), 0.1)) {
+        if (!sortedPoints.get(6).epsilonEquals(tail.get(0), 0.2)) {
             System.err.println("Back and tail don't share point!");
         }
         sortedPoints.remove(6);

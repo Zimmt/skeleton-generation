@@ -30,7 +30,7 @@ public class PCA {
             sortedEigenvalueIndices[i] = i;
         }
         Arrays.sort(sortedEigenvalueIndices, (o1, o2) -> -Double.compare(eigenvalues[o1], eigenvalues[o2]));
-        System.out.println("The sorted eigenvalues are:");
+        System.out.println("The " + eigenvalues.length + " sorted eigenvalues are:");
         for (Integer sortedEigenvalueIndex : sortedEigenvalueIndices) {
             System.out.print(eigenvalues[sortedEigenvalueIndex] + ", ");
         }
@@ -82,7 +82,7 @@ public class PCA {
     }
 
     private static void printEigenvector(RealVector vector) {
-        if (vector.getDimension() != 27) {
+        if (vector.getDimension() != PcaDataPoint.getDimension()) {
             System.err.println("Eigenvector does not have correct dimension.");
         }
 
@@ -122,10 +122,10 @@ public class PCA {
                 case 24:
                     System.out.println("length_back_legs");
                     break;
-                case 25:
+                /*case 25:
                     System.out.println("length_wings");
-                    break;
-                case 26:
+                    break;*/
+                case 25:
                     System.out.println("weight");
                     break;
             }
