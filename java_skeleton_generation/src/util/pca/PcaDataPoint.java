@@ -177,6 +177,10 @@ public class PcaDataPoint {
         this.weight = weight;
     }
 
+    public boolean hasWings() {
+        return wings;
+    }
+
     /**
      * Potentially reverts the order of the points in neck, back and tail.
      * Sorts the points so that they are in the order they appear on the spine.
