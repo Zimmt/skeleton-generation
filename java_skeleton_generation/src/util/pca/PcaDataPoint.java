@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PcaDataPoint {
-    private static final int dimension = 26; //TODO
+    private static final int dimension = 25; //TODO
     private static final double coordinateScaleFactor = 1000;
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
@@ -73,10 +73,8 @@ public class PcaDataPoint {
         }
         data[nextIndex] = wings ? 1.0 : 0.0; nextIndex++;
         data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
-        data[nextIndex] = arms ? 1.0 : 0.0; nextIndex++;
         data[nextIndex] = lengthFrontLegs / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthBackLegs / coordinateScaleFactor; nextIndex++;
-        //data[nextIndex] = lengthWings / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = weight / weightScaleFactor;
 
         return data;

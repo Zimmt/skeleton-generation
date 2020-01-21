@@ -114,18 +114,12 @@ public class PCA {
                     System.out.println("floored_legs");
                     break;
                 case 22:
-                    System.out.println("arms");
-                    break;
-                case 23:
                     System.out.println("length_front_legs");
                     break;
-                case 24:
+                case 23:
                     System.out.println("length_back_legs");
                     break;
-                /*case 25:
-                    System.out.println("length_wings");
-                    break;*/
-                case 25:
+                case 24:
                     System.out.println("weight");
                     break;
             }
