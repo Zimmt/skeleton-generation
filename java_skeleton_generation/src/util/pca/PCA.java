@@ -18,7 +18,7 @@ public class PCA {
             return null;
         }
 
-        RealMatrix data = MatrixUtils.createRealMatrix(inputData);
+        RealMatrix data = MatrixUtils.createRealMatrix(inputData); // preprocessing not needed as Covariance calculates mean
 
         Covariance covariance = new Covariance(data, false);
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
@@ -55,30 +55,6 @@ public class PCA {
             }
         }
         return pointsArray;
-    }
-
-    /**
-     * (This is needed to calculate weighted sum of eigenvectors for data points.)
-     * @param inputData one row represents one data point
-     * @return new matrix where the mean point is subtracted from each original data point
-     */
-    private static RealMatrix preprocessData(double[][] inputData) {
-
-        RealMatrix originalMatrix = MatrixUtils.createRealMatrix(inputData);
-        RealVector mean = new ArrayRealVector(originalMatrix.getColumnDimension());
-        for (int i = 0; i < originalMatrix.getColumnDimension(); i++) {
-            double[] column = originalMatrix.getColumn(i);
-            double columnMean = Arrays.stream(column).sum() / column.length;
-            mean.setEntry(i, columnMean);
-        }
-
-        RealMatrix meanSubMatrix = new Array2DRowRealMatrix(originalMatrix.getRowDimension(), originalMatrix.getColumnDimension());
-        for (int i = 0; i < originalMatrix.getRowDimension(); i++) {
-            RealVector row = originalMatrix.getRowVector(i);
-            meanSubMatrix.setRowVector(i, row.subtract(mean));
-        }
-
-        return meanSubMatrix;
     }
 
     private static void printEigenvector(RealVector vector) {

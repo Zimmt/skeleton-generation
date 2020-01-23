@@ -1,8 +1,16 @@
 import org.apache.commons.math3.linear.EigenDecomposition;
+import skeleton.SkeletonGenerator;
+import util.ObjGenerator;
 import util.pca.PCA;
 import util.pca.PcaDataPoint;
 import util.pca.PcaDataReader;
+import util.pca.Visualization;
 
+import javax.swing.*;
+import javax.vecmath.Point2d;
+import java.awt.*;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +18,21 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        /*SkeletonGenerator skeletonGenerator = new SkeletonGenerator();
+        visualizeMeanPointOfInputData();
+        System.out.println("Finished");
+    }
+
+    private static void visualizeMeanPointOfInputData() throws IOException {
+
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
+        PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
+
+        Visualization visualization = Visualization.initialize();
+        visualization.showPoint(mean);
+    }
+
+    private static void runSkeletonGenerator() throws IOException {
+        SkeletonGenerator skeletonGenerator = new SkeletonGenerator();
         while (!skeletonGenerator.isFinished()) {
             boolean stepDone = skeletonGenerator.doOneStep();
             if (!stepDone) { // there might be missing rules
@@ -21,8 +43,10 @@ public class Main {
         System.out.println(skeletonGenerator.toString());
 
         ObjGenerator objGenerator = new ObjGenerator();
-        objGenerator.generateObjFrom(skeletonGenerator);*/
+        objGenerator.generateObjFrom(skeletonGenerator);
+    }
 
+    private static void runPCA() throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
         List<PcaDataPoint> wingPoints = new ArrayList<>();
         List<PcaDataPoint> otherPoints = new ArrayList<>();
@@ -56,7 +80,5 @@ public class Main {
             otherPcaData[i] = otherPoints.get(i).getScaledDataForPCA();
         }
         EigenDecomposition edOther = PCA.run(otherPcaData);
-
-        System.out.println("Finished");
     }
 }

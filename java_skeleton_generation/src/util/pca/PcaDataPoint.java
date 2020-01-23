@@ -2,6 +2,7 @@ package util.pca;
 
 import javax.vecmath.Point2d;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PcaDataPoint {
     private AnimalClass animalClass;
 
     private boolean wings;
-    private int flooredLegs; // #legs/2, [0,2]
+    private double flooredLegs; // #legs/2, [0,2]
     private boolean arms;
 
     private double lengthFrontLegs; // [0, 1000]
@@ -110,6 +111,13 @@ public class PcaDataPoint {
         this.tail = tail;
     }
 
+    private void setSpine(List<Point2d> spine) {
+        if (spine.size() != 10) {
+            System.err.println("Spine has not correct number of control points.");
+        }
+        this.spine = spine;
+    }
+
     public void setAnimalClass(int animalClass) {
         if (animalClass < 0 || animalClass > 4) {
             System.err.println("Incorrect animal class found.");
@@ -136,7 +144,7 @@ public class PcaDataPoint {
         this.wings = wings;
     }
 
-    public void setFlooredLegs(int flooredLegs) {
+    public void setFlooredLegs(double flooredLegs) {
         if (flooredLegs < 0 || flooredLegs > 2) {
             System.err.println("Incorrect number of floored legs found.");
         }
@@ -181,6 +189,38 @@ public class PcaDataPoint {
 
     public boolean hasArms() {
         return arms;
+    }
+
+    public List<Point2d> getNeck() {
+        return neck;
+    }
+
+    public List<Point2d> getBack() {
+        return back;
+    }
+
+    public List<Point2d> getTail() {
+        return tail;
+    }
+
+    public List<Point2d> getSpine() {
+        return spine;
+    }
+
+    public double getFlooredLegs() {
+        return flooredLegs;
+    }
+
+    public double getLengthFrontLegs() {
+        return lengthFrontLegs;
+    }
+
+    public double getLengthBackLegs() {
+        return lengthBackLegs;
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     /**
@@ -232,5 +272,76 @@ public class PcaDataPoint {
         this.spine = sortedPoints;
 
         return true;
+    }
+
+    public static PcaDataPoint getMean(List<PcaDataPoint> points) {
+        if (points.isEmpty()) {
+            System.err.println("Cannot calculate mean from empty list");
+        } else if (!points.get(0).dataSetMaybeComplete()) {
+            System.err.println("Cannot calculate mean from incomplete data set");
+        }
+
+        PcaDataPoint mean = new PcaDataPoint();
+        mean.setName("mean");
+
+        List<Point2d> meanNeck = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
+        List<Point2d> meanBack = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
+        List<Point2d> meanTail = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
+        List<Point2d> meanSpine = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
+        double meanFlooredLegs = 0.0;
+        double meanLengthFrontLegs = 0.0;
+        double meanLengthBackLegs = 0.0;
+        double meanWeight = 0.0;
+
+        for (PcaDataPoint point : points) {
+            List<Point2d> neck = point.getNeck();
+            for (int i = 0; i < neck.size(); i++) {
+                meanNeck.get(i).add(neck.get(i));
+            }
+            List<Point2d> back = point.getBack();
+            for (int i = 0; i < back.size(); i++) {
+                meanBack.get(i).add(back.get(i));
+            }
+            List<Point2d> tail = point.getTail();
+            for (int i = 0; i < tail.size(); i++) {
+                meanTail.get(i).add(tail.get(i));
+            }
+            List<Point2d> spine = point.getSpine();
+            for (int i = 0; i < spine.size(); i++) {
+                meanSpine.get(i).add(spine.get(i));
+            }
+            meanFlooredLegs += point.getFlooredLegs();
+            meanLengthFrontLegs += point.getLengthFrontLegs();
+            meanLengthBackLegs += point.getLengthBackLegs();
+            meanWeight += point.getWeight();
+        }
+
+        for (Point2d meanNeckPoint : meanNeck) {
+            meanNeckPoint.scale(1.0 / (double) points.size());
+        }
+        for (Point2d meanBackPoint : meanBack) {
+            meanBackPoint.scale(1.0 / (double) points.size());
+        }
+        for (Point2d meanTailPoint : meanTail) {
+            meanTailPoint.scale(1.0 / (double) points.size());
+        }
+        for (Point2d meanSpinePoint : meanSpine) {
+            meanSpinePoint.scale(1.0 / (double) points.size());
+        }
+        meanFlooredLegs /= points.size();
+        meanLengthFrontLegs /= points.size();
+        meanLengthBackLegs /= points.size();
+        meanWeight /= points.size();
+
+        mean.setNeck(meanNeck);
+        mean.setBack(meanBack);
+        mean.setTail(meanTail);
+        mean.setSpine(meanSpine);
+        mean.setFlooredLegs(meanFlooredLegs);
+        mean.setLengthFrontLegs(meanLengthFrontLegs);
+        mean.setLengthBackLegs(meanLengthBackLegs);
+        mean.setWeight(meanWeight);
+
+        return mean;
     }
 }
