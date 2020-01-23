@@ -6,29 +6,23 @@ import util.pca.PcaDataPoint;
 import util.pca.PcaDataReader;
 import util.pca.Visualization;
 
-import javax.swing.*;
-import javax.vecmath.Point2d;
-import java.awt.*;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Line2D;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        visualizeMeanPointOfInputData();
+        visualize();
         System.out.println("Finished");
     }
 
-    private static void visualizeMeanPointOfInputData() throws IOException {
+    private static void visualize() throws IOException {
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
+        EigenDecomposition ed = runPCA(dataPoints);
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
 
-        Visualization visualization = Visualization.initialize();
-        visualization.showPoint(mean);
+        Visualization.start(ed, mean);
     }
 
     private static void runSkeletonGenerator() throws IOException {
@@ -46,39 +40,12 @@ public class Main {
         objGenerator.generateObjFrom(skeletonGenerator);
     }
 
-    private static void runPCA() throws IOException {
-        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
-        List<PcaDataPoint> wingPoints = new ArrayList<>();
-        List<PcaDataPoint> otherPoints = new ArrayList<>();
-        for (PcaDataPoint point : dataPoints) {
-            if (point.hasWings()) {
-                wingPoints.add(point);
-            } else {
-                otherPoints.add(point);
-            }
-        }
+    private static EigenDecomposition runPCA(List<PcaDataPoint> dataPoints) throws IOException {
 
-        System.out.println("COMPLETE PCA **************************");
         double[][] pcaData = new double[dataPoints.size()][PcaDataPoint.getDimension()];
         for (int i = 0; i < dataPoints.size(); i++) {
             pcaData[i] = dataPoints.get(i).getScaledDataForPCA();
         }
-        EigenDecomposition ed = PCA.run(pcaData);
-
-        System.out.println("WING PCA***************************");
-        System.out.println(wingPoints.size() + " data points");
-        double[][] wingPcaData = new double[wingPoints.size()][PcaDataPoint.getDimension()];
-        for (int i = 0; i < wingPoints.size(); i++) {
-            wingPcaData[i] = wingPoints.get(i).getScaledDataForPCA();
-        }
-        EigenDecomposition edWings = PCA.run(wingPcaData);
-
-        System.out.println("OTHER PCA****************************");
-        System.out.println(otherPoints.size() + " data points");
-        double[][] otherPcaData = new double[otherPoints.size()][PcaDataPoint.getDimension()];
-        for (int i = 0; i < otherPoints.size(); i++) {
-            otherPcaData[i] = otherPoints.get(i).getScaledDataForPCA();
-        }
-        EigenDecomposition edOther = PCA.run(otherPcaData);
+        return PCA.run(pcaData);
     }
 }

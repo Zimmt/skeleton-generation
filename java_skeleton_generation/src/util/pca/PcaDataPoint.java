@@ -1,5 +1,7 @@
 package util.pca;
 
+import org.apache.commons.math3.linear.RealVector;
+
 import javax.vecmath.Point2d;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,29 @@ public class PcaDataPoint {
     private double weight; // [0, 120.000]
 
     public PcaDataPoint() {}
+
+    /**
+     * Moves the point by the given vector.
+     * Changes spine but not back, neck or tail.
+     */
+    public PcaDataPoint add(RealVector scaledEigenvector) {
+        PcaDataPoint point = new PcaDataPoint();
+
+        List<Point2d> newSpine = new ArrayList<>();
+        for (int i = 0; i < spine.size(); i++) {
+            Point2d p = new Point2d(spine.get(i));
+            p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor, scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
+            newSpine.add(p);
+        }
+        point.setSpine(newSpine);
+
+        point.setFlooredLegs(flooredLegs + scaledEigenvector.getEntry(21) * flooredLegsScaleFactor);
+        point.setLengthFrontLegs(lengthFrontLegs + scaledEigenvector.getEntry(22) * coordinateScaleFactor);
+        point.setLengthBackLegs(lengthBackLegs + scaledEigenvector.getEntry(23) * coordinateScaleFactor);
+        point.setWeight(weight + scaledEigenvector.getEntry(24) * weightScaleFactor);
+
+        return point;
+    }
 
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
@@ -191,18 +216,6 @@ public class PcaDataPoint {
         return arms;
     }
 
-    public List<Point2d> getNeck() {
-        return neck;
-    }
-
-    public List<Point2d> getBack() {
-        return back;
-    }
-
-    public List<Point2d> getTail() {
-        return tail;
-    }
-
     public List<Point2d> getSpine() {
         return spine;
     }
@@ -274,6 +287,9 @@ public class PcaDataPoint {
         return true;
     }
 
+    /**
+     * Calculates mean of spine but not of neck, back and tail!
+     */
     public static PcaDataPoint getMean(List<PcaDataPoint> points) {
         if (points.isEmpty()) {
             System.err.println("Cannot calculate mean from empty list");
@@ -284,9 +300,6 @@ public class PcaDataPoint {
         PcaDataPoint mean = new PcaDataPoint();
         mean.setName("mean");
 
-        List<Point2d> meanNeck = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
-        List<Point2d> meanBack = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
-        List<Point2d> meanTail = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
         List<Point2d> meanSpine = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
         double meanFlooredLegs = 0.0;
         double meanLengthFrontLegs = 0.0;
@@ -294,18 +307,6 @@ public class PcaDataPoint {
         double meanWeight = 0.0;
 
         for (PcaDataPoint point : points) {
-            List<Point2d> neck = point.getNeck();
-            for (int i = 0; i < neck.size(); i++) {
-                meanNeck.get(i).add(neck.get(i));
-            }
-            List<Point2d> back = point.getBack();
-            for (int i = 0; i < back.size(); i++) {
-                meanBack.get(i).add(back.get(i));
-            }
-            List<Point2d> tail = point.getTail();
-            for (int i = 0; i < tail.size(); i++) {
-                meanTail.get(i).add(tail.get(i));
-            }
             List<Point2d> spine = point.getSpine();
             for (int i = 0; i < spine.size(); i++) {
                 meanSpine.get(i).add(spine.get(i));
@@ -316,15 +317,6 @@ public class PcaDataPoint {
             meanWeight += point.getWeight();
         }
 
-        for (Point2d meanNeckPoint : meanNeck) {
-            meanNeckPoint.scale(1.0 / (double) points.size());
-        }
-        for (Point2d meanBackPoint : meanBack) {
-            meanBackPoint.scale(1.0 / (double) points.size());
-        }
-        for (Point2d meanTailPoint : meanTail) {
-            meanTailPoint.scale(1.0 / (double) points.size());
-        }
         for (Point2d meanSpinePoint : meanSpine) {
             meanSpinePoint.scale(1.0 / (double) points.size());
         }
@@ -333,9 +325,6 @@ public class PcaDataPoint {
         meanLengthBackLegs /= points.size();
         meanWeight /= points.size();
 
-        mean.setNeck(meanNeck);
-        mean.setBack(meanBack);
-        mean.setTail(meanTail);
         mean.setSpine(meanSpine);
         mean.setFlooredLegs(meanFlooredLegs);
         mean.setLengthFrontLegs(meanLengthFrontLegs);
