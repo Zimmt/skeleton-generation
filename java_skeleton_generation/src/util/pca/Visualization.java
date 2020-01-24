@@ -9,6 +9,7 @@ import javax.swing.event.ChangeListener;
 import javax.vecmath.Point2d;
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class Visualization extends Canvas implements ChangeListener {
                     -1.5, 1.5, this);
         }
         setSize(1010, 1010);
-        
+
     }
 
     public static Visualization start(EigenDecomposition ed, PcaDataPoint mean) {
@@ -129,7 +130,18 @@ public class Visualization extends Canvas implements ChangeListener {
         g2d.setColor(Color.RED);
         g2d.draw(tail);
 
+        Line2D frontLeg = new Line2D.Double(
+                spinePoints.get(3).x, 1000 - spinePoints.get(3).y,
+                spinePoints.get(3).x, 1000 - spinePoints.get(3).y + pointToDraw.getLengthFrontLegs());
         g2d.setColor(Color.BLACK);
+        g2d.draw(frontLeg);
+
+        Line2D backLeg = new Line2D.Double(
+                spinePoints.get(6).x, 1000 - spinePoints.get(6).y,
+                spinePoints.get(6).x, 1000 - spinePoints.get(6).y + pointToDraw.getLengthBackLegs()
+        );
+        g2d.draw(backLeg);
+
         g2d.draw(new Rectangle2D.Double(1,1,1000,1000));
     }
 }
