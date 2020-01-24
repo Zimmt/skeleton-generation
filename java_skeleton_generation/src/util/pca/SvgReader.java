@@ -13,7 +13,6 @@ public class SvgReader {
      * @param inputPath path to the svg file
      */
     public List<ParsedSvgPath> parseFile(String inputPath) throws IOException {
-        System.out.println("Parsing " + inputPath);
         File file = new File(inputPath);
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
         List<ParsedSvgPath> result = new ArrayList<>();

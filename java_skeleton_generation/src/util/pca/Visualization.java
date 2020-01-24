@@ -74,7 +74,6 @@ public class Visualization extends Canvas implements ChangeListener {
      * triggered when a slider changes its state
      */
     public void stateChanged(ChangeEvent e) {
-        System.out.println("slider change");
         JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
             repaint();
@@ -83,8 +82,6 @@ public class Visualization extends Canvas implements ChangeListener {
 
     // is called automatically whenever the canvas needs to be redrawn
     public void paint(Graphics g) {
-        System.out.println("redraw");
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
 
@@ -104,6 +101,7 @@ public class Visualization extends Canvas implements ChangeListener {
         g2d.drawString(String.format("length front legs: %.3f", pointToDraw.getLengthFrontLegs()), 50, 90);
         g2d.drawString(String.format("length back legs: %.3f", pointToDraw.getLengthBackLegs()), 50, 115);
         g2d.drawString(String.format("weight: %.3f", pointToDraw.getWeight()), 50, 140);
+        g2d.drawString(String.format("wings: %.3f", pointToDraw.getWings()), 50, 165);
 
         List<Point2d> spinePoints = pointToDraw.getSpine();
         CubicCurve2D.Double neck = new CubicCurve2D.Double(

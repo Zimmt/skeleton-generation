@@ -11,6 +11,7 @@ import java.util.List;
 public class PcaDataPoint {
     private static final int dimension = 25; //TODO
     private static final double coordinateScaleFactor = 1000;
+    private static final double wingScaleFactor = 1;
     private static final double flooredLegsScaleFactor = 2;
     private static final double weightScaleFactor = 120000;
 
@@ -23,7 +24,7 @@ public class PcaDataPoint {
 
     private AnimalClass animalClass;
 
-    private boolean wings;
+    private double wings;
     private double flooredLegs; // #legs/2, [0,2]
     private boolean arms;
 
@@ -37,7 +38,8 @@ public class PcaDataPoint {
 
     /**
      * Moves the point by the given vector.
-     * Changes spine but not back, neck or tail.
+     * Changes: spine, wings, flooredLegs, lengthFrontLegs, lengthBackLegs, weight
+     * Doesn't change: back, neck, tail, animalClass, arms, lengthWings
      */
     public PcaDataPoint add(RealVector scaledEigenvector) {
         PcaDataPoint point = new PcaDataPoint();
@@ -50,6 +52,7 @@ public class PcaDataPoint {
         }
         point.setSpine(newSpine);
 
+        point.setWings(wings + scaledEigenvector.getEntry(20) * wingScaleFactor);
         point.setFlooredLegs(flooredLegs + scaledEigenvector.getEntry(21) * flooredLegsScaleFactor);
         point.setLengthFrontLegs(lengthFrontLegs + scaledEigenvector.getEntry(22) * coordinateScaleFactor);
         point.setLengthBackLegs(lengthBackLegs + scaledEigenvector.getEntry(23) * coordinateScaleFactor);
@@ -97,7 +100,7 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y / coordinateScaleFactor;
             nextIndex += 2;
         }
-        data[nextIndex] = wings ? 1.0 : 0.0; nextIndex++;
+        data[nextIndex] = wings / wingScaleFactor; nextIndex++;
         data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
         data[nextIndex] = lengthFrontLegs / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthBackLegs / coordinateScaleFactor; nextIndex++;
@@ -165,7 +168,7 @@ public class PcaDataPoint {
         }
     }
 
-    public void setWings(boolean wings) {
+    public void setWings(double wings) {
         this.wings = wings;
     }
 
@@ -208,7 +211,7 @@ public class PcaDataPoint {
         this.weight = weight;
     }
 
-    public boolean hasWings() {
+    public double getWings() {
         return wings;
     }
 
@@ -305,6 +308,7 @@ public class PcaDataPoint {
         double meanLengthFrontLegs = 0.0;
         double meanLengthBackLegs = 0.0;
         double meanWeight = 0.0;
+        double meanWings = 0.0;
 
         for (PcaDataPoint point : points) {
             List<Point2d> spine = point.getSpine();
@@ -315,6 +319,7 @@ public class PcaDataPoint {
             meanLengthFrontLegs += point.getLengthFrontLegs();
             meanLengthBackLegs += point.getLengthBackLegs();
             meanWeight += point.getWeight();
+            meanWings += point.getWings();
         }
 
         for (Point2d meanSpinePoint : meanSpine) {
@@ -324,12 +329,14 @@ public class PcaDataPoint {
         meanLengthFrontLegs /= points.size();
         meanLengthBackLegs /= points.size();
         meanWeight /= points.size();
+        meanWings /= points.size();
 
         mean.setSpine(meanSpine);
         mean.setFlooredLegs(meanFlooredLegs);
         mean.setLengthFrontLegs(meanLengthFrontLegs);
         mean.setLengthBackLegs(meanLengthBackLegs);
         mean.setWeight(meanWeight);
+        mean.setWings(meanWings);
 
         return mean;
     }

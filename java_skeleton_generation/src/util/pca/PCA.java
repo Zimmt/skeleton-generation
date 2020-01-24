@@ -13,6 +13,7 @@ public class PCA {
      * @param inputData one row represents one data point
      */
     public static EigenDecomposition run(double[][] inputData) {
+        System.out.print("Running PCA... ");
         if (inputData.length == 0) {
             System.err.println("Input data for PCA is empty!");
             return null;
@@ -24,6 +25,11 @@ public class PCA {
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
         EigenDecomposition ed = new EigenDecomposition(covarianceMatrix);
 
+        System.out.println("Complete.");
+        return ed;
+    }
+
+    private static void printData(EigenDecomposition ed) {
         double[] eigenvalues = ed.getRealEigenvalues();
         Integer[] sortedEigenvalueIndices = new Integer[eigenvalues.length];
         for (int i = 0; i < sortedEigenvalueIndices.length; i++) {
@@ -37,12 +43,10 @@ public class PCA {
 
         int wantedEigenvectors = 6;
         System.out.println("\nThe first " + wantedEigenvectors + " eigenvectors are:");
-        for (int i = 0; i < wantedEigenvectors && i < data.getColumnDimension(); i++) {
+        for (int i = 0; i < wantedEigenvectors && i < eigenvalues.length; i++) {
             System.out.println( "> " + (i+1) + " -------------------------------------------------");
             printEigenvector(ed.getEigenvector(sortedEigenvalueIndices[i]));
         }
-
-        return ed;
     }
 
     public static double[][] generateRandomData(int rows, int columns) {

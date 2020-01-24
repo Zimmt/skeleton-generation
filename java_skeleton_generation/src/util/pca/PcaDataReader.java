@@ -11,6 +11,7 @@ public class PcaDataReader {
      * Reads input data from ./PCA/PCA_data.txt
      */
     public static List<PcaDataPoint> readInputData() throws IOException {
+        System.out.print("Reading input data... ");
         File file = new File("../PCA/PCA_data.txt");
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
         List<PcaDataPoint> dataPoints = new ArrayList<>();
@@ -37,7 +38,7 @@ public class PcaDataReader {
             PcaDataPoint dataPoint = new PcaDataPoint();
             dataPoint.setName(name);
             dataPoint.setAnimalClass(animalClass);
-            dataPoint.setWings(wings);
+            dataPoint.setWings(wings ? 1.0 : 0.0);
             dataPoint.setFlooredLegs(flooredLegs);
             dataPoint.setArms(arms);
             dataPoint.setWeight(weight);
@@ -76,6 +77,7 @@ public class PcaDataReader {
             }
             dataPoints.add(dataPoint);
         }
+        System.out.println("Complete.");
         return dataPoints;
     }
 
