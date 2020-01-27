@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,6 +83,15 @@ public class Visualization extends Canvas implements ChangeListener {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
+        PcaDataPoint pointToDraw = findPointToDraw();
+
+        paintTextData(pointToDraw, g2d);
+        paintSpine(pointToDraw, g2d);
+        paintArm(pointToDraw, g2d);
+        paintLeg(pointToDraw, g2d);
+    }
+
+    private PcaDataPoint findPointToDraw() {
 
         // mapMultiply does not change eigenvector, generates new one
         RealVector[] scaledEigenvectors = new RealVector[sliders.length];
@@ -95,9 +103,14 @@ public class Visualization extends Canvas implements ChangeListener {
             pointToDraw = pointToDraw.add(scaledEigenvector);
         }
 
+        return pointToDraw;
+    }
+
+    private void paintTextData(PcaDataPoint pointToDraw, Graphics2D g2d) {
         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 15));
         g2d.setColor(Color.BLACK);
         int yPosition = 65;
+
         g2d.drawString(String.format("wings: %.3f", pointToDraw.getWings()), 50, yPosition); yPosition += 25;
         g2d.drawString(String.format("floored legs: %.3f", pointToDraw.getFlooredLegs()), 50, yPosition); yPosition += 25;
         g2d.drawString(String.format("length upper arm: %.3f", pointToDraw.getLengthUpperArm()), 50, yPosition); yPosition += 25;
@@ -107,8 +120,9 @@ public class Visualization extends Canvas implements ChangeListener {
         g2d.drawString(String.format("length lower leg: %.3f", pointToDraw.getLengthLowerLeg()), 50, yPosition); yPosition += 25;
         g2d.drawString(String.format("length foot: %.3f", pointToDraw.getLengthFoot()), 50, yPosition); yPosition += 25;
         g2d.drawString(String.format("weight: %.3f", pointToDraw.getWeight()), 50, yPosition);
+    }
 
-
+    private void paintSpine(PcaDataPoint pointToDraw, Graphics2D g2d) {
         List<Point2d> spinePoints = pointToDraw.getSpine();
         CubicCurve2D.Double neck = new CubicCurve2D.Double(
                 spinePoints.get(0).x, 1000 - spinePoints.get(0).y,
@@ -133,8 +147,38 @@ public class Visualization extends Canvas implements ChangeListener {
                 spinePoints.get(9).x, 1000 - spinePoints.get(9).y);
         g2d.setColor(Color.RED);
         g2d.draw(tail);
+    }
 
-        // TODO: draw arms and legs
+    private void paintArm(PcaDataPoint pointToDraw, Graphics2D g2d) {
+        List<Point2d> spinePoints = pointToDraw.getSpine();
+
+        g2d.setColor(Color.ORANGE);
+        Point2d elbow = new Point2d(spinePoints.get(3).x, spinePoints.get(3).y - pointToDraw.getLengthUpperArm());
+        g2d.draw(new Line2D.Double(spinePoints.get(3).x, 1000 - spinePoints.get(3).y,
+                elbow.x, 1000 - elbow.y));
+
+        g2d.setColor(Color.MAGENTA);
+        Point2d wrist = new Point2d(elbow.x, elbow.y - pointToDraw.getLengthLowerArm());
+        g2d.draw(new Line2D.Double(elbow.x, 1000 - elbow.y, wrist.x, 1000 - wrist.y));
+
+        g2d.setColor(Color.GREEN);
+        g2d.draw(new Line2D.Double(wrist.x, 1000-wrist.y, wrist.x - pointToDraw.getLengthHand(), 1000 - wrist.y));
+    }
+
+    private void paintLeg(PcaDataPoint pointToDraw, Graphics2D g2d) {
+        List<Point2d> spinePoints = pointToDraw.getSpine();
+
+        g2d.setColor(Color.ORANGE);
+        Point2d knee = new Point2d(spinePoints.get(6).x, spinePoints.get(6).y - pointToDraw.getLengthUpperLeg());
+        g2d.draw(new Line2D.Double(spinePoints.get(6).x, 1000 - spinePoints.get(6).y,
+                knee.x, 1000 - knee.y));
+
+        g2d.setColor(Color.MAGENTA);
+        Point2d ankle = new Point2d(knee.x, knee.y - pointToDraw.getLengthLowerLeg());
+        g2d.draw(new Line2D.Double(knee.x, 1000 - knee.y, ankle.x, 1000 - ankle.y));
+
+        g2d.setColor(Color.GREEN);
+        g2d.draw(new Line2D.Double(ankle.x, 1000-ankle.y, ankle.x - pointToDraw.getLengthFoot(), 1000 - ankle.y));
 
         g2d.setColor(Color.BLACK);
         g2d.draw(new Rectangle2D.Double(1,1,1000,1000));

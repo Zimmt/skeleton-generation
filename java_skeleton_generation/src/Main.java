@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
-        visualizeOnlyNoWings(dataPoints);
+        visualize(dataPoints);
         System.out.println("Finished");
     }
 
