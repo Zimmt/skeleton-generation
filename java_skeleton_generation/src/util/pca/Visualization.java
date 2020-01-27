@@ -97,11 +97,17 @@ public class Visualization extends Canvas implements ChangeListener {
 
         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 15));
         g2d.setColor(Color.BLACK);
-        g2d.drawString(String.format("floored legs: %.3f", pointToDraw.getFlooredLegs()), 50, 65);
-        g2d.drawString(String.format("length front legs: %.3f", pointToDraw.getLengthFrontLegs()), 50, 90);
-        g2d.drawString(String.format("length back legs: %.3f", pointToDraw.getLengthBackLegs()), 50, 115);
-        g2d.drawString(String.format("weight: %.3f", pointToDraw.getWeight()), 50, 140);
-        g2d.drawString(String.format("wings: %.3f", pointToDraw.getWings()), 50, 165);
+        int yPosition = 65;
+        g2d.drawString(String.format("wings: %.3f", pointToDraw.getWings()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("floored legs: %.3f", pointToDraw.getFlooredLegs()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length upper arm: %.3f", pointToDraw.getLengthUpperArm()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length lower arm: %.3f", pointToDraw.getLengthLowerArm()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length hand: %.3f", pointToDraw.getLengthHand()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length upper leg: %.3f", pointToDraw.getLengthUpperLeg()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length lower leg: %.3f", pointToDraw.getLengthLowerLeg()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("length foot: %.3f", pointToDraw.getLengthFoot()), 50, yPosition); yPosition += 25;
+        g2d.drawString(String.format("weight: %.3f", pointToDraw.getWeight()), 50, yPosition);
+
 
         List<Point2d> spinePoints = pointToDraw.getSpine();
         CubicCurve2D.Double neck = new CubicCurve2D.Double(
@@ -128,18 +134,9 @@ public class Visualization extends Canvas implements ChangeListener {
         g2d.setColor(Color.RED);
         g2d.draw(tail);
 
-        Line2D frontLeg = new Line2D.Double(
-                spinePoints.get(3).x, 1000 - spinePoints.get(3).y,
-                spinePoints.get(3).x, 1000 - spinePoints.get(3).y + pointToDraw.getLengthFrontLegs());
+        // TODO: draw arms and legs
+
         g2d.setColor(Color.BLACK);
-        g2d.draw(frontLeg);
-
-        Line2D backLeg = new Line2D.Double(
-                spinePoints.get(6).x, 1000 - spinePoints.get(6).y,
-                spinePoints.get(6).x, 1000 - spinePoints.get(6).y + pointToDraw.getLengthBackLegs()
-        );
-        g2d.draw(backLeg);
-
         g2d.draw(new Rectangle2D.Double(1,1,1000,1000));
     }
 }

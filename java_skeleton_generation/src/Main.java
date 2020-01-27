@@ -8,17 +8,27 @@ import util.pca.Visualization;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        visualize();
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
+        visualizeOnlyNoWings(dataPoints);
         System.out.println("Finished");
     }
 
-    private static void visualize() throws IOException {
+    private static void visualizeOnlyWings(List<PcaDataPoint> dataPoints) throws IOException {
+        dataPoints = dataPoints.stream().filter(p -> p.getWings() > 0).collect(Collectors.toList());
+        visualize(dataPoints);
+    }
 
-        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
+    private static void visualizeOnlyNoWings(List<PcaDataPoint> dataPoints) throws IOException {
+        dataPoints = dataPoints.stream().filter(p -> p.getWings() <= 0).collect(Collectors.toList());
+        visualize(dataPoints);
+    }
+
+    private static void visualize(List<PcaDataPoint> dataPoints) throws IOException {
         EigenDecomposition ed = runPCA(dataPoints);
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
 

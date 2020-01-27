@@ -23,7 +23,7 @@ public class PcaDataReader {
             }
 
             String[] lineParts = line.split(",");
-            if (lineParts.length != 6) {
+            if (lineParts.length != 5) {
                 System.err.println("Found wrong number of attributes in line.");
                 continue;
             }
@@ -32,15 +32,13 @@ public class PcaDataReader {
             int animalClass = Integer.parseInt(lineParts[1]);
             boolean wings = Integer.parseInt(lineParts[2]) > 0;
             int flooredLegs = Integer.parseInt(lineParts[3]);
-            boolean arms = Integer.parseInt(lineParts[4]) > 0;
-            double weight = Double.parseDouble(lineParts[5]);
+            double weight = Double.parseDouble(lineParts[4]);
 
             PcaDataPoint dataPoint = new PcaDataPoint();
             dataPoint.setName(name);
             dataPoint.setAnimalClass(animalClass);
             dataPoint.setWings(wings ? 1.0 : 0.0);
             dataPoint.setFlooredLegs(flooredLegs);
-            dataPoint.setArms(arms);
             dataPoint.setWeight(weight);
 
             String svgFilePath = "../PCA/Skelettbilder/" + name + ".svg";
@@ -58,14 +56,23 @@ public class PcaDataReader {
                     case "tail":
                         dataPoint.setTail(path.getPoints());
                         break;
-                    case "front_leg":
-                        dataPoint.setLengthFrontLegs(getLength(path.getPoints()));
+                    case "upper_arm":
+                        dataPoint.setLengthUpperArm(getLength(path.getPoints()));
                         break;
-                    case "back_leg":
-                        dataPoint.setLengthBackLegs(getLength(path.getPoints()));
+                    case "lower_arm":
+                        dataPoint.setLengthLowerArm(getLength(path.getPoints()));
                         break;
-                    case "wing":
-                        dataPoint.setLengthWings(getLength(path.getPoints()));
+                    case "hand":
+                        dataPoint.setLengthHand(getLength(path.getPoints()));
+                        break;
+                    case "upper_leg":
+                        dataPoint.setLengthUpperLeg(getLength(path.getPoints()));
+                        break;
+                    case "lower_leg":
+                        dataPoint.setLengthLowerLeg(getLength(path.getPoints()));
+                        break;
+                    case "foot":
+                        dataPoint.setLengthFoot(getLength(path.getPoints()));
                         break;
                     default:
                         System.err.println(path.getLabel() + " is no valid label.");
