@@ -87,6 +87,7 @@ public class SvgReader {
         double firstCoordinate = 0f;
         boolean firstCoordinateFound = false;
         boolean verticalOffset = false;
+        boolean horizontalOffset = false;
         List<Point2d> points = new ArrayList<>();
 
         for (int i = 0; i < d.length(); i++) {
@@ -99,9 +100,13 @@ public class SvgReader {
                         stringBuilder.setLength(0);
                         firstCoordinateFound = true;
                         if (verticalOffset) {
-                            points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate));
+                            points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate, true));
                             firstCoordinateFound = false;
                             verticalOffset = false;
+                        } else if (horizontalOffset) {
+                            points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate, false));
+                            firstCoordinateFound = false;
+                            horizontalOffset = false;
                         }
                     } else {
                         double secondCoordinate = Double.parseDouble(stringBuilder.toString());
@@ -112,6 +117,8 @@ public class SvgReader {
 
                 } else if (d.charAt(i) == 'V') {
                     verticalOffset = true;
+                } else if (d.charAt(i) == 'H') {
+                    horizontalOffset = true;
                 }
 
             } else {
@@ -124,7 +131,9 @@ public class SvgReader {
                 double secondCoordinate = Double.parseDouble(stringBuilder.toString());
                 points.add(getPoint(firstCoordinate, secondCoordinate));
             } else if (verticalOffset) {
-                points.add(getPointWithOffset(points.get(points.size()-1), firstCoordinate));
+                points.add(getPointWithOffset(points.get(points.size() - 1), firstCoordinate, true));
+            } else if (horizontalOffset) {
+                points.add(getPointWithOffset(points.get(points.size() - 1), firstCoordinate, false));
             } else {
                 System.err.println("Point could not be parsed completely.");
             }
@@ -138,9 +147,14 @@ public class SvgReader {
         return new Point2d(firstCoordinate, fixedSecondCoordinate);
     }
 
-    private Point2d getPointWithOffset(Point2d previousPoint, double verticalOffset) {
+    private Point2d getPointWithOffset(Point2d previousPoint, double offset, boolean vertical) {
         double firstCoordinate = previousPoint.x;
-        double secondCoordinate = previousPoint.y + verticalOffset;
+        double secondCoordinate = previousPoint.y;
+        if (vertical) {
+            secondCoordinate += offset;
+        } else {
+            firstCoordinate += offset;
+        }
         return getPoint(firstCoordinate, secondCoordinate);
     }
 }

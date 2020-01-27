@@ -28,9 +28,9 @@
      inkscape:window-height="1052"
      id="namedview6"
      showgrid="false"
-     inkscape:zoom="1.888"
-     inkscape:cx="270.50327"
-     inkscape:cy="187.04955"
+     inkscape:zoom="1.3350176"
+     inkscape:cx="519.36881"
+     inkscape:cy="187.51909"
      inkscape:window-x="1366"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -73,4 +73,16 @@
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="cc"
      inkscape:label="tail" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 244.17373,811.97034 L 393.00847,792.37288"
+     id="path48"
+     inkscape:connector-curvature="0"
+     inkscape:label="hand" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 278.64801,881.6495 L 372.27974,974.53217"
+     id="path50"
+     inkscape:connector-curvature="0"
+     inkscape:label="foot" />
 </svg>

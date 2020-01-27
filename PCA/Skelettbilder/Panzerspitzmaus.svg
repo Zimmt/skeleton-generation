@@ -28,9 +28,9 @@
      inkscape:window-height="1052"
      id="namedview1761"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="467.14128"
-     inkscape:cy="115.04554"
+     inkscape:zoom="2.6700352"
+     inkscape:cx="308.9883"
+     inkscape:cy="137.3233"
      inkscape:window-x="1366"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -81,16 +81,38 @@
      inkscape:label="tail" />
   <path
      style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 251.58899,898.83475 L 251.58898,782.83898"
-     id="path266"
+     d="M 558.79413,854.30904 L 457.67187,798.50453"
+     id="path1688"
      inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc"
-     inkscape:label="front_leg" />
+     inkscape:label="upper_leg" />
   <path
      style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 531.77967,924.25848 L 530.19068,810.91102"
-     id="path268"
+     d="M 556.54697,924.72009 L 460.66808,813.48561"
+     id="path1690"
      inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc"
-     inkscape:label="back_leg" />
+     inkscape:label="lower_leg" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 454.67565,934.08327 L 556.54697,924.72009"
+     id="path1692"
+     inkscape:connector-curvature="0"
+     inkscape:label="foot" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 224.34161,820.97614 L 304.86489,838.57891"
+     id="path1694"
+     inkscape:connector-curvature="0"
+     inkscape:label="upper_arm" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 233.33026,885.7693 L 315.72617,841.57512"
+     id="path1696"
+     inkscape:connector-curvature="0"
+     inkscape:label="lower_arm" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 157.3013,892.13625 L 233.33026,885.7693"
+     id="path1698"
+     inkscape:connector-curvature="0"
+     inkscape:label="hand" />
 </svg>
