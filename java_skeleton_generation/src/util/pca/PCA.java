@@ -25,6 +25,9 @@ public class PCA {
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
         EigenDecomposition ed = new EigenDecomposition(covarianceMatrix);
 
+        int eigenvalueCount = (int) Arrays.stream(ed.getRealEigenvalues()).filter(d -> d >= 0.001).count();
+        System.out.println(String.format("%d eigenvalues/-vectors", eigenvalueCount));
+
         System.out.println("Complete.");
         return ed;
     }
