@@ -7,6 +7,7 @@ import util.pca.PcaDataReader;
 import util.pca.Visualization;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,21 +19,28 @@ public class Main {
         System.out.println("Finished");
     }
 
-    private static void visualizeOnlyWings(List<PcaDataPoint> dataPoints) throws IOException {
+    private static void exportImagesFromVisualization(Visualization visualization) throws IOException {
+        double[] testSetting1 = {0.5, -0.5, 0.0, 0.0, 0.0, 0.0};
+        double[] testSetting2 = {-0.5, 0.5, 0.0, 0.0, 0.0, 0.0};
+        double[] testSetting3 = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        visualization.exportImagesWithEigenvectorSettings(Arrays.asList(testSetting1, testSetting2, testSetting3), "../PCA/temporary_visualization_exports/", "test");
+    }
+
+    private static Visualization visualizeOnlyWings(List<PcaDataPoint> dataPoints) throws IOException {
         dataPoints = dataPoints.stream().filter(p -> p.getWings() > 0).collect(Collectors.toList());
-        visualize(dataPoints);
+        return visualize(dataPoints);
     }
 
-    private static void visualizeOnlyNoWings(List<PcaDataPoint> dataPoints) throws IOException {
+    private static Visualization visualizeOnlyNoWings(List<PcaDataPoint> dataPoints) throws IOException {
         dataPoints = dataPoints.stream().filter(p -> p.getWings() <= 0).collect(Collectors.toList());
-        visualize(dataPoints);
+        return visualize(dataPoints);
     }
 
-    private static void visualize(List<PcaDataPoint> dataPoints) throws IOException {
+    private static Visualization visualize(List<PcaDataPoint> dataPoints) throws IOException {
         EigenDecomposition ed = runPCA(dataPoints);
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
 
-        Visualization.start(ed, mean);
+        return Visualization.start(ed, mean);
     }
 
     private static void runSkeletonGenerator() throws IOException {

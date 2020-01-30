@@ -36,7 +36,7 @@ public class Visualization extends Canvas implements ChangeListener {
     private JFrame frame;
     private SliderController[] sliders = new SliderController[6];
 
-    private int exportImageIndex = 1;
+    private int defaultExportImageIndex = 1;
 
     private Visualization(EigenDecomposition ed, PcaDataPoint mean, JFrame frame) {
         this.eigenDecomposition = ed;
@@ -81,7 +81,8 @@ public class Visualization extends Canvas implements ChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    visualization.exportToImage("../PCA/temporary_visualization_exports/PCA_export"+visualization.exportImageIndex +".jpg");
+                    visualization.exportToImage("../PCA/temporary_visualization_exports/PCA_export"+visualization.defaultExportImageIndex +".jpg");
+                    visualization.defaultExportImageIndex++;
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -95,9 +96,33 @@ public class Visualization extends Canvas implements ChangeListener {
         return visualization;
     }
 
-    public void exportToImage(String filePath) throws IOException {
-        exportImageIndex++;
+    /**
+     * @param settings scale factors for eigenvectors
+     * @param filePath path to folder where files should be stored (with a '/' in the end
+     * @param fileName name of the file (without the .jpg extension
+     * @throws IOException
+     */
+    public void exportImagesWithEigenvectorSettings(List<double[]> settings, String filePath, String fileName) throws IOException {
+        for (int s = 0; s < settings.size(); s++) {
+            if (settings.get(s).length != sliders.length) {
+                System.err.println("Found setting with incorrect number of factors");
+            }
+            for (int i = 0; i < sliders.length; i++) {
+                sliders[i].setSliderValue(settings.get(s)[i]);
+            }
 
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.err.println("Could not sleep");
+            }
+
+            exportToImage(filePath + fileName + (s+1) + ".jpg");
+            System.out.println("Exported image " + s);
+        }
+    }
+
+    public void exportToImage(String filePath) throws IOException {
         // sets everything to double size to get a better resolution of the image, in the end it is turned back
         BufferedImage image = new BufferedImage(width*2, height*2, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
@@ -109,6 +134,7 @@ public class Visualization extends Canvas implements ChangeListener {
         ImageIO.write(image, "jpg", new File(filePath));
 
         this.setSize(height, height);
+        this.repaint();
     }
 
     /**
@@ -171,7 +197,6 @@ public class Visualization extends Canvas implements ChangeListener {
     }
 
     private void paintSpine(PcaDataPoint pointToDraw, Graphics2D g2d) {
-        System.out.println("paint spine");
         List<Point2d> spinePoints = pointToDraw.getSpine();
         CubicCurve2D.Double neck = new CubicCurve2D.Double(
                 spinePoints.get(0).x, 1000 - spinePoints.get(0).y,
