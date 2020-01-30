@@ -7,13 +7,16 @@ import java.awt.*;
 
 public class SliderController extends JPanel implements ChangeListener {
 
+    private static int precision = 100;
+
+    private JSlider slider;
     private String sliderTitle;
     private double currentValue = 0.0;
     private JLabel label;
 
     public SliderController(String sliderTitle, double min, double max, Visualization parent) {
         this.sliderTitle = sliderTitle;
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, (int) Math.ceil(min*100), (int) Math.ceil(max*100), 0);
+        this.slider = new JSlider(JSlider.HORIZONTAL, (int) Math.ceil(min*precision), (int) Math.ceil(max*precision), 0);
         slider.addChangeListener(this);
         slider.addChangeListener(parent);
         slider.setPreferredSize(new Dimension(500, 40));
@@ -28,9 +31,13 @@ public class SliderController extends JPanel implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
-            currentValue = (double) source.getValue() / 100.0;
+            currentValue = (double) source.getValue() / (double) precision;
             label.setText(this.sliderTitle + ": " + currentValue);
         }
+    }
+
+    public void setSliderValue(double value) {
+        slider.setValue((int) Math.ceil(value * precision));
     }
 
     public double getCurrentValue() {

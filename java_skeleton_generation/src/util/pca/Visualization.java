@@ -3,14 +3,20 @@ package util.pca;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.vecmath.Point2d;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,15 +26,22 @@ import java.util.List;
  */
 public class Visualization extends Canvas implements ChangeListener {
 
+    private static int width = 1700;
+    private static int height = 1010;
+
     private EigenDecomposition eigenDecomposition;
     private PcaDataPoint mean;
     private Integer[] sortedEigenvalueIndices;
 
+    private JFrame frame;
     private SliderController[] sliders = new SliderController[6];
 
-    private Visualization(EigenDecomposition ed, PcaDataPoint mean) {
+    private int exportImageIndex = 1;
+
+    private Visualization(EigenDecomposition ed, PcaDataPoint mean, JFrame frame) {
         this.eigenDecomposition = ed;
         this.mean = mean;
+        this.frame = frame;
 
         double[] eigenvalues = ed.getRealEigenvalues();
         Integer[] sortedEigenvalueIndices = new Integer[eigenvalues.length];
@@ -43,7 +56,7 @@ public class Visualization extends Canvas implements ChangeListener {
                     String.format("Eigenvector %x (Eigenvalue: %.3f)", i+1, eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[i])),
                     -1.5, 1.5, this);
         }
-        setSize(1010, 1010);
+        setSize(height, height);
 
     }
 
@@ -51,10 +64,11 @@ public class Visualization extends Canvas implements ChangeListener {
 
         JFrame frame = new JFrame("PCA Visualization");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(1700, 1010));
+        frame.setMinimumSize(new Dimension(width, height));
         frame.setLayout(new FlowLayout());
+        frame.setResizable(false);
 
-        Visualization visualization = new Visualization(ed, mean);
+        Visualization visualization = new Visualization(ed, mean, frame);
         frame.add(visualization);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -62,11 +76,39 @@ public class Visualization extends Canvas implements ChangeListener {
         for (SliderController slider : visualization.sliders) {
             panel.add(slider);
         }
+        Button exportButton = new Button("export to file");
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    visualization.exportToImage("../PCA/temporary_visualization_exports/PCA_export"+visualization.exportImageIndex +".jpg");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        panel.add(exportButton);
 
         frame.pack();
         frame.setVisible(true);
 
         return visualization;
+    }
+
+    public void exportToImage(String filePath) throws IOException {
+        exportImageIndex++;
+
+        // sets everything to double size to get a better resolution of the image, in the end it is turned back
+        BufferedImage image = new BufferedImage(width*2, height*2, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        g2d.scale(2.0,2.0);
+        this.setSize(height*2, height*2);
+
+        frame.paint(g2d);
+        this.paint(g2d);
+        ImageIO.write(image, "jpg", new File(filePath));
+
+        this.setSize(height, height);
     }
 
     /**
@@ -91,12 +133,18 @@ public class Visualization extends Canvas implements ChangeListener {
         paintLeg(pointToDraw, g2d);
     }
 
+    public void setSliderValues(double[] values) {
+        for (int i = 0; i < sliders.length && i < values.length; i++) {
+            sliders[i].setSliderValue(values[i]);
+        }
+    }
+
     private PcaDataPoint findPointToDraw() {
 
         // mapMultiply does not change eigenvector, generates new one
         RealVector[] scaledEigenvectors = new RealVector[sliders.length];
         for (int i = 0; i < scaledEigenvectors.length; i++) {
-            scaledEigenvectors[i] = eigenDecomposition.getEigenvector(i).mapMultiply(sliders[i].getCurrentValue());
+            scaledEigenvectors[i] = eigenDecomposition.getEigenvector(sortedEigenvalueIndices[i]).mapMultiply(sliders[i].getCurrentValue());
         }
         PcaDataPoint pointToDraw = mean;
         for (RealVector scaledEigenvector : scaledEigenvectors) {
@@ -123,6 +171,7 @@ public class Visualization extends Canvas implements ChangeListener {
     }
 
     private void paintSpine(PcaDataPoint pointToDraw, Graphics2D g2d) {
+        System.out.println("paint spine");
         List<Point2d> spinePoints = pointToDraw.getSpine();
         CubicCurve2D.Double neck = new CubicCurve2D.Double(
                 spinePoints.get(0).x, 1000 - spinePoints.get(0).y,

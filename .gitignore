@@ -57,3 +57,7 @@ java_skeleton_generation/*.obj
 
 ### Ipe ###
 *-eps-converted-to.pdf
+
+### temporary PCA visualization exports ###
+PCA/temporary_visualization_exports/*
+
