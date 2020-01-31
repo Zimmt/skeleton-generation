@@ -1,10 +1,7 @@
 import org.apache.commons.math3.linear.EigenDecomposition;
 import skeleton.SkeletonGenerator;
 import util.ObjGenerator;
-import util.pca.PCA;
-import util.pca.PcaDataPoint;
-import util.pca.PcaDataReader;
-import util.pca.Visualization;
+import util.pca.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,6 +14,14 @@ public class Main {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
         visualize(dataPoints);
         System.out.println("Finished");
+    }
+
+    private static void exportPCADataProjection() throws IOException {
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
+        PCA pca = preparePCA(dataPoints);
+        pca.run();
+        DataExporter dataExporter = new DataExporter(dataPoints);
+        dataExporter.projectAndExportToFile("../PCA/projected_pcaPoints.txt", pca.getEigenvector(0), pca.getEigenvector(1), pca.getEigenvector(2));
     }
 
     private static void exportImagesFromVisualization(Visualization visualization) throws IOException {
@@ -37,8 +42,10 @@ public class Main {
     }
 
     private static Visualization visualize(List<PcaDataPoint> dataPoints) throws IOException {
-        EigenDecomposition ed = runPCA(dataPoints);
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
+        PCA pca = preparePCA(dataPoints);
+        pca.run();
+        EigenDecomposition ed = pca.getEigenDecomposition();
 
         return Visualization.start(ed, mean);
     }
@@ -58,12 +65,12 @@ public class Main {
         objGenerator.generateObjFrom(skeletonGenerator);
     }
 
-    private static EigenDecomposition runPCA(List<PcaDataPoint> dataPoints) throws IOException {
+    private static PCA preparePCA(List<PcaDataPoint> dataPoints) throws IOException {
 
         double[][] pcaData = new double[dataPoints.size()][PcaDataPoint.getDimension()];
         for (int i = 0; i < dataPoints.size(); i++) {
             pcaData[i] = dataPoints.get(i).getScaledDataForPCA();
         }
-        return PCA.run(pcaData);
+        return new PCA(pcaData);
     }
 }

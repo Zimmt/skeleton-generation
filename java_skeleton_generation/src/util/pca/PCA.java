@@ -4,15 +4,22 @@ import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
 import java.util.Arrays;
-import java.util.Random;
 
 public class PCA {
 
+    private double[][] inputData; // one row represents one data point
+    private EigenDecomposition ed;
+    private Integer[] sortedEigenvalueIndices;
+    private int eigenvalueCount; // number of eigenvalues > 0.001
+
+    public PCA(double[][] inputData) {
+        this.inputData = inputData;
+    }
+
     /**
      * taken from https://stackoverflow.com/questions/10604507/pca-implementation-in-java
-     * @param inputData one row represents one data point
      */
-    public static EigenDecomposition run(double[][] inputData) {
+    public EigenDecomposition run() {
         System.out.print("Running PCA... ");
         if (inputData.length == 0) {
             System.err.println("Input data for PCA is empty!");
@@ -23,45 +30,59 @@ public class PCA {
 
         Covariance covariance = new Covariance(data, false);
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
-        EigenDecomposition ed = new EigenDecomposition(covarianceMatrix);
+        ed = new EigenDecomposition(covarianceMatrix);
 
-        int eigenvalueCount = (int) Arrays.stream(ed.getRealEigenvalues()).filter(d -> d >= 0.001).count();
+        eigenvalueCount = (int) Arrays.stream(ed.getRealEigenvalues()).filter(d -> d >= 0.001).count();
         System.out.println(String.format("%d eigenvalues/-vectors", eigenvalueCount));
+
+        double[] eigenvalues = ed.getRealEigenvalues();
+        sortedEigenvalueIndices = new Integer[eigenvalues.length];
+        for (int i = 0; i < sortedEigenvalueIndices.length; i++) {
+            sortedEigenvalueIndices[i] = i;
+        }
+        Arrays.sort(sortedEigenvalueIndices, (o1, o2) -> -Double.compare(eigenvalues[o1], eigenvalues[o2]));
 
         System.out.println("Complete.");
         return ed;
     }
 
-    private static void printData(EigenDecomposition ed) {
-        double[] eigenvalues = ed.getRealEigenvalues();
-        Integer[] sortedEigenvalueIndices = new Integer[eigenvalues.length];
-        for (int i = 0; i < sortedEigenvalueIndices.length; i++) {
-            sortedEigenvalueIndices[i] = i;
-        }
-        Arrays.sort(sortedEigenvalueIndices, (o1, o2) -> -Double.compare(eigenvalues[o1], eigenvalues[o2]));
-        System.out.println("The " + eigenvalues.length + " sorted eigenvalues are:");
+    /**
+     * Returns the eigenvector with the nth biggest eigenvalue
+     */
+    public RealVector getEigenvector(int n) {
+        return ed.getEigenvector(sortedEigenvalueIndices[n]);
+    }
+
+    /**
+     * Return the nth biggest eigenvalue
+     */
+    public double getEigenvalue(int n) {
+        return ed.getRealEigenvalue(sortedEigenvalueIndices[n]);
+    }
+
+    public int getEigenvalueCount() {
+        return eigenvalueCount;
+    }
+
+    /**
+     * Is not set if PCA didn't run!
+     */
+    public EigenDecomposition getEigenDecomposition() {
+        return ed;
+    }
+
+    private void printData(EigenDecomposition ed) {
+        System.out.println("The " + ed.getRealEigenvalues().length + " sorted eigenvalues are:");
         for (Integer sortedEigenvalueIndex : sortedEigenvalueIndices) {
-            System.out.print(eigenvalues[sortedEigenvalueIndex] + ", ");
+            System.out.print(ed.getRealEigenvalue(sortedEigenvalueIndex) + ", ");
         }
 
         int wantedEigenvectors = 6;
         System.out.println("\nThe first " + wantedEigenvectors + " eigenvectors are:");
-        for (int i = 0; i < wantedEigenvectors && i < eigenvalues.length; i++) {
+        for (int i = 0; i < wantedEigenvectors && i < ed.getRealEigenvalues().length; i++) {
             System.out.println( "> " + (i+1) + " -------------------------------------------------");
             printEigenvector(ed.getEigenvector(sortedEigenvalueIndices[i]));
         }
-    }
-
-    public static double[][] generateRandomData(int rows, int columns) {
-        Random random = new Random();
-        double[][] pointsArray = new double[rows][columns];
-
-        for (int i = 0; i < pointsArray.length; i++) {
-            for (int j = 0; j < pointsArray[0].length; j++) {
-                pointsArray[i][j] = random.nextDouble();
-            }
-        }
-        return pointsArray;
     }
 
     private static void printEigenvector(RealVector vector) {
