@@ -96,6 +96,22 @@ public class Visualization extends Canvas implements ChangeListener {
         return visualization;
     }
 
+    public void exportImagesWithStandardDeviationSettings() throws IOException {
+        for (int setting = 0; setting < sliders.length; setting++) {
+            for (int i = 0; i < sliders.length; i++) {
+                if (i == setting) {
+                    sliders[i].setSliderValue(Math.sqrt(eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[setting])));
+                } else {
+                    sliders[i].setSliderValue(0.0);
+                }
+            }
+            exportToImage(String.format("../PCA/temporary_visualization_exports/Eigenvector%d_positive.jpg", setting+1));
+
+            sliders[setting].setSliderValue(-Math.sqrt(eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[setting])));
+            exportToImage(String.format("../PCA/temporary_visualization_exports/Eigenvector%d_negative.jpg", setting+1));
+        }
+    }
+
     /**
      * @param settings scale factors for eigenvectors
      * @param filePath path to folder where files should be stored (with a '/' in the end
@@ -111,18 +127,19 @@ public class Visualization extends Canvas implements ChangeListener {
                 sliders[i].setSliderValue(settings.get(s)[i]);
             }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.err.println("Could not sleep");
-            }
-
             exportToImage(filePath + fileName + (s+1) + ".jpg");
             System.out.println("Exported image " + s);
         }
     }
 
     public void exportToImage(String filePath) throws IOException {
+        // wait shortly so settings are done before drawing
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            System.err.println("Could not sleep");
+        }
+
         // sets everything to double size to get a better resolution of the image, in the end it is turned back
         BufferedImage image = new BufferedImage(width*2, height*2, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
