@@ -10,6 +10,7 @@ Blauwal,4,0,0,120000
 Brachiosaurus,2,0,2,25000
 Chamaeleon,2,0,2,1
 Dimetrodon,2,0,2,250
+Dromedar,4,0,2,500
 Elster,3,1,1,0.2
 Forelle,0,0,0,10
 Frosch,1,0,2,0.01
