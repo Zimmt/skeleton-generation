@@ -6,7 +6,7 @@ import javax.vecmath.Point2d;
 import java.util.*;
 
 public class PcaDataPoint {
-    private static final int dimension = 29;
+    private static final int dimension = 27;
     private static final double coordinateScaleFactor = 1000;
     private static final double wingScaleFactor = 1;
     private static final double flooredLegsScaleFactor = 2;
@@ -38,8 +38,13 @@ public class PcaDataPoint {
 
     /**
      * Moves the point by the given vector.
+<<<<<<< HEAD
      * Changes: spine, wings, flooredLegs, length of extremities, weight
      * leaves empty: name, back, neck, tail, animalClass
+=======
+     * Changes: spine, lengthFrontLegs, lengthBackLegs, weight
+     * Doesn't change: back, neck, tail, animalClass, arms, wings, flooredLegs
+>>>>>>> Ignore wings and floored legs as dimensions for PCA
      */
     public PcaDataPoint getMovedPoint(List<RealVector> scaledEigenvectors) {
         PcaDataPoint point = new PcaDataPoint();
@@ -54,8 +59,6 @@ public class PcaDataPoint {
         }
         point.setSpine(newSpine);
 
-        double newWings = wings;
-        double newFlooredLegs = flooredLegs;
         double newLengthUpperArm = lengthUpperArm;
         double newLengthLowerArm = lengthLowerArm;
         double newLengthHand = lengthHand;
@@ -65,19 +68,15 @@ public class PcaDataPoint {
         double newWeight = weight;
 
         for (RealVector scaledEigenvector : scaledEigenvectors) {
-            newWings += scaledEigenvector.getEntry(20) * wingScaleFactor;
-            newFlooredLegs += scaledEigenvector.getEntry(21) * flooredLegsScaleFactor;
-            newLengthUpperArm += scaledEigenvector.getEntry(22) * coordinateScaleFactor;
-            newLengthLowerArm += scaledEigenvector.getEntry(23) * coordinateScaleFactor;
-            newLengthHand += scaledEigenvector.getEntry(24) * coordinateScaleFactor;
-            newLengthUpperLeg += scaledEigenvector.getEntry(25) * coordinateScaleFactor;
-            newLengthLowerLeg += scaledEigenvector.getEntry(26) * coordinateScaleFactor;
-            newLengthFoot += scaledEigenvector.getEntry(27) * coordinateScaleFactor;
-            newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+            newLengthUpperArm += scaledEigenvector.getEntry(20) * coordinateScaleFactor;
+            newLengthLowerArm += scaledEigenvector.getEntry(21) * coordinateScaleFactor;
+            newLengthHand += scaledEigenvector.getEntry(22) * coordinateScaleFactor;
+            newLengthUpperLeg += scaledEigenvector.getEntry(23) * coordinateScaleFactor;
+            newLengthLowerLeg += scaledEigenvector.getEntry(24) * coordinateScaleFactor;
+            newLengthFoot += scaledEigenvector.getEntry(25) * coordinateScaleFactor;
+            newWeight += scaledEigenvector.getEntry(26) * weightScaleFactor;
         }
 
-        point.setWings(newWings);
-        point.setFlooredLegs(newFlooredLegs);
         point.setLengthUpperArm(newLengthUpperArm);
         point.setLengthLowerArm(newLengthLowerArm);
         point.setLengthHand(newLengthHand);
@@ -100,8 +99,6 @@ public class PcaDataPoint {
     public boolean containsIncorrectData() {
         double eps = 0.001;
         return !(spine != null && spine.size() == 10 &&
-                wings >= -eps && wings <= 1+eps &&
-                flooredLegs >= -eps && flooredLegs <= 2+eps &&
                 lengthUpperArm >= -eps && lengthUpperArm < coordinateScaleFactor+eps &&
                 lengthLowerArm >= -eps && lengthLowerArm < coordinateScaleFactor+eps &&
                 lengthHand >= -eps && lengthHand < coordinateScaleFactor+eps &&
@@ -146,8 +143,6 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y / coordinateScaleFactor;
             nextIndex += 2;
         }
-        data[nextIndex] = wings / wingScaleFactor; nextIndex++;
-        data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
         data[nextIndex] = lengthUpperArm / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthLowerArm / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthHand / coordinateScaleFactor; nextIndex++;
@@ -172,8 +167,6 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y;
             nextIndex += 2;
         }
-        data[nextIndex] = wings; nextIndex++;
-        data[nextIndex] = flooredLegs; nextIndex++;
         data[nextIndex] = lengthUpperArm; nextIndex++;
         data[nextIndex] = lengthLowerArm; nextIndex++;
         data[nextIndex] = lengthHand; nextIndex++;
@@ -189,7 +182,7 @@ public class PcaDataPoint {
      * @return comma separated names of dimensions
      */
     public static String getDimensionNames() {
-        return "neck (0-7), back (5-13), tail (11-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight";
+        return "neck (0-7), back (5-13), tail (11-19), length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight";
     }
 
     public static int getDimension() {
@@ -408,15 +401,13 @@ public class PcaDataPoint {
             for (int i = 0; i < spine.size(); i++) {
                 meanSpine.get(i).add(spine.get(i));
             }
-            otherMeans[0] += point.getWings();
-            otherMeans[1] += point.getFlooredLegs();
-            otherMeans[2] += point.getLengthUpperArm();
-            otherMeans[3] += point.getLengthLowerArm();
-            otherMeans[4] += point.getLengthHand();
-            otherMeans[5] += point.getLengthUpperLeg();
-            otherMeans[6] += point.getLengthLowerLeg();
-            otherMeans[7] += point.getLengthFoot();
-            otherMeans[8] += point.getWeight();
+            otherMeans[0] += point.getLengthUpperArm();
+            otherMeans[1] += point.getLengthLowerArm();
+            otherMeans[2] += point.getLengthHand();
+            otherMeans[3] += point.getLengthUpperLeg();
+            otherMeans[4] += point.getLengthLowerLeg();
+            otherMeans[5] += point.getLengthFoot();
+            otherMeans[6] += point.getWeight();
         }
 
         for (Point2d meanSpinePoint : meanSpine) {
@@ -427,15 +418,13 @@ public class PcaDataPoint {
         }
 
         mean.setSpine(meanSpine);
-        mean.setWings(otherMeans[0]);
-        mean.setFlooredLegs(otherMeans[1]);
-        mean.setLengthUpperArm(otherMeans[2]);
-        mean.setLengthLowerArm(otherMeans[3]);
-        mean.setLengthHand(otherMeans[4]);
-        mean.setLengthUpperLeg(otherMeans[5]);
-        mean.setLengthLowerLeg(otherMeans[6]);
-        mean.setLengthFoot(otherMeans[7]);
-        mean.setWeight(otherMeans[8]);
+        mean.setLengthUpperArm(otherMeans[0]);
+        mean.setLengthLowerArm(otherMeans[1]);
+        mean.setLengthHand(otherMeans[2]);
+        mean.setLengthUpperLeg(otherMeans[3]);
+        mean.setLengthLowerLeg(otherMeans[4]);
+        mean.setLengthFoot(otherMeans[5]);
+        mean.setWeight(otherMeans[6]);
 
         return mean;
     }
