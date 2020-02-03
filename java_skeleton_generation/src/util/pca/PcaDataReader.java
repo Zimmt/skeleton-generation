@@ -12,7 +12,7 @@ public class PcaDataReader {
      */
     public static List<PcaDataPoint> readInputData() throws IOException {
         System.out.print("Reading input data... ");
-        File file = new File("../PCA/PCA_data.txt");
+        File file = new File("../PCA/PCA_input_data.txt");
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
         List<PcaDataPoint> dataPoints = new ArrayList<>();
 
