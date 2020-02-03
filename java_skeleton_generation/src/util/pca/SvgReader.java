@@ -151,9 +151,9 @@ public class SvgReader {
         double firstCoordinate = previousPoint.x;
         double secondCoordinate = previousPoint.y;
         if (vertical) {
-            secondCoordinate += offset;
+            secondCoordinate = offset;
         } else {
-            firstCoordinate += offset;
+            firstCoordinate = offset;
         }
         return getPoint(firstCoordinate, secondCoordinate);
     }

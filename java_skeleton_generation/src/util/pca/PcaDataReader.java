@@ -93,6 +93,10 @@ public class PcaDataReader {
             System.err.println("Wrong number of points to calculate length from!");
             return 0;
         }
-        return points.get(0).distance(points.get(1));
+        double length = points.get(0).distance(points.get(1));
+        if (length > 600) {
+            System.err.println("Maybe found incorrect length");
+        }
+        return length;
     }
 }
