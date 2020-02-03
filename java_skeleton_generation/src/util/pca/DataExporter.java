@@ -33,7 +33,23 @@ public class DataExporter {
             writer.write("" + x + " " +  y + " " + z);
             writer.newLine();
         }
-        writer.write("pause -1");
+        writer.close();
+    }
+
+    public void exportToFile(String filePathAndName) throws IOException {
+        File file = new File(filePathAndName);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.write("# Original PCA examples\n");
+        writer.write("# " + PcaDataPoint.getDimensionNames());
+        writer.newLine();
+
+        for (PcaDataPoint point : data) {
+            double[] rawPoint = point.getOriginalData();
+            for (double value : rawPoint) {
+                writer.write(value + " ");
+            }
+            writer.newLine();
+        }
         writer.close();
     }
 }

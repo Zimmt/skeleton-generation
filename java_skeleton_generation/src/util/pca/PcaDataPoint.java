@@ -70,7 +70,7 @@ public class PcaDataPoint {
 
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
-        return name != null && spine != null && animalClass != null && weight > 0;
+        return name != null && spine != null && weight > 0;
     }
 
     /**
@@ -119,6 +119,39 @@ public class PcaDataPoint {
         data[nextIndex] = weight / weightScaleFactor;
 
         return data;
+    }
+
+    public double[] getOriginalData() {
+        if (!dataSetMaybeComplete()) {
+            System.err.println("Incomplete data!");
+        }
+
+        double[] data = new double[dimension];
+        int nextIndex = 0;
+
+        for (Point2d p : spine) {
+            data[nextIndex] = p.x;
+            data[nextIndex+1] = p.y;
+            nextIndex += 2;
+        }
+        data[nextIndex] = wings; nextIndex++;
+        data[nextIndex] = flooredLegs; nextIndex++;
+        data[nextIndex] = lengthUpperArm; nextIndex++;
+        data[nextIndex] = lengthLowerArm; nextIndex++;
+        data[nextIndex] = lengthHand; nextIndex++;
+        data[nextIndex] = lengthUpperLeg; nextIndex++;
+        data[nextIndex] = lengthLowerLeg; nextIndex++;
+        data[nextIndex] = lengthFoot; nextIndex++;
+        data[nextIndex] = weight;
+
+        return data;
+    }
+
+    /**
+     * @return comma separated names of dimensions
+     */
+    public static String getDimensionNames() {
+        return "neck (0-7), back (5-13), tail (11-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight";
     }
 
     public static int getDimension() {
