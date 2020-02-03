@@ -1,0 +1,17 @@
+Interesting PCA numbers
+
+Min distance to mean has Klippschliefer.
+Max distance to mean has Schlange.
+
+There are 7 points with wings.
+There are 36 points without wings.
+
+There are 8 points without legs.
+There are 11 points with two legs.
+There are 24 points with four legs.
+
+There are 2 fish.
+There are 2 amphibians.
+There are 13 reptilians.
+There are 7 birds.
+There are 19 mammals.

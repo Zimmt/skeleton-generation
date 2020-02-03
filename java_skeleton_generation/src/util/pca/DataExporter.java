@@ -52,4 +52,42 @@ public class DataExporter {
         }
         writer.close();
     }
+
+    public void exportInterestingNumbers(String filePathAndName, PcaHandler pcaHandler) throws IOException {
+        File file = new File(filePathAndName);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.write("Interesting PCA numbers\n");
+        writer.newLine();
+
+        PcaDataPoint[] minMaxDistance = pcaHandler.getExamplesWithExtremeDistancesToMean();
+        writer.write(String.format("Min distance to mean has %s.\n", minMaxDistance[0].getName()));
+        writer.write(String.format("Max distance to mean has %s.\n", minMaxDistance[1].getName()));
+        writer.newLine();
+
+        List<PcaDataPoint> dataPoints = pcaHandler.getDataPoints();
+        int pointsWithWings = (int) dataPoints.stream().filter(p -> p.getWings() > 0).count();
+        writer.write(String.format("There are %d points with wings.\n", pointsWithWings));
+        writer.write(String.format("There are %d points without wings.\n", dataPoints.size() - pointsWithWings));
+        writer.newLine();
+
+        int pointsWithoutLegs = (int) dataPoints.stream().filter(p -> p.getFlooredLegs() <= 0).count();
+        int pointsWithTwoLegs = (int) dataPoints.stream().filter(p -> p.getFlooredLegs() >= 2).count();
+        writer.write(String.format("There are %d points without legs.\n", pointsWithoutLegs));
+        writer.write(String.format("There are %d points with two legs.\n", dataPoints.size() - pointsWithoutLegs - pointsWithTwoLegs));
+        writer.write(String.format("There are %d points with four legs.\n", pointsWithTwoLegs));
+        writer.newLine();
+
+        int fish = (int) dataPoints.stream().filter(p -> p.getAnimalClass() == AnimalClass.FISH).count();
+        int amphibians = (int) dataPoints.stream().filter(p -> p.getAnimalClass() == AnimalClass.AMPHIBIAN).count();
+        int reptilians = (int) dataPoints.stream().filter(p -> p.getAnimalClass() == AnimalClass.REPTILIAN).count();
+        int birds = (int) dataPoints.stream().filter(p -> p.getAnimalClass() == AnimalClass.BIRD).count();
+        int mammals = (int) dataPoints.stream().filter(p -> p.getAnimalClass() == AnimalClass.MAMMAL).count();
+        writer.write(String.format("There are %d fish.\n", fish));
+        writer.write(String.format("There are %d amphibians.\n", amphibians));
+        writer.write(String.format("There are %d reptilians.\n", reptilians));
+        writer.write(String.format("There are %d birds.\n", birds));
+        writer.write(String.format("There are %d mammals.\n", mammals));
+
+        writer.close();
+    }
 }

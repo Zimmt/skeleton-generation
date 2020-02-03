@@ -158,6 +158,10 @@ public class PcaDataPoint {
         return dimension;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -311,6 +315,10 @@ public class PcaDataPoint {
 
     public double getWeight() {
         return weight;
+    }
+
+    public AnimalClass getAnimalClass() {
+        return animalClass;
     }
 
     /**
