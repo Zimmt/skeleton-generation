@@ -73,7 +73,7 @@ public class PcaDataPoint {
             newLengthUpperLeg += scaledEigenvector.getEntry(25) * coordinateScaleFactor;
             newLengthLowerLeg += scaledEigenvector.getEntry(26) * coordinateScaleFactor;
             newLengthFoot += scaledEigenvector.getEntry(27) * coordinateScaleFactor;
-            newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+            newWeight += Math.pow(10, scaledEigenvector.getEntry(28) * Math.log10(weightScaleFactor)) - 1;
         }
 
         point.setWings(newWings);
@@ -154,7 +154,7 @@ public class PcaDataPoint {
         data[nextIndex] = lengthUpperLeg / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthLowerLeg / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthFoot / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = weight / weightScaleFactor;
+        data[nextIndex] = Math.log10(weight+1) / Math.log(weightScaleFactor + 1);
 
         return data;
     }
@@ -416,7 +416,7 @@ public class PcaDataPoint {
             otherMeans[5] += point.getLengthUpperLeg();
             otherMeans[6] += point.getLengthLowerLeg();
             otherMeans[7] += point.getLengthFoot();
-            otherMeans[8] += point.getWeight();
+            otherMeans[8] += Math.log10(point.getWeight());
         }
 
         for (Point2d meanSpinePoint : meanSpine) {
@@ -425,6 +425,7 @@ public class PcaDataPoint {
         for (int i = 0; i < otherMeans.length; i++) {
             otherMeans[i] /= points.size();
         }
+        otherMeans[8] = Math.pow(10, otherMeans[8]); // mean of log weight, not mean of linear weight!
 
         mean.setSpine(meanSpine);
         mean.setWings(otherMeans[0]);
