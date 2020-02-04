@@ -34,7 +34,7 @@ public class Visualization extends Canvas implements ChangeListener {
     private Integer[] sortedEigenvalueIndices;
 
     private JFrame frame;
-    private SliderController[] sliders = new SliderController[6];
+    private SliderController[] sliders = new SliderController[7];
 
     private int defaultExportImageIndex = 1;
 
