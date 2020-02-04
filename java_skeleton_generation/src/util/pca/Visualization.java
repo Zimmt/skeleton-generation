@@ -1,6 +1,5 @@
 package util.pca;
 
-import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
 
 import javax.imageio.ImageIO;
@@ -17,7 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,38 +28,29 @@ public class Visualization extends Canvas implements ChangeListener {
     private static int width = 1700;
     private static int height = 1010;
 
-    private EigenDecomposition eigenDecomposition;
+    private PCA pca;
     private PcaDataPoint mean;
-    private Integer[] sortedEigenvalueIndices;
 
     private JFrame frame;
     private SliderController[] sliders = new SliderController[7];
 
     private int defaultExportImageIndex = 1;
 
-    private Visualization(EigenDecomposition ed, PcaDataPoint mean, JFrame frame) {
-        this.eigenDecomposition = ed;
+    private Visualization(PCA pca, PcaDataPoint mean, JFrame frame) {
+        this.pca = pca;
         this.mean = mean;
         this.frame = frame;
 
-        double[] eigenvalues = ed.getRealEigenvalues();
-        Integer[] sortedEigenvalueIndices = new Integer[eigenvalues.length];
-        for (int i = 0; i < sortedEigenvalueIndices.length; i++) {
-            sortedEigenvalueIndices[i] = i;
-        }
-        Arrays.sort(sortedEigenvalueIndices, (o1, o2) -> -Double.compare(eigenvalues[o1], eigenvalues[o2]));
-        this.sortedEigenvalueIndices = sortedEigenvalueIndices;
-
         for (int i = 0; i < sliders.length; i++) {
             sliders[i] =  new SliderController(
-                    String.format("Eigenvector %x (Eigenvalue: %.3f)", i+1, eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[i])),
+                    String.format("Eigenvector %x (Eigenvalue: %.3f)", i+1, pca.getEigenvalue(i)),
                     -1.5, 1.5, this);
         }
         setSize(height, height);
 
     }
 
-    public static Visualization start(EigenDecomposition ed, PcaDataPoint mean) {
+    public static Visualization start(PCA pca, PcaDataPoint mean) {
 
         JFrame frame = new JFrame("PCA Visualization");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,7 +58,7 @@ public class Visualization extends Canvas implements ChangeListener {
         frame.setLayout(new FlowLayout());
         frame.setResizable(false);
 
-        Visualization visualization = new Visualization(ed, mean, frame);
+        Visualization visualization = new Visualization(pca, mean, frame);
         frame.add(visualization);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -96,18 +86,27 @@ public class Visualization extends Canvas implements ChangeListener {
         return visualization;
     }
 
+    public void setSliders(double[] sliderValues) {
+        if (sliderValues.length != sliders.length) {
+            System.err.println("Incorrect slider settings found");
+        }
+        for (int i = 0; i < sliders.length; i++) {
+            sliders[i].setSliderValue(sliderValues[i]);
+        }
+    }
+
     public void exportImagesWithStandardDeviationSettings() throws IOException {
         for (int setting = 0; setting < sliders.length; setting++) {
             for (int i = 0; i < sliders.length; i++) {
                 if (i == setting) {
-                    sliders[i].setSliderValue(Math.sqrt(eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[setting])));
+                    sliders[i].setSliderValue(Math.sqrt(pca.getEigenvalue(setting)));
                 } else {
                     sliders[i].setSliderValue(0.0);
                 }
             }
             exportToImage(String.format("../PCA/temporary_visualization_exports/Eigenvector%d_positive.jpg", setting+1));
 
-            sliders[setting].setSliderValue(-Math.sqrt(eigenDecomposition.getRealEigenvalue(sortedEigenvalueIndices[setting])));
+            sliders[setting].setSliderValue(-Math.sqrt(pca.getEigenvalue(setting)));
             exportToImage(String.format("../PCA/temporary_visualization_exports/Eigenvector%d_negative.jpg", setting+1));
         }
     }
@@ -123,9 +122,7 @@ public class Visualization extends Canvas implements ChangeListener {
             if (settings.get(s).length != sliders.length) {
                 System.err.println("Found setting with incorrect number of factors");
             }
-            for (int i = 0; i < sliders.length; i++) {
-                sliders[i].setSliderValue(settings.get(s)[i]);
-            }
+            setSliderValues(settings.get(s));
 
             exportToImage(filePath + fileName + (s+1) + ".jpg");
             System.out.println("Exported image " + s);
@@ -185,14 +182,12 @@ public class Visualization extends Canvas implements ChangeListener {
     private PcaDataPoint findPointToDraw() {
 
         // mapMultiply does not change eigenvector, generates new one
-        RealVector[] scaledEigenvectors = new RealVector[sliders.length];
-        for (int i = 0; i < scaledEigenvectors.length; i++) {
-            scaledEigenvectors[i] = eigenDecomposition.getEigenvector(sortedEigenvalueIndices[i]).mapMultiply(sliders[i].getCurrentValue());
+        List<RealVector> scaledEigenvectors = new ArrayList<>(sliders.length);
+        for (int i = 0; i < sliders.length; i++) {
+            scaledEigenvectors.add(pca.getEigenvector(i).mapMultiply(sliders[i].getCurrentValue()));
         }
         PcaDataPoint pointToDraw = mean;
-        for (RealVector scaledEigenvector : scaledEigenvectors) {
-            pointToDraw = pointToDraw.add(scaledEigenvector);
-        }
+        pointToDraw = pointToDraw.getMovedPoint(scaledEigenvectors);
 
         return pointToDraw;
     }

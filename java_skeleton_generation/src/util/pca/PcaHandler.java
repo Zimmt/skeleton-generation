@@ -1,7 +1,6 @@
 package util.pca;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.io.IOException;
@@ -47,22 +46,21 @@ public class PcaHandler {
 
     public Visualization visualize() {
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
-        EigenDecomposition ed = pca.getEigenDecomposition();
-
-        return Visualization.start(ed, mean);
+        return Visualization.start(pca, mean);
     }
 
     /**
      * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
      */
-    public List<RealVector> getEigenvectorScalesForPoints() {
+    public List<RealVector> getEigenvectorScalesForPoints(double minEigenvalueSize) {
         RealVector meanVector = new ArrayRealVector(PcaDataPoint.getMean(dataPoints).getScaledDataForPCA());
-        int dimension = (int) pca.getEigenvalues().stream().filter(v -> v >= 0.01).count();
+        int dimension = pca.getEigenvalues(minEigenvalueSize).size();
         List<RealVector> results = new ArrayList<>(dimension);
 
         for (PcaDataPoint point : dataPoints) {
             RealVector animal = new ArrayRealVector(point.getScaledDataForPCA());
             RealVector relativeAnimal = animal.subtract(meanVector);
+
             RealVector eigenvectorScales = pca.getEigenDecomposition().getVT().operate(relativeAnimal);
             RealVector sortedEigenvectorScales = new ArrayRealVector(dimension);
             for (int i = 0; i < sortedEigenvectorScales.getDimension(); i++) {
@@ -71,6 +69,36 @@ public class PcaHandler {
             results.add(sortedEigenvectorScales);
         }
         return results;
+    }
+
+    /**
+     * Checks if the input data can correctly be reconstructed by the PCA results.
+     * For each data point adds the scaled eigenvectors to mean and checks if result is the same as input.
+     */
+    public boolean testPcaWithInputData() {
+        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(0.0);
+        PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
+        boolean passed = true;
+
+        for (int i = 0; i < dataPoints.size(); i++) {
+            RealVector scales = eigenvectorScales.get(i);
+
+            List<RealVector> scaledEigenvectors = new ArrayList<>(eigenvectorScales.size());
+            for (int j = 0; j < scales.getDimension(); j++) {
+                scaledEigenvectors.add(pca.getEigenvector(j).mapMultiply(scales.getEntry(j)));
+            }
+            PcaDataPoint testPoint = mean.getMovedPoint(scaledEigenvectors);
+
+            if (!testPoint.equals(dataPoints.get(i))) {
+                System.err.println("Input and output points not equal!");
+                passed = false;
+            }
+            if (testPoint.containsIncorrectData()) {
+                System.err.println("Points contain incorrect data!");
+                passed = false;
+            }
+        }
+        return passed;
     }
 
     /**
@@ -109,8 +137,8 @@ public class PcaHandler {
         return dataPoints;
     }
 
-    public List<Double> getEigenvalues() {
-        return pca.getEigenvalues();
+    public List<Double> getEigenvalues(double minEigenvalueSize) {
+        return pca.getEigenvalues(minEigenvalueSize);
     }
 
     private PCA preparePCA(List<PcaDataPoint> dataPoints) {

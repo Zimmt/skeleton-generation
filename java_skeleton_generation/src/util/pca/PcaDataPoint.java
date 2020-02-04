@@ -3,10 +3,7 @@ package util.pca;
 import org.apache.commons.math3.linear.RealVector;
 
 import javax.vecmath.Point2d;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class PcaDataPoint {
     private static final int dimension = 29;
@@ -41,29 +38,53 @@ public class PcaDataPoint {
 
     /**
      * Moves the point by the given vector.
-     * Changes: spine, wings, flooredLegs, lengthFrontLegs, lengthBackLegs, weight
-     * Doesn't change: back, neck, tail, animalClass, arms, lengthWings
+     * Changes: spine, wings, flooredLegs, length of extremities, weight
+     * leaves empty: name, back, neck, tail, animalClass
      */
-    public PcaDataPoint add(RealVector scaledEigenvector) {
+    public PcaDataPoint getMovedPoint(List<RealVector> scaledEigenvectors) {
         PcaDataPoint point = new PcaDataPoint();
 
         List<Point2d> newSpine = new ArrayList<>();
         for (int i = 0; i < spine.size(); i++) {
             Point2d p = new Point2d(spine.get(i));
-            p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor, scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
+            for (RealVector scaledEigenvector : scaledEigenvectors) {
+                p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor, scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
+            }
             newSpine.add(p);
         }
         point.setSpine(newSpine);
 
-        point.setWings(wings + scaledEigenvector.getEntry(20) * wingScaleFactor);
-        point.setFlooredLegs(flooredLegs + scaledEigenvector.getEntry(21) * flooredLegsScaleFactor);
-        point.setLengthUpperArm(lengthUpperArm + scaledEigenvector.getEntry(22) * coordinateScaleFactor);
-        point.setLengthLowerArm(lengthLowerArm + scaledEigenvector.getEntry(23) * coordinateScaleFactor);
-        point.setLengthHand(lengthHand + scaledEigenvector.getEntry(24) * coordinateScaleFactor);
-        point.setLengthUpperLeg(lengthUpperLeg + scaledEigenvector.getEntry(25) * coordinateScaleFactor);
-        point.setLengthLowerLeg(lengthLowerLeg + scaledEigenvector.getEntry(26) * coordinateScaleFactor);
-        point.setLengthFoot(lengthFoot + scaledEigenvector.getEntry(27) * coordinateScaleFactor);
-        point.setWeight(weight + scaledEigenvector.getEntry(28) * weightScaleFactor);
+        double newWings = wings;
+        double newFlooredLegs = flooredLegs;
+        double newLengthUpperArm = lengthUpperArm;
+        double newLengthLowerArm = lengthLowerArm;
+        double newLengthHand = lengthHand;
+        double newLengthUpperLeg = lengthUpperLeg;
+        double newLengthLowerLeg = lengthLowerLeg;
+        double newLengthFoot = lengthFoot;
+        double newWeight = weight;
+
+        for (RealVector scaledEigenvector : scaledEigenvectors) {
+            newWings += scaledEigenvector.getEntry(20) * wingScaleFactor;
+            newFlooredLegs += scaledEigenvector.getEntry(21) * flooredLegsScaleFactor;
+            newLengthUpperArm += scaledEigenvector.getEntry(22) * coordinateScaleFactor;
+            newLengthLowerArm += scaledEigenvector.getEntry(23) * coordinateScaleFactor;
+            newLengthHand += scaledEigenvector.getEntry(24) * coordinateScaleFactor;
+            newLengthUpperLeg += scaledEigenvector.getEntry(25) * coordinateScaleFactor;
+            newLengthLowerLeg += scaledEigenvector.getEntry(26) * coordinateScaleFactor;
+            newLengthFoot += scaledEigenvector.getEntry(27) * coordinateScaleFactor;
+            newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+        }
+
+        point.setWings(newWings);
+        point.setFlooredLegs(newFlooredLegs);
+        point.setLengthUpperArm(newLengthUpperArm);
+        point.setLengthLowerArm(newLengthLowerArm);
+        point.setLengthHand(newLengthHand);
+        point.setLengthUpperLeg(newLengthUpperLeg);
+        point.setLengthLowerLeg(newLengthLowerLeg);
+        point.setLengthFoot(newLengthFoot);
+        point.setWeight(newWeight);
 
         return point;
     }
@@ -71,6 +92,23 @@ public class PcaDataPoint {
     public boolean dataSetMaybeComplete() {
         // all other data has primitive types and is set or has default value
         return name != null && spine != null && weight > 0;
+    }
+
+    /**
+     * Neck, back, tail and animal class not tested
+     */
+    public boolean containsIncorrectData() {
+        return name != null &&
+                spine != null && spine.size() == 10 &&
+                wings >= 0 && wings <= 1 &&
+                flooredLegs >= 0 && flooredLegs <= 2 &&
+                lengthUpperArm >= 0 && lengthUpperArm < coordinateScaleFactor &&
+                lengthLowerArm >= 0 && lengthLowerArm < coordinateScaleFactor &&
+                lengthHand >= 0 && lengthHand < coordinateScaleFactor &&
+                lengthUpperLeg >= 0 && lengthUpperLeg < coordinateScaleFactor &&
+                lengthLowerLeg >= 0 && lengthLowerLeg < coordinateScaleFactor &&
+                lengthFoot >= 0 && lengthFoot < coordinateScaleFactor &&
+                weight > 0 && weight <= weightScaleFactor;
     }
 
     /**
@@ -222,58 +260,34 @@ public class PcaDataPoint {
     }
 
     public void setFlooredLegs(double flooredLegs) {
-        if (flooredLegs < 0 || flooredLegs > 2) {
-            System.err.println("Incorrect number of floored legs found.");
-        }
         this.flooredLegs = flooredLegs;
     }
 
     public void setLengthUpperArm(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthUpperArm = length;
     }
 
     public void setLengthLowerArm(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthLowerArm = length;
     }
 
     public void setLengthHand(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthHand = length;
     }
 
     public void setLengthUpperLeg(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthUpperLeg = length;
     }
 
     public void setLengthLowerLeg(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthLowerLeg = length;
     }
 
     public void setLengthFoot(double length) {
-        if (length < 0 || length > 1000) {
-            System.err.println("Incorrect length found.");
-        }
         this.lengthFoot = length;
     }
 
     public void setWeight(double weight) {
-        if (weight < 0 || weight > 120000) {
-            System.err.println("Incorrect weight found.");
-        }
         this.weight = weight;
     }
 
@@ -386,58 +400,84 @@ public class PcaDataPoint {
         PcaDataPoint mean = new PcaDataPoint();
         mean.setName("mean");
 
-        List<Point2d> meanSpine = Arrays.asList(new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0), new Point2d(0,0));
-        double meanWings = 0.0;
-        double meanFlooredLegs = 0.0;
-        double meanLengthUpperArm = 0.0;
-        double meanLengthLowerArm = 0.0;
-        double meanLengthHand = 0.0;
-        double meanLengthUpperLeg = 0.0;
-        double meanLengthLowerLeg = 0.0;
-        double meanLengthFoot = 0.0;
-        double meanWeight = 0.0;
+        List<Point2d> meanSpine = Arrays.asList(new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d());
+        double[] otherMeans = new double[dimension-20]; // 20 dimensions for spine
 
         for (PcaDataPoint point : points) {
             List<Point2d> spine = point.getSpine();
             for (int i = 0; i < spine.size(); i++) {
                 meanSpine.get(i).add(spine.get(i));
             }
-            meanWings += point.getWings();
-            meanFlooredLegs += point.getFlooredLegs();
-            meanLengthUpperArm += point.getLengthUpperArm();
-            meanLengthLowerArm += point.getLengthLowerArm();
-            meanLengthHand += point.getLengthHand();
-            meanLengthUpperLeg += point.getLengthUpperLeg();
-            meanLengthLowerLeg += point.getLengthLowerLeg();
-            meanLengthFoot += point.getLengthFoot();
-            meanWeight += point.getWeight();
+            otherMeans[0] += point.getWings();
+            otherMeans[1] += point.getFlooredLegs();
+            otherMeans[2] += point.getLengthUpperArm();
+            otherMeans[3] += point.getLengthLowerArm();
+            otherMeans[4] += point.getLengthHand();
+            otherMeans[5] += point.getLengthUpperLeg();
+            otherMeans[6] += point.getLengthLowerLeg();
+            otherMeans[7] += point.getLengthFoot();
+            otherMeans[8] += point.getWeight();
         }
 
         for (Point2d meanSpinePoint : meanSpine) {
             meanSpinePoint.scale(1.0 / (double) points.size());
         }
-        meanWings /= points.size();
-        meanFlooredLegs /= points.size();
-        meanLengthUpperArm /= points.size();
-        meanLengthLowerArm /= points.size();
-        meanLengthHand /= points.size();
-        meanLengthUpperLeg /= points.size();
-        meanLengthLowerLeg /= points.size();
-        meanLengthFoot /= points.size();
-        meanWeight /= points.size();
-
+        for (int i = 0; i < otherMeans.length; i++) {
+            otherMeans[i] /= points.size();
+        }
 
         mean.setSpine(meanSpine);
-        mean.setWings(meanWings);
-        mean.setFlooredLegs(meanFlooredLegs);
-        mean.setLengthUpperArm(meanLengthUpperArm);
-        mean.setLengthLowerArm(meanLengthLowerArm);
-        mean.setLengthHand(meanLengthHand);
-        mean.setLengthUpperLeg(meanLengthUpperLeg);
-        mean.setLengthLowerLeg(meanLengthLowerLeg);
-        mean.setLengthFoot(meanLengthFoot);
-        mean.setWeight(meanWeight);
+        mean.setWings(otherMeans[0]);
+        mean.setFlooredLegs(otherMeans[1]);
+        mean.setLengthUpperArm(otherMeans[2]);
+        mean.setLengthLowerArm(otherMeans[3]);
+        mean.setLengthHand(otherMeans[4]);
+        mean.setLengthUpperLeg(otherMeans[5]);
+        mean.setLengthLowerLeg(otherMeans[6]);
+        mean.setLengthFoot(otherMeans[7]);
+        mean.setWeight(otherMeans[8]);
 
         return mean;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PcaDataPoint that = (PcaDataPoint) o;
+        if (that.spine == null || that.spine.size() != 10) {
+            System.err.println("Found incorrect spine!");
+            return false;
+        }
+        double eps = 0.0001;
+
+        double spine0Diff = that.getSpine().get(0).distance(spine.get(0));
+        double spine1Diff = that.getSpine().get(1).distance(spine.get(1));
+        double spine2Diff = that.getSpine().get(2).distance(spine.get(2));
+        double spine3Diff = that.getSpine().get(3).distance(spine.get(3));
+        double spine4Diff = that.getSpine().get(4).distance(spine.get(4));
+        double spine5Diff = that.getSpine().get(5).distance(spine.get(5));
+        double spine6Diff = that.getSpine().get(6).distance(spine.get(6));
+        double spine7Diff = that.getSpine().get(7).distance(spine.get(7));
+        double spine8Diff = that.getSpine().get(8).distance(spine.get(8));
+        double spine9Diff = that.getSpine().get(9).distance(spine.get(9));
+
+        double wingDiff = Math.abs(that.wings - wings);
+        double flooredLegsDiff = Math.abs(that.flooredLegs - flooredLegs);
+        double upperArmDiff = Math.abs(that.lengthUpperArm - lengthUpperArm);
+        double lowerArmDiff = Math.abs(that.lengthLowerArm - lengthLowerArm);
+        double handDiff = Math.abs(that.lengthHand - lengthHand);
+        double upperLegDiff = Math.abs(that.lengthUpperLeg - lengthUpperLeg);
+        double lowerLegDiff = Math.abs(that.lengthLowerLeg - lengthLowerLeg);
+        double footDiff = Math.abs(that.lengthFoot - lengthFoot);
+        double weightDiff =  Math.abs(that.weight - weight);
+
+        return spine0Diff < eps && spine1Diff < eps && spine2Diff < eps && spine3Diff < eps &&
+                spine4Diff < eps && spine5Diff < eps && spine6Diff < eps && spine7Diff < eps && spine8Diff < eps &&
+                spine9Diff < eps &&
+                wingDiff < eps && flooredLegsDiff < eps &&
+                upperArmDiff < eps && lowerArmDiff < eps && handDiff < eps &&
+                upperLegDiff < eps && lowerLegDiff < eps && footDiff < eps &&
+                weightDiff < eps;
     }
 }

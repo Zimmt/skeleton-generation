@@ -12,7 +12,6 @@ public class PCA {
     private double[][] inputData; // one row represents one data point
     private EigenDecomposition ed;
     private Integer[] sortedEigenvalueIndices;
-    private int eigenvalueCount; // number of eigenvalues > 0.001
 
     public PCA(double[][] inputData) {
         this.inputData = inputData;
@@ -33,9 +32,6 @@ public class PCA {
         Covariance covariance = new Covariance(data, false);
         RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
         ed = new EigenDecomposition(covarianceMatrix);
-
-        eigenvalueCount = (int) Arrays.stream(ed.getRealEigenvalues()).filter(d -> d >= 0.001).count();
-        System.out.println(String.format("%d eigenvalues/-vectors", eigenvalueCount));
 
         double[] eigenvalues = ed.getRealEigenvalues();
         sortedEigenvalueIndices = new Integer[eigenvalues.length];
@@ -63,14 +59,14 @@ public class PCA {
     }
 
     /**
-     * @return all eigenvalues bigger than 0.001 - sorted
+     * @return all eigenvalues bigger than minEigenvalueSize - sorted
      */
-    public List<Double> getEigenvalues() {
-        List<Double> result = new ArrayList<>(eigenvalueCount);
+    public List<Double> getEigenvalues(double minEigenvalueSize) {
+        List<Double> result = new ArrayList<>(ed.getRealEigenvalues().length);
 
-        for (int i = 0; i < eigenvalueCount; i++) {
+        for (int i = 0; i < ed.getRealEigenvalues().length; i++) {
             double eigenvalue = getEigenvalue(i);
-            if (eigenvalue > 0.001) {
+            if (eigenvalue >= minEigenvalueSize) {
                 result.add(eigenvalue);
             } else {
                 break;
@@ -85,10 +81,6 @@ public class PCA {
      */
     public int getEigenvectorIndex(int n) {
         return sortedEigenvalueIndices[n];
-    }
-
-    public int getEigenvalueCount() {
-        return eigenvalueCount;
     }
 
     /**

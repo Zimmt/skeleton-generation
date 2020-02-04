@@ -61,16 +61,16 @@ public class DataExporter {
         writer.newLine();
 
         writer.write(String.format("Number of data points is %d.\n", pcaHandler.getDataPoints().size()));
-        List<Double> sortedEigenvalues = pcaHandler.getEigenvalues();
+        List<Double> sortedEigenvalues = pcaHandler.getEigenvalues(0.001);
         writer.write(String.format("The %d eigenvalues bigger than 0.001 are:\n    ", sortedEigenvalues.size()));
         for (double eigenvalue : sortedEigenvalues) {
             writer.write(String.format("%f, ", eigenvalue));
         }
         writer.newLine();
-        int count = (int) sortedEigenvalues.stream().filter(e -> e >= 0.01).count();
-        writer.write(String.format("The %d eigenvalues bigger than 0.01 are:\n    ", count));
-        for (int i = 0; i < count; i++) {
-            writer.write(String.format("%f, ", sortedEigenvalues.get(i)));
+        sortedEigenvalues = pcaHandler.getEigenvalues(0.01);
+        writer.write(String.format("The %d eigenvalues bigger than 0.01 are:\n    ", sortedEigenvalues.size()));
+        for (double eigenvalue : sortedEigenvalues) {
+            writer.write(String.format("%f, ", eigenvalue));
         }
         writer.newLine();
         writer.newLine();
@@ -106,7 +106,7 @@ public class DataExporter {
         writer.write(String.format("There are %d mammals.\n", mammals));
         writer.newLine();
 
-        List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints();
+        List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints(0.01);
         for(int i = 0; i < pcaHandler.getDataPoints().size(); i++) {
             RealVector scalesForPoint = eigenvectorScales.get(i);
             writer.write(String.format("%s is represented by the following eigenvector scales:\n    ",
