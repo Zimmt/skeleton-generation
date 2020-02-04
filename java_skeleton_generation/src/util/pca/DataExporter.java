@@ -57,11 +57,28 @@ public class DataExporter {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write("Interesting PCA numbers\n");
+        writer.write("-----------------------\n");
+        writer.newLine();
+
+        writer.write(String.format("Number of data points is %d.\n", pcaHandler.getDataPoints().size()));
+        List<Double> sortedEigenvalues = pcaHandler.getEigenvalues();
+        writer.write(String.format("The %d eigenvalues bigger than 0.001 are:\n    ", sortedEigenvalues.size()));
+        for (double eigenvalue : sortedEigenvalues) {
+            writer.write(String.format("%f, ", eigenvalue));
+        }
+        writer.newLine();
+        int count = (int) sortedEigenvalues.stream().filter(e -> e >= 0.01).count();
+        writer.write(String.format("The %d eigenvalues bigger than 0.01 are:\n    ", count));
+        for (int i = 0; i < count; i++) {
+            writer.write(String.format("%f, ", sortedEigenvalues.get(i)));
+        }
+        writer.newLine();
         writer.newLine();
 
         PcaDataPoint[] minMaxDistance = pcaHandler.getExamplesWithExtremeDistancesToMean();
         writer.write(String.format("Min distance to mean has %s.\n", minMaxDistance[0].getName()));
-        writer.write(String.format("Max distance to mean has %s.\n", minMaxDistance[1].getName()));
+        writer.write(String.format("Second biggest distance to mean has %s.\n", minMaxDistance[1].getName()));
+        writer.write(String.format("Max distance to mean has %s.\n", minMaxDistance[2].getName()));
         writer.newLine();
 
         List<PcaDataPoint> dataPoints = pcaHandler.getDataPoints();
@@ -87,6 +104,18 @@ public class DataExporter {
         writer.write(String.format("There are %d reptilians.\n", reptilians));
         writer.write(String.format("There are %d birds.\n", birds));
         writer.write(String.format("There are %d mammals.\n", mammals));
+        writer.newLine();
+
+        List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints();
+        for(int i = 0; i < pcaHandler.getDataPoints().size(); i++) {
+            RealVector scalesForPoint = eigenvectorScales.get(i);
+            writer.write(String.format("%s is represented by the following eigenvector scales:\n    ",
+                    pcaHandler.getDataPoints().get(i).getName()));
+            for (int d = 0; d < scalesForPoint.getDimension(); d++) {
+                writer.write(String.format("%f, ", scalesForPoint.getEntry(d)));
+            }
+            writer.newLine();
+        }
 
         writer.close();
     }

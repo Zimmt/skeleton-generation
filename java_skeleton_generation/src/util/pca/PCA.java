@@ -3,7 +3,9 @@ package util.pca;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PCA {
 
@@ -58,6 +60,31 @@ public class PCA {
      */
     public double getEigenvalue(int n) {
         return ed.getRealEigenvalue(sortedEigenvalueIndices[n]);
+    }
+
+    /**
+     * @return all eigenvalues bigger than 0.001 - sorted
+     */
+    public List<Double> getEigenvalues() {
+        List<Double> result = new ArrayList<>(eigenvalueCount);
+
+        for (int i = 0; i < eigenvalueCount; i++) {
+            double eigenvalue = getEigenvalue(i);
+            if (eigenvalue > 0.001) {
+                result.add(eigenvalue);
+            } else {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the index of the nth biggest eigenvalue
+     */
+    public int getEigenvectorIndex(int n) {
+        return sortedEigenvalueIndices[n];
     }
 
     public int getEigenvalueCount() {

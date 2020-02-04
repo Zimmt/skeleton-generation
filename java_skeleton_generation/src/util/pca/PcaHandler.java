@@ -5,6 +5,7 @@ import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,33 +53,64 @@ public class PcaHandler {
     }
 
     /**
+     * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
+     */
+    public List<RealVector> getEigenvectorScalesForPoints() {
+        RealVector meanVector = new ArrayRealVector(PcaDataPoint.getMean(dataPoints).getScaledDataForPCA());
+        int dimension = (int) pca.getEigenvalues().stream().filter(v -> v >= 0.01).count();
+        List<RealVector> results = new ArrayList<>(dimension);
+
+        for (PcaDataPoint point : dataPoints) {
+            RealVector animal = new ArrayRealVector(point.getScaledDataForPCA());
+            RealVector relativeAnimal = animal.subtract(meanVector);
+            RealVector eigenvectorScales = pca.getEigenDecomposition().getVT().operate(relativeAnimal);
+            RealVector sortedEigenvectorScales = new ArrayRealVector(dimension);
+            for (int i = 0; i < sortedEigenvectorScales.getDimension(); i++) {
+                sortedEigenvectorScales.setEntry(i, eigenvectorScales.getEntry(pca.getEigenvectorIndex(i)));
+            }
+            results.add(sortedEigenvectorScales);
+        }
+        return results;
+    }
+
+    /**
      * Calculates which point has the minimum and which the maximum distance to the mean point.
      * The scaled coordinates (that are also used for PCA) are used.
      */
     public PcaDataPoint[] getExamplesWithExtremeDistancesToMean() {
         double maxDistance = 0;
+        double secondBiggestDistance = 0;
         double minDistance = Double.POSITIVE_INFINITY;
         PcaDataPoint maxPoint = null;
+        PcaDataPoint secondMaxPoint = null;
         PcaDataPoint minPoint = null;
         RealVector mean = new ArrayRealVector(PcaDataPoint.getMean(dataPoints).getScaledDataForPCA());
         for (PcaDataPoint point : dataPoints) {
             double distance = new ArrayRealVector(point.getScaledDataForPCA()).getDistance(mean);
             if (distance > maxDistance) {
+                secondBiggestDistance = maxDistance;
+                secondMaxPoint = maxPoint;
                 maxDistance = distance;
                 maxPoint = point;
+            } else if (distance > secondBiggestDistance) {
+                secondBiggestDistance = distance;
+                secondMaxPoint = point;
             }
             if (distance < minDistance) {
                 minDistance = distance;
                 minPoint = point;
             }
         }
-        System.out.println("The point with the min distance to mean is " + minPoint.getName() + " with distance " + minDistance);
-        System.out.println("The point with the max distance to mean is " + maxPoint.getName() + " with distance " + maxDistance);
-        return new PcaDataPoint[] {minPoint, maxPoint};
+
+        return new PcaDataPoint[] {minPoint, secondMaxPoint, maxPoint};
     }
 
     public List<PcaDataPoint> getDataPoints() {
         return dataPoints;
+    }
+
+    public List<Double> getEigenvalues() {
+        return pca.getEigenvalues();
     }
 
     private PCA preparePCA(List<PcaDataPoint> dataPoints) {
