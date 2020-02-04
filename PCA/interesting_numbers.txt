@@ -2,15 +2,38 @@ Interesting PCA numbers
 -----------------------
 
 Number of data points is 44.
-The 20 eigenvalues bigger than 0.001 are:
-    0,442249, 0,195693, 0,088369, 0,049942, 0,036739, 0,026137, 0,014165, 0,008704, 0,008159, 0,006305, 0,005610, 0,005455, 0,004168, 0,003213, 0,002583, 0,001674, 0,001565, 0,001244, 0,001192, 0,001026, 
-The 7 eigenvalues bigger than 0.01 are:
-    0,442249, 0,195693, 0,088369, 0,049942, 0,036739, 0,026137, 0,014165, 
 
+### Eigenvalues and eigenvectors ###
+There are 7 eigenvalues bigger than 0.01.
+There are 20 eigenvalues bigger than 0.001.
+The eigenvalue, square root of the eigenvalue and the minimum and maximum amplitude for each eigenvector is the following:
+01. 0,442249, 0,665018, [-1,217674, 1,183479]
+02. 0,195693, 0,442372, [-0,690630, 0,550194]
+03. 0,088369, 0,297270, [-0,643584, 0,512323]
+04. 0,049942, 0,223477, [-0,362190, 0,743466]
+05. 0,036739, 0,191673, [-0,561218, 0,359895]
+06. 0,026137, 0,161669, [-0,655574, 0,479226]
+07. 0,014165, 0,119017, [-0,342317, 0,321667]
+08. 0,008704, 0,093297, [-0,266173, 0,212505]
+09. 0,008159, 0,090329, [-0,243412, 0,251967]
+10. 0,006305, 0,079405, [-0,252312, 0,177829]
+11. 0,005610, 0,074902, [-0,195562, 0,179067]
+12. 0,005455, 0,073855, [-0,180740, 0,157263]
+13. 0,004168, 0,064556, [-0,139467, 0,147633]
+14. 0,003213, 0,056680, [-0,119999, 0,152346]
+15. 0,002583, 0,050826, [-0,095742, 0,149324]
+16. 0,001674, 0,040918, [-0,098293, 0,062627]
+17. 0,001565, 0,039556, [-0,088692, 0,087391]
+18. 0,001244, 0,035270, [-0,064493, 0,091154]
+19. 0,001192, 0,034527, [-0,063588, 0,103851]
+20. 0,001026, 0,032025, [-0,067042, 0,063942]
+
+### Distances to mean ###
 Min distance to mean has Klippschliefer.
 Second biggest distance to mean has Blauwal.
 Max distance to mean has Schlange.
 
+### Properties of input points ###
 There are 7 points with wings.
 There are 37 points without wings.
 
@@ -24,6 +47,7 @@ There are 13 reptilians.
 There are 7 birds.
 There are 20 mammals.
 
+### Data to reconstruct input from visualization ### (more eigenvectors might be needed to get a good result)
 Afrikanischer_Elefant is represented by the following eigenvector scales:
     -0,252355, 0,448029, 0,282166, 0,128489, 0,098429, -0,091099, -0,094861, 
 Amerikanischer_Flussbarsch is represented by the following eigenvector scales:
@@ -112,3 +136,4 @@ Tyrannosaurus_Rex is represented by the following eigenvector scales:
     0,164161, -0,214064, -0,266867, 0,234212, -0,446829, 0,011993, 0,085931, 
 Urpferdchen is represented by the following eigenvector scales:
     -0,089493, 0,421842, 0,075729, 0,050226, 0,059076, 0,030025, 0,061790, 
+

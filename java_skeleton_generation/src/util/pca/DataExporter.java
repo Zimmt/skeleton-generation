@@ -61,26 +61,30 @@ public class DataExporter {
         writer.newLine();
 
         writer.write(String.format("Number of data points is %d.\n", pcaHandler.getDataPoints().size()));
-        List<Double> sortedEigenvalues = pcaHandler.getEigenvalues(0.001);
-        writer.write(String.format("The %d eigenvalues bigger than 0.001 are:\n    ", sortedEigenvalues.size()));
-        for (double eigenvalue : sortedEigenvalues) {
-            writer.write(String.format("%f, ", eigenvalue));
-        }
-        writer.newLine();
-        sortedEigenvalues = pcaHandler.getEigenvalues(0.01);
-        writer.write(String.format("The %d eigenvalues bigger than 0.01 are:\n    ", sortedEigenvalues.size()));
-        for (double eigenvalue : sortedEigenvalues) {
-            writer.write(String.format("%f, ", eigenvalue));
-        }
-        writer.newLine();
         writer.newLine();
 
+        writer.write("### Eigenvalues and eigenvectors ###\n");
+        List<Double> sortedEigenvalues = pcaHandler.getEigenvalues(0.01);
+        writer.write(String.format("There are %d eigenvalues bigger than 0.01.\n", sortedEigenvalues.size()));
+        sortedEigenvalues = pcaHandler.getEigenvalues(0.001);
+        writer.write(String.format("There are %d eigenvalues bigger than 0.001.\n", sortedEigenvalues.size()));
+        writer.write("The eigenvalue, square root of the eigenvalue and the minimum and maximum amplitude for each eigenvector is the following:\n");
+        List<double[]> minMaxScales = pcaHandler.getMinMaxEigenvectorScales(0.001);
+        for (int i = 0; i < minMaxScales.get(0).length; i++) {
+            writer.write(String.format("%02d. %f, %f, [%f, %f]\n", i+1,
+                    sortedEigenvalues.get(i), Math.sqrt(sortedEigenvalues.get(i)),
+                    minMaxScales.get(0)[i], minMaxScales.get(1)[i]));
+        }
+        writer.newLine();
+
+        writer.write("### Distances to mean ###\n");
         PcaDataPoint[] minMaxDistance = pcaHandler.getExamplesWithExtremeDistancesToMean();
         writer.write(String.format("Min distance to mean has %s.\n", minMaxDistance[0].getName()));
         writer.write(String.format("Second biggest distance to mean has %s.\n", minMaxDistance[1].getName()));
         writer.write(String.format("Max distance to mean has %s.\n", minMaxDistance[2].getName()));
         writer.newLine();
 
+        writer.write("### Properties of input points ###\n");
         List<PcaDataPoint> dataPoints = pcaHandler.getDataPoints();
         int pointsWithWings = (int) dataPoints.stream().filter(p -> p.getWings() > 0).count();
         writer.write(String.format("There are %d points with wings.\n", pointsWithWings));
@@ -106,6 +110,7 @@ public class DataExporter {
         writer.write(String.format("There are %d mammals.\n", mammals));
         writer.newLine();
 
+        writer.write("### Data to reconstruct input from visualization ### (more eigenvectors might be needed to get a good result)\n");
         List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints(0.01);
         for(int i = 0; i < pcaHandler.getDataPoints().size(); i++) {
             RealVector scalesForPoint = eigenvectorScales.get(i);
@@ -117,6 +122,7 @@ public class DataExporter {
             writer.newLine();
         }
 
+        writer.newLine();
         writer.close();
     }
 }

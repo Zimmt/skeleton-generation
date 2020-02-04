@@ -3,6 +3,7 @@ package util.pca;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
+import javax.vecmath.Tuple2d;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,6 +86,25 @@ public class PcaHandler {
 
     public List<RealVector> getEigenvectorScalesForPoints(int eigenvectorCount) {
         return getEigenvectorScalesForPoints(pca.getEigenvalue(eigenvectorCount));
+    }
+
+    public List<double[]> getMinMaxEigenvectorScales(double minEigenvalueSize) {
+        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(minEigenvalueSize);
+        double[] mins = eigenvectorScales.get(0).toArray();
+        double[] maxs = eigenvectorScales.get(0).toArray();
+
+        for (int i = 1; i < eigenvectorScales.size(); i++) {
+            RealVector scale = eigenvectorScales.get(i);
+
+            for (int j = 0; j < scale.getDimension(); j++) {
+                if (scale.getEntry(j) < mins[j]) {
+                    mins[j] = scale.getEntry(j);
+                } else if (scale.getEntry(j) > maxs[j]) {
+                    maxs[j] = scale.getEntry(j);
+                }
+            }
+        }
+        return Arrays.asList(mins, maxs);
     }
 
     /**
