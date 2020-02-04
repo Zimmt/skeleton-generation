@@ -13,6 +13,7 @@ public class PcaHandler {
     private List<PcaDataPoint> dataPoints;
     private PCA pca;
     private DataExporter dataExporter;
+    private Visualization visualization;
 
     /**
      * Initializes everything needed for PCA and visualization
@@ -44,9 +45,20 @@ public class PcaHandler {
         dataExporter.exportInterestingNumbers("../PCA/interesting_numbers.txt", this);
     }
 
-    public Visualization visualize() {
+    public void exportAnimalVisualizationToFiles() throws IOException {
+        if (visualization == null) {
+            visualize();
+        }
+        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(visualization.getSliderCount());
+        for (int i = 0; i < dataPoints.size(); i++) {
+            visualization.setSliderValues(eigenvectorScales.get(i).toArray());
+            visualization.exportToImage("../PCA/temporary_visualization_exports/" + dataPoints.get(i).getName() + ".jpg");
+        }
+    }
+
+    public void visualize() {
         PcaDataPoint mean = PcaDataPoint.getMean(dataPoints);
-        return Visualization.start(pca, mean);
+        this.visualization = Visualization.start(pca, mean);
     }
 
     /**
@@ -69,6 +81,10 @@ public class PcaHandler {
             results.add(sortedEigenvectorScales);
         }
         return results;
+    }
+
+    public List<RealVector> getEigenvectorScalesForPoints(int eigenvectorCount) {
+        return getEigenvectorScalesForPoints(pca.getEigenvalue(eigenvectorCount));
     }
 
     /**

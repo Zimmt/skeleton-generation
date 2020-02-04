@@ -1,0 +1,76 @@
+# plots of the original input data for PCA
+# 2D for coordinates of spine
+# 2D for upper+lower arm/leg and lower arm/leg + hand/foot
+# 1D logarithmic plot for weight
+# no plot for wings (only 0 and 1)
+
+set terminal pdf
+
+# spine
+set xrange [0:1000]
+set yrange [0:1000]
+set xlabel "first coordinate"
+set ylabel "second coordinate"
+
+set output "input_neck1.pdf"
+plot '../input/original_pcaPoints.txt' using 1:2
+
+set output "input_neck2.pdf"
+plot '../input/original_pcaPoints.txt' using 3:4
+
+set output "input_neck3.pdf"
+plot '../input/original_pcaPoints.txt' using 5:6
+
+set output "input_back1.pdf"
+plot '../input/original_pcaPoints.txt' using 7:8
+
+set output "input_back2.pdf"
+plot '../input/original_pcaPoints.txt' using 9:10
+
+set output "input_back3.pdf"
+plot '../input/original_pcaPoints.txt' using 11:12
+
+set output "input_back4.pdf"
+plot '../input/original_pcaPoints.txt' using 13:14
+
+set output "input_tail2.pdf"
+plot '../input/original_pcaPoints.txt' using 15:16
+
+set output "input_tail3.pdf"
+plot '../input/original_pcaPoints.txt' using 17:18
+
+set output "input_tail4.pdf"
+plot '../input/original_pcaPoints.txt' using 19:20
+
+# extremity lengths
+set xrange [0:500]
+set yrange [0:500]
+
+set xlabel "length upper arm"
+set ylabel "length lower arm"
+set output "input_upper+lowerArm.pdf"
+plot '../input/original_pcaPoints.txt' using 23:24
+
+set xlabel "length lower arm"
+set ylabel "length hand"
+set output "input_lowerArm+hand.pdf"
+plot '../input/original_pcaPoints.txt' using 24:25
+
+set xlabel "length upper leg"
+set ylabel "length lower leg"
+set output "input_upper+lowerLeg.pdf"
+plot '../input/original_pcaPoints.txt' using 26:27
+
+set xlabel "length lower leg"
+set ylabel "length foot"
+set output "input_lowerLeg+foot.pdf"
+plot '../input/original_pcaPoints.txt' using 27:28
+
+# weight
+reset
+set logscale y
+set xlabel "data points"
+set ylabel "weight"
+set output "input_weight_logarithmic.pdf"
+plot '../input/original_pcaPoints.txt' using 29
+

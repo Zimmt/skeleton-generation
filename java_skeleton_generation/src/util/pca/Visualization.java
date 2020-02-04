@@ -129,7 +129,7 @@ public class Visualization extends Canvas implements ChangeListener {
         }
     }
 
-    public void exportToImage(String filePath) throws IOException {
+    public void exportToImage(String filePathAndName) throws IOException {
         // wait shortly so settings are done before drawing
         try {
             Thread.sleep(100);
@@ -145,7 +145,7 @@ public class Visualization extends Canvas implements ChangeListener {
 
         frame.paint(g2d);
         this.paint(g2d);
-        ImageIO.write(image, "jpg", new File(filePath));
+        ImageIO.write(image, "jpg", new File(filePathAndName));
 
         this.setSize(height, height);
         this.repaint();
@@ -177,6 +177,10 @@ public class Visualization extends Canvas implements ChangeListener {
         for (int i = 0; i < sliders.length && i < values.length; i++) {
             sliders[i].setSliderValue(values[i]);
         }
+    }
+
+    public int getSliderCount() {
+        return sliders.length;
     }
 
     private PcaDataPoint findPointToDraw() {
