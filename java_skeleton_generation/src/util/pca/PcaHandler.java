@@ -50,7 +50,7 @@ public class PcaHandler {
         if (visualization == null) {
             visualize();
         }
-        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(visualization.getSliderCount());
+        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(Visualization.getSliderCount());
         for (int i = 0; i < dataPoints.size(); i++) {
             visualization.setSliderValues(eigenvectorScales.get(i).toArray());
             visualization.exportToImage("../PCA/temporary_visualization_exports/" + dataPoints.get(i).getName() + ".jpg");

@@ -111,7 +111,7 @@ public class DataExporter {
         writer.newLine();
 
         writer.write("### Data to reconstruct input from visualization ### (more eigenvectors might be needed to get a good result)\n");
-        List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints(0.01);
+        List<RealVector> eigenvectorScales = pcaHandler.getEigenvectorScalesForPoints(Visualization.getSliderCount());
         for(int i = 0; i < pcaHandler.getDataPoints().size(); i++) {
             RealVector scalesForPoint = eigenvectorScales.get(i);
             writer.write(String.format("%s is represented by the following eigenvector scales:\n    ",

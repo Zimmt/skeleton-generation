@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class Visualization extends Canvas implements ChangeListener {
 
+    private static int sliderCount = 7;
     private static int width = 1700;
     private static int height = 1010;
 
@@ -32,7 +33,7 @@ public class Visualization extends Canvas implements ChangeListener {
     private PcaDataPoint mean;
 
     private JFrame frame;
-    private SliderController[] sliders = new SliderController[7];
+    private SliderController[] sliders = new SliderController[sliderCount];
 
     private int defaultExportImageIndex = 1;
 
@@ -41,7 +42,7 @@ public class Visualization extends Canvas implements ChangeListener {
         this.mean = mean;
         this.frame = frame;
 
-        for (int i = 0; i < sliders.length; i++) {
+        for (int i = 0; i < sliderCount; i++) {
             sliders[i] =  new SliderController(
                     String.format("Eigenvector %x (Eigenvalue: %.3f)", i+1, pca.getEigenvalue(i)),
                     -1.5, 1.5, this);
@@ -87,17 +88,17 @@ public class Visualization extends Canvas implements ChangeListener {
     }
 
     public void setSliders(double[] sliderValues) {
-        if (sliderValues.length != sliders.length) {
+        if (sliderValues.length != sliderCount) {
             System.err.println("Incorrect slider settings found");
         }
-        for (int i = 0; i < sliders.length; i++) {
+        for (int i = 0; i < sliderCount; i++) {
             sliders[i].setSliderValue(sliderValues[i]);
         }
     }
 
     public void exportImagesWithStandardDeviationSettings() throws IOException {
-        for (int setting = 0; setting < sliders.length; setting++) {
-            for (int i = 0; i < sliders.length; i++) {
+        for (int setting = 0; setting < sliderCount; setting++) {
+            for (int i = 0; i < sliderCount; i++) {
                 if (i == setting) {
                     sliders[i].setSliderValue(Math.sqrt(pca.getEigenvalue(setting)));
                 } else {
@@ -119,7 +120,7 @@ public class Visualization extends Canvas implements ChangeListener {
      */
     public void exportImagesWithEigenvectorSettings(List<double[]> settings, String filePath, String fileName) throws IOException {
         for (int s = 0; s < settings.size(); s++) {
-            if (settings.get(s).length != sliders.length) {
+            if (settings.get(s).length != sliderCount) {
                 System.err.println("Found setting with incorrect number of factors");
             }
             setSliderValues(settings.get(s));
@@ -174,20 +175,20 @@ public class Visualization extends Canvas implements ChangeListener {
     }
 
     public void setSliderValues(double[] values) {
-        for (int i = 0; i < sliders.length && i < values.length; i++) {
+        for (int i = 0; i < sliderCount && i < values.length; i++) {
             sliders[i].setSliderValue(values[i]);
         }
     }
 
-    public int getSliderCount() {
-        return sliders.length;
+    public static int getSliderCount() {
+        return sliderCount;
     }
 
     private PcaDataPoint findPointToDraw() {
 
         // mapMultiply does not change eigenvector, generates new one
-        List<RealVector> scaledEigenvectors = new ArrayList<>(sliders.length);
-        for (int i = 0; i < sliders.length; i++) {
+        List<RealVector> scaledEigenvectors = new ArrayList<>(sliderCount);
+        for (int i = 0; i < sliderCount; i++) {
             scaledEigenvectors.add(pca.getEigenvector(i).mapMultiply(sliders[i].getCurrentValue()));
         }
         PcaDataPoint pointToDraw = mean;
