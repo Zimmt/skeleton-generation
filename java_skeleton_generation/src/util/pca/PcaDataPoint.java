@@ -95,20 +95,20 @@ public class PcaDataPoint {
     }
 
     /**
-     * Neck, back, tail and animal class not tested
+     * Neck, back, tail, name and animal class not tested
      */
     public boolean containsIncorrectData() {
-        return name != null &&
-                spine != null && spine.size() == 10 &&
-                wings >= 0 && wings <= 1 &&
-                flooredLegs >= 0 && flooredLegs <= 2 &&
-                lengthUpperArm >= 0 && lengthUpperArm < coordinateScaleFactor &&
-                lengthLowerArm >= 0 && lengthLowerArm < coordinateScaleFactor &&
-                lengthHand >= 0 && lengthHand < coordinateScaleFactor &&
-                lengthUpperLeg >= 0 && lengthUpperLeg < coordinateScaleFactor &&
-                lengthLowerLeg >= 0 && lengthLowerLeg < coordinateScaleFactor &&
-                lengthFoot >= 0 && lengthFoot < coordinateScaleFactor &&
-                weight > 0 && weight <= weightScaleFactor;
+        double eps = 0.001;
+        return !(spine != null && spine.size() == 10 &&
+                wings >= -eps && wings <= 1+eps &&
+                flooredLegs >= -eps && flooredLegs <= 2+eps &&
+                lengthUpperArm >= -eps && lengthUpperArm < coordinateScaleFactor+eps &&
+                lengthLowerArm >= -eps && lengthLowerArm < coordinateScaleFactor+eps &&
+                lengthHand >= -eps && lengthHand < coordinateScaleFactor+eps &&
+                lengthUpperLeg >= -eps && lengthUpperLeg < coordinateScaleFactor+eps &&
+                lengthLowerLeg >= -eps && lengthLowerLeg < coordinateScaleFactor+eps &&
+                lengthFoot >= -eps && lengthFoot < coordinateScaleFactor+eps &&
+                weight > -eps && weight <= weightScaleFactor+eps);
     }
 
     /**
