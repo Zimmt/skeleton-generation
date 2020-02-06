@@ -89,7 +89,7 @@
  \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt).
  
  \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.\\
- Bei der Erzeugung von Elementen auf der Wirbelsäule ist das nicht einfacher. \todo{Hie\-rarchie nur von Elementen, die von der Wirbelsäule "`abzweigen"'? Oder ist gewisse Hierarchie in "`Endprodukt"' gewollt?} %TODO
+ Bei der Erzeugung von Elementen auf der Wirbelsäule ist das nicht einfacher. Aber alle Algorithmen, die Tiere animieren brauchen eine Hierarchie, deshalb ist das wichtig. \todo{Quelle, Beispiele}
  
  \item Gelenke: Position, Bewegungseinschränkungen für alle drei Richtungen. In einer Hierarchie verbindet das Gelenk ein Kindelement mit seinem Elternelement. Gelenk ist hier ein Punkt, der im Koordinatensystem des Elternelements angegeben wird, und um den das Koordinatensystem des Kindelements gedreht werden kann/soll.\\
  Das macht es sinnvoll ein Kindelement erst zu erzeugen, wenn das dazugehörige Elternelement terminal ist. Sonst weiß man noch nicht so genau wie das Gelenk aussehen soll. Mit etwas mehr Aufwand lässt sich das aber auch im Nachhinein noch anpassen\dots\\

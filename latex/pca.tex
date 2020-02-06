@@ -1,7 +1,10 @@
 %------------
 \chapter{PCA}
 
- \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die Dimensionen sind, in denen sich Skelette am meisten unterscheiden.
+ \todo{Warum PCA und nicht zB apriori Algorithmus?}
+ Position und Krümmung der Wirbelsäule charakteristisch \todo{Handbuch der Anatomie für Künstler als Quelle?}
+
+ \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die Dimensionen sind, in denen sich Skelette am meisten unterscheiden. \todo{PCA Quelle}
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Sie bilden im $d$-dimensionalen Raum einen Ellipsoid.
  
@@ -15,7 +18,11 @@
  Die Eigenwerte stellen die Varianz in Richtung des zugehörigen Eigenvektors dar. \todo{Einfügen und Beschreiben der Bilder von Eigenvektoren multipliziert mit Standardabweichung}
 
  %- - - - - - - - - - - - - - - - - 
- \subsection{Erhobene Daten}
+ \subsection{Datenerhebung}
+ 
+ \todo{Abschnitt über konkrete Beispiele. Warum diese? Einigermaßen sinnvoll verteilt?}
+ 
+ \todo{Warum wurden ausgerechnet diese Daten erhoben? (Position der Wirbelsäule um Balanceberechnungen zu vermeiden)}
  
  Die Eingabedaten für die PCA wurden folgendermaßen erhoben:
  Das Bild des gewählten Tierskeletts wird so zugeschnitten, dass kein unnötiger Rand dabei ist. Dann wird das Bild möglichst groß und möglichst zentiert in ein $1000 \times 1000$ Pixel große Bildumgebung eingefügt.
@@ -30,16 +37,16 @@
  \begin{itemize}
   \item Tierklasse (Fisch, Amphibium, Reptil, Vogel oder Säugetier) - dies eignet sich aber nicht als Dimension für die PCA, da es keine kontinuierliche Achse ist (ein Vogel geht \zb nicht kontinuierlich in ein Säugetier über).
   
-  \item Flügel (ja oder nein) - das Problem hierbei ist, dass dies zu den Datensatz in zwei Teile teilt: Tiere mit und Tiere ohne Flügel. Deshalb ist es sinnvoll die PCA auf beiden Teilen einzeln auszuführen \todo{ist das so?}
+  \item Flügel (ja oder nein) - das Problem hierbei ist, dass dies zu den Datensatz in zwei Teile teilt: Tiere mit und Tiere ohne Flügel (sind auch Cluster).
   
   \item Anzahl der Beine mit Bodenkontakt geteilt durch zwei (da immer symmetrisch)
   
   \item Arme \bzw Beine ohne Bodenkontakt (ja oder nein) - hier gibt es wieder das Problem, dass hier nur zwei Werte möglich sind und der Datensatz so in zwei Teile geteilt wird. Außerdem gibt es nur relativ wenige Tiere mit "`Armen"'. Deshalb ist es wahrscheinlich besser dieses Attribut einfach zu ignorieren.
   
-  \item Gewicht in kg - grob geschätztes Gewicht eines ausgewachsenen Exemplars dieser Art. Das ist oft ein Maximalwert, da oft nur dieser in Artikeln über Tiere angegeben wird. Der größte Wert, der hier möglich ist, beträgt $120$ Tonnen. Das ist das Gewicht des schwersten Wirbeltiers, eines Blauwals.
+  \item Gewicht in kg - grob geschätztes Gewicht eines ausgewachsenen Exemplars dieser Art. Das ist oft ein Maximalwert, da oft nur dieser in Artikeln über Tiere angegeben wird. Der größte Wert, der hier möglich ist, beträgt $120$ Tonnen. Das ist das Gewicht des schwersten Wirbeltiers, eines Blauwals. \todo{logarithmisch?}
  \end{itemize}
 
- Alle erfassten Dimensionen werden vor der Weiterverarbeitung durch die PCA auf das Intervall $[0, 1]$ skaliert, so dass jede Dimension den gleichen Einfluss auf das Ergebnis hat.
+ Alle erfassten Dimensionen werden vor der Weiterverarbeitung durch die PCA auf das Intervall $[0, 1]$ skaliert, so dass jede Dimension den gleichen Einfluss auf das Ergebnis hat. \todo{Auswirkungen der Skalierung erklären (ändert Gewichtung; Gewichtung nach größe im Bild / nach Auswirkung auf Gesamteindruck des Skeletts)}
  
  \subsubsection{Schwierigkeiten}
  
@@ -55,6 +62,7 @@
 
  
  \subsubsection{Skelettbilder}
+ \todo{Anhang}
  
  alle Bilder aus \cite{Spezielle_Zoologie} außer:
  \begin{itemize}
@@ -76,6 +84,8 @@
 
  
  \subsubsection{Gewicht}
+ \todo{Anhang}
+ 
  \begin{itemize}
   \item Gewicht: Durchschnittsgewicht eines ausgewachsenen Tieres in kg. Schwerstes Tier: Blaubwal, Maximum ist also 120 Tonnen \url{http://tierdoku.com/index.php?title=Blauwal}
   \item Durschnittsgewicht (Warmblut-)Pferd: 600 kg \url{https://www.reitarena.com/de/blog/blog-post/2015/03/03/das-pferd-grundlegende-fakten.html}
@@ -123,4 +133,30 @@
   \item Schlange bis 100kg bei Riesenschlangen \url{https://de.wikipedia.org/wiki/Schlangen}
   \item Girafffe bis 2 Tonnen \url{https://www.tierchenwelt.de/huftiere/73-giraffe.html}
  \end{itemize}
+ 
+ %- - - - - - - - - - - - - - - - - -
+ \subsection{Analyse der Eingabedaten}
+ 
+ \begin{itemize}
+  \item Test auf Gaußverteilung (Q Q Plot) \todo{verstehen, programmieren}
+  \item min/max Abstand zum Mittelwert
+  \item mit/ohne Flügel: Anzahl, Flügelcluster
+  \item Gewicht logarithmisch wegen Verteilung, Gewicht ist dann auch nicht mehr kleiner null (egal wie logarithmisch, ist nur Skalierung)
+  \item Gewichtung der Eingabedaten (keine besondere, da keine besonderen Gründe(?))
+  \item Schlange selbst "`ausgedacht"', Strauß Flügel selbst "`ausgedacht"'
+ \end{itemize}
+ 
+ 
+ %- - - - - - - - - - - - - - - - - - - - -
+ \subsection{Analyse der PCA (-Ergebnisse)}
+
+ \begin{itemize}
+  \item Eigenvektoren/-werte
+  \item Rekonstruktion der Tiere nur anhand der größten Eigenwerte (funktioniert so mittel gut\dots)
+  \item Möglichkeit Gewicht, Anzahl Beine mit Bodenkontakt, Flügel wegzulassen. Ergebnisse nicht total unterschiedlich (Unterschiede vor allem bei Extrema wie sehr schweren Tieren und/oder Fischen)\\
+  keine Möglichkeit zu Bewerten was besser ist (Bewertung nach Abweichung der Rekonstruktion aus größten Eigenvektoren zu Original nicht sinnvoll, da Dimensionen unterschiedlich oder nicht vorhanden). Mehr Daten für Algorithmus hilfreich, also Daten behalten.
+  \item Möglichkeit PCA-Daten nach Flügel/nicht Flügel aufzuteilen (führt zu besserer Anpassung an Eingabedaten, aber keine Approximation an Datenpunkte zwischen Clustern) \todo{man könnte auch genauso gut anhand von anderen Merkmalen aufteilen}
+ \end{itemize}
+ 
+
 
