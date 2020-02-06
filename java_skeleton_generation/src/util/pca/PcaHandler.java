@@ -3,7 +3,6 @@ package util.pca;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
-import javax.vecmath.Tuple2d;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

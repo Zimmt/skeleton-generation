@@ -10,7 +10,7 @@ public class PcaDataReader {
     /**
      * Reads input data from ./PCA/PCA_data.txt
      */
-    public static List<PcaDataPoint> readInputData() throws IOException {
+    public static List<PcaDataPoint> readInputData(boolean logWeight) throws IOException {
         System.out.print("Reading input data... ");
         File file = new File("../PCA/PCA_input_data.txt");
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
@@ -34,7 +34,7 @@ public class PcaDataReader {
             int flooredLegs = Integer.parseInt(lineParts[3]);
             double weight = Double.parseDouble(lineParts[4]);
 
-            PcaDataPoint dataPoint = new PcaDataPoint();
+            PcaDataPoint dataPoint = new PcaDataPoint(logWeight);
             dataPoint.setName(name);
             dataPoint.setAnimalClass(animalClass);
             dataPoint.setWings(wings ? 1.0 : 0.0);

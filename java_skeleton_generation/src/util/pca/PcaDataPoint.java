@@ -31,10 +31,13 @@ public class PcaDataPoint {
     private double lengthFoot; // [0, 1000]
 
     private double weight; // [0, 120.000]
+    private boolean logWeight;
 
     private AnimalClass animalClass;
 
-    public PcaDataPoint() {}
+    public PcaDataPoint(boolean logWeight) {
+        this.logWeight = logWeight;
+    }
 
     /**
      * Moves the point by the given vector.
@@ -42,7 +45,7 @@ public class PcaDataPoint {
      * leaves empty: name, back, neck, tail, animalClass
      */
     public PcaDataPoint getMovedPoint(List<RealVector> scaledEigenvectors) {
-        PcaDataPoint point = new PcaDataPoint();
+        PcaDataPoint point = new PcaDataPoint(logWeight);
 
         List<Point2d> newSpine = new ArrayList<>();
         for (int i = 0; i < spine.size(); i++) {
@@ -73,7 +76,12 @@ public class PcaDataPoint {
             newLengthUpperLeg += scaledEigenvector.getEntry(25) * coordinateScaleFactor;
             newLengthLowerLeg += scaledEigenvector.getEntry(26) * coordinateScaleFactor;
             newLengthFoot += scaledEigenvector.getEntry(27) * coordinateScaleFactor;
-            newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+            if (logWeight) {
+                // reverse from log(weight+1) / log(scale+1)
+                newWeight += Math.pow(10, scaledEigenvector.getEntry(28) * Math.log10(weightScaleFactor + 1)) - 1;
+            } else {
+                newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+            }
         }
 
         point.setWings(newWings);
@@ -154,7 +162,11 @@ public class PcaDataPoint {
         data[nextIndex] = lengthUpperLeg / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthLowerLeg / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthFoot / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = weight / weightScaleFactor;
+        if (logWeight) {
+            data[nextIndex] = Math.log10(weight+1) / Math.log10(weightScaleFactor+1);
+        } else {
+            data[nextIndex] = weight / weightScaleFactor;
+        }
 
         return data;
     }
@@ -389,6 +401,7 @@ public class PcaDataPoint {
     /**
      * Calculates mean of spine but not of neck, back and tail!
      * And not of the animal class
+     * (param logWeight is set on mean as the first point in the list has)
      */
     public static PcaDataPoint getMean(List<PcaDataPoint> points) {
         if (points.isEmpty()) {
@@ -397,7 +410,8 @@ public class PcaDataPoint {
             System.err.println("Cannot calculate mean from incomplete data set");
         }
 
-        PcaDataPoint mean = new PcaDataPoint();
+        boolean logWeight = points.get(0).logWeight;
+        PcaDataPoint mean = new PcaDataPoint(logWeight);
         mean.setName("mean");
 
         List<Point2d> meanSpine = Arrays.asList(new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d());
@@ -416,7 +430,11 @@ public class PcaDataPoint {
             otherMeans[5] += point.getLengthUpperLeg();
             otherMeans[6] += point.getLengthLowerLeg();
             otherMeans[7] += point.getLengthFoot();
-            otherMeans[8] += point.getWeight();
+            if (logWeight) { // needed as we want mean of log weight, not of linear weight
+                otherMeans[8] += Math.log10(point.getWeight() + 1);
+            } else {
+                otherMeans[8] += point.getWeight();
+            }
         }
 
         for (Point2d meanSpinePoint : meanSpine) {
@@ -424,6 +442,9 @@ public class PcaDataPoint {
         }
         for (int i = 0; i < otherMeans.length; i++) {
             otherMeans[i] /= points.size();
+        }
+        if (logWeight) { // needed as we want mean of log weight, not of linear weight
+            otherMeans[8] = Math.pow(10, otherMeans[8]) - 1;
         }
 
         mean.setSpine(meanSpine);
