@@ -16,7 +16,7 @@ public class Main {
     private static void pca() throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData();
         PcaHandler pcaHandler = new PcaHandler(dataPoints);
-        pcaHandler.visualize();
+        pcaHandler.exportPCADataProjection();
     }
 
     private static void pcaOnlyWings() throws IOException {

@@ -116,11 +116,18 @@ plot "../input/original_pcaPoints.txt" using a:(column(21) >= 1.0 ? column(b) : 
 
 # weight
 reset
-set logscale y
+set key box opaque
+set key above
 set xlabel "data points"
 set ylabel "weight"
-set output "input_weight_logarithmic.pdf"
 b = 29
+
+set output "input_weight.pdf"
+plot "../input/original_pcaPoints.txt" using (column(21) >= 1.0 ? column(b) : 1/0) title "with wings" @WINGS, \
+     "../input/original_pcaPoints.txt" using (column(21) <= 0.0 ? column(b) : 1/0) title "without wings" @OTHER
+
+set logscale y
+set output "input_weight_logarithmic.pdf"
 plot "../input/original_pcaPoints.txt" using (column(21) >= 1.0 ? column(b) : 1/0) title "with wings" @WINGS, \
      "../input/original_pcaPoints.txt" using (column(21) <= 0.0 ? column(b) : 1/0) title "without wings" @OTHER
 

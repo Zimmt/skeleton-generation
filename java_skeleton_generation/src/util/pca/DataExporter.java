@@ -20,7 +20,8 @@ public class DataExporter {
     public void projectAndExportToFile(String filePathAndName, RealVector xDimension, RealVector yDimension, RealVector zDimension) throws IOException {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write("# Projected PCA examples");
+        writer.write("# Projected PCA examples\n");
+        writer.write("# The input examples projected on the first three eigenvectors (and in the 4th column if thh example has wings)\n");
         writer.newLine();
 
         RealVector mean = new ArrayRealVector(PcaDataPoint.getMean(data).getScaledDataForPCA());
@@ -29,8 +30,9 @@ public class DataExporter {
             double x = rawPoint.dotProduct(xDimension);
             double y = rawPoint.dotProduct(yDimension);
             double z = rawPoint.dotProduct(zDimension);
+            int w = (int) point.getWings();
 
-            writer.write("" + x + " " +  y + " " + z);
+            writer.write("" + x + " " +  y + " " + z + " " + w);
             writer.newLine();
         }
         writer.close();
@@ -40,7 +42,7 @@ public class DataExporter {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write("# Original PCA examples\n");
-        writer.write("# " + PcaDataPoint.getDimensionNames());
+        writer.write(String.format("# %s\n", PcaDataPoint.getDimensionNames()));
         writer.newLine();
 
         for (PcaDataPoint point : data) {
