@@ -1,0 +1,126 @@
+%------------
+\chapter{PCA}
+
+ \emph{Primary Component Analysis} (PCA) wird mit dem Ziel angewendet herauszufinden was die Dimensionen sind, in denen sich Skelette am meisten unterscheiden.
+ 
+ Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Sie bilden im $d$-dimensionalen Raum einen Ellipsoid.
+ 
+ Das Ziel der PCA ist herauszufinden wo die Achsen des Ellipsoids liegen, also wie die Eingabedimensionen miteinander korreliert sind. Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen.
+ 
+ Um dies zu Berechnen wird zunächst die Kovarianzmatrix aufgestellt, deren Einträge die Kovarianz zwischen den verschiedenen Achsen beschreibt.
+ Die Eigenvektoren dieser Kovarianzmatrix sind dann die Achsen des Ellipsoids und die zugehörigen Eigenwerte geben an wie weit ausgedehnt das Ellipsoid in dieser Richtung ist. Der Mittelpunkt des Ellipsoids ist der Mittelwert der Daten.
+ 
+ Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren, und betrachtet dann nur die Dimensionen mit den größten Eigenwerten. Dazu zieht man zunächst den Mittelwert vom Datenpunkt ab und multipliziert ihn dann mit der transponierten Basiswechselmatrix, also der Matrix, in der in den Zeilen die Eigenvektoren stehen.
+ 
+ Die Eigenwerte stellen die Varianz in Richtung des zugehörigen Eigenvektors dar. \todo{Einfügen und Beschreiben der Bilder von Eigenvektoren multipliziert mit Standardabweichung}
+
+ %- - - - - - - - - - - - - - - - - 
+ \subsection{Erhobene Daten}
+ 
+ Die Eingabedaten für die PCA wurden folgendermaßen erhoben:
+ Das Bild des gewählten Tierskeletts wird so zugeschnitten, dass kein unnötiger Rand dabei ist. Dann wird das Bild möglichst groß und möglichst zentiert in ein $1000 \times 1000$ Pixel große Bildumgebung eingefügt.
+ Ist das geschehen kann die Lage der Wirbelsäule und die Länge der Beine annotiert werden.
+ 
+ Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils einer für Hals, Rücken und Schwanz. Hals und Rücken teilen sich einen Punkt und Rücken und Schwanz. Die Punkte an denen sie ineinander übergehen sind der Schultergürtel und der Beckengürtel.
+ Das sind die ersten $20$ Eingabedimensionen ($10$ zweidimensionale Punkte).
+ 
+ Zusätzlich wird jeweils durch eine Gerade im Bild die Länge der Vorder- und Hinterbeine eingetragen, falls vorhanden. Beine sind Extremitäten, die Bodenkontakt haben und zur Fortbewegung verwendet werden. \todo{auch Arme und/oder Flossen erfassen?} Auch die Flügellänge wird erfasst, aber da die Position und Haltung der Flügel auf Bildern von Skeletten sehr stark variiert, ist das nicht aussagekräftig.
+ 
+ Zusätzlich zum Bild gibt es noch eine Textdatei, in der weitere Daten erfasst werden. Das sind:
+ \begin{itemize}
+  \item Tierklasse (Fisch, Amphibium, Reptil, Vogel oder Säugetier) - dies eignet sich aber nicht als Dimension für die PCA, da es keine kontinuierliche Achse ist (ein Vogel geht \zb nicht kontinuierlich in ein Säugetier über).
+  
+  \item Flügel (ja oder nein) - das Problem hierbei ist, dass dies zu den Datensatz in zwei Teile teilt: Tiere mit und Tiere ohne Flügel. Deshalb ist es sinnvoll die PCA auf beiden Teilen einzeln auszuführen \todo{ist das so?}
+  
+  \item Anzahl der Beine mit Bodenkontakt geteilt durch zwei (da immer symmetrisch)
+  
+  \item Arme \bzw Beine ohne Bodenkontakt (ja oder nein) - hier gibt es wieder das Problem, dass hier nur zwei Werte möglich sind und der Datensatz so in zwei Teile geteilt wird. Außerdem gibt es nur relativ wenige Tiere mit "`Armen"'. Deshalb ist es wahrscheinlich besser dieses Attribut einfach zu ignorieren.
+  
+  \item Gewicht in kg - grob geschätztes Gewicht eines ausgewachsenen Exemplars dieser Art. Das ist oft ein Maximalwert, da oft nur dieser in Artikeln über Tiere angegeben wird. Der größte Wert, der hier möglich ist, beträgt $120$ Tonnen. Das ist das Gewicht des schwersten Wirbeltiers, eines Blauwals.
+ \end{itemize}
+
+ Alle erfassten Dimensionen werden vor der Weiterverarbeitung durch die PCA auf das Intervall $[0, 1]$ skaliert, so dass jede Dimension den gleichen Einfluss auf das Ergebnis hat.
+ 
+ \subsubsection{Schwierigkeiten}
+ 
+ \begin{itemize}
+  \item Bei Fischen ist nicht klar wo Rücken in Schwanz übergeht, da der Beckengürtel sich teilweise beim Kopf befindet oder auch gar nicht vorhanden ist. Bei der Datenerhebung wurde der Übergang ungefähr bei der Rücken- oder der Afterflosse festgelegt, da dies relativ gut zum Algorithmus passt.
+  
+  \item Hals und Schwanz von manchen Tieren ist mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und vom Schwan und der Schwanz vom Ichthyosaurus und vom Koboldmaki. In diesem Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) die im Algorithmus wahrscheinlich sowieso nicht abgebildet werden, einfach wegzulassen.
+  
+  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild irgendwie eingerollt ist.
+  
+ \end{itemize}
+
+
+ 
+ \subsubsection{Skelettbilder}
+ 
+ alle Bilder aus \cite{Spezielle_Zoologie} außer:
+ \begin{itemize}
+  \item Sinornis und Taube aus \cite{Vergleichende_Anatomie}
+  \item Seekuh aus \cite{Zoologie25Wehner}
+  \item Archaeopteryx, Eusthenopteron, Ichthyosaurus, Ichthyostega, Muraenosaurus, Urpferdchen aus \cite{Zoologie24Wehner}
+  \item Pferd: \url{https://www.kosmos.de/content/buecher/ratgeber/pferde-reiten/vorwaerts-abwaerts-eine-frage-der-haltung/}
+  \item Känguru \url{http://www.bildwoerterbuch.com/tierreich/beuteltiere/kaenguru/skelett-eines-kaengurus.php}
+  \item Schwan \url{https://www.alamy.de/skelett-eines-schwans-osteographia-oder-die-anatomie-der-knochen-london-1733-quelle-47-ich-12-kapitel-v-saitenhalter-autor-cheselden-william-image226921369.html}
+  \item Chamäleon \url{https://www.madcham.de/de/anatomie/}
+  \item Gnu \url{https://lutzmoeller.net/Afrika/2007/Lutz-Juli/8-Gnu.php}
+  \item Tyrannosaurus Rex \url{https://upload.wikimedia.org/wikipedia/commons/9/9f/Tyrannosaurus_skeleton.jpg}
+  \item Dormedar \url{https://upload.wikimedia.org/wikipedia/commons/a/ac/Camel_Skeleton_-_Richard_Owen_-_On_the_Anatomy_of_Vertebrates_\%281866\%29.jpg}
+  \item Strauß \url{https://www.scienceinschool.org/sites/default/files/articleContentImages/21/ostrich/issue21ostrich5_xl.jpg}
+  \item Blauwal \url{https://www.quagga-illustrations.de/wp-content/uploads/2014/05/h0001705.jpg}
+  \item Krokodil \url{https://de.depositphotos.com/210906852/stock-illustration-skeleton-crocodile-vintage-line-drawing.html}
+  \item Giraffe \url{https://de.wikipedia.org/wiki/Giraffen#/media/Datei:Giraffe_skeleton.jpg}
+ \end{itemize}
+
+ 
+ \subsubsection{Gewicht}
+ \begin{itemize}
+  \item Gewicht: Durchschnittsgewicht eines ausgewachsenen Tieres in kg. Schwerstes Tier: Blaubwal, Maximum ist also 120 Tonnen \url{http://tierdoku.com/index.php?title=Blauwal}
+  \item Durschnittsgewicht (Warmblut-)Pferd: 600 kg \url{https://www.reitarena.com/de/blog/blog-post/2015/03/03/das-pferd-grundlegende-fakten.html}
+  \item Afrikanischer Elefant 4000kg: \url{https://de.upali.ch/gewicht-und-grosse/}
+  \item Amerikanischer Flussbarsch 2kg: \url{http://tierdoku.com/index.php?title=Amerikanischer_Flussbarsch}
+  \item Archaeopteryx wird zu Vögeln gerechnet, Gewicht 1kg \url{https://de.wikipedia.org/wiki/Archaeopteryx}
+  \item Brachiosaurus (Reptil \url{http://www.biologie-schule.de/brachiosaurus-steckbrief.php}), 23 - 44 Tonnen \url{https://de.wikipedia.org/wiki/Brachiosaurus}
+  \item Dimetrodon Reptil, 250kg \url{https://de.wikipedia.org/wiki/Dimetrodon}
+  \item Elster 0,2kg \url{https://de.wikipedia.org/wiki/Elster}
+  \item Forelle 10-50kg (je nach Art) \url{https://de.wikipedia.org/wiki/Forelle}
+  \item Fregattvogel (Bild nicht verwendet, da nicht im Stand, sondern im Flug abgebildet) 0,6 - 1,6kg \url{https://de.wikipedia.org/wiki/Fregattv\%C3\%B6gel}
+  \item Grönlandwal 50-100 Tonnen \url{https://de.wikipedia.org/wiki/Gr\%C3\%B6nlandwal}
+  \item Ichthyornis 0.3kg \url{http://dinodata.de/animals/birds/pages_i/ichthyornis.php}
+  \item Ichthyosaurus Fisch ca 90kg \url{https://www.tiere-online.de/sonstige-tiere/dinosaurier/ichthyosaurus/}
+  \item Ichthyostega 80kg \url{https://dinosaurierwelt.com/ichthyostega/}
+  \item Kaffernbüffel 350 - 900kg \url{https://de.wikipedia.org/wiki/Kaffernb\%C3\%BCffel}
+  \item Kaninchen je nach Art, grob 1kg
+  \item Klippschliefer 2-5kg \url{https://de.wikipedia.org/wiki/Klippschliefer}
+  \item Koboldmaki 0,1kg \url{https://de.wikipedia.org/wiki/Koboldmakis}
+  \item Landschildkröte unterschiedlich grob 50kg
+  \item Ohrenrobbe 25-500kg \url{https://de.wikipedia.org/wiki/Ohrenrobben}
+  \item Panzerspitzmaus 100g \url{https://de.wikipedia.org/wiki/Panzerspitzmaus}
+  \item Parasaurolophus walkeri 4-5 Tonnen \url{http://tierdoku.com/index.php?title=Parasaurolophus_walkeri}
+  \item Peloneustes philarchus 100kg \url{https://de.wikipedia.org/wiki/Peloneustes}
+  \item Pottwal bis 50 Tonnen \url{https://de.wikipedia.org/wiki/Pottwal}
+  \item Rothirsch 80-350kg \url{https://de.wikipedia.org/wiki/Rothirsch}
+  \item Seehund 100-150kg \url{https://de.wikipedia.org/wiki/Seehund}
+  \item Sinornis 20g \url{http://dinodata.de/animals/birds/pages_s/sinornis.php}
+  \item Stegosaurus 4,5 Tonnen \url{https://de.wikipedia.org/wiki/Stegosaurus}
+  \item Taube unterschiedlich grob 1-2kg
+  \item Thrinaxodon Reptil "`ein paar Pfund"' \url{https://www.thoughtco.com/thrinaxodon-1091887}
+  \item Triceratops 6-12 Tonnen \url{https://de.wikipedia.org/wiki/Triceratops}
+  \item Urpferdchen (Propalaeotherium) 30kg \url{https://de.wikipedia.org/wiki/Propalaeotherium}
+  \item Schwan 14kg \url{https://de.wikipedia.org/wiki/Schw\%C3\%A4ne}
+  \item Chamäleon 0,1 - 2kg \url{https://www.tierchenwelt.de/echsen/128-chamaeleon.html}
+  \item Gämse 25-50kg \url{https://de.wikipedia.org/wiki/G\%C3\%A4mse}
+  \item Gnu 140-250kg \url{https://de.wikipedia.org/wiki/Gnus}
+  \item Schwein 100kg \url{https://de.wikipedia.org/wiki/Hausschwein}
+  \item Känguru 2-90kg \url{https://de.wikipedia.org/wiki/K\%C3\%A4ngurus}
+  \item Tyrannosaurus 9 Tonnen \url{https://de.wikipedia.org/wiki/Tyrannosaurus}
+  \item Dromedar 300-700 kg \url{https://de.wikipedia.org/wiki/Dromedar}
+  \item Afrikanischer Strauß bis 135kg \url{https://de.wikipedia.org/wiki/Afrikanischer_Strau\%C3\%9F}
+  \item Frosch ca 10g \url{http://www.biologie-schule.de/frosch-steckbrief.php}
+  \item Krokodil 100-1000kg \url{https://de.wikipedia.org/wiki/Krokodile}
+  \item Schlange bis 100kg bei Riesenschlangen \url{https://de.wikipedia.org/wiki/Schlangen}
+  \item Girafffe bis 2 Tonnen \url{https://www.tierchenwelt.de/huftiere/73-giraffe.html}
+ \end{itemize}
+

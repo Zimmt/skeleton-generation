@@ -1,0 +1,139 @@
+
+
+
+%-------------
+%-------------
+\chapter{Idee}
+
+\begin{enumerate}
+ \item Erzeugung eines Wirbeltierskeletts
+ \item Erzeugung von Muskeln (future work)
+ \item Erzeugung von Haut (future work / kurz ausprobieren)
+ \item Erzeugung von vielen Skelettvarianten bei Eingabe eines Skeletts (nur wenn es relativ leicht möglich ist)
+\end{enumerate}
+
+%---------------
+\section{Skelett}
+
+\begin{itemize}
+ \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
+ \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\%TODO
+ Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). $\rightarrow$ Darauf achten, dass das nicht von Algorithmus verlangt wird
+ \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
+ \item Darstellung des Skeletts in "`sinnvoller"' Pose.
+ \item Beachte, dass Tier nicht umfällt: berechne Drehmomente um Kontaktpunkte mit Boden. Dafür sind aber Muskeln bzw.\ Masse wichtig $\rightarrow$ Schätzung der Masse anhand der Knochengröße bzw.\ Größe der Bounding Box?
+ \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
+ \begin{itemize}
+  \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
+  \item Proportionen (länge der Extremitäten, Kopfgröße,\dots)
+  \item Anzahl vorhandener Gliedmaßen / Zehen / \dots
+ \end{itemize}
+
+ \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen.
+ \item Ein Knochen ist im einfachsten Fall ein Zylinder (Strecke) mit Länge und Radius, kann aber auch eine konvexe Kurve mit einem Radius sein.
+ \item Ein Gelenk hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
+ \item Skelett darf nicht zu abstrakt sein, da es sonst zu wenig Informationen zum konkreten Tier liefert.
+ \item Ein detailliertes Skelett ist für Wesen sinnvoll, die es so noch nicht gibt bzw. wo man keine richtige Vorstellung davon hat wie es "`funktioniert"', z.B. bei mehr Gliedmaßen.
+ \item Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar oder ineinander überführbar)
+ \item Brustbein sorgt dafür, dass Skelett nicht mehr baumartig $\rightarrow$ erstmal weglassen, ist wahrscheinlich auch nicht unglaublich relevant
+\end{itemize}
+
+%- - - - - - - - - - - - 
+\subsection{Extremitäten}
+
+\begin{itemize}
+ \item \url{https://de.wikipedia.org/wiki/Extremit\%C3\%A4tenevolution}
+ \item "`Die paarigen Flossen von Fischen und Extremitäten von Tetrapoden sind insofern homologe Skelettelemente, als sie bei beiden an Schulter- und Beckengürtel ansetzen und die Extremitäten aus den paarigen Flossen evolutionär hervorgegangen sind.\cite{homology} Sie unterschieden sich jedoch im Knochenaufbau und in der Embryonalentwicklung, so dass ein evolutionärer Übergang aus den Einzelelementen schwer erklärbar ist."'\\
+ $\rightarrow$ einfach ignorieren und trotzdem (erstmal) so modellieren?
+\end{itemize}
+
+
+%----------------
+\section{Muskeln}
+
+\begin{itemize}
+ \item Die "`Hauptmuskeln"' verlaufen bei Wirbeltieren wahrscheinlich ähnlich, relativ zu den Knochen. Trotzdem unterscheiden sie sich recht stark.
+ \item Knochen/Gelenke bekommen Zusatzattribute für Start- und Zielpunkte der Muskeln.
+ \item Muskeln haben eine "`Dicke"' und aus Start- und Zielpunkt muss Kurve des Muskels generiert werden.
+ \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ future work
+\end{itemize}
+
+%-------------
+\section{Haut}
+
+\begin{itemize}
+ \item Was für Algorithmen gibt es, die zu einem vorhandenen 3D-Modell eine Hülle mit gewissen Eigenschaften generieren? \\
+ es gibt eine solche Funktion z.B. in AutoCAD \url{https://knowledge.autodesk.com/de/support/autocad/learn-explore/caas/CloudHelp/cloudhelp/2016/DEU/AutoCAD-Core/files/GUID-B7F99810-765E-4E7E-ABDD-275C64147CCC-htm.html}
+ \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen (siehe \url{https://www.proko.com/landmarks-of-the-human-body/}) oder "`bone weights"'
+\end{itemize}
+
+%-----------------------
+\section{Interaktivität}
+
+\begin{itemize}
+ \item Eine Anwendung, bei der nach Eingabe von Parametern sofort das komplette Tier generiert wird, ist weniger hilfreich als eine, bei der schrittweise Teile davon generiert werden können (und auch rückgängig gemacht werden können)
+ \item Teile, die einem nicht gefallen, sollten geändert werden können
+ \item Änderungen können Auswirkungen auf den Rest des Körpers haben (durch Regeln) bzw. manche Änderungen sind nicht möglich
+ \item Könnte verwendet werden um schnell verschiedene Möglichkeiten zu testen
+\end{itemize}
+
+%------------------------
+\section{Datenstrukturen}
+
+%- - - - - - - - - - -
+\subsection{Terminale}
+
+\begin{itemize}
+ \item Terminale zunächst als Bounding Box. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
+ 
+ \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt).
+ 
+ \item Knochen in Hierarchie anordnen und Position und Rotation relativ zu Elternelement angeben, da damit Erzeugung von Kindelementen einfacher $\rightarrow$ verwende homogene Koordinaten.\\
+ Bei der Erzeugung von Elementen auf der Wirbelsäule ist das nicht einfacher. \todo{Hie\-rarchie nur von Elementen, die von der Wirbelsäule "`abzweigen"'? Oder ist gewisse Hierarchie in "`Endprodukt"' gewollt?} %TODO
+ 
+ \item Gelenke: Position, Bewegungseinschränkungen für alle drei Richtungen. In einer Hierarchie verbindet das Gelenk ein Kindelement mit seinem Elternelement. Gelenk ist hier ein Punkt, der im Koordinatensystem des Elternelements angegeben wird, und um den das Koordinatensystem des Kindelements gedreht werden kann/soll.\\
+ Das macht es sinnvoll ein Kindelement erst zu erzeugen, wenn das dazugehörige Elternelement terminal ist. Sonst weiß man noch nicht so genau wie das Gelenk aussehen soll. Mit etwas mehr Aufwand lässt sich das aber auch im Nachhinein noch anpassen\dots\\
+ \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich? Wie Einschränkungen erzeugen?}, %TODO 
+ 
+ \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert. (SkeletonGenerator)
+ \end{itemize}
+ 
+%- - - - - - - - - - - -
+\subsection{"`Wachstum"'}
+ 
+\begin{itemize}
+
+\item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
+  
+\item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.\\
+Regel, die zunächst sinnvoll klingt: Ansatzpunkte der Extremitäten an der Wirbelsäule können nur in Bereichen der Kurve sein, an denen die Steigung nahe null ist.
+
+\item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\ Bounding Box für Nichtterminale ist dafür aber nicht nötig.
+  
+\item Die Knochen sollen eine Hierarchie (Baum) bilden. Am besten ist ein Knochen in der Nähe es Schwerpunkts (oft wird die Hüfte verwendet). Die Hüfte gibt es aber nicht immer. Verwende ersten Wirbel nach dem Brustkorb (fals existent).
+\end{itemize}
+
+ 
+%- - - - - - - - - -
+\subsection{Balance} 
+
+Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen und Gewicht) $\rightarrow$ zunächst nicht nötig, da Position  der Wirbelsäule zu beginn mit Beziérkurve festgelegt wird
+
+  \begin{itemize}
+   \item Drehmoment $\vec{M} = \vec{r} \times \vec{F}$, mit Ortsvektor $\vec{r}$ vom Bezugspunkt des Drehmoments zum Angriffspunkt der Kraft $\vec{F}$. Betrag des Drehmoments $M = r \cdot F \cdot \textrm{sin}(\alpha)$, mit dem Winkel $\alpha$ zwischen $\vec{F}$ und $\vec{r}$.\\
+   (\url{https://de.wikipedia.org/wiki/Drehmoment})
+   
+   \item Kraft, die auf Knochen wirkt: resultierende Kraft der Streckenlast, die durch zugewiesenes Gewicht erzeugt wird. Der Einfachheit halber einfach rechteckige Streckenlast annehmen, dann greift Kraft am Mittelpunkt der Strecke und $\vec{F} = \frac{1}{2} m g$\footnote{Die Formel zu rechteckigen Streckenlasten, die man so findet ist $\vec{F} = \frac{1}{2} L q_0$, mit Länge der Strecke $L$ und den auf der Strecke verteilten Einzellasten $q_0$, aber $L q_0 = m g$. Daraus folgt obige Formel.}, mit Masse $m$ und Erdbeschleunigung $g$\\ (\url{https://www.der-wirtschaftsingenieur.de/index.php/streckenlast/}, \url{https://www.youtube.com/watch?v=T1Sf8GPD4dc})
+   
+   \item Reduzierung des Problems auf zwei Dimensionen, da Körper so aufgebaut ist, dass er nur nach vorne oder hinten umkippen kann und nicht zur Seite.
+   
+   \item Damit Körper immer in Balance ist, muss auch nicht terminalen Teilen ein Drehmoment (und damit auch implizit ein Gewicht) zugewiesen werden. Werden aus diesen Nichtterminalen dann neue Teile generiert, so muss das Drehmoment bzw.\ die Summe der einzelnen Drehmomente gleich bleiben.
+   
+   \item Der Bezugspunkt für die Berechnung der Drehmomente ist der Schwerpunkt des Körpers, da sich dort alle durch das Eigengewicht wirkenden Drehmomente des Körpers zu null aufaddieren.\\ (\url{https://www.grund-wissen.de/physik/mechanik/drehmoment-und-gleichgewicht.html})\\
+   Das heißt zu Beginn der Generierung muss der Schwerpunkt des Körpers festgelegt werden, damit die Drehmomente berechnet werden können. Das ist am Anfang aber sehr einfach, da das initiale Element die Bounding Box des Gesamten Skeletts ist. Also ist der Schwerpunkt der Mittelpunkt.
+   
+  \end{itemize}
+
+
+
+
