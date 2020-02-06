@@ -1,20 +1,34 @@
 # 2D plots of projection of PCA data on first three eigenvectors
 
 set terminal pdf
+set key box opaque
+set key above
+WINGS = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'
+OTHER = 'pointtype 6 pointsize 0.5 linecolor rgb "red"'
 
 set xrange [-2:2]
 set yrange [-2:2]
 set zrange [-2:2]
+set size square
 
 set xlabel "first eigenvector"
 set ylabel "second eigenvector"
 set output "projection_eigenvectors12.pdf"
-plot '../input/projected_pcaPoints.txt' using 1:2
+a = 1
+b = 2
+plot "../input/projected_pcaPoints.txt" using a:(column(4) >= 1.0 ? column(b) : 1/0) title "with wings" @WINGS, \
+     "../input/projected_pcaPoints.txt" using a:(column(4) <= 0.0 ? column(b) : 1/0) title "without wings" @OTHER
 
 set ylabel "third eigenvector"
 set output "projection_eigenvectors13.pdf"
-plot '../input/projected_pcaPoints.txt' using 1:3
+a = 1
+b = 3
+plot "../input/projected_pcaPoints.txt" using a:(column(4) >= 1.0 ? column(b) : 1/0) title "with wings" @WINGS, \
+     "../input/projected_pcaPoints.txt" using a:(column(4) <= 0.0 ? column(b) : 1/0) title "without wings" @OTHER
 
 set xlabel "second eigenvector"
 set output "projection_eigenvectors23.pdf"
-plot '../input/projected_pcaPoints.txt' using 2:3
+a = 2
+b = 3
+plot "../input/projected_pcaPoints.txt" using a:(column(4) >= 1.0 ? column(b) : 1/0) title "with wings" @WINGS, \
+     "../input/projected_pcaPoints.txt" using a:(column(4) <= 0.0 ? column(b) : 1/0) title "without wings" @OTHER
