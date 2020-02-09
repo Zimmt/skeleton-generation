@@ -101,24 +101,22 @@
  %---------------------------------
  \section{Analyse der Eingabedaten}
  
- \todo{Plots einfügen}
+ \todo{PCA Daten aktualisieren, Plots einfügen}
  
  \begin{itemize}
   \item Test auf Gaußverteilung (Q Q Plot) \todo{verstehen, programmieren}
   \item min/max Abstand zum Mittelwert
   \item mit/ohne Flügel: Anzahl, Flügelcluster
   \item Gewicht logarithmisch wegen Verteilung, Gewicht ist dann auch nicht mehr kleiner null (egal wie logarithmisch, ist nur Skalierung)
-  \item Gewichtung der Eingabedaten (keine besondere, da keine besonderen Gründe(?))
-  \item Schlange selbst "`ausgedacht"', Strauß Flügel selbst "`ausgedacht"'
  \end{itemize}
  
  
- %- - - - - - - - - - - - - - - - - - - - -
- \section{Analyse der PCA (-Ergebnisse)}
+ %- - - - - - - - - - - - - - - - - -
+ \section{Analyse der PCA-Ergebnisse}
 
  \begin{itemize}
   \item Eigenvektoren/-werte
-  \item Rekonstruktion der Tiere nur anhand der größten Eigenwerte (funktioniert so mittel gut\dots)
+  \item Rekonstruktion der Tiere nur anhand der größten Eigenwerte (funktioniert so mittel gut\dots; gute und schlechte Beispiele zeigen)
   \item Möglichkeit Gewicht, Anzahl Beine mit Bodenkontakt, Flügel wegzulassen. Ergebnisse nicht total unterschiedlich (Unterschiede vor allem bei Extrema wie sehr schweren Tieren und/oder Fischen)\\
   keine Möglichkeit zu Bewerten was besser ist (Bewertung nach Abweichung der Rekonstruktion aus größten Eigenvektoren zu Original nicht sinnvoll, da Dimensionen unterschiedlich oder nicht vorhanden). Mehr Daten für Algorithmus hilfreich, also Daten behalten.
   \item Möglichkeit PCA-Daten nach Flügel/nicht Flügel aufzuteilen (führt zu besserer Anpassung an Eingabedaten, aber keine Approximation an Datenpunkte zwischen Clustern) \todo{man könnte auch genauso gut anhand von anderen Merkmalen aufteilen}
