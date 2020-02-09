@@ -2,6 +2,8 @@
 %------------
 \chapter{PCA}
 
+% apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
+
  Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse auf einer Menge von Beispielen findet diejenigen Dimensionen, in denen sich die Beispiele am meisten unterscheiden, die "`principle components"'. Das Ziel dabei ist in den meisten Fällen die Dimensionalität der Daten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`primary components"' dargestellt werden, da die anderen Dimensionen optimalerweise nur einen marginalen Einfluss auf die Daten haben.
  
  Das Ziel hier, war vor allem die Position und Krümmung der Wirbelsäule bei unterschiedlichen Tieren zu untersuchen, da diese sehr charakteristische Merkmale eines Skeletts sind. Aus dem gleichen Grund soll der Algorithmus zur Generierung der Skelette mit der Generierung der Wirbelsäule starten und daraus dann den Rest der Knochen "`wachsen"' lassen.
@@ -13,7 +15,7 @@
  %-----------------------
  \section{Funktionsweise}
  
- \todo{PCA Quelle}
+ \todo{PCA Quelle} % Folien? Oder besser Standardwerk zitieren?
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll, hier ein Skelett. Für jede Eigenschaft des Skeletts hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten $P$ mit jeweils $d$ Dimensionen. Es wird angenommen, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. Dann bilden die Punkte im $d$-dimensionalen Raum einen Ellipsoid.
  
