@@ -102,8 +102,9 @@
  
  %---------------------------------
  \section{Analyse der Eingabedaten}
+ \label{pca_input_analysis}
  
- Insgesamt wurden $44$ Datenpunkte erhoben. Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean_log_weight} visualisiert. Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
+ Insgesamt wurden $44$ Datenpunkte erhoben. \todo{Wieso ist das ausreichend?} Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean_log_weight} visualisiert. Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
  
  \begin{figure}
   \centering
@@ -134,7 +135,7 @@
   \label{schwan_farbig}
  \end{figure}
  
- Es gibt $7$ Datenpunkte mit Flügeln und $37$ ohne Flügel. In den Visualisierungen der Eingabedaten (siehe Anhang \ref{appendix_pca}, Abbildungen \ref{input_data_spine}, \ref{input_data_lengths} und \ref{input_data_weight}) ist zu sehen, dass die Tiere mit Flügeln zwar kein Cluster bilden, aber doch meist nahe zusammen liegen. Nach der Koordinatentransformation durch die PCA bilden sie ein Cluster (siehe Abschnitt \ref{section_pca_result_analysis}). \todo{andere Daten taggen? Anzahl Beine mit Bodenkontakt, Tierklasse}
+ Es gibt $7$ Datenpunkte mit Flügeln und $37$ ohne Flügel. In den Visualisierungen der Eingabedaten (siehe Anhang \ref{appendix_pca}, Abbildungen \ref{input_data_spine}, \ref{input_data_lengths} und \ref{input_data_weight}) ist zu sehen, dass die Tiere mit Flügeln zwar in den einzelnen Projektionen keine Cluster bilden, aber doch meist nahe zusammen liegen. Nach der Koordinatentransformation durch die PCA ist das Cluster jedoch klar erkennbar (siehe Abschnitt \ref{section_pca_result_analysis}). \todo{andere Daten taggen? Anzahl Beine mit Bodenkontakt, Tierklasse}
 
  Das Gewicht der Eingabedaten ist nicht normalverteilt (siehe Abbildung \ref{gnuplot_weight}), aber auf einer logarithmischen Skala schon (siehe Abbildung \ref{gnuplot_log_weight}). \todo{QQ Diagramme verstehen und programmieren}
  Bei linearem Gewicht als Eingabe für die PCA treten dadurch bei der Kombination von zufälligen Werten für die Eigenvektoren schnell Gewichte kleiner null auf. Dies wird bei einer logarithmischen Skala vermieden.
@@ -145,7 +146,7 @@
  \section{Analyse der PCA-Ergebnisse}
  \label{section_pca_result_analysis}
  
- Von $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste hat einen Wert von $0,000024$. Von den Eigenwerten sind $7$ größer als $0,01$. Leider reichen diese $7$ Dimensionen aber noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
+ Von $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste hat einen Wert von $0,000024$. Von den Eigenwerten sind $7$ größer als $0,01$. Leider reichen diese $7$ Dimensionen aber noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}). Die Daten konnten somit von der PCA nicht besonders gut komprimiert werden. Trotzdem sind die berechneten Eigenvektoren hilfreich für die (Weiter-)Entwicklung des Algorithmus. \todo{wenn Algo weiterentwickelt, beschreiben}
  
  \begin{figure}
   \centering
@@ -170,12 +171,17 @@
  \end{figure}
 
 
- \begin{itemize}
-  \item Eigenvektoren/-werte
-  \item Rekonstruktion der Tiere nur anhand der größten Eigenwerte (funktioniert so mittel gut\dots; gute und schlechte Beispiele zeigen)
-  \item Möglichkeit Gewicht, Anzahl Beine mit Bodenkontakt, Flügel wegzulassen. Ergebnisse nicht total unterschiedlich (Unterschiede vor allem bei Extrema wie sehr schweren Tieren und/oder Fischen)\\
-  keine Möglichkeit zu Bewerten was besser ist (Bewertung nach Abweichung der Rekonstruktion aus größten Eigenvektoren zu Original nicht sinnvoll, da Dimensionen unterschiedlich oder nicht vorhanden). Mehr Daten für Algorithmus hilfreich, also Daten behalten.
-  \item Möglichkeit PCA-Daten nach Flügel/nicht Flügel aufzuteilen (führt zu besserer Anpassung an Eingabedaten, aber keine Approximation an Datenpunkte zwischen Clustern) \todo{man könnte auch genauso gut anhand von anderen Merkmalen aufteilen}
- \end{itemize}
+ Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man sich die Frage stellen, ob sie nötig sind, oder ob sie eher die Ergebnisse der PCA verschlechtern. Es wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich nicht extrem von der PCA mit allen Daten. 
+ 
+ Leider gibt es keine gute Möglichkeit die Qualität der Ergebnisse der PCA zu messen. Man könnte den Unterschied zwischen den Eingabedaten und den Rekonstruktionen aus den Linearkombinationen der Eigenvektoren mit den größten Eigenwerten messen. Aber das liefert, durch das Fehlen von verschiedenen Dimensionen kein einheitliches Maß.
+ 
+ Da jede Dimension dem Algorithmus, der später Skelette generieren soll, helfen könnte, haben wir uns dafür entschieden alle Merkmale zu behalten.
+ 
+ Außerdem gibt es die Möglichkeit die Eingabedaten in mehrere Mengen aufzuteilen und diese von verschiedenen Instanzen der PCA analysieren zu lassen. Hierbei gibt es zunächst das Problem, dass sich dann die Anzahl der Datenpunkte noch weiter reduziert, was die Ergebnisse nicht mehr repräsentativ macht.
+ Ein Merkmal, das sich zur Unterteilung in Mengen anbieten würde, ist die Angabe ob das Tier Flügel hat oder nicht, da sich dadurch nur zwei Gruppen ergeben. Außerdem ist die Gruppe der Tiere mit Flügeln in den Eingabedaten klar als Cluster zu erkennen (siehe auch Abschnitt \ref{pca_input_analysis}). Tatsächlich liefert eine solche Aufteilung bessere Rekonstruktionen aus der größten Eigenvektoren, aber das liegt natürlich vor allem daran, dass die zu untersuchende Datenmenge, jeweils verkleinert wurde.
+ 
+ Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen. \todo{verifizieren}
+ Das wäre ein Argument dafür keine Aufteilung vorzunehmen.
+ \todo{bilden andere Daten auch Cluster? andere Aufteilung irgendwie sinnvoll?}
  
 
