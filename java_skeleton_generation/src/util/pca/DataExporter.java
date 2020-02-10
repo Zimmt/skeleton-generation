@@ -17,11 +17,11 @@ public class DataExporter {
         this.data = data;
     }
 
-    public void projectAndExportToFile(String filePathAndName, RealVector xDimension, RealVector yDimension, RealVector zDimension) throws IOException {
+    public void projectAndExportToFile(String filePathAndName, RealVector xDimension, RealVector yDimension, RealVector zDimension, String tag) throws IOException {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write("# Projected PCA examples\n");
-        writer.write("# The input examples projected on the first three eigenvectors (and in the 4th column if thh example has wings)\n");
+        writer.write(String.format("# The input examples projected on the first three eigenvectors (and in the 4th column the value of %s)\n", tag));
         writer.newLine();
 
         RealVector mean = new ArrayRealVector(PcaDataPoint.getMean(data).getScaledDataForPCA());
@@ -30,9 +30,19 @@ public class DataExporter {
             double x = rawPoint.dotProduct(xDimension);
             double y = rawPoint.dotProduct(yDimension);
             double z = rawPoint.dotProduct(zDimension);
-            int w = (int) point.getWings();
+            int t;
+            if (tag.equals("wing")) {
+                t = (int) point.getWings();
+            } else if (tag.equals("leg")) {
+                t = (int) point.getFlooredLegs();
+            } else if (tag.equals("animal_class")) {
+                t = point.getAnimalClass().ordinal();
+            } else {
+                System.err.println("Invalid tag name!");
+                break;
+            }
 
-            writer.write("" + x + " " +  y + " " + z + " " + w);
+            writer.write("" + x + " " +  y + " " + z + " " + t);
             writer.newLine();
         }
         writer.close();

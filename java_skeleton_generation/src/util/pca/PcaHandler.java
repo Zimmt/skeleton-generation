@@ -30,8 +30,8 @@ public class PcaHandler {
         dataExporter.exportToFile("../PCA/original_pcaPoints.txt");
     }
 
-    public void exportPCADataProjection() throws IOException {
-        dataExporter.projectAndExportToFile("../PCA/projected_pcaPoints.txt", pca.getEigenvector(0), pca.getEigenvector(1), pca.getEigenvector(2));
+    public void exportPCADataProjection(String tag) throws IOException {
+        dataExporter.projectAndExportToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), pca.getEigenvector(0), pca.getEigenvector(1), pca.getEigenvector(2), tag);
     }
 
     public void exportImagesFromVisualization(Visualization visualization) throws IOException {

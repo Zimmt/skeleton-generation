@@ -1,5 +1,5 @@
 # Projected PCA examples
-# The input examples projected on the first three eigenvectors (and in the 4th column if thh example has wings)
+# The input examples projected on the first three eigenvectors (and in the 4th column the value of wing)
 
 -0.1859070829768905 0.4947961811907955 0.41342625720317405 0
 0.4519663275547593 -0.6137011732019356 -0.059859820335143615 0

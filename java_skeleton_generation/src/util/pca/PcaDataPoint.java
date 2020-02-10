@@ -171,12 +171,16 @@ public class PcaDataPoint {
         return data;
     }
 
+    /**
+     * includes animal class!
+     * @return vector of size dimension+1
+     */
     public double[] getOriginalData() {
         if (!dataSetMaybeComplete()) {
             System.err.println("Incomplete data!");
         }
 
-        double[] data = new double[dimension];
+        double[] data = new double[dimension+1];
         int nextIndex = 0;
 
         for (Point2d p : spine) {
@@ -192,7 +196,8 @@ public class PcaDataPoint {
         data[nextIndex] = lengthUpperLeg; nextIndex++;
         data[nextIndex] = lengthLowerLeg; nextIndex++;
         data[nextIndex] = lengthFoot; nextIndex++;
-        data[nextIndex] = weight;
+        data[nextIndex] = weight; nextIndex++;
+        data[nextIndex] = animalClass.ordinal();
 
         return data;
     }
@@ -201,7 +206,7 @@ public class PcaDataPoint {
      * @return comma separated names of dimensions
      */
     public static String getDimensionNames() {
-        return "neck (0-7), back (5-13), tail (11-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight";
+        return "neck (0-7), back (5-13), tail (11-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight, animal class";
     }
 
     public static int getDimension() {

@@ -1,0 +1,152 @@
+# plots of the original input data for PCA
+# 2D for coordinates of spine
+# 2D for upper+lower arm/leg and lower arm/leg + hand/foot
+# 1D logarithmic plot for weight
+# no plot for wings (only 0 and 1)
+
+set terminal pdf size 11cm, 10cm
+set key box opaque
+set key above
+NO_LEG = 'pointtype 6 pointsize 0.5 linecolor rgb "red"'
+ONE_LEG = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'
+TWO_LEGS = 'pointtype 4 pointsize 0.5 linecolor rgb "green"'
+
+
+# spine
+set size square
+set xrange [0:1000]
+set yrange [0:1000]
+set xlabel "erste Koordinate"
+set ylabel "zweite Koordinate"
+
+set output "input_neck1.pdf"
+a = 1
+b = 2
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+     
+
+set output "input_neck2.pdf"
+a = 3
+b = 4
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_neck3.pdf"
+a = 5
+b = 6
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_back1.pdf"
+a = 7
+b = 8
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_back2.pdf"
+a = 9
+b = 10
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_back3.pdf"
+a = 11
+b = 12
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_back4.pdf"
+a = 13
+b = 14
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_tail2.pdf"
+a = 15
+b = 16
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_tail3.pdf"
+a = 17
+b = 18
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set output "input_tail4.pdf"
+a = 19
+b = 20
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+# extremity lengths
+set xrange [0:500]
+set yrange [0:500]
+
+set xlabel "Länge Oberarm"
+set ylabel "Länge Unterarm"
+set output "input_upper+lowerArm.pdf"
+a = 23
+b = 24
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set xlabel "Länge Unterarm"
+set ylabel "Länge Hand"
+set output "input_lowerArm+hand.pdf"
+a = 24
+b = 25
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set xlabel "Länge Oberschenkel"
+set ylabel "Länge Unterschenkel"
+set output "input_upper+lowerLeg.pdf"
+a = 26
+b = 27
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set xlabel "Länge Unterschenkel"
+set ylabel "Länge Fuß"
+set output "input_lowerLeg+foot.pdf"
+a = 27
+b = 28
+plot "../input/original_pcaPoints.txt" using a:(column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using a:(column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+# weight
+reset
+set terminal pdf size 15cm, 10cm
+set key box opaque
+set key above
+set xlabel "Datenpunkte"
+set ylabel "Gewicht"
+b = 29
+
+set output "input_weight.pdf"
+plot "../input/original_pcaPoints.txt" using (column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using (column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using (column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
+set logscale y
+set output "input_weight_logarithmic.pdf"
+plot "../input/original_pcaPoints.txt" using (column(22) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/original_pcaPoints.txt" using (column(22) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/original_pcaPoints.txt" using (column(22) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+
