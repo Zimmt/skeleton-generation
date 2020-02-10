@@ -29,7 +29,7 @@
      id="namedview6"
      showgrid="false"
      inkscape:zoom="0.944"
-     inkscape:cx="736.06705"
+     inkscape:cx="432.04163"
      inkscape:cy="305.37174"
      inkscape:window-x="1366"
      inkscape:window-y="0"
@@ -74,12 +74,6 @@
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="cc"
      inkscape:label="back" />
-  <path
-     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 901.48305,588.98305 C 796.61017,564.61864 686.97117,513.1547 585.01101,516.11125"
-     id="path393"
-     inkscape:connector-curvature="0"
-     inkscape:label="tail" />
   <path
      style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="M 318.85593,522.24576 C 352.75424,524.36441 370.41878,526.27415 404.48905,525.84894"
