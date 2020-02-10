@@ -34,7 +34,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{vmargin}          % Adjust margins in a simple way
 \usepackage{fancyhdr}         % Define simple headings
-\usepackage{subfigure}
+\usepackage{subfig} % possibility to use subfloats
 \usepackage{url}
 \usepackage[absolute,overlay]{textpos}
 \usepackage{tikz}
