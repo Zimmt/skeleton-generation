@@ -1,6 +1,6 @@
 # 2D plots of projection of PCA data on first three eigenvectors
 
-set terminal pdf
+set terminal pdf size 11cm, 10cm
 set key box opaque
 set key above
 WINGS = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'

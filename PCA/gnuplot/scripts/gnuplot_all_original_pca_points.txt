@@ -4,7 +4,7 @@
 # 1D logarithmic plot for weight
 # no plot for wings (only 0 and 1)
 
-set terminal pdf
+set terminal pdf size 11cm, 10cm
 set key box opaque
 set key above
 WINGS = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'
@@ -116,6 +116,7 @@ plot "../input/original_pcaPoints.txt" using a:(column(21) >= 1.0 ? column(b) : 
 
 # weight
 reset
+set terminal pdf size 15cm, 10cm
 set key box opaque
 set key above
 set xlabel "Datenpunkte"
