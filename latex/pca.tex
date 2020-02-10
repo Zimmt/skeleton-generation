@@ -135,9 +135,17 @@
   \label{schwan_farbig}
  \end{figure}
  
- Es gibt $7$ Datenpunkte mit Flügeln und $37$ ohne Flügel. In den Visualisierungen der Eingabedaten (siehe Anhang \ref{appendix_pca}, Abbildungen \ref{input_data_spine}, \ref{input_data_lengths} und \ref{input_data_weight}) ist zu sehen, dass die Tiere mit Flügeln zwar in den einzelnen Projektionen keine Cluster bilden, aber doch meist nahe zusammen liegen. Nach der Koordinatentransformation durch die PCA ist das Cluster jedoch klar erkennbar (siehe Abschnitt \ref{section_pca_result_analysis}). \todo{andere Daten taggen? Anzahl Beine mit Bodenkontakt, Tierklasse}
+ 
+ Im Folgenden werden die drei diskreten Merkmale \emph{Tierklasse}, \emph{Anzahl Beine mit Bodenkontakt} und \emph{vorhandene Flügel} genauer betrachtet.
+ 
+ Es gibt $7$ Datenpunkte mit Flügeln und $37$ ohne Flügel. In den Visualisierungen der Eingabedaten (siehe Anhang \ref{appendix_pca}, Abbildungen \ref{input_data_spine_wings}, \ref{input_data_lengths_wings} und \ref{input_data_weight_wings}) ist zu sehen, dass die Tiere mit Flügeln zwar in den einzelnen Projektionen keine Cluster bilden, aber doch meist nahe zusammen liegen. Nach der Koordinatentransformation durch die PCA ist das Cluster jedoch klar erkennbar (siehe Abbildung \ref{projection_wings} und Abschnitt \ref{section_pca_result_analysis}).
+ 
+ Betrachtet man nun die selben Diagramme, nur annotiert mit der Tierklasse, so ergibt sich kein so klares Bild (siehe Abbildung \ref{projection_animal_class}). Gut zu erkennen ist jedoch, dass die Vögel ein Cluster bilden, nämlich das selbe wie die Datenpunkte mit Flügeln. Das liegt daran, dass in den erhobenen Daten alle Tiere Vögel sind, genau dann, wenn sie auch Flügel haben. Ansonsten lassen sich keine Cluster erkennen.
+ 
+ Im Gegensatz dazu bildet die Aufteilung nach der Anzahl der Beine wiederum Cluster (siehe Abbildungen \ref{input_data_spine_legs}, \ref{input_data_lengths_legs} und \ref{projection_legs}).
+ 
 
- Das Gewicht der Eingabedaten ist nicht normalverteilt (siehe Abbildung \ref{gnuplot_weight}), aber auf einer logarithmischen Skala schon (siehe Abbildung \ref{gnuplot_log_weight}). \todo{QQ Diagramme verstehen und programmieren}
+ Nun zum Gewicht. Das Gewicht der Eingabedaten ist nicht normalverteilt (siehe Abbildung \ref{gnuplot_weight}), aber auf einer logarithmischen Skala schon (siehe Abbildung \ref{gnuplot_log_weight}). \todo{QQ Diagramme verstehen und programmieren}
  Bei linearem Gewicht als Eingabe für die PCA treten dadurch bei der Kombination von zufälligen Werten für die Eigenvektoren schnell Gewichte kleiner null auf. Dies wird bei einer logarithmischen Skala vermieden.
  Welcher Logarithmus zur Umrechnung der Daten verwendet wird schlägt sich nur als linearer Faktor nieder. Da hier wiederum nicht ersichtlich ist welche Skalierung am besten wäre, wurde hier der Zehnerlogarithmus verwendet.
  
@@ -169,7 +177,9 @@
   Tierklasse: Amphib, keine Flügel, Paare von Beinen mit Bodenkontakt: $2$, ungefähres Gewicht: $0,01$kg}
   \label{frosch}
  \end{figure}
+ 
 
+ In den Abbildungen, die die Eingabedaten im transformierten Koordinatensystem der PCA darstellen (Abbildungen \ref{projection_wings}, \ref{projection_legs} und \ref{projection_animal_class}) ist gut zu erkennen, dass die Koordinatentransformation der PCA die Daten tatsächlich nach den Hauptachsen des mehrdimensionalen Ellipsoids, den die Datenpunkte bilden, ausrichtet.
 
  Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man sich die Frage stellen, ob sie nötig sind, oder ob sie eher die Ergebnisse der PCA verschlechtern. Es wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich nicht extrem von der PCA mit allen Daten. 
  
@@ -181,7 +191,6 @@
  Ein Merkmal, das sich zur Unterteilung in Mengen anbieten würde, ist die Angabe ob das Tier Flügel hat oder nicht, da sich dadurch nur zwei Gruppen ergeben. Außerdem ist die Gruppe der Tiere mit Flügeln in den Eingabedaten klar als Cluster zu erkennen (siehe auch Abschnitt \ref{pca_input_analysis}). Tatsächlich liefert eine solche Aufteilung bessere Rekonstruktionen aus der größten Eigenvektoren, aber das liegt natürlich vor allem daran, dass die zu untersuchende Datenmenge, jeweils verkleinert wurde.
  
  Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen. \todo{verifizieren}
- Das wäre ein Argument dafür keine Aufteilung vorzunehmen.
- \todo{bilden andere Daten auch Cluster? andere Aufteilung irgendwie sinnvoll?}
+ Das wäre ein Argument dafür keine Aufteilung vorzunehmen. Dasselbe gilt für die Cluster, die durch die Aufteilung anhand der Anzahl der Beine mit Bodenkontakt entstehen.
  
 
