@@ -66,6 +66,8 @@ public class DataExporter {
         writer.newLine();
 
         writer.write("### Eigenvalues and eigenvectors ###\n");
+        int eigenvalueCount = (int) pcaHandler.getEigenvalues(0.0).stream().filter(d -> d > 0.0).count();
+        writer.write(String.format("There are %d eigenvalues bigger than 0. The smallest is %f.\n", eigenvalueCount, pcaHandler.getEigenvalue(eigenvalueCount-1)));
         List<Double> sortedEigenvalues = pcaHandler.getEigenvalues(0.01);
         writer.write(String.format("There are %d eigenvalues bigger than 0.01.\n", sortedEigenvalues.size()));
         sortedEigenvalues = pcaHandler.getEigenvalues(0.001);

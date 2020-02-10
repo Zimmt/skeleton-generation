@@ -176,6 +176,10 @@ public class PcaHandler {
         return pca.getEigenvalues(minEigenvalueSize);
     }
 
+    public double getEigenvalue(int number) {
+        return pca.getEigenvalue(number);
+    }
+
     private PCA preparePCA(List<PcaDataPoint> dataPoints) {
 
         double[][] pcaData = new double[dataPoints.size()][PcaDataPoint.getDimension()];

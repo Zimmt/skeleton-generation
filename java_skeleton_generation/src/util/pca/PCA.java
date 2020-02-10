@@ -52,7 +52,7 @@ public class PCA {
     }
 
     /**
-     * Return the nth biggest eigenvalue
+     * Return the nth biggest eigenvalue (zero based)
      */
     public double getEigenvalue(int n) {
         return ed.getRealEigenvalue(sortedEigenvalueIndices[n]);

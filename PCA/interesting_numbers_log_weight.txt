@@ -4,6 +4,7 @@ Interesting PCA numbers
 Number of data points is 44.
 
 ### Eigenvalues and eigenvectors ###
+There are 29 eigenvalues bigger than 0. The smallest is 0,000024.
 There are 7 eigenvalues bigger than 0.01.
 There are 19 eigenvalues bigger than 0.001.
 The eigenvalue, square root of the eigenvalue and the minimum and maximum amplitude for each eigenvector is the following:
