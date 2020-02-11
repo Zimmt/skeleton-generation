@@ -8,8 +8,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.vecmath.Point2d;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -18,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Does the visualisation of the PCA results.
@@ -35,6 +34,7 @@ public class Visualization extends Canvas implements ChangeListener {
     private SliderController[] sliders = new SliderController[7];
 
     private int defaultExportImageIndex = 1;
+    private Random random = new Random();
 
     private Visualization(PCA pca, PcaDataPoint mean, JFrame frame) {
         this.pca = pca;
@@ -66,16 +66,20 @@ public class Visualization extends Canvas implements ChangeListener {
         for (SliderController slider : visualization.sliders) {
             panel.add(slider);
         }
+
+        Button nextRandomButton = new Button("next random config");
+        nextRandomButton.addActionListener(e -> {
+            visualization.setSlidersRandomly();
+        });
+        panel.add(nextRandomButton);
+
         Button exportButton = new Button("export to file");
-        exportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    visualization.exportToImage("../PCA/temporary_visualization_exports/PCA_export"+visualization.defaultExportImageIndex +".jpg");
-                    visualization.defaultExportImageIndex++;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+        exportButton.addActionListener(e -> {
+            try {
+                visualization.exportToImage("../PCA/temporary_visualization_exports/PCA_export"+visualization.defaultExportImageIndex +".jpg");
+                visualization.defaultExportImageIndex++;
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         });
         panel.add(exportButton);
@@ -92,6 +96,15 @@ public class Visualization extends Canvas implements ChangeListener {
         }
         for (int i = 0; i < sliders.length; i++) {
             sliders[i].setSliderValue(sliderValues[i]);
+        }
+    }
+
+    public void setSlidersRandomly() {
+        for (int s = 0; s < sliders.length; s++) {
+            double variance = pca.getEigenvalue(s);
+            double r = random.nextGaussian(); // generates normally distributed value with mean 0 and standard deviation 1
+            r = variance * r;
+            sliders[s].setSliderValue(r);
         }
     }
 
