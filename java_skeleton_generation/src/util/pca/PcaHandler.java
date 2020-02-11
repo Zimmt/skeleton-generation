@@ -3,6 +3,9 @@ package util.pca;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,18 +30,43 @@ public class PcaHandler {
     }
 
     public void exportOriginalPcaData() throws IOException {
-        dataExporter.exportToFile("../PCA/original_pcaPoints.txt");
+
+        String heading = String.format("# Original PCA examples\n# %s\n", PcaDataPoint.getDimensionNames());
+        List<RealVector> data = new ArrayList<>(dataPoints.size());
+
+        for (PcaDataPoint point : dataPoints) {
+            data.add(new ArrayRealVector(point.getOriginalData()));
+        }
+
+        dataExporter.exportDataToFile("../PCA/original_pcaPoints.txt", heading, data);
     }
 
     public void exportPCADataProjection(String tag) throws IOException {
-        dataExporter.projectAndExportToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), pca.getEigenvector(0), pca.getEigenvector(1), pca.getEigenvector(2), tag);
-    }
+        String heading = String.format("# Projected PCA examples\n# The input examples projected on the first three eigenvectors (and in the 4th column the value of %s)\n", tag);
 
-    public void exportImagesFromVisualization(Visualization visualization) throws IOException {
-        double[] testSetting1 = {0.5, -0.5, 0.0, 0.0, 0.0, 0.0};
-        double[] testSetting2 = {-0.5, 0.5, 0.0, 0.0, 0.0, 0.0};
-        double[] testSetting3 = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        visualization.exportImagesWithEigenvectorSettings(Arrays.asList(testSetting1, testSetting2, testSetting3), "../PCA/temporary_visualization_exports/", "test");
+        List<RealVector> projections = getEigenvectorScalesForPoints(3);
+        List<RealVector> projectionsWithTag = new ArrayList<>(dataPoints.size());
+
+        for (int i = 0; i < dataPoints.size(); i++) {
+            int t = 0;
+            switch (tag) {
+                case "wing":
+                    t = (int) dataPoints.get(i).getWings();
+                    break;
+                case "leg":
+                    t = (int) dataPoints.get(i).getFlooredLegs();
+                    break;
+                case "animal_class":
+                    t = dataPoints.get(i).getAnimalClass().ordinal();
+                    break;
+                default:
+                    System.err.println("Invalid tag name!");
+                    break;
+            }
+            RealVector projectionWithTag = projections.get(i).append(t);
+            projectionsWithTag.add(projectionWithTag);
+        }
+        dataExporter.exportDataToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), heading, projectionsWithTag);
     }
 
     public void exportInterestingNumbers() throws IOException {
@@ -87,6 +115,9 @@ public class PcaHandler {
         return getEigenvectorScalesForPoints(pca.getEigenvalue(eigenvectorCount));
     }
 
+    /**
+     * @return for each eigenvector with an eigenvalue >= minEigenvalueSize the min and max value taken by a data point
+     */
     public List<double[]> getMinMaxEigenvectorScales(double minEigenvalueSize) {
         List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(minEigenvalueSize);
         double[] mins = eigenvectorScales.get(0).toArray();

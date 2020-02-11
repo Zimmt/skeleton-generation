@@ -1,6 +1,5 @@
 package util.pca;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.io.BufferedWriter;
@@ -17,51 +16,23 @@ public class DataExporter {
         this.data = data;
     }
 
-    public void projectAndExportToFile(String filePathAndName, RealVector xDimension, RealVector yDimension, RealVector zDimension, String tag) throws IOException {
+    /**
+     * Writes each vector into one line and separates each value by spaces
+     * @param heading first line in resulting file
+     */
+    public void exportDataToFile(String filePathAndName, String heading, List<RealVector> data) throws IOException {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write("# Projected PCA examples\n");
-        writer.write(String.format("# The input examples projected on the first three eigenvectors (and in the 4th column the value of %s)\n", tag));
+        writer.write(heading);
         writer.newLine();
 
-        RealVector mean = new ArrayRealVector(PcaDataPoint.getMean(data).getScaledDataForPCA());
-        for (PcaDataPoint point : data) {
-            RealVector rawPoint = new ArrayRealVector(point.getScaledDataForPCA()).subtract(mean);
-            double x = rawPoint.dotProduct(xDimension);
-            double y = rawPoint.dotProduct(yDimension);
-            double z = rawPoint.dotProduct(zDimension);
-            int t;
-            if (tag.equals("wing")) {
-                t = (int) point.getWings();
-            } else if (tag.equals("leg")) {
-                t = (int) point.getFlooredLegs();
-            } else if (tag.equals("animal_class")) {
-                t = point.getAnimalClass().ordinal();
-            } else {
-                System.err.println("Invalid tag name!");
-                break;
-            }
-
-            writer.write("" + x + " " +  y + " " + z + " " + t);
-            writer.newLine();
-        }
-        writer.close();
-    }
-
-    public void exportToFile(String filePathAndName) throws IOException {
-        File file = new File(filePathAndName);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write("# Original PCA examples\n");
-        writer.write(String.format("# %s\n", PcaDataPoint.getDimensionNames()));
-        writer.newLine();
-
-        for (PcaDataPoint point : data) {
-            double[] rawPoint = point.getOriginalData();
-            for (double value : rawPoint) {
+        for (RealVector vector : data) {
+            for (double value : vector.toArray()) {
                 writer.write(value + " ");
             }
             writer.newLine();
         }
+
         writer.close();
     }
 
