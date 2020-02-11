@@ -124,4 +124,13 @@ Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Positio
 %------------------------------------------
 \section{Annotation der Bilder für die PCA}
 
-\todo{Wie wird ausgelesen und was muss bei Inkscape im Speziellen beachtet werden (vllt als Fußnote)}
+Die Annotation der Bilder wurde per Hand mit dem Programm Inkscape\footnote{Programm zum erstellen und bearbeiten von Vektorgrafiken, \url{https://inkscape.org/de}} durchgeführt. Für jedes zu markierende Element wurde eine Strecke oder eine Bézierkurve eingefügt und mit einem vorher festgelegten Namen benannt. Diese Elemente wurden dann durch Inkscape als Pfade in der erzeugten svg-Datei gespeichert. Aus dieser Datei wurden dann automatisiert die eingetragenen Pfade mit ihren Koordinaten ausgelesen.
+
+Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abläuft. 
+\begin{itemize}
+ \item Man kann in Inkscape einstellen, dass Koordinaten immer absolut angegeben werden. Das ist sinnvoll um die Koordinaten leichter auslesen zu können.
+ \item Der Ursprung des Koordinatensystems in Inkscape ist unten links, im svg-Format ist er aber oben links.
+ \item Ebenen sollten in Inkscape nicht verschoben sein, sonst verschieben sich mit ihnen auch die Koordinaten.  
+\end{itemize}
+
+

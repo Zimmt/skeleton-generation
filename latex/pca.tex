@@ -191,7 +191,7 @@
  Außerdem gibt es die Möglichkeit die Eingabedaten in mehrere Mengen aufzuteilen und diese von verschiedenen Instanzen der PCA analysieren zu lassen. Hierbei gibt es zunächst das Problem, dass sich dann die Anzahl der Datenpunkte noch weiter reduziert, was die Ergebnisse nicht mehr repräsentativ macht.
  Ein Merkmal, das sich zur Unterteilung in Mengen anbieten würde, ist die Angabe ob das Tier Flügel hat oder nicht, da sich dadurch nur zwei Gruppen ergeben. Außerdem ist die Gruppe der Tiere mit Flügeln in den Eingabedaten klar als Cluster zu erkennen (siehe auch Abschnitt \ref{pca_input_analysis}). Tatsächlich liefert eine solche Aufteilung bessere Rekonstruktionen aus der größten Eigenvektoren, aber das liegt natürlich vor allem daran, dass die zu untersuchende Datenmenge, jeweils verkleinert wurde.
  
- Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen. \todo{verifizieren}
+ Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen.
  Das wäre ein Argument dafür keine Aufteilung vorzunehmen. Dasselbe gilt für die Cluster, die durch die Aufteilung anhand der Anzahl der Beine mit Bodenkontakt entstehen.
  
 
