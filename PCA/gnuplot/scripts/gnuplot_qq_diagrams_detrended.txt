@@ -11,3 +11,6 @@ do for [i=0:28] {
 
 }
 
+set output 'QQ_diagram_detrended_linear_weight.pdf'
+plot '../input/QQ_diagram_data_detrended_linear_weight.txt'
+

@@ -91,6 +91,28 @@ public class PcaHandler {
         }
     }
 
+    // does the same as exportQQDiagramDataToFiles but only for weight
+    // useful if log and linear weight should be compared
+    public void exportQQDiagramDataForWeightToFile(boolean detrended) throws IOException {
+        Double[] weights = new Double[dataPoints.size()];
+        for (int i = 0; i < dataPoints.size(); i++) {
+            weights[i] = dataPoints.get(i).getWeight();
+        }
+        List<RealVector> qqData;
+        String heading;
+        String fileName;
+        if (detrended) {
+            qqData = StatisticalEvaluation.getValuesForDetrendedQQDiagram(weights, pca.getVariance(28));
+            heading = "# detrended QQ Diagram data for weight";
+            fileName = "QQ_diagram_data_detrended_weight.txt";
+        } else {
+            qqData = StatisticalEvaluation.getValuesForQQDiagram(weights, pca.getVariance(28));
+            heading = "# QQ Diagram data for weight";
+            fileName = "QQ_diagram_data_weight.txt";
+        }
+        dataExporter.exportColumnDataToFile("../PCA/" + fileName, heading, qqData);
+    }
+
     public void exportInterestingNumbers() throws IOException {
         dataExporter.exportInterestingNumbers("../PCA/interesting_numbers.txt", this);
     }

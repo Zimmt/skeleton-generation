@@ -9,3 +9,6 @@ do for [i=0:28] {
 
 }
 
+set output 'QQ_diagram_linear_weight.pdf'
+plot '../input/QQ_diagram_data_linear_weight.txt'
+
