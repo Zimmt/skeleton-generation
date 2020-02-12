@@ -3,13 +3,11 @@ package util.pca;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PcaHandler {
 
@@ -38,7 +36,7 @@ public class PcaHandler {
             data.add(new ArrayRealVector(point.getOriginalData()));
         }
 
-        dataExporter.exportDataToFile("../PCA/original_pcaPoints.txt", heading, data);
+        dataExporter.exportRowDataToFile("../PCA/original_pcaPoints.txt", heading, data);
     }
 
     public void exportPCADataProjection(String tag) throws IOException {
@@ -66,7 +64,31 @@ public class PcaHandler {
             RealVector projectionWithTag = projections.get(i).append(t);
             projectionsWithTag.add(projectionWithTag);
         }
-        dataExporter.exportDataToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), heading, projectionsWithTag);
+        dataExporter.exportRowDataToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), heading, projectionsWithTag);
+    }
+
+    public void exportQQDiagramDataToFiles(boolean detrended) throws IOException {
+        List<double[]> pcaInputData = new ArrayList<>(dataPoints.size());
+        for (PcaDataPoint point : dataPoints) {
+            pcaInputData.add(point.getScaledDataForPCA());
+        }
+        for (int d = 0;  d < PcaDataPoint.getDimension(); d++) {
+            int dimension = d;
+            Double[] xs = pcaInputData.stream().map(v -> v[dimension]).collect(Collectors.toList()).toArray(new Double[dataPoints.size()]);
+            List<RealVector> qqData;
+            String heading;
+            String fileName;
+            if (detrended) {
+                qqData = StatisticalEvaluation.getValuesForDetrendedQQDiagram(xs, pca.getVariance(d));
+                heading = String.format("# detrended QQ Diagram data for dimension %d", d);
+                fileName = String.format("QQ_diagram_data_detrended%d.txt", d);
+            } else {
+                qqData = StatisticalEvaluation.getValuesForQQDiagram(xs, pca.getVariance(d));
+                heading = String.format("# QQ Diagram data for dimension %d", d);
+                fileName = String.format("QQ_diagram_data%d.txt", d);
+            }
+            dataExporter.exportColumnDataToFile("../PCA/" + fileName, heading, qqData);
+        }
     }
 
     public void exportInterestingNumbers() throws IOException {
@@ -112,7 +134,11 @@ public class PcaHandler {
     }
 
     public List<RealVector> getEigenvectorScalesForPoints(int eigenvectorCount) {
-        return getEigenvectorScalesForPoints(pca.getEigenvalue(eigenvectorCount));
+        List<RealVector> eigenvectorScales = getEigenvectorScalesForPoints(pca.getEigenvalue(eigenvectorCount));
+        if (eigenvectorScales.get(0).getDimension() > eigenvectorCount) {
+            eigenvectorScales = eigenvectorScales.stream().map(v -> v.getSubVector(0, v.getDimension()-1)).collect(Collectors.toList());
+        }
+        return eigenvectorScales;
     }
 
     /**

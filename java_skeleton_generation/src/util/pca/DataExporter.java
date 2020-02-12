@@ -20,15 +20,31 @@ public class DataExporter {
      * Writes each vector into one line and separates each value by spaces
      * @param heading first line in resulting file
      */
-    public void exportDataToFile(String filePathAndName, String heading, List<RealVector> data) throws IOException {
+    public void exportRowDataToFile(String filePathAndName, String heading, List<RealVector> rows) throws IOException {
         File file = new File(filePathAndName);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(heading);
         writer.newLine();
 
-        for (RealVector vector : data) {
+        for (RealVector vector : rows) {
             for (double value : vector.toArray()) {
                 writer.write(value + " ");
+            }
+            writer.newLine();
+        }
+
+        writer.close();
+    }
+
+    public void exportColumnDataToFile(String filePathAndName, String heading, List<RealVector> columns) throws IOException {
+        File file = new File(filePathAndName);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.write(heading);
+        writer.newLine();
+
+        for (int row = 0; row < columns.get(0).getDimension(); row++) {
+            for (RealVector column : columns) {
+                writer.write(column.getEntry(row) + " ");
             }
             writer.newLine();
         }

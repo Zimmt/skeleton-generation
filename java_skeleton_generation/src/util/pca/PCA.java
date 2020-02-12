@@ -10,6 +10,7 @@ import java.util.List;
 public class PCA {
 
     private double[][] inputData; // one row represents one data point
+    private RealMatrix covarianceMatrix;
     private EigenDecomposition ed;
     private Integer[] sortedEigenvalueIndices;
 
@@ -30,7 +31,7 @@ public class PCA {
         RealMatrix data = MatrixUtils.createRealMatrix(inputData); // preprocessing not needed as Covariance calculates mean
 
         Covariance covariance = new Covariance(data, false);
-        RealMatrix covarianceMatrix = covariance.getCovarianceMatrix();
+        covarianceMatrix = covariance.getCovarianceMatrix();
         ed = new EigenDecomposition(covarianceMatrix);
 
         double[] eigenvalues = ed.getRealEigenvalues();
@@ -88,6 +89,14 @@ public class PCA {
      */
     public EigenDecomposition getEigenDecomposition() {
         return ed;
+    }
+
+    public double getVariance(int inputDimension) {
+        if (covarianceMatrix == null) {
+            System.err.println("Cannot get variance when pca did not run!");
+            return 0;
+        }
+        return covarianceMatrix.getEntry(inputDimension, inputDimension);
     }
 
     private void printData(EigenDecomposition ed) {

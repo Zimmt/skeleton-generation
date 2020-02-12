@@ -1,0 +1,13 @@
+# Quantile-Quantile-Diagrams
+
+set terminal pdf size 11cm, 10cm
+set grid
+set xzeroaxis linetype 1 linecolor 'black'
+
+do for [i=0:28] {
+  
+  set output 'QQ_diagram_detrended' .i. '.pdf'
+  plot '../input/QQ_diagram_data_detrended' .i. '.txt'
+
+}
+

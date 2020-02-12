@@ -1,0 +1,11 @@
+# Quantile-Quantile-Diagrams
+
+set terminal pdf size 11cm, 10cm
+
+do for [i=0:28] {
+  
+  set output 'QQ_diagram' .i. '.pdf'
+  plot '../input/QQ_diagram_data' .i. '.txt'
+
+}
+
