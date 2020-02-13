@@ -1,0 +1,47 @@
+# 2D plots of projection of PCA data on first three eigenvectors
+
+set terminal pdf size 11cm, 10cm
+set key box opaque
+set key above
+FISH = 'pointtype 6 pointsize 0.5 linecolor rgb "blue"'
+AMPHIBIAN = 'pointtype 4 pointsize 0.5 linecolor rgb "green"'
+REPTILIAN = 'pointtype 12 pointsize 0.5 linecolor rgb "black"'
+BIRD = 'pointtype 10 pointsize 0.5 linecolor rgb "purple"'
+MAMMAL = 'pointtype 14 pointsize 0.5 linecolor rgb "red"'
+
+set xrange [-2:2]
+set yrange [-2:2]
+set zrange [-2:2]
+set size square
+
+set xlabel "erster Eigenvektor"
+set ylabel "zweiter Eigenvektor"
+set output "projection_eigenvectors12.pdf"
+a = 1
+b = 2
+plot "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 0.0 ? column(b) : 1/0) title "Fisch" @FISH, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 1.0 ? column(b) : 1/0) title "Amphibium" @AMPHIBIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 2.0 ? column(b) : 1/0) title "Reptil" @REPTILIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 3.0 ? column(b) : 1/0) title "Vogel" @BIRD, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 4.0 ? column(b) : 1/0) title "Säugetier" @MAMMAL
+
+set ylabel "dritter Eigenvektor"
+set output "projection_eigenvectors13.pdf"
+a = 1
+b = 3
+plot "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 0.0 ? column(b) : 1/0) title "Fisch" @FISH, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 1.0 ? column(b) : 1/0) title "Amphibium" @AMPHIBIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 2.0 ? column(b) : 1/0) title "Reptil" @REPTILIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 3.0 ? column(b) : 1/0) title "Vogel" @BIRD, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 4.0 ? column(b) : 1/0) title "Säugetier" @MAMMAL
+
+set xlabel "zweiter Eigenvektor"
+set output "projection_eigenvectors23.pdf"
+a = 2
+b = 3
+plot "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 0.0 ? column(b) : 1/0) title "Fisch" @FISH, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 1.0 ? column(b) : 1/0) title "Amphibium" @AMPHIBIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 2.0 ? column(b) : 1/0) title "Reptil" @REPTILIAN, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 3.0 ? column(b) : 1/0) title "Vogel" @BIRD, \
+     "../input/projected_pcaPoints_with_animal_class_tag.txt" using a:(column(4) == 4.0 ? column(b) : 1/0) title "Säugetier" @MAMMAL
+

@@ -10,7 +10,7 @@ public class PcaDataPoint {
     private static final double coordinateScaleFactor = 1000;
     private static final double wingScaleFactor = 1000;
     private static final double flooredLegsScaleFactor = 2000;
-    private static final double weightScaleFactor = 120000;
+    private static final double weightScaleFactor = 120000000;
 
     private String name;
 

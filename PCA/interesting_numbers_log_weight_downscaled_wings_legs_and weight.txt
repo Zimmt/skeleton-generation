@@ -1,0 +1,147 @@
+Interesting PCA numbers
+-----------------------
+
+Number of data points is 44.
+
+### Eigenvalues and eigenvectors ###
+There are 29 eigenvalues bigger than 0. The smallest is 0,000000.
+There are 6 eigenvalues bigger than 0.01.
+There are 18 eigenvalues bigger than 0.001.
+The eigenvalue, square root of the eigenvalue and the minimum and maximum amplitude for each eigenvector is the following:
+01. 0,370259, 0,608489, [-1,131982, 0,934592]
+02. 0,079117, 0,281277, [-0,488661, 0,567227]
+03. 0,053001, 0,230220, [-0,435041, 0,620132]
+04. 0,032043, 0,179005, [-0,323910, 0,433082]
+05. 0,020565, 0,143404, [-0,222584, 0,346380]
+06. 0,014067, 0,118605, [-0,410495, 0,261057]
+07. 0,009955, 0,099775, [-0,256940, 0,218054]
+08. 0,007249, 0,085141, [-0,163955, 0,175966]
+09. 0,006883, 0,082962, [-0,212567, 0,274565]
+10. 0,005065, 0,071169, [-0,196761, 0,110771]
+11. 0,003552, 0,059598, [-0,167724, 0,105583]
+12. 0,003105, 0,055723, [-0,104791, 0,126345]
+13. 0,002901, 0,053862, [-0,147002, 0,170175]
+14. 0,002155, 0,046419, [-0,089126, 0,091972]
+15. 0,001805, 0,042486, [-0,092762, 0,079868]
+16. 0,001521, 0,038996, [-0,071712, 0,083329]
+17. 0,001229, 0,035056, [-0,112706, 0,058937]
+18. 0,001020, 0,031939, [-0,077474, 0,061810]
+
+The biggest 4 and the smallest 3 entries of the first three eigenvectors are:
+1. biggest: neck 1y (0,442223), neck 2y (0,385339), neck 3y (0,312317), back 1y (0,282287), 
+   smallest: tail 2x (-0,001193), wings (0,000359), floored_legs (0,000137), 
+2. biggest: back 4x (-0,435656), tail 2x (-0,378180), back 3x (-0,334997), tail 3x (-0,328793), 
+   smallest: wings (0,000562), floored_legs (-0,000225), length_hand (-0,000125), 
+3. biggest: tail 4y (-0,406259), tail 3y (-0,370228), tail 2y (-0,342404), neck 2y (0,296062), 
+   smallest: length_lower_arm (0,007786), floored_legs (-0,000370), wings (0,000083), 
+
+
+### Distances to mean ###
+Min distance to mean has Urpferdchen.
+Second biggest distance to mean has Kaenguru.
+Max distance to mean has Schlange.
+
+### Properties of input points ###
+There are 7 points with wings.
+There are 37 points without wings.
+
+There are 8 points without legs.
+There are 11 points with two legs.
+There are 25 points with four legs.
+
+There are 2 fish.
+There are 2 amphibians.
+There are 13 reptilians.
+There are 7 birds.
+There are 20 mammals.
+
+### Data to reconstruct input from visualization ### (more eigenvectors might be needed to get a good result)
+Afrikanischer_Elefant is represented by the following eigenvector scales:
+    0,303899, -0,393311, 0,164182, 0,155626, 0,032780, 0,169104, 
+Amerikanischer_Flussbarsch is represented by the following eigenvector scales:
+    -0,394525, 0,186946, -0,208108, -0,120547, 0,145196, -0,004973, 
+Archaeopteryx is represented by the following eigenvector scales:
+    0,770660, 0,412587, 0,271490, -0,070983, -0,149825, 0,003856, 
+Blauwal is represented by the following eigenvector scales:
+    -0,782848, -0,174673, 0,123797, 0,204676, 0,221739, -0,049511, 
+Brachiosaurus is represented by the following eigenvector scales:
+    -0,177267, 0,178409, 0,500424, 0,315513, -0,110221, -0,054943, 
+Chamaeleon is represented by the following eigenvector scales:
+    -0,488869, 0,204999, 0,045183, -0,181705, -0,100218, 0,114019, 
+Dimetrodon is represented by the following eigenvector scales:
+    -0,847571, 0,229916, 0,057095, 0,022931, -0,062820, -0,027345, 
+Dromedar is represented by the following eigenvector scales:
+    0,203002, -0,488661, -0,008977, 0,039554, -0,076594, 0,082336, 
+Elster is represented by the following eigenvector scales:
+    0,934592, 0,097255, -0,005539, -0,166228, 0,195044, 0,110162, 
+Forelle is represented by the following eigenvector scales:
+    -0,632109, 0,019767, -0,127546, -0,161899, 0,104581, -0,089286, 
+Frosch is represented by the following eigenvector scales:
+    0,444084, 0,099763, -0,416534, -0,223862, 0,301680, 0,261057, 
+Gaemse is represented by the following eigenvector scales:
+    0,798019, -0,372917, -0,344299, 0,073708, -0,129402, -0,042946, 
+Giraffe is represented by the following eigenvector scales:
+    0,699293, -0,177774, 0,192251, 0,150448, 0,188805, 0,026560, 
+Gnu is represented by the following eigenvector scales:
+    0,428194, -0,370169, -0,160432, 0,081530, -0,021272, -0,020092, 
+Groenlandwal is represented by the following eigenvector scales:
+    -0,641564, -0,287983, 0,223083, 0,154511, 0,346380, 0,039580, 
+Ichthyornis is represented by the following eigenvector scales:
+    0,745388, 0,323832, -0,061987, -0,179409, 0,144495, -0,168636, 
+Ichthyosaurus is represented by the following eigenvector scales:
+    -0,614869, 0,103912, -0,080500, -0,032690, 0,193870, 0,011680, 
+Ichthyostega is represented by the following eigenvector scales:
+    -0,781307, 0,109841, 0,039933, -0,081575, 0,034229, -0,003111, 
+Kaenguru is represented by the following eigenvector scales:
+    0,703538, 0,431702, 0,620132, -0,034138, -0,121412, 0,211063, 
+Kaffernbueffel is represented by the following eigenvector scales:
+    0,246913, -0,482289, -0,019310, 0,050647, -0,059665, 0,052619, 
+Kaninchen is represented by the following eigenvector scales:
+    0,102126, -0,246225, 0,060593, -0,323910, -0,222584, 0,018508, 
+Klippschliefer is represented by the following eigenvector scales:
+    -0,094263, -0,157466, -0,239973, -0,138830, -0,087565, 0,082254, 
+Koboldmaki is represented by the following eigenvector scales:
+    -0,377974, 0,567227, -0,373398, -0,059603, -0,114403, 0,171739, 
+Krokodil is represented by the following eigenvector scales:
+    -0,801382, 0,052174, -0,017710, 0,029695, 0,047557, 0,029804, 
+Landschildkroete is represented by the following eigenvector scales:
+    -0,060173, -0,377595, 0,173808, -0,236077, -0,068031, 0,130659, 
+Ohrenrobbe is represented by the following eigenvector scales:
+    0,336718, -0,273117, 0,427802, -0,097151, -0,119665, -0,034004, 
+Panzerspitzmaus is represented by the following eigenvector scales:
+    -0,580011, 0,255999, 0,045191, -0,245681, -0,159216, 0,084974, 
+Parasaurolophus_walkeri is represented by the following eigenvector scales:
+    -0,185061, 0,300302, -0,435041, 0,433082, -0,181849, -0,081902, 
+Peloneustes_philarchus is represented by the following eigenvector scales:
+    -0,386364, -0,142862, -0,042992, -0,044267, 0,046373, 0,036050, 
+Pferd is represented by the following eigenvector scales:
+    0,677738, -0,250280, -0,049237, 0,179391, -0,094956, -0,128873, 
+Pottwal is represented by the following eigenvector scales:
+    -0,846066, -0,055127, 0,209841, 0,172126, 0,232788, 0,034942, 
+Rothirsch is represented by the following eigenvector scales:
+    0,912341, -0,324878, -0,280072, 0,165290, -0,033095, -0,044760, 
+Schlange is represented by the following eigenvector scales:
+    -1,131982, -0,200819, 0,089856, -0,263762, -0,160284, -0,410495, 
+Schwan is represented by the following eigenvector scales:
+    0,823950, 0,243925, 0,298616, -0,176554, 0,255841, -0,296160, 
+Schwein is represented by the following eigenvector scales:
+    -0,047211, -0,340903, -0,096077, -0,034008, -0,035610, -0,027176, 
+Seehund is represented by the following eigenvector scales:
+    -0,365716, 0,095865, -0,085085, -0,006764, -0,014435, -0,025988, 
+Sinornis is represented by the following eigenvector scales:
+    0,925536, 0,244486, -0,059367, -0,108275, -0,020258, -0,047572, 
+Stegosaurus is represented by the following eigenvector scales:
+    -0,445374, 0,162553, -0,336552, 0,326642, -0,066521, -0,012823, 
+Strauss is represented by the following eigenvector scales:
+    0,797445, 0,203062, 0,033906, 0,184088, 0,099514, -0,123942, 
+Taube is represented by the following eigenvector scales:
+    0,844904, 0,432348, -0,282609, 0,018335, 0,037128, -0,107865, 
+Thrinaxodon is represented by the following eigenvector scales:
+    -0,499360, -0,092576, -0,111076, -0,225989, -0,040357, -0,056827, 
+Triceratops is represented by the following eigenvector scales:
+    -0,532576, -0,016503, 0,079511, 0,175348, -0,032856, 0,101108, 
+Tyrannosaurus_Rex is represented by the following eigenvector scales:
+    -0,119542, 0,457922, 0,191822, 0,333687, -0,149893, 0,060221, 
+Urpferdchen is represented by the following eigenvector scales:
+    0,135645, -0,188662, -0,006097, -0,052920, -0,194991, 0,026935, 
+
