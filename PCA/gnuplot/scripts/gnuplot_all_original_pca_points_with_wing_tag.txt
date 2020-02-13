@@ -5,10 +5,13 @@
 # no plot for wings (only 0 and 1)
 
 set terminal pdf size 11cm, 10cm
-set key box opaque
-set key above
-WINGS = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'
-OTHER = 'pointtype 6 pointsize 0.5 linecolor rgb "red"'
+#set key box opaque
+#set key above
+set key off
+set xlabel font ",20"
+set ylabel font ",20"
+WINGS = 'pointtype 7 pointsize 1 linecolor rgb "blue"'
+OTHER = 'pointtype 7 pointsize 1 linecolor rgb "red"'
 
 # spine
 set size square
@@ -117,8 +120,9 @@ plot "../input/original_pcaPoints.txt" using a:(column(21) >= 1.0 ? column(b) : 
 # weight
 reset
 set terminal pdf size 15cm, 10cm
-set key box opaque
-set key above
+#set key box opaque
+#set key above
+set key off
 set xlabel "Datenpunkte"
 set ylabel "Gewicht"
 b = 29
