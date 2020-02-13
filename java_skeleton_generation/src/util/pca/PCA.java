@@ -113,6 +113,13 @@ public class PCA {
         }
     }
 
+    public void printEigenvector(int n) {
+        PCA.printEigenvector(getEigenvector(n));
+    }
+
+    /**
+     * Prints the biggest 4 entries in yellow and the smallest 3 in green
+     */
     private static void printEigenvector(RealVector vector) {
         if (vector.getDimension() != PcaDataPoint.getDimension()) {
             System.err.println("Eigenvector does not have correct dimension.");
@@ -146,12 +153,24 @@ public class PCA {
                     System.out.println("floored_legs");
                     break;
                 case 22:
-                    System.out.println("length_front_legs");
+                    System.out.println("length_upper_arm");
                     break;
                 case 23:
-                    System.out.println("length_back_legs");
+                    System.out.println("length_lower_arm");
                     break;
                 case 24:
+                    System.out.println("length_hand");
+                    break;
+                case 25:
+                    System.out.println("length_upper_leg");
+                    break;
+                case 26:
+                    System.out.println("length_lower_leg");
+                    break;
+                case 27:
+                    System.out.println("length_foot");
+                    break;
+                case 28:
                     System.out.println("weight");
                     break;
             }

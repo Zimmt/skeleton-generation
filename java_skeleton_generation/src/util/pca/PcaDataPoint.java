@@ -206,7 +206,45 @@ public class PcaDataPoint {
      * @return comma separated names of dimensions
      */
     public static String getDimensionNames() {
-        return "neck (0-7), back (5-13), tail (11-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight, animal class";
+        return "neck (0-7), back (6-13), tail (12-19), wings, floored legs, length upper arm, length lower arm, length hand, length upper leg, length lower leg, length foot, weight, animal class";
+    }
+
+    public static String getDimensionName(int dimension) {
+        String name;
+        if (dimension < 20) { // spine
+            if (dimension < 6) {
+                name = String.format("neck %d%s", dimension/2 + 1, dimension % 2 == 0 ? "x" : "y");
+            } else if (dimension < 14) {
+                name = String.format("back %d%s", dimension/2 - 2, dimension % 2 == 0 ? "x" : "y");
+            } else {
+                name = String.format("tail %d%s", dimension/2 - 5, dimension % 2 == 0 ? "x" : "y");
+            }
+        } else {
+            switch (dimension) {
+                case 20:
+                    name = "wings"; break;
+                case 21:
+                    name = "floored_legs"; break;
+                case 22:
+                    name = "length_upper_arm"; break;
+                case 23:
+                    name = "length_lower_arm"; break;
+                case 24:
+                    name = "length_hand"; break;
+                case 25:
+                    name = "length_upper_leg"; break;
+                case 26:
+                    name = "length_lower_leg"; break;
+                case 27:
+                    name = "length_foot"; break;
+                case 28:
+                    name = "weight"; break;
+                default:
+                    System.err.println("invalid dimension!");
+                    name = "";
+            }
+        }
+        return name;
     }
 
     public static int getDimension() {

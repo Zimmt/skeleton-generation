@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class DataExporter {
@@ -78,6 +79,24 @@ public class DataExporter {
         }
         writer.newLine();
 
+        writer.write("The biggest 4 and the smallest 3 entries of the first three eigenvectors are:\n");
+        for (int i = 0;  i < 3; i++) {
+            writer.write(String.format("%d. ", i+1));
+            RealVector eigenvector = pcaHandler.getEigenvector(i);
+            Integer[] sortedIndices = getSortedEntryIndices(eigenvector);
+            writer.write("biggest: ");
+            for (int b = 0; b < 4; b++) {
+                writer.write(String.format("%s (%f), ", PcaDataPoint.getDimensionName(sortedIndices[b]), eigenvector.getEntry(sortedIndices[b])));
+            }
+            writer.write("\n   smallest: ");
+            for (int s = eigenvector.getDimension()-3; s < eigenvector.getDimension(); s++) {
+                writer.write(String.format("%s (%f), ", PcaDataPoint.getDimensionName(sortedIndices[s]), eigenvector.getEntry(sortedIndices[s])));
+            }
+            writer.newLine();
+        }
+        writer.newLine();
+        writer.newLine();
+
         writer.write("### Distances to mean ###\n");
         PcaDataPoint[] minMaxDistance = pcaHandler.getExamplesWithExtremeDistancesToMean();
         writer.write(String.format("Min distance to mean has %s.\n", minMaxDistance[0].getName()));
@@ -125,5 +144,14 @@ public class DataExporter {
 
         writer.newLine();
         writer.close();
+    }
+
+    private Integer[] getSortedEntryIndices(RealVector vector) {
+        Integer[] sortedIndices = new Integer[vector.getDimension()];
+        for (int i = 0; i < sortedIndices.length; i++) {
+            sortedIndices[i] = i;
+        }
+        Arrays.sort(sortedIndices, (o1, o2) -> -Double.compare(Math.abs(vector.getEntry(o1)), Math.abs(vector.getEntry(o2))));
+        return sortedIndices;
     }
 }

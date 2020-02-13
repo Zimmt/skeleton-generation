@@ -28,6 +28,15 @@ The eigenvalue, square root of the eigenvalue and the minimum and maximum amplit
 18. 0,001235, 0,035137, [-0,058551, 0,111520]
 19. 0,001038, 0,032216, [-0,065253, 0,056782]
 
+The biggest 4 and the smallest 3 entries of the first three eigenvectors are:
+1. biggest: neck 1y (-0,402257), wings (-0,398888), neck 2y (-0,352665), neck 3y (-0,286101), 
+   smallest: neck 3x (0,021179), tail 2x (0,018480), back 4x (0,004300), 
+2. biggest: floored_legs (0,788052), wings (-0,454198), tail 2y (0,138957), back 4y (0,136357), 
+   smallest: neck 1y (-0,022798), length_foot (0,022222), length_upper_arm (0,007577), 
+3. biggest: weight (0,584708), floored_legs (-0,404471), back 4x (0,273238), wings (-0,256453), 
+   smallest: tail 4x (0,033370), length_lower_arm (-0,026139), length_hand (0,024843), 
+
+
 ### Distances to mean ###
 Min distance to mean has Seehund.
 Second biggest distance to mean has Schwan.

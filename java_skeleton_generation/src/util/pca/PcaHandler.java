@@ -133,6 +133,14 @@ public class PcaHandler {
         this.visualization = Visualization.start(pca, mean);
     }
 
+    public void printFirstEigenvectors(int count) {
+        System.out.println("-----------------------------------------");
+        for (int i = 0; i < count; i++) {
+            pca.printEigenvector(i);
+            System.out.println("-----------------------------------------");
+        }
+    }
+
     /**
      * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
      */
@@ -257,6 +265,10 @@ public class PcaHandler {
 
     public double getEigenvalue(int number) {
         return pca.getEigenvalue(number);
+    }
+
+    public RealVector getEigenvector(int number) {
+        return pca.getEigenvector(number);
     }
 
     private PCA preparePCA(List<PcaDataPoint> dataPoints) {
