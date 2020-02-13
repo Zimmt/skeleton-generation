@@ -8,8 +8,8 @@ import java.util.*;
 public class PcaDataPoint {
     private static final int dimension = 29;
     private static final double coordinateScaleFactor = 1000;
-    private static final double wingScaleFactor = 1;
-    private static final double flooredLegsScaleFactor = 2;
+    private static final double wingScaleFactor = 1000;
+    private static final double flooredLegsScaleFactor = 2000;
     private static final double weightScaleFactor = 120000;
 
     private String name;
