@@ -108,8 +108,8 @@ public class PcaDataPoint {
     public boolean containsIncorrectData() {
         double eps = 0.001;
         return !(spine != null && spine.size() == 10 &&
-                wings >= -eps && wings <= 1+eps &&
-                flooredLegs >= -eps && flooredLegs <= 2+eps &&
+                wings >= -eps && wings <= wingScaleFactor+eps &&
+                flooredLegs >= -eps && flooredLegs <= flooredLegsScaleFactor+eps &&
                 lengthUpperArm >= -eps && lengthUpperArm < coordinateScaleFactor+eps &&
                 lengthLowerArm >= -eps && lengthLowerArm < coordinateScaleFactor+eps &&
                 lengthHand >= -eps && lengthHand < coordinateScaleFactor+eps &&
