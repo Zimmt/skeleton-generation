@@ -15,7 +15,7 @@ public abstract class SkeletonPart {
 
     private int id;
 
-    private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent
+    private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent (parent origin is origin for this transform)
     private Point3f jointRotationPoint; // rotation center of the joint between this part and it's parent in the coordinate system of the parent
 
     private TerminalElement parent; // parent in hierarchy of body parts; that can only be parts that are in current skeleton (no ancestors)

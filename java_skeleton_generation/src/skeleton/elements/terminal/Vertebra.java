@@ -5,6 +5,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
+import java.util.Optional;
 
 /**
  * Wirbel
@@ -23,7 +24,7 @@ public class Vertebra extends TerminalElement {
 
     public boolean isMirrored() { return false; }
 
-    public Vertebra calculateMirroredElement(TerminalElement parent) {
+    public Vertebra calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
         System.out.println("Tried to mirror an element that should not be mirrored!");
         return null;
     }

@@ -1,7 +1,5 @@
 package util;
 
-import skeleton.elements.SkeletonPart;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
@@ -81,14 +79,32 @@ public class TransformationMatrix {
         return this.rotate(rotation);
     }
 
-    // generates a new transform, old transform is not changed
-    public static TransformationMatrix reflectTransformAtWorldXYPlane(SkeletonPart element) {
-        TransformationMatrix reflection = reflectionTransformZ();
-        TransformationMatrix childWorldTransform = element.calculateWorldTransform();
-        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(element.getParent().calculateWorldTransform());
+    /**
+     *
+     * @return true if the cross product of x with y = z and
+     * false if it is = -z
+     */
+    public boolean getHandedness() {
+        Matrix3f rotation = new Matrix3f();
+        transform.get(rotation);
+        Vector3f x = new Vector3f(); rotation.getColumn(0, x);
+        Vector3f y = new Vector3f(); rotation.getColumn(1, y);
+        Vector3f z = new Vector3f(); rotation.getColumn(2, z);
 
-        // transform to world coordinates, reflect, then transform to parent coordinates
-        return TransformationMatrix.multiply(TransformationMatrix.multiply(inverseParentWorldTransform, reflection), childWorldTransform);
+        Vector3f crossProduct = new Vector3f();
+        crossProduct.cross(x, y);
+
+        if (crossProduct.epsilonEquals(z, 0.001f)) {
+            return true;
+        }
+        crossProduct.scale(-1);
+        if (crossProduct.epsilonEquals(z, 0.001f)) {
+            return false;
+        } else {
+            System.err.println("Something went wrong with the coordinate systems here...");
+        }
+
+        return false;
     }
 
     public static TransformationMatrix multiply(TransformationMatrix t1, TransformationMatrix t2) {
@@ -103,7 +119,7 @@ public class TransformationMatrix {
         return new TransformationMatrix(transform);
     }
 
-    private static TransformationMatrix reflectionTransformZ() {
+    public static TransformationMatrix getReflectionTransformZ() {
         Matrix3f refZ = matrix3fIdentity();
         refZ.setElement(2, 2, -1f);
         return new TransformationMatrix(refZ, new Vector3f());

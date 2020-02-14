@@ -5,6 +5,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
+import java.util.Optional;
 
 /**
  * Hüfte
@@ -23,7 +24,7 @@ public class Pelvic extends TerminalElement {
 
     public boolean isMirrored() { return false; }
 
-    public Pelvic calculateMirroredElement(TerminalElement parent) {
+    public Pelvic calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
         System.out.println("Tried to mirror an element that should not be mirrored!");
         return null;
     }

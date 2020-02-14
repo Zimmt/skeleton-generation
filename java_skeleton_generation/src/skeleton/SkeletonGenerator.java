@@ -181,7 +181,7 @@ public class SkeletonGenerator {
         }
 
         // call with null is possible as 'parent' is only needed when element is mirrored
-        List<List<TerminalElement>> childrenToAdd = recursiveCalculationOfMirroredElements(null, root);
+        List<List<TerminalElement>> childrenToAdd = recursiveCalculationOfMirroredElements(null, Optional.empty(), root);
 
         for (List<TerminalElement> parentChild : childrenToAdd) { // these are lists with 2 elements
             parentChild.get(0).addChild(parentChild.get(1));
@@ -195,13 +195,17 @@ public class SkeletonGenerator {
      * @return a list of tuples (parent, child) where the child should be added to the parent
      * (to avoid changing objects that are iterated over
      */
-    private List<List<TerminalElement>> recursiveCalculationOfMirroredElements(TerminalElement parent, TerminalElement currentElement) {
+    private List<List<TerminalElement>> recursiveCalculationOfMirroredElements(TerminalElement parent, Optional<TerminalElement> mirroredParent, TerminalElement currentElement) {
         List<List<TerminalElement>> childrenToAdd = new ArrayList<>();
 
-        TerminalElement mirroredElement = currentElement;
+        Optional<TerminalElement> mirroredElement = Optional.empty();
         if (currentElement.isMirrored()) {
-            mirroredElement = currentElement.calculateMirroredElement(parent);
-            childrenToAdd.add(Arrays.asList(parent, mirroredElement));
+            mirroredElement = Optional.of(currentElement.calculateMirroredElement(parent, mirroredParent));
+            if (mirroredParent.isEmpty()) {
+                childrenToAdd.add(Arrays.asList(parent, mirroredElement.get()));
+            } else {
+                childrenToAdd.add(Arrays.asList(mirroredParent.get(), mirroredElement.get()));
+            }
         }
 
         // currentElement and it's children are always "real" elements not mirrored ones
@@ -213,7 +217,7 @@ public class SkeletonGenerator {
 
             // if current element is mirrored, all children of it that are mirrored
             // are children of the mirrored version of the current element
-            childrenToAdd.addAll(recursiveCalculationOfMirroredElements(mirroredElement, (TerminalElement) child));
+            childrenToAdd.addAll(recursiveCalculationOfMirroredElements(currentElement, mirroredElement, (TerminalElement) child));
         }
 
         return childrenToAdd;

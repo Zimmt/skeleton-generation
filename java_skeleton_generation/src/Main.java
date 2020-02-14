@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        pca(true);
+        runSkeletonGenerator();
         System.out.println("Finished");
     }
 

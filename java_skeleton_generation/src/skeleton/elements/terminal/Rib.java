@@ -5,6 +5,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
+import java.util.Optional;
 
 public class Rib extends TerminalElement {
 
@@ -20,20 +21,14 @@ public class Rib extends TerminalElement {
 
     public boolean isMirrored() { return true; }
 
-    public Rib calculateMirroredElement(TerminalElement parent) {
-        // transformation matrix and joint rotation point must not be changed if parent is mirrored
-        if (parent.isMirrored()) {
-            return new Rib(
-                    new TransformationMatrix(this.getTransform()),
-                    new Point3f(this.getJointRotationPoint()),
-                    this.getBoundingBox().cloneBox(),
-                    parent, this.getAncestor()
-            );
+    public Rib calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
+        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+            System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new Rib(
-                calculateMirroredTransform(),
-                calculateMirroredJointRotationPoint(),
+                calculateMirroredTransform(parent),
+                calculateMirroredJointRotationPoint(parent, mirroredParent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                parent, this.getAncestor());
+                mirroredParent.orElse(parent), this.getAncestor());
     }
 }
