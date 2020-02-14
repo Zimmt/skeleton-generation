@@ -28,12 +28,14 @@ public abstract class TerminalElement extends SkeletonPart {
     }
 
     protected TransformationMatrix calculateMirroredTransform(TerminalElement parent) {
+        TransformationMatrix result;
+
         if (parent.isMirrored()) {
             TransformationMatrix xp = parent.calculateLeftToRightTransform();
             TransformationMatrix xc = calculateLeftToRightTransform();
 
             // change to left handed coordinate system, transform to parent coordinates, change to right handed coordinate system
-            return TransformationMatrix.multiply(TransformationMatrix.multiply(xp, getTransform()), xc);
+            result = TransformationMatrix.multiply(TransformationMatrix.multiply(xp, getTransform()), xc);
         } else {
             TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
             TransformationMatrix reflection = TransformationMatrix.getReflectionTransformZ();
@@ -42,15 +44,10 @@ public abstract class TerminalElement extends SkeletonPart {
 
             // change to left handed coordinate system, transform to world coordinates,
             // reflect (get right handed system again), then transform to parent coordinates
-            TransformationMatrix result = TransformationMatrix.multiply(TransformationMatrix.multiply(TransformationMatrix.multiply(
+            result = TransformationMatrix.multiply(TransformationMatrix.multiply(TransformationMatrix.multiply(
                     inverseParentWorldTransform, reflection), childWorldTransform), xc);
-
-            /*if (calculateWorldTransform().getHandedness() != parent.calculateWorldTransform().getHandedness()) {
-                System.err.println("Handedness wrong?");
-            }*/
-
-            return result;
         }
+        return result;
     }
 
     /**

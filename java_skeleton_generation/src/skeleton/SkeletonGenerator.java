@@ -197,10 +197,16 @@ public class SkeletonGenerator {
      */
     private List<List<TerminalElement>> recursiveCalculationOfMirroredElements(TerminalElement parent, Optional<TerminalElement> mirroredParent, TerminalElement currentElement) {
         List<List<TerminalElement>> childrenToAdd = new ArrayList<>();
+        if (!currentElement.calculateWorldTransform().getHandedness()) {
+            System.err.println("Original element has left handed coordinate system?!");
+        }
 
         Optional<TerminalElement> mirroredElement = Optional.empty();
         if (currentElement.isMirrored()) {
             mirroredElement = Optional.of(currentElement.calculateMirroredElement(parent, mirroredParent));
+            if (!mirroredElement.get().calculateWorldTransform().getHandedness()) {
+                System.err.println("Generated element with left handed coordinate system!");
+            }
             if (mirroredParent.isEmpty()) {
                 childrenToAdd.add(Arrays.asList(parent, mirroredElement.get()));
             } else {

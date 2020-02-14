@@ -81,8 +81,9 @@ public class TransformationMatrix {
 
     /**
      *
-     * @return true if the cross product of x with y = z and
-     * false if it is = -z
+     * @return true if this is a right handed coordinate system, false otherwise
+     * it is left handed if the cross product of x with y = z and
+     * right handed if it is = -z
      */
     public boolean getHandedness() {
         Matrix3f rotation = new Matrix3f();
