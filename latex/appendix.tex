@@ -203,22 +203,73 @@ Notizen aus "`Über Wachstum und Form"' von D'Arcy Wentworth Thompson \cite{DArc
    \label{input_data_legs}
   \end{figure}
  
- 
  %--------------
- % Projektionen
+ % QQ Diagramme
  % ------------
- 
-\begin{figure}
-  \subfloat[Flügel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}
-  \qquad
-  \subfloat[Anzahl Beine mit Bodenkontakt]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
-  \qquad
-  \subfloat[Tierklasse]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_animal_class_tag/projection_eigenvectors12.pdf}}
-  
-  \caption{Projektion der Eingabdaten auf die Ebene, die durch den ersten und zweiten Eigenvektor aufgespannt wird. Markiert sind jeweils verschiedene Merkmale der Punkte.}
-  \label{projections12}
- \end{figure}
 
+  \begin{figure}
+   \subfloat[Erster Punkt des Halses, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram0.pdf}}
+   \qquad
+   \subfloat[Erster Punkt des Halses, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram1.pdf}}
+   \qquad
+   \subfloat[Zweiter Punkt des Halses, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram2.pdf}}
+   \\
+   \subfloat[Zweiter Punkt des Halses, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram3.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Halses, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram4.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Hales, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram5.pdf}}
+   \\
+   \subfloat[Erster Punkt des Rückens, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram6.pdf}}
+   \qquad
+   \subfloat[Erster Punkt des Rückens, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram7.pdf}}
+   \qquad
+   \subfloat[Zweiter Punkt des Rückens, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram8.pdf}}
+   \\
+   \subfloat[Zweiter Punkt des Rückens, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram9.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Rückens, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram10.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Rückens, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram11.pdf}}
+  \end{figure}
+  \begin{figure}
+   \ContinuedFloat
+   \subfloat[Vierter Punkt des Rückens, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram12.pdf}}
+   \qquad
+   \subfloat[Vierter Punkt des Rückens, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram13.pdf}}
+   \qquad
+   \subfloat[Zweiter Punkt des Schwanzes, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram14.pdf}}
+   \\
+   \subfloat[Zweiter Punkt des Schwanzes, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram15.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Schwanzes, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram16.pdf}}
+   \qquad
+   \subfloat[Dritter Punkt des Schwanzes, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram17.pdf}}
+   \\
+   \subfloat[Vierter Punkt des Schwanzes, x-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram18.pdf}}
+   \qquad
+   \subfloat[Vierter Punkt des Schwanzes, y-Koordinate]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram19.pdf}}
+   
+   \caption{Quantil-Quantil-Diagramme für alle Dimensionen der Wirbelsäule}
+   \label{qq_diagrams_spine}
+  \end{figure}
+  \begin{figure}
+   \subfloat[Länge Oberarm]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram22.pdf}}
+   \qquad
+   \subfloat[Länge Unterarm]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram23.pdf}}
+   \qquad
+   \subfloat[Länge Hand]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram24.pdf}}
+   \\
+   \subfloat[Länge Oberschenkel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram25.pdf}}
+   \qquad
+   \subfloat[Länge Unterschenkel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram26.pdf}}
+   \qquad
+   \subfloat[Länge Fuß]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram27.pdf}}
+
+   \caption{Quantil-Quantil-Diagramme für die Dimensionen der Eingabedaten, die zusätzlich zur Wirbelsäule erhoben wurden. Nicht dargestellt ist das binäre Attribut \emph{Flügel} und die Anzahl der Beine mit Bodenkontakt.}
+   \label{qq_diagrams_rest}
+  \end{figure}
+ 
  
  \section{Skelettbilder}
  \label{appendix_pca_skeletons}

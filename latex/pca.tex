@@ -104,12 +104,14 @@
  \section{Analyse der Eingabedaten}
  \label{pca_input_analysis}
  
- Insgesamt wurden $44$ Datenpunkte erhoben. \todo{Wieso ist das ausreichend?} Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean_log_weight} visualisiert. Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
+ Insgesamt wurden $44$ Datenpunkte erhoben. \todo{Wieso ist das ausreichend?} Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean_log_weight} visualisiert.
+ \todo{Werte der Mittelwertvisualisierung angeben wenn zuletzt aktualiert, damit Bild nicht so groß sein muss}
+ Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
  
  \begin{figure}
   \centering
-  \includegraphics[width=0.9\textwidth]{../PCA/mean_log_weight.jpg}
-  \caption{Visualisierung des Mittelwerts der Eingabedaten.}
+  \includegraphics[width=0.7\textwidth]{../PCA/mean_log_weight.jpg}
+  \caption{Visualisierung des Mittelwerts der Eingabedaten. Die Werte, die nicht visualisiert sind, sind folgende: ...}
   \label{mean_log_weight}
  \end{figure}
  
@@ -130,7 +132,7 @@
 
  
  Eine Vorraussetzung der PCA ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret nur ein \bzw zwei Werte annehmen können. Hierzu weiter unten mehr. Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen. \todo{QQ Diagramme erklären}
- Die Diagramm zeigen, dass die Dimensionen alle mehr oder weniger normalverteilt sind (siehe Abbildungen \ref{qqdiagram_examples} und  im Anhang). \todo{Rest in Anhang} 
+ Die Diagramm zeigen, dass die Dimensionen alle mehr oder weniger normalverteilt sind (siehe Abbildungen \ref{qqdiagram_examples} und im Anhang Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
  Für das Merkmal \emph{Gewicht} gilt dies aber nur, da es logarithmisch in die PCA eingeht. Die Verteilung der originalen Gewichte weicht sehr deutlich von einer Normalverteilung ab (siehe Abbildungen \ref{qqdiagrams_weight}).
  Verwendet man das lineare Gewicht als Eingabe für die PCA, treten dadurch bei der Kombination von zufälligen Werten für die Eigenvektoren schnell Gewichte kleiner null auf. Dies wird bei einer logarithmischen Skala vermieden.
  Welcher Logarithmus zur Umrechnung der Daten verwendet wird schlägt sich nur als linearer Faktor nieder. Da hier wiederum nicht ersichtlich ist welche Skalierung am besten wäre, wurde hier der Zehnerlogarithmus verwendet.
@@ -161,13 +163,22 @@
  
  Im Folgenden werden die drei diskreten Merkmale \emph{Tierklasse}, \emph{Anzahl Beine mit Bodenkontakt} und \emph{vorhandene Flügel} genauer betrachtet.
  
- Es gibt $7$ Datenpunkte mit Flügeln und $37$ ohne Flügel. In den Visualisierungen der Eingabedaten (siehe Anhang \ref{appendix_pca}, Abbildungen \ref{input_data_wings} und \ref{input_data_weight_wings}) ist zu sehen, dass die Tiere mit Flügeln zwar in den einzelnen Projektionen keine Cluster bilden, aber doch meist nahe zusammen liegen. Nach der Koordinatentransformation durch die PCA ist das Cluster jedoch klar erkennbar (siehe Abbildung \ref{projection_wings} und Abschnitt \ref{section_pca_result_analysis}).
+ In Abbildung \ref{projections12} ist jeweils die Projektion der Daten auf die ersten beiden Eigenvektoren zu sehen. Klar zu erkennen ist, dass die Tiere mit Flügeln ein Cluster bilden. Betrachtet man die Daten annotiert mit der Tierklasse, so ebenfalls ein Cluster zu erkennen, das der Vögel. Das liegt daran, dass in den erhobenen Daten genau diejenigen Beispiele Flügel haben, die auch Vögel sind. Die restlichen Tierklassen hingegen bilden keine Cluster.
+ Die Anzahl der Beine wiederum scheint ein gutes Unterschiedungsmerkmal zu sein. Hier sieht man wieder das Cluster der Vögel (in blau) mit vier Punkten zusätzlich, nämlich dem Känguru, dem Tyrannosaurus Rex, dem Seehund und der Ohrenrobbe. Und auch die anderen Gruppen bilden Cluster.
  
- Betrachtet man nun die selben Diagramme, nur annotiert mit der Tierklasse, so ergibt sich kein so klares Bild (siehe Abbildung \ref{projection_animal_class}). Gut zu erkennen ist jedoch, dass die Vögel ein Cluster bilden, nämlich das selbe wie die Datenpunkte mit Flügeln. Das liegt daran, dass in den erhobenen Daten alle Tiere Vögel sind, genau dann, wenn sie auch Flügel haben. Ansonsten lassen sich keine Cluster erkennen.
  
- Im Gegensatz dazu bildet die Aufteilung nach der Anzahl der Beine wiederum Cluster (siehe Abbildungen \ref{input_data_legs} und \ref{projection_legs}).
+ \begin{figure}
+  \subfloat[Flügel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}
+  \qquad
+  \subfloat[Anzahl Beine mit Bodenkontakt]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
+  \qquad
+  \subfloat[Tierklasse]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_animal_class_tag/projection_eigenvectors12.pdf}}
+  
+  \caption{Projektion der Eingabdaten auf die Ebene, die durch den ersten und zweiten Eigenvektor aufgespannt wird. Markiert sind jeweils verschiedene Merkmale der Punkte.}
+  \label{projections12}
+ \end{figure}
  
- Skaliert man das Flügel und Beine um Faktor $1000$ kleiner, so verschwinden die Cluster (siehe Abbildung ...) \todo{Skalierung Beschreiben (auch schon in den vorherigen Abschnitten) und Abbildungen einfügen}
+ Skaliert man Flügel und Beine um Faktor $1000$ kleiner, so verschwinden die Cluster (siehe Abbildung ...) \todo{Skalierung Beschreiben (auch schon in den vorherigen Abschnitten) und Abbildungen einfügen}
  
 
  %- - - - - - - - - - - - - - - - - -
@@ -199,7 +210,7 @@
  \end{figure}
  
 
- In den Abbildungen, die die Eingabedaten im transformierten Koordinatensystem der PCA darstellen (Abbildungen \ref{projection_wings}, \ref{projection_legs} und \ref{projection_animal_class}) ist gut zu erkennen, dass die Koordinatentransformation der PCA die Daten tatsächlich nach den Hauptachsen des mehrdimensionalen Ellipsoids, den die Datenpunkte bilden, ausrichtet.
+ In den Abbildungen, die die Eingabedaten im transformierten Koordinatensystem der PCA darstellen (Abbildung \ref{projections12}) ist gut zu erkennen, dass die Koordinatentransformation der PCA die Daten tatsächlich nach den Hauptachsen des mehrdimensionalen Ellipsoids, den die Datenpunkte bilden, ausrichtet.
 
  Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man sich die Frage stellen, ob sie nötig sind, oder ob sie eher die Ergebnisse der PCA verschlechtern. Es wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich nicht extrem von der PCA mit allen Daten. 
  
