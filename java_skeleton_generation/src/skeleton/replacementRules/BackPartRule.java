@@ -1,5 +1,6 @@
 package skeleton.replacementRules;
 
+import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
@@ -46,7 +47,7 @@ public class BackPartRule extends ReplacementRule {
         generatedParts.add(leg);
 
         Tuple2f tailInterval = new Point2f(backPart.getPelvicSpineInterval().y, 1f);
-        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, tailInterval, 3, pelvic, false);
+        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK, tailInterval, 3, pelvic, false);
         generatedParts.addAll(tail);
 
         return generatedParts;
@@ -55,8 +56,8 @@ public class BackPartRule extends ReplacementRule {
     private Pelvic generatePelvic(BackPart backPart, float width, float height) {
 
         Tuple2f spineInterval = backPart.getPelvicSpineInterval();
-        Point2f leftSpinePoint = backPart.getGenerator().getSpine().apply(spineInterval.x);
-        Point2f rightSpinePoint = backPart.getGenerator().getSpine().apply(spineInterval.y);
+        Point2f leftSpinePoint = backPart.getGenerator().getSpinePosition().apply(spineInterval.x);
+        Point2f rightSpinePoint = backPart.getGenerator().getSpinePosition().apply(spineInterval.y);
         float xLength = Math.abs(rightSpinePoint.x - leftSpinePoint.x);
 
         BoundingBox boundingBox = BoundingBox.defaultBox();

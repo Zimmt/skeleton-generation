@@ -8,8 +8,8 @@ import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
-import util.CubicBezierCurve;
 import util.TransformationMatrix;
+import util.pca.PcaHandler;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
@@ -22,19 +22,22 @@ public class SkeletonGenerator {
     private ArrayList<TerminalElement> terminalParts;
     private ArrayList<NonTerminalElement> nonTerminalParts;
     private RuleDictionary ruleDictionary;
-    private CubicBezierCurve spine;
-    private boolean calculatedMirroredElements = false;
 
+    private PcaHandler pcaHandler;
+    private SkeletonMetaData skeletonMetaData;
+
+    private boolean calculatedMirroredElements = false;
     private static Random random = new Random();
     private int stepCount = 0;
     private int nextBoneId = 0;
 
-    public SkeletonGenerator() {
+    public SkeletonGenerator(PcaHandler pcaHandler) {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), this));
         this.ruleDictionary = new RuleDictionary();
-        this.spine = generateSpine();
+        this.pcaHandler = pcaHandler;
+        this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint());
     }
 
     /**
@@ -112,12 +115,12 @@ public class SkeletonGenerator {
         return null;
     }
 
-    public int getStepCount() {
-        return stepCount;
+    public SkeletonMetaData getSkeletonMetaData() {
+        return skeletonMetaData;
     }
 
-    public CubicBezierCurve getSpine() {
-        return spine;
+    public int getStepCount() {
+        return stepCount;
     }
 
     public String toString() {
@@ -229,15 +232,6 @@ public class SkeletonGenerator {
         return childrenToAdd;
     }
 
-    private CubicBezierCurve generateSpine() {
-        Point2f p0 = new Point2f(2f, 6f);
-        Point2f p1 = new Point2f(4f, 2f);
-        Point2f p2 = new Point2f(10f, 6f);
-        Point2f p3 = new Point2f(12f, 2f);
-
-        return new CubicBezierCurve(p0, p1, p2, p3);
-    }
-
     /**
      * The vertebra are generated from the left side of the interval to the right.
      * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
@@ -247,8 +241,8 @@ public class SkeletonGenerator {
      * @param dummyParent indicates if the parent of the first generated vertebra shall be the parent or null
      * @return the generated vertebra
      */
-    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, Tuple2f interval, int vertebraCount,
-                                                             TerminalElement firstParent, boolean dummyParent) {
+    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval,
+                                                             int vertebraCount, TerminalElement firstParent, boolean dummyParent) {
 
         TerminalElement parent = firstParent;
 
@@ -273,7 +267,7 @@ public class SkeletonGenerator {
                 currentVertebraInterval = new Point2f(right, left);
             }
 
-            TransformationMatrix transform = generateTransformForElementInSpineInterval(currentVertebraInterval, parent);
+            TransformationMatrix transform = generateTransformForElementInSpineInterval(spinePart, currentVertebraInterval, parent);
             transform.translate(localBoxTranslation);
 
             BoundingBox childBox = boundingBox.cloneBox();
@@ -304,10 +298,10 @@ public class SkeletonGenerator {
      * The position of transform is the left point of the interval on the spine.
      * @param interval [x, y] with x < y
      */
-    public TransformationMatrix generateTransformForElementInSpineInterval(Tuple2f interval, TerminalElement parent) {
+    public TransformationMatrix generateTransformForElementInSpineInterval(SpinePart spinePart, Tuple2f interval, TerminalElement parent) {
 
-        float angle = getSpineAngle(interval.x, interval.y);
-        Vector3f position = new Vector3f(spine.apply3d(interval.x)); // world position
+        float angle = getSpineAngle(spinePart, interval.x, interval.y);
+        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart).apply3d(interval.x)); // world position
 
         TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
 
@@ -324,9 +318,9 @@ public class SkeletonGenerator {
      * @param t2 second point on spine
      * @return angle between spine vector (from first to second point on spine) and the vector (1,0,0)
      */
-    private float getSpineAngle(float t1, float t2) {
-        Point3f position1 = spine.apply3d(t1);
-        Point3f position2 = spine.apply3d(t2);
+    private float getSpineAngle(SpinePart spinePart, float t1, float t2) {
+        Point3f position1 = skeletonMetaData.getSpine().getPart(spinePart).apply3d(t1);
+        Point3f position2 = skeletonMetaData.getSpine().getPart(spinePart).apply3d(t2);
         Point3f diff = position2;
         diff.sub(position1);
         Vector3f spineVector = new Vector3f(diff);

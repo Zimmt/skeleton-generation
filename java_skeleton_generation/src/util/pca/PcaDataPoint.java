@@ -40,7 +40,7 @@ public class PcaDataPoint {
     }
 
     /**
-     * Moves the point by the given vector.
+     * Creates a new point moved by the given vectors.
      * Changes: spine, wings, flooredLegs, length of extremities, weight
      * leaves empty: name, back, neck, tail, animalClass
      */

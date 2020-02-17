@@ -39,7 +39,7 @@ public class WholeBodyRule extends ReplacementRule {
         WholeBody wholeBody = (WholeBody) skeletonPart;
 
         // find positions for shoulder and pelvic on spine
-        List<Float> intervals = wholeBody.getGenerator().getSpine().getIntervalsByGradientEpsilon(3f);
+        List<Float> intervals = wholeBody.getGenerator().getSpinePosition().getIntervalsByGradientEpsilon(3f);
         System.out.println("spine intervals: " + intervals);
 
         Tuple2f shoulderSpineInterval = null;
@@ -86,7 +86,7 @@ public class WholeBodyRule extends ReplacementRule {
 
         // the position of the front part is simply the end of the shoulder spine interval
         TransformationMatrix transform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
-        Point3f position = wholeBody.getGenerator().getSpine().apply3d(shoulderSpineInterval.y);
+        Point3f position = wholeBody.getGenerator().getSpinePosition().apply3d(shoulderSpineInterval.y);
         transform.translate(new Vector3f(position));
 
         Point3f jointRotationPoint = new Point3f(0f, parent.getBoundingBox().getYLength() / 2f, 0f);
@@ -102,7 +102,7 @@ public class WholeBodyRule extends ReplacementRule {
 
         // the position of the back part is simply the beginning of the pelvic spine interval
         TransformationMatrix transform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
-        Point3f position = wholeBody.getGenerator().getSpine().apply3d(pelvicSpineInterval.x);
+        Point3f position = wholeBody.getGenerator().getSpinePosition().apply3d(pelvicSpineInterval.x);
         transform.translate(new Vector3f(position));
 
         Point3f jointRotationPoint = new Point3f(parent.getBoundingBox().getXLength(), parent.getBoundingBox().getYLength() / 2f, 0f);

@@ -4,6 +4,7 @@ import de.javagl.obj.Obj;
 import de.javagl.obj.ObjWriter;
 import de.javagl.obj.Objs;
 import skeleton.SkeletonGenerator;
+import skeleton.SpinePosition;
 import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point2f;
@@ -26,18 +27,7 @@ public class ObjGenerator {
 
         Obj obj = Objs.create();
 
-        CubicBezierCurve spine = skeleton.getSpine();
-        obj.setActiveGroupNames(Collections.singletonList("spine"));
-
-        int precision = 20;
-        for (int i = 0; i <= precision; i++) {
-            float t = (float) i / precision;
-            Point2f spinePoint = spine.apply(t);
-            obj.addVertex(spinePoint.x, spinePoint.y, 0f);
-            if (i > 0) {
-                obj.addFace(i-1, i);
-            }
-        }
+        addSpineVertices(obj, skeleton);
 
         List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
 
@@ -79,5 +69,23 @@ public class ObjGenerator {
         String path = "skeleton.obj";
         OutputStream objOutputStream = new FileOutputStream(path);
         ObjWriter.write(obj, objOutputStream);
+    }
+
+    private void addSpineVertices(Obj obj, SkeletonGenerator skeleton) {
+        SpinePosition spine = skeleton.getSkeletonMetaData().getSpine();
+        obj.setActiveGroupNames(Collections.singletonList("spine"));
+        int precision = 8;
+
+        for (CubicBezierCurve spinePart : spine.getAll()) {
+            for (int i = 0; i <= precision; i++) {
+                float t = (float) i / precision;
+                Point2f spinePoint = spinePart.apply(t);
+                obj.addVertex(spinePoint.x, spinePoint.y, 0f);
+                if (i > 0) {
+                    obj.addFace(i-1, i);
+                }
+            }
+        }
+
     }
 }

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        runSkeletonGenerator();
+        runSkeletonGenerator(true);
         System.out.println("Finished");
     }
 
@@ -33,8 +33,11 @@ public class Main {
         pcaHandlerNoWings.visualize();
     }
 
-    private static void runSkeletonGenerator() throws IOException {
-        SkeletonGenerator skeletonGenerator = new SkeletonGenerator();
+    private static void runSkeletonGenerator(boolean logWeight) throws IOException {
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
+        PcaHandler pcaHandler = new PcaHandler(dataPoints);
+
+        SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler);
         while (!skeletonGenerator.isFinished()) {
             boolean stepDone = skeletonGenerator.doOneStep();
             if (!stepDone) { // there might be missing rules

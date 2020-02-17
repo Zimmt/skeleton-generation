@@ -52,6 +52,10 @@ public class PCA {
         return ed.getEigenvector(sortedEigenvalueIndices[n]);
     }
 
+    public int getEigenvectorCount() {
+        return ed.getRealEigenvalues().length;
+    }
+
     /**
      * Return the nth biggest eigenvalue (zero based)
      */

@@ -1,5 +1,6 @@
 package skeleton.replacementRules;
 
+import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.ShoulderGirdle;
@@ -41,7 +42,7 @@ public class FrontPartRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f neckInterval = new Point2f(frontPart.getFrontPartStartPosition(), 0f);
-        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, neckInterval, 3, frontPart.getParent(), false);
+        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK, neckInterval, 3, frontPart.getParent(), false);
         frontPart.getParent().removeChild(frontPart);
         generatedParts.addAll(neck);
 
@@ -73,7 +74,7 @@ public class FrontPartRule extends ReplacementRule {
 
         // we have the world position of the spine and we have to get something that is relative to the parent
         TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
-        Point2f spineStartPoint = frontPart.getGenerator().getSpine().apply(0f);
+        Point2f spineStartPoint = frontPart.getGenerator().getSpinePosition().apply(0f);
         Point2f headPosition = new Point2f(spineStartPoint);
         headPosition.sub(new Point2f(headBox.getXLength(), headBox.getYLength() / 2f));
         headTransform.translate(new Vector3f(headPosition.x, headPosition.y, -headBox.getZLength() / 2f));
