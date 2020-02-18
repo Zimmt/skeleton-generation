@@ -246,6 +246,12 @@ public class SkeletonGenerator {
                                                              int vertebraCount, Vector3f boundingBoxScale,
                                                              TerminalElement firstParent, boolean dummyParent) {
 
+        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
+        if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
+            System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
+            return generatedParts;
+        }
+
         TerminalElement parent = firstParent;
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
@@ -254,7 +260,6 @@ public class SkeletonGenerator {
         Vector3f negativeHalfBoxWidth = new Vector3f(0f, 0f, -boundingBox.getZLength() / 2f);
         localBoxTranslation.add(negativeHalfBoxWidth);
 
-        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         float intervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
 
@@ -299,21 +304,25 @@ public class SkeletonGenerator {
 
     /**
      * The position of transform is the left point of the interval on the spine.
-     * @param interval [x, y] with x < y
+     * @param interval [x, y], x can be bigger than y then the interval is handled as [y, x]
      */
     public TransformationMatrix generateTransformForElementInSpineInterval(SpinePart spinePart, Tuple2f interval, TerminalElement parent) {
 
         float angle = getSpineAngle(spinePart, interval.x, interval.y);
-        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart).apply3d(interval.x)); // world position
+        Tuple2f sortedInterval = new Point2f(interval);
+        if (interval.x > interval.y) {
+            angle = -getSpineAngle(spinePart, interval.y, interval.x);
+            sortedInterval = new Point2f(interval.y, interval.x);
+        }
+
+        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart).apply3d(sortedInterval.x)); // world position
 
         TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
 
         TransformationMatrix psi = new TransformationMatrix(position);
         psi.rotateAroundZ(angle);
 
-        TransformationMatrix result = TransformationMatrix.multiply(inverseParentWorldTransform, psi);
-
-        return result;
+        return TransformationMatrix.multiply(inverseParentWorldTransform, psi);
     }
 
     /**
