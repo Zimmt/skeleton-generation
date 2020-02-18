@@ -235,6 +235,7 @@ public class SkeletonGenerator {
     /**
      * The vertebra are generated from the left side of the interval to the right.
      * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
+     * Child vertebrae are added to their parents.
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
      * @param firstParent element that shall be parent of the first vertebra generated or a dummy parent from which only the transform is used
@@ -242,11 +243,13 @@ public class SkeletonGenerator {
      * @return the generated vertebra
      */
     public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval,
-                                                             int vertebraCount, TerminalElement firstParent, boolean dummyParent) {
+                                                             int vertebraCount, Vector3f boundingBoxScale,
+                                                             TerminalElement firstParent, boolean dummyParent) {
 
         TerminalElement parent = firstParent;
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
+        boundingBox.scale(boundingBoxScale);
         Vector3f localBoxTranslation = new Vector3f(0f, -boundingBox.getYLength() / 2f, 0f); // negative half box height
         Vector3f negativeHalfBoxWidth = new Vector3f(0f, 0f, -boundingBox.getZLength() / 2f);
         localBoxTranslation.add(negativeHalfBoxWidth);

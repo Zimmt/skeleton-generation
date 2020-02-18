@@ -10,6 +10,9 @@ public class TransformationMatrix {
     // first rotation then translation
     private Transform3D transform;
 
+    /**
+     * Identity matrix
+     */
     public TransformationMatrix() {
         this.transform = new Transform3D();
     }

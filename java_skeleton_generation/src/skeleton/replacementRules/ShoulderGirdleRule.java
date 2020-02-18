@@ -36,7 +36,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         ShoulderGirdle shoulderGirdle = (ShoulderGirdle) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(1.5f, 0.5f, 1.5f));
+        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(40f, 10f, 50f));
         generatedParts.add(shoulder);
         Arm arm = generateArm(shoulderGirdle, shoulder);
         generatedParts.add(arm);
@@ -44,6 +44,10 @@ public class ShoulderGirdleRule extends ReplacementRule {
         return generatedParts;
     }
 
+    /**
+     * position: middle of back side is the joint rotation point
+     * joint rotation point: joint rotation point that was set by shoulder girdle (front side of parent in the middle)
+     */
     private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f dimensions) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
@@ -63,8 +67,11 @@ public class ShoulderGirdleRule extends ReplacementRule {
         return shoulder;
     }
 
+    /**
+     * position: same as shoulder
+     * joint rotation point: front side of parent in the middle
+     */
     private Arm generateArm(ShoulderGirdle shoulderGirdle, Shoulder shoulder) {
-        // arm has the same position as shoulder
         TransformationMatrix transform = new TransformationMatrix();
 
         Point3f jointRotationPoint = new Point3f(shoulder.getBoundingBox().getXLength()/2, 0f, shoulder.getBoundingBox().getZLength()/2);

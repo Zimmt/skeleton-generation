@@ -74,18 +74,22 @@ public class ObjGenerator {
     private void addSpineVertices(Obj obj, SkeletonGenerator skeleton) {
         SpinePosition spine = skeleton.getSkeletonMetaData().getSpine();
         obj.setActiveGroupNames(Collections.singletonList("spine"));
-        int precision = 8;
+        int precision = 10;
 
-        for (CubicBezierCurve spinePart : spine.getAll()) {
-            for (int i = 0; i <= precision; i++) {
+        CubicBezierCurve[] spineParts = spine.getAll();
+        for (int p = 0; p < 3; p++) {
+            int upperBound = precision;
+            if (p == 2) {
+                upperBound = precision+1;
+            }
+            for (int i = 0; i < upperBound; i++) {
                 float t = (float) i / precision;
-                Point2f spinePoint = spinePart.apply(t);
+                Point2f spinePoint = spineParts[p].apply(t);
                 obj.addVertex(spinePoint.x, spinePoint.y, 0f);
-                if (i > 0) {
-                    obj.addFace(i-1, i);
+                if (p > 0 || i > 0) {
+                    obj.addFace(p*precision + i-1, p*precision + i);
                 }
             }
         }
-
     }
 }

@@ -293,9 +293,9 @@ public class PcaHandler {
     }
 
     private double[] getRandomScalesForEachEigenvector() {
-        double[] scales = new double[dataPoints.size()];
+        double[] scales = new double[pca.getEigenvectorCount()];
 
-        for (int i = 0; i < dataPoints.size(); i++) {
+        for (int i = 0; i < scales.length; i++) {
             double variance = pca.getEigenvalue(i);
             double r = random.nextGaussian(); // generates normally distributed value with mean 0 and standard deviation 1
             r = variance * r;

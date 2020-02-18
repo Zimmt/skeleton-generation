@@ -4,25 +4,23 @@ import skeleton.elements.terminal.TerminalElement;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple2f;
 
 public class BackPart extends NonTerminalElement {
 
     private final String kind = "back part";
-    private Tuple2f pelvicSpineInterval;
+    private float startPosition;
 
-    public BackPart(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor, Tuple2f pelvicSpineInterval) {
+    public BackPart(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor, float backPartStartPosition) {
         super(transform, jointRotationPoint, parent, ancestor);
-
-        this.pelvicSpineInterval = pelvicSpineInterval;
+        this.startPosition = backPartStartPosition;
     }
 
     public String getKind() {
         return kind;
     }
 
-    public Tuple2f getPelvicSpineInterval() {
-        return pelvicSpineInterval;
+    public float getStartPosition() {
+        return startPosition;
     }
 
     public boolean isMirrored() { return false; }

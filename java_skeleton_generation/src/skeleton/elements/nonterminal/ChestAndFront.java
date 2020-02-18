@@ -5,11 +5,11 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 
-public class Chest extends NonTerminalElement {
+public class ChestAndFront extends NonTerminalElement {
 
-    private final String kind = "chest";
+    private final String kind = "chest and front";
 
-    public Chest(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor) {
+    public ChestAndFront(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor) {
         super(transform, jointRotationPoint, parent, ancestor);
     }
 

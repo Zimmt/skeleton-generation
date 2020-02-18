@@ -8,19 +8,19 @@ import javax.vecmath.Point3f;
 public class FrontPart extends NonTerminalElement {
 
     private final String kind = "front part";
-    private float frontPartStartPosition;
+    private float endPosition;
 
-    public FrontPart(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor, float frontPartStartPosition) {
+    public FrontPart(TransformationMatrix transform, Point3f jointRotationPoint, TerminalElement parent, NonTerminalElement ancestor, float endPosition) {
         super(transform, jointRotationPoint, parent, ancestor);
-        this.frontPartStartPosition = frontPartStartPosition;
+        this.endPosition = endPosition;
     }
 
     public String getKind() {
         return kind;
     }
 
-    public float getFrontPartStartPosition() {
-        return frontPartStartPosition;
+    public float getEndPosition() {
+        return endPosition;
     }
 
     public boolean isMirrored() { return false; }
