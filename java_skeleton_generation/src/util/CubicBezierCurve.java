@@ -83,10 +83,11 @@ public class CubicBezierCurve {
     }
 
     /**
-     * Calculates all intervals of the curve where the gradient is in the interval [-epsilon, +epsilon]
+     * Calculates all intervals of the curve where the gradient is in the interval [x-eps, x+eps]
      * by testing the derivation with the step size of 0.01
+     * The intervals are sorted in ascending order.
      */
-    public List<Float> getIntervalsByGradientEpsilon(float epsilon) {
+    public List<Float> getIntervalsByGradientEpsilon(float x, float eps) {
 
         List<Float> intervals = new ArrayList<>();
         boolean inInterval = false;
@@ -94,11 +95,11 @@ public class CubicBezierCurve {
         for (float t = 0f; t <= 1f; t += 0.01) {
             float gradient = getGradient(t);
 
-            if (!inInterval && Math.abs(gradient) <= epsilon) {
+            if (!inInterval && x-eps <= gradient && gradient <= x+eps) {
                 intervals.add(t);
                 inInterval = true;
 
-            } else if (inInterval && Math.abs(gradient) > epsilon) {
+            } else if (inInterval && (gradient < x-eps || gradient > x+eps)) {
                 intervals.add(t);
                 inInterval = false;
             }

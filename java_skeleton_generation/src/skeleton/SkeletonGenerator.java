@@ -267,7 +267,7 @@ public class SkeletonGenerator {
             float right = left + sign * 1f / (float) vertebraCount * intervalLength;
             Tuple2f currentVertebraInterval = new Point2f(left, right);
 
-            TransformationMatrix transform = generateTransformForElementInSpineInterval(spinePart, currentVertebraInterval, parent);
+            TransformationMatrix transform = generateTransformForElementInSpineInterval(spinePart, spinePart, currentVertebraInterval, parent);
             transform.translate(localBoxTranslation);
 
             BoundingBox childBox = boundingBox.cloneBox();
@@ -296,19 +296,19 @@ public class SkeletonGenerator {
 
     /**
      * The position of transform is the left point of the interval on the spine.
+     * The points of the interval can lie in different spine parts.
      * @param interval [x, y], x can be bigger than y then the interval is handled as [y, x]
      */
-    public TransformationMatrix generateTransformForElementInSpineInterval(SpinePart spinePart, Tuple2f interval, TerminalElement parent) {
+    public TransformationMatrix generateTransformForElementInSpineInterval(SpinePart spinePart1, SpinePart spinePart2, Tuple2f interval, TerminalElement parent) {
 
-        Tuple2f sortedInterval;
-        if (interval.x < interval.y) {
-            sortedInterval = new Point2f(interval);
-        } else {
+        Tuple2f sortedInterval = new Point2f(interval);
+        if ((spinePart1 == spinePart2 && interval.x > interval.y) ||
+                spinePart1 == SpinePart.TAIL || (spinePart1 == SpinePart.BACK && spinePart2 == SpinePart.NECK)) {
             sortedInterval = new Point2f(interval.y, interval.x);
         }
-        float angle = getSpineAngle(spinePart, sortedInterval.x, sortedInterval.y);
+        float angle = getSpineAngle(spinePart1, spinePart2, sortedInterval.x, sortedInterval.y);
 
-        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart).apply3d(sortedInterval.x)); // world position
+        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart1).apply3d(sortedInterval.x)); // world position
 
         TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
 
@@ -319,13 +319,16 @@ public class SkeletonGenerator {
     }
 
     /**
+     * Interval borders have to be ascending.
+     * @param spinePart1 the spine part for the first point
+     * @param spinePart2 the spine part for the second point
      * @param t1 first point on spine
      * @param t2 second point on spine
      * @return angle between spine vector (from first to second point on spine) and the vector (1,0,0)
      */
-    private float getSpineAngle(SpinePart spinePart, float t1, float t2) {
-        Point3f position1 = skeletonMetaData.getSpine().getPart(spinePart).apply3d(t1);
-        Point3f position2 = skeletonMetaData.getSpine().getPart(spinePart).apply3d(t2);
+    private float getSpineAngle(SpinePart spinePart1, SpinePart spinePart2, float t1, float t2) {
+        Point3f position1 = skeletonMetaData.getSpine().getPart(spinePart1).apply3d(t1);
+        Point3f position2 = skeletonMetaData.getSpine().getPart(spinePart2).apply3d(t2);
         Point3f diff = new Point3f(position2);
         diff.sub(position1);
         Vector3f spineVector = new Vector3f(diff);
