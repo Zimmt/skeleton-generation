@@ -56,14 +56,14 @@ public class SkeletonMetaData {
 
         double angle = getAngle(p1, center, p2);
         if (Math.PI - angle < eps) {
-            return new ArrayList<>();
+            return Arrays.asList(p1, p2);
         }
         double turnAngle = (Math.PI - angle) / 2.0;
         Point2d alignedP1 = turnPointCounterclockwiseAroundCenter(p1, center, turnAngle);
         Point2d alignedP2 = turnPointCounterclockwiseAroundCenter(p2, center, -turnAngle);
 
         double newAngle = getAngle(alignedP1, center, alignedP2);
-        if (Math.PI - newAngle < 0.01) {
+        if (Math.PI - newAngle < eps) {
             return Arrays.asList(alignedP1, alignedP2);
         }
 
@@ -71,7 +71,7 @@ public class SkeletonMetaData {
         alignedP2 = turnPointCounterclockwiseAroundCenter(alignedP2, center, 2 * turnAngle);
 
         double newerAngle = getAngle(alignedP1, center, alignedP2);
-        if (! (Math.PI - newerAngle < 0.01)) {
+        if (! (Math.PI - newerAngle < eps)) {
             System.err.println("Could not align control points. Angle should be 180 but is " + Math.toDegrees(newerAngle));
         }
         return Arrays.asList(alignedP1, alignedP2);
