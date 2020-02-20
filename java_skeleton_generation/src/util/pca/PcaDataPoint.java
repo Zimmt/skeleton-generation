@@ -8,9 +8,10 @@ import java.util.*;
 public class PcaDataPoint {
     private static final int dimension = 29;
     private static final double coordinateScaleFactor = 1000;
-    private static final double wingScaleFactor = 1000;
-    private static final double flooredLegsScaleFactor = 2000;
-    private static final double weightScaleFactor = 120000000;
+    private static final double wingScaleFactor = 1;
+    private static final double flooredLegsScaleFactor = 2;
+    private static final double weightScaleFactor = 120000;
+    private static final double downscaleFactor = 100;
 
     private String name;
 
@@ -68,8 +69,8 @@ public class PcaDataPoint {
         double newWeight = weight;
 
         for (RealVector scaledEigenvector : scaledEigenvectors) {
-            newWings += scaledEigenvector.getEntry(20) * wingScaleFactor;
-            newFlooredLegs += scaledEigenvector.getEntry(21) * flooredLegsScaleFactor;
+            newWings += scaledEigenvector.getEntry(20) * wingScaleFactor * downscaleFactor;
+            newFlooredLegs += scaledEigenvector.getEntry(21) * flooredLegsScaleFactor * downscaleFactor;
             newLengthUpperArm += scaledEigenvector.getEntry(22) * coordinateScaleFactor;
             newLengthLowerArm += scaledEigenvector.getEntry(23) * coordinateScaleFactor;
             newLengthHand += scaledEigenvector.getEntry(24) * coordinateScaleFactor;
@@ -77,10 +78,10 @@ public class PcaDataPoint {
             newLengthLowerLeg += scaledEigenvector.getEntry(26) * coordinateScaleFactor;
             newLengthFoot += scaledEigenvector.getEntry(27) * coordinateScaleFactor;
             if (logWeight) {
-                // reverse from log(weight+1) / log(scale+1)
-                newWeight += Math.pow(10, scaledEigenvector.getEntry(28) * Math.log10(weightScaleFactor + 1)) - 1;
+                // reverse from log(weight+1) / (log(scale+1)*downscale)
+                newWeight += Math.pow(10, scaledEigenvector.getEntry(28) * Math.log10(weightScaleFactor + 1) * downscaleFactor) - 1;
             } else {
-                newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor;
+                newWeight += scaledEigenvector.getEntry(28) * weightScaleFactor * downscaleFactor;
             }
         }
 
@@ -154,8 +155,8 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y / coordinateScaleFactor;
             nextIndex += 2;
         }
-        data[nextIndex] = wings / wingScaleFactor; nextIndex++;
-        data[nextIndex] = flooredLegs / flooredLegsScaleFactor; nextIndex++;
+        data[nextIndex] = wings / (wingScaleFactor * downscaleFactor); nextIndex++;
+        data[nextIndex] = flooredLegs / (flooredLegsScaleFactor * downscaleFactor); nextIndex++;
         data[nextIndex] = lengthUpperArm / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthLowerArm / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthHand / coordinateScaleFactor; nextIndex++;
@@ -163,9 +164,9 @@ public class PcaDataPoint {
         data[nextIndex] = lengthLowerLeg / coordinateScaleFactor; nextIndex++;
         data[nextIndex] = lengthFoot / coordinateScaleFactor; nextIndex++;
         if (logWeight) {
-            data[nextIndex] = Math.log10(weight+1) / Math.log10(weightScaleFactor+1);
+            data[nextIndex] = Math.log10(weight+1) / (Math.log10(weightScaleFactor+1) * downscaleFactor);
         } else {
-            data[nextIndex] = weight / weightScaleFactor;
+            data[nextIndex] = weight / (weightScaleFactor * downscaleFactor);
         }
 
         return data;

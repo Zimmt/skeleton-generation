@@ -67,7 +67,8 @@ public class DataExporter {
         int eigenvalueCount = (int) pcaHandler.getEigenvalues(0.0).stream().filter(d -> d > 0.0).count();
         writer.write(String.format("There are %d eigenvalues bigger than 0. The smallest is %f.\n", eigenvalueCount, pcaHandler.getEigenvalue(eigenvalueCount-1)));
         List<Double> sortedEigenvalues = pcaHandler.getEigenvalues(0.01);
-        writer.write(String.format("There are %d eigenvalues bigger than 0.01.\n", sortedEigenvalues.size()));
+        int biggestEigenvalueCount = sortedEigenvalues.size();
+        writer.write(String.format("There are %d eigenvalues bigger than 0.01.\n", biggestEigenvalueCount));
         sortedEigenvalues = pcaHandler.getEigenvalues(0.001);
         writer.write(String.format("There are %d eigenvalues bigger than 0.001.\n", sortedEigenvalues.size()));
         writer.write("The eigenvalue, square root of the eigenvalue and the minimum and maximum amplitude for each eigenvector is the following:\n");
@@ -79,8 +80,8 @@ public class DataExporter {
         }
         writer.newLine();
 
-        writer.write("The biggest 4 and the smallest 3 entries of the first three eigenvectors are:\n");
-        for (int i = 0;  i < 3; i++) {
+        writer.write(String.format("The biggest 4 and the smallest 3 entries of the first %d eigenvectors are:\n", biggestEigenvalueCount));
+        for (int i = 0;  i < biggestEigenvalueCount; i++) {
             writer.write(String.format("%d. ", i+1));
             RealVector eigenvector = pcaHandler.getEigenvector(i);
             Integer[] sortedIndices = getSortedEntryIndices(eigenvector);
