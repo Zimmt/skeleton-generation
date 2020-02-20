@@ -133,7 +133,7 @@
  \end{figure}
 
  
- Eine Vorraussetzung der PCA ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret nur ein \bzw zwei Werte annehmen können. Hierzu weiter unten mehr. Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen. \todo{QQ Diagramme erklären}
+ Eine Vorraussetzung der PCA ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret nur ein \bzw zwei Werte annehmen können. Hierzu weiter unten mehr. Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen. \todo{QQ Diagramme erklären, negative Werte sind ganz normal, da inverse CDF bei einem Mittelwert von 0 bei Werten < 0.5 negativ ist.}
  Die Diagramm zeigen, dass die Dimensionen alle mehr oder weniger normalverteilt sind (siehe Abbildungen \ref{qqdiagram_examples} und im Anhang Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
  Für das Merkmal \emph{Gewicht} gilt dies aber nur, da es logarithmisch in die PCA eingeht. Die Verteilung der originalen Gewichte weicht sehr deutlich von einer Normalverteilung ab (siehe Abbildungen \ref{qqdiagrams_weight}).
  Verwendet man das lineare Gewicht als Eingabe für die PCA, treten dadurch bei der Kombination von zufälligen Werten für die Eigenvektoren schnell Gewichte kleiner null auf. Dies wird bei einer logarithmischen Skala vermieden.
