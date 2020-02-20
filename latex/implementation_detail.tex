@@ -123,8 +123,10 @@ Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Positio
 \end{figure}
 
 
-%------------------------------------------
-\section{Annotation der Bilder für die PCA}
+%------------
+\section{PCA}
+%- - - - - - - - - - - - - - - - -
+\subsection{Annotation der Bilder}
 
 Die Annotation der Bilder wurde per Hand mit dem Programm Inkscape\footnote{Programm zum erstellen und bearbeiten von Vektorgrafiken, \url{https://inkscape.org/de}} durchgeführt. Für jedes zu markierende Element wurde eine Strecke oder eine Bézierkurve eingefügt und mit einem vorher festgelegten Namen benannt. Diese Elemente wurden dann durch Inkscape als Pfade in der erzeugten svg-Datei gespeichert. Aus dieser Datei wurden dann automatisiert die eingetragenen Pfade mit ihren Koordinaten ausgelesen.
 
@@ -134,5 +136,22 @@ Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abl�
  \item Der Ursprung des Koordinatensystems in Inkscape ist unten links, im svg-Format ist er aber oben links.
  \item Ebenen sollten in Inkscape nicht verschoben sein, sonst verschieben sich mit ihnen auch die Koordinaten.  
 \end{itemize}
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Anpassung der PCA-Ergebnisse zur Weiterverarbeitung}
+
+\begin{itemize}
+ \item An den Kontakpunkten der Wirbelsäulenteile ist die Steigung nicht unbedingt gleich (die Wirbelsäule als ganzes ist nicht $C^1$). Deshalb müssen vor der Weiterverwendung die jeweils nächsten Kontrollpunkte nach dem Kontakpunkt verschoben werden. Das wurde hier so gemacht, dass die zu verschiebenden Kontrollpunkte um den Kontakpunkt in gegensätzliche Richtungen rotiert wurden. Beide werden um den gleichen Winkel rotiert (siehe Abbildung \ref{smooth_spine}). Grundsätzlich könnten die Kontrollpunkte beliebig auf der Tangente des Kontaktpunkts platziert werden (rot im Bild) um eine übereinstimmende Steigung zu bekommen. Um den Verlauf der Wirbelsäulenteile möglichst wenig zu verändern ist es von Vorteil auch die Kontrollpunkte möglichst wenig zu verschieben. Man könnte die Punkte \zb auch senkrecht auf die Tangente projizieren. Welches Verfahren angewendet wird, ist jedoch nicht von großer Bedeutung. 
+\end{itemize}
+
+\begin{figure}
+ \subfloat[vorher]{\includegraphics[width=0.5\textwidth]{graphics/smooth_spine1.eps}}
+ \qquad
+ \subfloat[nachher]{\includegraphics[width=0.5\textwidth]{graphics/smooth_spine2.eps}}
+ \caption{Anpassung der Kontrollpunkte der Wirbelsäulenteile, wenn die Steigung an den Kontakpunkten ungleich ist. Die beiden Teile der Wirbelsäule und die Steigung am Kontaktpunkt sind hier in schwarz dargestellt. Die zu drehenden Kontollpunkte in cyan. In rot ist die resultierende Steigung und der Winkel, der für die Drehung verwendet wird, zu sehen.}
+ \label{smooth_spine}
+\end{figure}
+
+
 
 
