@@ -54,8 +54,15 @@ public class CubicBezierCurve {
         return new Point3f(point2d.x, point2d.y, 0f);
     }
 
-    // derivation: 3 * [(1-t)² (p1 - p0) + 2t(1-t) (p2 - p1) + t² (p3 - p2) ]
-    public Point2f applyDerivation(float t) {
+    public float getGradient(float t) {
+        Point2f derivation = applyDerivation(t);
+        return derivation.y / derivation.x;
+    }
+
+    /**
+     * derivation: 3 * [(1-t)² (p1 - p0) + 2t(1-t) (p2 - p1) + t² (p3 - p2) ]
+     */
+    private Point2f applyDerivation(float t) {
         Point2f result = new Point2f(controlPoint1);
         result.sub(controlPoint0);
         result.scale((1 - t) * (1 - t));
@@ -85,7 +92,7 @@ public class CubicBezierCurve {
         boolean inInterval = false;
 
         for (float t = 0f; t <= 1f; t += 0.01) {
-            float gradient = applyDerivation(t).y;
+            float gradient = getGradient(t);
 
             if (!inInterval && Math.abs(gradient) <= epsilon) {
                 intervals.add(t);
