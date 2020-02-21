@@ -68,7 +68,7 @@ public class BackPartRule extends ReplacementRule {
      */
     private Pelvic generatePelvic(BackPart backPart, TerminalElement parent, Vector3f scales) {
 
-        List<Float> intervalAndLength = findPelvicIntervalAndLength(parent.getGenerator().getSkeletonMetaData().getSpine(), scales.x, 10f);
+        List<Float> intervalAndLength = findPelvicIntervalAndLength(parent.getGenerator().getSkeletonMetaData().getSpine(), scales.x, 0.1f);
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
@@ -97,7 +97,7 @@ public class BackPartRule extends ReplacementRule {
 
         // find possible space for pelvic
         CubicBezierCurve back = spinePosition.getBack();
-        float slope = back.applyDerivation(1f).y;
+        float slope = back.getGradient(1f);
         List<Float> backIntervals = back.getIntervalsByGradientEpsilon(slope, slopeEps);
         if (backIntervals.get(backIntervals.size()-1) != 1f) {
             System.err.println("back intervals are wrong!");
@@ -105,7 +105,7 @@ public class BackPartRule extends ReplacementRule {
         interval.add(backIntervals.get(backIntervals.size()-2));
 
         CubicBezierCurve tail = spinePosition.getTail();
-        float tailSlope = tail.applyDerivation(0f).y;
+        float tailSlope = tail.getGradient(0f);
         List<Float> tailIntervals = tail.getIntervalsByGradientEpsilon(tailSlope, slopeEps);
         if (tailIntervals.get(0) != 0f) {
             System.err.println("tail intervals are wrong!");
@@ -136,10 +136,12 @@ public class BackPartRule extends ReplacementRule {
                 wantedBackLength = wantedBackLength + diff;
             } // no other case as the length of the interval has enough space for whole length (else initial interval is returned)
 
-            // length = k * associated bezier curve parameter
+            // length = k * associated bezier curve parameter (as curve is nearly straight)
             // use k to get bezier curve parameter for new wanted length
             // new parameter = wanted length / k; k = length / old parameter
-            interval.set(0, wantedBackLength * interval.get(0) / backLength);
+            // or in inverted direction:
+            // new parameter = 1 - (wanted length / k); k = length / (1 - old parameter)
+            interval.set(0, 1f - (wantedBackLength * (1-interval.get(0)) / backLength));
             interval.set(1, wantedTailLength * interval.get(1) / tailLength);
             interval.set(2, wantedWidth);
         }
