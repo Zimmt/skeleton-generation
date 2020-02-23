@@ -1,8 +1,10 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
+import skeleton.elements.terminal.Pelvic;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
@@ -67,75 +69,52 @@ public class LegRule extends ReplacementRule {
         return generatedParts;
     }
 
-    /**
-     * position: joint rotation point is on top side in the middle
-     * joint rotation point: as set by leg
-     */
     private Thigh generateThigh(Vector3f scale, Leg leg) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Vector3f relativePosition = new Vector3f(leg.getJointRotationPoint());
-        relativePosition.add(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
-        TransformationMatrix transform = new TransformationMatrix(relativePosition);
+        if (!(leg.getParent() instanceof Pelvic)) {
+            System.err.println("parent is not pelvic");
+        }
+        TransformationMatrix transform = ((Pelvic) leg.getParent()).getLegJoint().calculateChildTransform(leg.getParent());
+        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
 
-        Thigh thigh = new Thigh(transform, leg.getJointRotationPoint(), boundingBox, leg.getParent(), leg);
+        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+        DummyJoint thighJoint = new DummyJoint(jointPosition);
+
+        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, thighJoint);
         leg.getParent().replaceChild(leg, thigh);
 
         return thigh;
     }
 
-    /**
-     * position: center of up side is at joint rotation point
-     * joint rotation point: down side of thigh in the middle
-     */
     private Shin generateShin(Vector3f scale, Leg leg, Thigh thigh) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Point3f jointRotationPoint = new Point3f(
-                thigh.getBoundingBox().getXLength()/2,
-                0f,
-                thigh.getBoundingBox().getZLength()/2);
+        TransformationMatrix transform = thigh.getJoint().calculateChildTransform(thigh);
+        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
 
-        Vector3f relativePosition = new Vector3f(jointRotationPoint);
-        relativePosition.add(new Point3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
-        TransformationMatrix transform = new TransformationMatrix(relativePosition);
+        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+        DummyJoint joint = new DummyJoint(jointPosition);
 
-        Shin shin = new Shin(transform, jointRotationPoint, boundingBox, thigh, leg);
+        Shin shin = new Shin(transform, boundingBox, thigh, leg, joint);
         thigh.addChild(shin);
 
         return shin;
     }
 
-    /**
-     * position: down side on the floor, right side continuing right side of shin
-     * joint rotation point: down side of shin in the middle
-     */
     private Foot generateFoot(Vector3f scale, Leg leg, Shin shin) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Point3f jointRotationPoint = new Point3f(
-                shin.getBoundingBox().getXLength()/2,
-                0f,
-                shin.getBoundingBox().getZLength()/2);
+        TransformationMatrix transform = shin.getJoint().calculateChildTransform(shin);
+        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), boundingBox.getZLength()/2f));
 
-        TransformationMatrix shinWorldTransform = shin.calculateWorldTransform();
-        Point3f worldPosition = new Point3f(); // local origin of shin
-        shinWorldTransform.applyOnPoint(worldPosition); // global origin of shin
-        worldPosition.y = 0f; // projected on xz plane
-        worldPosition.x = worldPosition.x + shin.getBoundingBox().getXLength() - scale.x;
-        worldPosition.z = worldPosition.z + shin.getBoundingBox().getZLength()/2 - scale.z/2;
-
-        TransformationMatrix footWorldTransform = new TransformationMatrix(new Vector3f(worldPosition));
-        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(shinWorldTransform);
-        TransformationMatrix localFootTransform = TransformationMatrix.multiply(inverseParentWorldTransform, footWorldTransform);
-
-        Foot foot = new Foot(localFootTransform, jointRotationPoint, boundingBox, shin, leg);
+        Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
 
         return foot;

@@ -4,15 +4,14 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 public class Foot extends TerminalElement {
 
     private final String kind = "foot";
 
-    public Foot(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public Foot(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getKind() {
@@ -27,7 +26,6 @@ public class Foot extends TerminalElement {
         }
         return new Foot(
                 calculateMirroredTransform(parent),
-                calculateMirroredJointRotationPoint(parent, mirroredParent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor());
     }

@@ -1,10 +1,10 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 /**
@@ -13,13 +13,19 @@ import java.util.Optional;
 public class Vertebra extends TerminalElement {
 
     private final String kind = "vertebra";
+    SpineOrientedJoint joint;
 
-    public Vertebra(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, SpineOrientedJoint joint) {
+        super(transform, boundingBox, parent, ancestor);
+        this.joint = joint;
     }
 
     public String getKind() {
         return kind;
+    }
+
+    public SpineOrientedJoint getJoint() {
+        return joint;
     }
 
     public boolean isMirrored() { return false; }

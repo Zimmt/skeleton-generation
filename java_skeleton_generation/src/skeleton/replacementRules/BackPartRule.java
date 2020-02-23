@@ -1,13 +1,15 @@
 package skeleton.replacementRules;
 
-import skeleton.SkeletonMetaData;
 import skeleton.SpinePart;
 import skeleton.SpinePosition;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.DummyJoint;
+import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvic;
-import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.RootVertebra;
+import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.CubicBezierCurve;
 import util.TransformationMatrix;
@@ -39,24 +41,28 @@ public class BackPartRule extends ReplacementRule {
         }
 
         BackPart backPart = (BackPart) skeletonPart;
+        if (! (backPart.getParent() instanceof RootVertebra)) {
+            System.err.println("Back part parent is not root vertebra");
+        }
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f backBackInterval = new Point2f(backPart.getStartPosition(), 1f);
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
-        List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 10, vertebraScale, backPart.getParent(), false);
+        List<Vertebra> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
+                backBackInterval, 10, vertebraScale, backPart.getParent(), ((RootVertebra) backPart.getParent()).getBackPartJoint());
         backPart.getParent().removeChild(backPart);
         generatedParts.addAll(backBack);
 
         Pelvic pelvic = generatePelvic(backPart, backBack.get(backBack.size()-1),new Vector3f(30f, 20f, 100f));
         generatedParts.add(pelvic);
 
-        Leg leg = generateLeg(backPart, pelvic);
+        Leg leg = new Leg(pelvic, backPart);
+        pelvic.addChild(leg);
         generatedParts.add(leg);
 
         Tuple2f tailInterval = new Point2f(0f, 1f);
-        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, 15, vertebraScale, pelvic, false);
+        List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
+                tailInterval, 15, vertebraScale, pelvic, pelvic.getTailJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
@@ -64,23 +70,26 @@ public class BackPartRule extends ReplacementRule {
 
     /**
      * position: the last control point of the back spine is in the middle of the pelvic
-     * joint rotation point: right side of parent in the middle
+     * tail joint: right side in the middle
+     * leg joint: down side in the middle of one half
      */
-    private Pelvic generatePelvic(BackPart backPart, TerminalElement parent, Vector3f scales) {
+    private Pelvic generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales) {
 
         List<Float> intervalAndLength = findPelvicIntervalAndLength(parent.getGenerator().getSkeletonMetaData().getSpine(), scales.x, 0.1f);
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
 
-        Point3f jointRotationPoint = new Point3f(parent.getBoundingBox().getXLength(), parent.getBoundingBox().getYLength() / 2f, parent.getBoundingBox().getZLength() / 2f);
-
-        TransformationMatrix transform = parent.getGenerator().generateTransformForElementInSpineInterval(
-                SpinePart.BACK, SpinePart.TAIL, new Point2f(intervalAndLength.get(0), intervalAndLength.get(1)), parent);
+        TransformationMatrix transform = parent.getJoint().calculateChildTransform(parent);
         Vector3f localTranslation = new Vector3f(0f, -boundingBox.getYLength()/2f, -boundingBox.getZLength()/2f);
         transform.translate(localTranslation);
 
-        Pelvic pelvic = new Pelvic(transform, jointRotationPoint, boundingBox, parent, backPart);
+        Point3f tailJointPosition = new Point3f(boundingBox.getXLength(), boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
+        SpineOrientedJoint tailJoint = new SpineOrientedJoint(tailJointPosition, SpinePart.TAIL, intervalAndLength.get(1), true, parent.getGenerator());
+        Point3f legJointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/4f);
+        DummyJoint legJoint = new DummyJoint(legJointPosition);
+
+        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, tailJoint, legJoint);
         parent.addChild(pelvic);
 
         return pelvic;
@@ -89,7 +98,7 @@ public class BackPartRule extends ReplacementRule {
     /**
      * Calculates the maximum spine interval with slope in range of +/- slopeEps.
      * Then positions the returned interval as near as possible to the contact point of back and tail.
-     * Only changes width of pelvic only if the calculated interval is smaller.
+     * Changes width of pelvic only if the calculated interval is smaller.
      * @return bezier curve parameter for start point on back spine, parameter for end point on tail spine, width
      */
     private List<Float> findPelvicIntervalAndLength(SpinePosition spinePosition, float wantedWidth, float slopeEps) {
@@ -147,20 +156,5 @@ public class BackPartRule extends ReplacementRule {
         }
 
         return interval;
-    }
-
-    /**
-     * position: same as pelvic
-     * joint rotation point: front side of pelvic bottom border in the middle
-     */
-    private Leg generateLeg(BackPart backPart, Pelvic pelvic) {
-
-        TransformationMatrix transform = new TransformationMatrix();
-        Point3f jointRotationPoint = new Point3f(pelvic.getBoundingBox().getXLength() / 2f, 0f, 0f);
-
-        Leg leg = new Leg(transform, jointRotationPoint, pelvic, backPart);
-        pelvic.addChild(leg);
-
-        return leg;
     }
 }

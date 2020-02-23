@@ -1,9 +1,12 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Arm;
-import skeleton.elements.nonterminal.Leg;
-import skeleton.elements.terminal.*;
+import skeleton.elements.terminal.Hand;
+import skeleton.elements.terminal.LowerArm;
+import skeleton.elements.terminal.Shoulder;
+import skeleton.elements.terminal.UpperArm;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -38,10 +41,9 @@ public class ArmRule extends ReplacementRule {
         float handHeight = 10f;
 
         // todo hand and lower arm only touch when arm is vertical
-        Point3f jointRotationPointShoulder = new Point3f(arm.getJointRotationPoint());
-        arm.getParent().calculateWorldTransform().applyOnPoint(jointRotationPointShoulder);
-        float upperArmHeight = (jointRotationPointShoulder.y - handHeight) * upperLowerArmRate;
-        float lowerArmHeight = jointRotationPointShoulder.y - handHeight - upperArmHeight;
+        Point3f parentPosition = new Point3f(arm.getParent().getWorldPosition());
+        float upperArmHeight = (parentPosition.y - handHeight) * upperLowerArmRate;
+        float lowerArmHeight = parentPosition.y - handHeight - upperArmHeight;
 
         Vector3f upperArmScale = new Vector3f(
                 0.6f * arm.getParent().getBoundingBox().getXLength(),
@@ -66,78 +68,51 @@ public class ArmRule extends ReplacementRule {
 
         return generatedParts;
     }
-    /**
-     * copied code from leg rule
-     * position: joint rotation point is on top side in the middle
-     * joint rotation point: as set by arm
-     */
+
     private UpperArm generateUpperArm(Vector3f scale, Arm arm) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Vector3f relativePosition = new Vector3f(arm.getJointRotationPoint());
-        relativePosition.add(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
-        TransformationMatrix transform = new TransformationMatrix(relativePosition);
+        TransformationMatrix transform = ((Shoulder) arm.getParent()).getJoint().calculateChildTransform(arm.getParent()); // todo
+        transform.translate(new Vector3f(boundingBox.getXLength()/2f, -boundingBox.getYLength(), boundingBox.getZLength()/2f));
 
-        UpperArm upperArm = new UpperArm(transform, arm.getJointRotationPoint(), boundingBox, arm.getParent(), arm);
+        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);
+        DummyJoint joint = new DummyJoint(jointPosition);
+
+        UpperArm upperArm = new UpperArm(transform, boundingBox, arm.getParent(), arm, joint);
         arm.getParent().replaceChild(arm, upperArm);
 
         return upperArm;
     }
 
-    /**
-     * copied code from leg rule
-     * position: center of up side is at joint rotation point
-     * joint rotation point: down side of upper arm in the middle
-     */
     private LowerArm generateLowerArm(Vector3f scale, Arm arm, UpperArm upperArm) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Point3f jointRotationPoint = new Point3f(
-                upperArm.getBoundingBox().getXLength()/2,
-                0f,
-                upperArm.getBoundingBox().getZLength()/2);
+        TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(upperArm);
+        transform.translate(new Vector3f(boundingBox.getXLength()/2f, -boundingBox.getYLength(), boundingBox.getZLength()/2f));
 
-        Vector3f relativePosition = new Vector3f(jointRotationPoint);
-        relativePosition.add(new Point3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
-        TransformationMatrix transform = new TransformationMatrix(relativePosition);
+        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+        DummyJoint joint = new DummyJoint(jointPosition);
 
-        LowerArm lowerArm = new LowerArm(transform, jointRotationPoint, boundingBox, upperArm, arm);
+        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, joint);
         upperArm.addChild(lowerArm);
 
         return lowerArm;
     }
 
-    /**
-     * copied code from leg rule
-     * position: down side on the floor, right side continuing right side of lower arm
-     * joint rotation point: down side of lower arm in the middle
-     */
     private Hand generateHand(Vector3f scale, Arm arm, LowerArm lowerArm) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        Point3f jointRotationPoint = new Point3f(
-                lowerArm.getBoundingBox().getXLength()/2,
-                0f,
-                lowerArm.getBoundingBox().getZLength()/2);
+        TransformationMatrix transform = lowerArm.getJoint().calculateChildTransform(lowerArm);
+        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), boundingBox.getZLength()/2f));
 
-        TransformationMatrix lowerArmWorldTransform = lowerArm.calculateWorldTransform();
-        Point3f worldPosition = new Point3f(); // local origin of lower arm
-        lowerArmWorldTransform.applyOnPoint(worldPosition); // global origin of lower arm
-        worldPosition.y = 0f; // projected on xz plane
-        worldPosition.x = worldPosition.x + lowerArm.getBoundingBox().getXLength() - scale.x;
-        worldPosition.z = worldPosition.z + lowerArm.getBoundingBox().getZLength()/2 - scale.z/2;
 
-        TransformationMatrix footWorldTransform = new TransformationMatrix(new Vector3f(worldPosition));
-        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(lowerArmWorldTransform);
-        TransformationMatrix localFootTransform = TransformationMatrix.multiply(inverseParentWorldTransform, footWorldTransform);
-
-        Hand hand = new Hand(localFootTransform, jointRotationPoint, boundingBox, lowerArm, arm);
+        Hand hand = new Hand(transform, boundingBox, lowerArm, arm);
         lowerArm.addChild(hand);
 
         return hand;

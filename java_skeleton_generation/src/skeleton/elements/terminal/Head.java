@@ -4,15 +4,14 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 public class Head extends TerminalElement {
 
     private final String kind = "head";
 
-    public Head(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public Head(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getKind() {

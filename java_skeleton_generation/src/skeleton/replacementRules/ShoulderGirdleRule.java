@@ -1,10 +1,11 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Shoulder;
-import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.ShoulderVertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -38,47 +39,30 @@ public class ShoulderGirdleRule extends ReplacementRule {
 
         Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(40f, 10f, 50f));
         generatedParts.add(shoulder);
-        Arm arm = generateArm(shoulderGirdle, shoulder);
+
+        Arm arm = new Arm(shoulder, shoulderGirdle);
+        shoulder.addChild(arm);
         generatedParts.add(arm);
 
         return generatedParts;
     }
 
-    /**
-     * position: middle of back side is the joint rotation point
-     * joint rotation point: joint rotation point that was set by shoulder girdle (front side of parent in the middle)
-     */
     private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f dimensions) {
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(dimensions);
 
-        TerminalElement parent = shoulderGirdle.getParent();
-        Point3f jointRotationPoint = new Point3f(shoulderGirdle.getJointRotationPoint());
+        ShoulderVertebra shoulderVertebra = (ShoulderVertebra) shoulderGirdle.getParent(); // todo
 
-        TransformationMatrix transform = new TransformationMatrix();
-        Vector3f translation = new Vector3f(shoulderGirdle.getJointRotationPoint());
-        translation.add(new Vector3f(-dimensions.x/2, -dimensions.y/2, -dimensions.z));
-        transform.translate(translation);
+        TransformationMatrix transform = shoulderVertebra.getShoulderJoint().calculateChildTransform(shoulderVertebra);
+        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength()));
 
-        Shoulder shoulder = new Shoulder(transform, jointRotationPoint, boundingBox, parent, shoulderGirdle);
-        parent.replaceChild(shoulderGirdle, shoulder);
+        Point3f shoulderJointPosition = new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength());
+        DummyJoint joint = new DummyJoint(shoulderJointPosition);
+
+        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderVertebra, shoulderGirdle, joint);
+        shoulderVertebra.replaceChild(shoulderGirdle, shoulder);
 
         return shoulder;
-    }
-
-    /**
-     * position: same as shoulder
-     * joint rotation point: front side of parent in the middle
-     */
-    private Arm generateArm(ShoulderGirdle shoulderGirdle, Shoulder shoulder) {
-        TransformationMatrix transform = new TransformationMatrix();
-
-        Point3f jointRotationPoint = new Point3f(shoulder.getBoundingBox().getXLength()/2, 0f, shoulder.getBoundingBox().getZLength()/2);
-
-        Arm arm = new Arm(transform, jointRotationPoint, shoulder, shoulderGirdle);
-        shoulder.addChild(arm);
-
-        return arm;
     }
 }

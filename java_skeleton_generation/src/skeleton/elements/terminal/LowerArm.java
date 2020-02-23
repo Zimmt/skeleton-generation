@@ -1,22 +1,28 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 public class LowerArm extends TerminalElement {
 
     private final String kind = "lower arm";
+    private DummyJoint joint;
 
-    public LowerArm(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, DummyJoint joint) {
+        super(transform, boundingBox, parent, ancestor);
+        this.joint = joint;
     }
 
     public String getKind() {
         return kind;
+    }
+
+    public DummyJoint getJoint() {
+        return joint;
     }
 
     public boolean isMirrored() { return true; }
@@ -27,8 +33,8 @@ public class LowerArm extends TerminalElement {
         }
         return new LowerArm(
                 calculateMirroredTransform(parent),
-                calculateMirroredJointRotationPoint(parent, mirroredParent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor());
+                mirroredParent.orElse(parent), this.getAncestor(),
+                joint.calculateMirroredJoint(parent, mirroredParent.orElse(parent)));
     }
 }

@@ -1,10 +1,10 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 /**
@@ -13,13 +13,19 @@ import java.util.Optional;
 public class Thigh extends TerminalElement {
 
     private final String kind = "thigh";
+    private DummyJoint joint;
 
-    public Thigh(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public Thigh(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, DummyJoint joint) {
+        super(transform, boundingBox, parent, ancestor);
+        this.joint = joint;
     }
 
     public String getKind() {
         return kind;
+    }
+
+    public DummyJoint getJoint() {
+        return joint;
     }
 
     public boolean isMirrored() { return true; }
@@ -30,8 +36,8 @@ public class Thigh extends TerminalElement {
         }
         return new Thigh(
                 calculateMirroredTransform(parent),
-                calculateMirroredJointRotationPoint(parent, mirroredParent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor());
+                mirroredParent.orElse(parent), this.getAncestor(),
+                joint.calculateMirroredJoint(parent, mirroredParent.orElse(parent)));
     }
 }

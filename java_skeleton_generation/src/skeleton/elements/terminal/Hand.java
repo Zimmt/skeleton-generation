@@ -4,15 +4,14 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import java.util.Optional;
 
 public class Hand extends TerminalElement {
 
     private final String kind = "hand";
 
-    public Hand(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, boundingBox, parent, ancestor);
+    public Hand(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
+        super(transform, boundingBox, parent, ancestor);
     }
 
     public String getKind() {
@@ -27,7 +26,6 @@ public class Hand extends TerminalElement {
         }
         return new Hand(
                 calculateMirroredTransform(parent),
-                calculateMirroredJointRotationPoint(parent, mirroredParent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor());
     }

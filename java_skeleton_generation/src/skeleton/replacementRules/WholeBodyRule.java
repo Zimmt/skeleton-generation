@@ -1,16 +1,17 @@
 package skeleton.replacementRules;
 
-import skeleton.SkeletonGenerator;
+import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.WholeBody;
-import skeleton.elements.terminal.TerminalElement;
-import skeleton.elements.terminal.Vertebra;
+import skeleton.elements.terminal.RootVertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.*;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,13 +40,15 @@ public class WholeBodyRule extends ReplacementRule {
 
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Vertebra root = generateRootVertebra(wholeBody, rootVertebraScales);
+        RootVertebra root = generateRootVertebra(wholeBody, rootVertebraScales);
         generatedParts.add(root);
 
-        FrontPart frontPart = generateFrontPart(wholeBody, 0.5f, root);
+        FrontPart frontPart = new FrontPart(root, wholeBody, 0.5f);
+        root.addChild(frontPart);
         generatedParts.add(frontPart);
 
-        BackPart backPart = generateBackPart(wholeBody, 0.5f, root);
+        BackPart backPart = new BackPart(root, wholeBody, 0.5f);
+        root.addChild(backPart);
         generatedParts.add(backPart);
 
         return generatedParts;
@@ -53,48 +56,26 @@ public class WholeBodyRule extends ReplacementRule {
 
     /**
      * position: the center of the back spine is in the middle of the generated vertebra
-     * joint rotation point: none
+     * joints: left and right side in the middle
      */
-    private Vertebra generateRootVertebra(WholeBody ancestor, Vector3f vertebraScales) {
+    private RootVertebra generateRootVertebra(WholeBody ancestor, Vector3f vertebraScales) {
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(vertebraScales);
 
-        Point3f position = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(0.5f);
+        float spinePosition = 0.5f;
+        Point3f center = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(spinePosition);
+        Point3f position = new Point3f(center);
         position.x = position.x - boundingBox.getXLength() / 2f;
         position.y = position.y - boundingBox.getYLength() / 2f;
         position.z = position.z - boundingBox.getZLength() / 2f;
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
 
-        return new Vertebra(transform, null, boundingBox, null, ancestor);
-    }
+        // todo: spine position for joints not correct
+        Point3f leftJointPosition = new Point3f(position.x, center.y, center.z);
+        Point3f rightJointPosition = new Point3f(position.x + boundingBox.getXLength(), center.y, center.z);
+        SpineOrientedJoint leftJoint = new SpineOrientedJoint(leftJointPosition, SpinePart.BACK, spinePosition, false, ancestor.getGenerator());
+        SpineOrientedJoint rightJoint = new SpineOrientedJoint(rightJointPosition, SpinePart.BACK, spinePosition, true, ancestor.getGenerator());
 
-    /**
-     * position: same as parent
-     * joint rotation point: left side of parent in the middle (on the spine)
-     */
-    private FrontPart generateFrontPart(WholeBody wholeBody, float endPosition, TerminalElement parent) {
-
-        TransformationMatrix transform = new TransformationMatrix();
-        Point3f jointRotationPoint = new Point3f(0f, parent.getBoundingBox().getYLength() / 2f, parent.getBoundingBox().getZLength() / 2f);
-
-        FrontPart frontPart = new FrontPart(transform, jointRotationPoint, parent, wholeBody, endPosition);
-        parent.addChild(frontPart);
-
-        return frontPart;
-    }
-
-    /**
-     * position: same as parent
-     * joint rotation point: right side of parent in the middle (on the spine)
-     */
-    private BackPart generateBackPart(WholeBody wholeBody, float startPosition, TerminalElement parent) {
-
-        TransformationMatrix transform = new TransformationMatrix();
-        Point3f jointRotationPoint = new Point3f(parent.getBoundingBox().getXLength(), parent.getBoundingBox().getYLength() / 2f, parent.getBoundingBox().getZLength() / 2f);
-
-        BackPart backPart = new BackPart(transform, jointRotationPoint, parent, wholeBody, startPosition);
-        parent.addChild(backPart);
-
-        return backPart;
+        return new RootVertebra(transform, boundingBox, null, ancestor, leftJoint, rightJoint);
     }
 }

@@ -10,12 +10,12 @@ import java.util.Optional;
 
 public abstract class TerminalElement extends SkeletonPart {
 
+    private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent (parent origin is origin for this transform)
     private BoundingBox boundingBox;
 
-    public TerminalElement(TransformationMatrix transform, Point3f jointRotationPoint, BoundingBox boundingBox,
-                           TerminalElement parent, NonTerminalElement ancestor) {
-        super(transform, jointRotationPoint, parent, ancestor);
-
+    public TerminalElement(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
+        super(parent, ancestor);
+        this.transform = transform;
         this.boundingBox = boundingBox;
     }
 
@@ -25,6 +25,28 @@ public abstract class TerminalElement extends SkeletonPart {
 
     public boolean isTerminal() {
         return true;
+    }
+
+    /**
+     * @return the transformation matrix that transforms from the local coordinate system of this skeleton part
+     * to the world space
+     */
+    public TransformationMatrix calculateWorldTransform() {
+        TransformationMatrix worldTransform = new TransformationMatrix(transform);
+        TerminalElement parent = this;
+        while (parent.hasParent()) {
+            parent = parent.getParent();
+            worldTransform = TransformationMatrix.multiply(parent.getTransform(), worldTransform);
+        }
+        return worldTransform;
+    }
+
+    public Point3f getWorldPosition() {
+        TransformationMatrix t = calculateWorldTransform();
+        Point3f position = new Point3f(); // origin
+        t.applyOnPoint(position);
+
+        return position;
     }
 
     protected TransformationMatrix calculateMirroredTransform(TerminalElement parent) {
@@ -51,29 +73,6 @@ public abstract class TerminalElement extends SkeletonPart {
     }
 
     /**
-     * Mirrors the joint rotation point by transforming it to world coordinates,
-     * reflect it and then transforming it back.
-     * The parent elements are needed, as the joint rotation point is presented in the coordinate system of the parent.
-     * @param mirroredParent if mirrored parent is given the element is assumed to have a mirrored parent and
-     *                      the inverse world transform of it is used to transform the joint rotation point back
-     *                      otherwise the parent's transform is used
-     * @return new joint rotation point
-     */
-    protected Point3f calculateMirroredJointRotationPoint(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        TransformationMatrix worldTransform = parent.calculateWorldTransform();
-
-        Point3f mirroredJointRotationPoint = new Point3f(this.getJointRotationPoint()); // local coordinates
-        worldTransform.applyOnPoint(mirroredJointRotationPoint); // global coordinates
-        mirroredJointRotationPoint.z = -mirroredJointRotationPoint.z; // global coordinates mirrored
-        if (mirroredParent.isEmpty()) {
-            TransformationMatrix.getInverse(worldTransform).applyOnPoint(mirroredJointRotationPoint);
-        } else {
-            TransformationMatrix.getInverse(mirroredParent.get().calculateWorldTransform()).applyOnPoint(mirroredJointRotationPoint);
-        }
-        return mirroredJointRotationPoint; // local coordinates mirrored
-    }
-
-    /**
      * @return a transform that transforms the left/right handed coordinate system of this element into a right/left handed one
      * by moving the origin along the z-axis and then flipping the z-axis
      */
@@ -82,5 +81,9 @@ public abstract class TerminalElement extends SkeletonPart {
         TransformationMatrix translation = new TransformationMatrix(boundingBox.getZVector());
 
         return TransformationMatrix.multiply(translation, reflection);
+    }
+
+    public TransformationMatrix getTransform() {
+        return transform;
     }
 }

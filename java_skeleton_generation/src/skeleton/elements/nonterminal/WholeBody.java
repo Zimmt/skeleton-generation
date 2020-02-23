@@ -1,15 +1,14 @@
 package skeleton.elements.nonterminal;
 
 import skeleton.SkeletonGenerator;
-import util.TransformationMatrix;
 
 public class WholeBody extends NonTerminalElement {
 
     private final String kind = "whole body";
 
     // the transform here specifies the position in relation to the world origin
-    public WholeBody(TransformationMatrix transform, SkeletonGenerator generator) {
-        super(transform, generator);
+    public WholeBody(SkeletonGenerator generator) {
+        super(generator);
     }
 
     public String getKind() {

@@ -1,8 +1,10 @@
 package skeleton;
 
-import skeleton.elements.nonterminal.WholeBody;
-import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.Joint;
+import skeleton.elements.joints.SpineOrientedJoint;
+import skeleton.elements.nonterminal.NonTerminalElement;
+import skeleton.elements.nonterminal.WholeBody;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
@@ -34,7 +36,7 @@ public class SkeletonGenerator {
     public SkeletonGenerator(PcaHandler pcaHandler) {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
-        this.nonTerminalParts.add(new WholeBody(new TransformationMatrix(), this));
+        this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
         this.pcaHandler = pcaHandler;
         this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint());
@@ -150,8 +152,10 @@ public class SkeletonGenerator {
         }*/
 
         // position
-        Point3f position = currentElement.getWorldPosition();
-        skeleton.append("position: ").append(position);
+        if (currentElement.isTerminal()) {
+            Point3f position = ((TerminalElement) currentElement).getWorldPosition();
+            skeleton.append("position: ").append(position);
+        }
 
         // bounding box dimensions
         if (currentElement.isTerminal()) {
@@ -238,21 +242,18 @@ public class SkeletonGenerator {
      * Child vertebrae are added to their parents.
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
-     * @param firstParent element that shall be parent of the first vertebra generated or a dummy parent from which only the transform is used
-     * @param dummyParent indicates if the parent of the first generated vertebra shall be the parent or null
+     * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
-    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval,
+    public List<Vertebra> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval,
                                                              int vertebraCount, Vector3f boundingBoxScale,
-                                                             TerminalElement firstParent, boolean dummyParent) {
+                                                             TerminalElement firstParent, Joint firstParentJoint) {
 
-        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
+        ArrayList<Vertebra> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
             System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
             return generatedParts;
         }
-
-        TerminalElement parent = firstParent;
 
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(boundingBoxScale);
@@ -260,30 +261,37 @@ public class SkeletonGenerator {
 
         float intervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
+        float vertebraSpineWidth = intervalLength / (float) vertebraCount;
 
-        for (int i = 0; i < vertebraCount; i++) {
+        if (firstParentJoint instanceof SpineOrientedJoint) {
+            ((SpineOrientedJoint) firstParentJoint).setSpineWidth(vertebraSpineWidth);
+        }
+        Vertebra parent = null;
+        for (int i = 0; i < vertebraCount-1; i++) { // todo: calculation of transform of second to last child may be out of spine bounds
 
             float left = interval.x + sign * (float) i / (float) vertebraCount * intervalLength;
             float right = left + sign * 1f / (float) vertebraCount * intervalLength;
-            Tuple2f currentVertebraInterval = new Point2f(left, right);
 
-            TransformationMatrix transform = generateTransformForElementInSpineInterval(spinePart, spinePart, currentVertebraInterval, parent);
+            TransformationMatrix transform;
+            if (parent == null) {
+                transform = firstParentJoint.calculateChildTransform(firstParent);
+            } else {
+                transform = parent.getJoint().calculateChildTransform(parent);
+            }
             transform.translate(localBoxTranslation);
 
             BoundingBox childBox = boundingBox.cloneBox();
 
-            Point3f jointRotationPoint;
-            if (sign > 0) { // the rotation point is at the right side of the parent
-                jointRotationPoint = new Point3f(childBox.getXLength(), childBox.getYLength() / 2f, childBox.getZLength() / 2f);
-            } else { // the rotation point is at the left side of the parent
-                jointRotationPoint = new Point3f(0f, childBox.getYLength() / 2f, childBox.getZLength() / 2f);
-            }
+            Point3f jointPosition = new Point3f(sign > 0 ? boundingBox.getXLength() : 0f, boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
+            SpineOrientedJoint joint = new SpineOrientedJoint(jointPosition, spinePart, right, sign > 0, ancestor.getGenerator());
+            joint.setSpineWidth(vertebraSpineWidth);
 
             Vertebra child;
-            if (i == 0 && dummyParent) { // this is the real parent (dummy parent was used to calculate it)
-                child = new Vertebra(transform, jointRotationPoint, childBox, null, ancestor); // root
+            if (parent == null) {
+                child = new Vertebra(transform, childBox, firstParent, ancestor, joint);
+                firstParent.addChild(child);
             } else {
-                child = new Vertebra(transform, jointRotationPoint, childBox, parent, ancestor);
+                child = new Vertebra(transform, childBox, parent, ancestor, joint);
                 parent.addChild(child);
             }
 
