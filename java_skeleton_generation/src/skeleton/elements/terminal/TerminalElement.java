@@ -27,6 +27,18 @@ public abstract class TerminalElement extends SkeletonPart {
         return true;
     }
 
+    public Point3f getWorldPosition() {
+        TransformationMatrix t = calculateWorldTransform();
+        Point3f position = new Point3f(); // origin
+        t.applyOnPoint(position);
+
+        return position;
+    }
+
+    public TransformationMatrix getTransform() {
+        return transform;
+    }
+
     /**
      * @return the transformation matrix that transforms from the local coordinate system of this skeleton part
      * to the world space
@@ -39,14 +51,6 @@ public abstract class TerminalElement extends SkeletonPart {
             worldTransform = TransformationMatrix.multiply(parent.getTransform(), worldTransform);
         }
         return worldTransform;
-    }
-
-    public Point3f getWorldPosition() {
-        TransformationMatrix t = calculateWorldTransform();
-        Point3f position = new Point3f(); // origin
-        t.applyOnPoint(position);
-
-        return position;
     }
 
     protected TransformationMatrix calculateMirroredTransform(TerminalElement parent) {
@@ -81,9 +85,5 @@ public abstract class TerminalElement extends SkeletonPart {
         TransformationMatrix translation = new TransformationMatrix(boundingBox.getZVector());
 
         return TransformationMatrix.multiply(translation, reflection);
-    }
-
-    public TransformationMatrix getTransform() {
-        return transform;
     }
 }

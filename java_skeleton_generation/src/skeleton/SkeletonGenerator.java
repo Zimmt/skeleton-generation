@@ -254,9 +254,7 @@ public class SkeletonGenerator {
             return generatedParts;
         }
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(boundingBoxScale);
-        Vector3f localBoxTranslation = new Vector3f(0f, -boundingBox.getYLength() / 2f, -boundingBox.getZLength() / 2f);
+        BoundingBox boundingBox = new BoundingBox(boundingBoxScale);
 
         float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
@@ -279,6 +277,7 @@ public class SkeletonGenerator {
                 }
                 parent.getJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
             }
+            BoundingBox childBox = boundingBox.cloneBox();
 
             TransformationMatrix transform;
             if (parent == null) {
@@ -286,12 +285,10 @@ public class SkeletonGenerator {
             } else {
                 transform = parent.getJoint().calculateChildTransform(parent);
             }
-            transform.translate(localBoxTranslation);
+            transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
 
-            BoundingBox childBox = boundingBox.cloneBox();
-
-            Point3f jointPosition = new Point3f(sign > 0 ? boundingBox.getXLength() : 0f, boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
-            SpineOrientedJoint joint = new SpineOrientedJoint(jointPosition, spinePart, childSpineEndPosition, ancestor.getGenerator());
+            SpineOrientedJoint joint = new SpineOrientedJoint(Vertebra.getJointPosition(boundingBox, sign > 0),
+                    spinePart, childSpineEndPosition, ancestor.getGenerator());
 
             Vertebra child;
             if (parent == null) {

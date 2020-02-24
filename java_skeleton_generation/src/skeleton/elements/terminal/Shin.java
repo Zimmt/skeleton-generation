@@ -1,10 +1,13 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.joints.Joint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 /**
@@ -13,11 +16,11 @@ import java.util.Optional;
 public class Shin extends TerminalElement {
 
     private final String kind = "shin";
-    private Joint joint;
+    private DummyJoint joint;
 
-    public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, Joint joint) {
+    public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = joint;
+        this.joint = new DummyJoint(Shin.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {
@@ -38,6 +41,20 @@ public class Shin extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                joint.calculateMirroredJoint(parent, mirroredParent.orElse(parent)));
+                true);
+    }
+
+    /**
+     * @return the translation to move the joint between this element and its parent from this origin somewhere else.
+     */
+    public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
+        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
+    }
+
+    /**
+     * @return the relative position for the joint between this element and it's child
+     */
+    private static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
+        return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
     }
 }

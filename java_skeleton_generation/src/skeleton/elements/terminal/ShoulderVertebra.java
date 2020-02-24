@@ -6,6 +6,7 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
 import java.util.Optional;
 
 /**
@@ -17,14 +18,14 @@ public class ShoulderVertebra extends Vertebra {
     DummyJoint shoulderJoint;
 
     public ShoulderVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent,
-                            NonTerminalElement ancestor, SpineOrientedJoint joint, DummyJoint shoulderJoint) {
+                            NonTerminalElement ancestor, SpineOrientedJoint joint) {
         super(transform, boundingBox, parent, ancestor, joint);
-        this.shoulderJoint = shoulderJoint;
+        this.shoulderJoint = new DummyJoint(ShoulderVertebra.getShoulderJointPosition(boundingBox));
     }
 
-    public ShoulderVertebra(Vertebra vertebra, DummyJoint shoulderJoint) {
+    public ShoulderVertebra(Vertebra vertebra) {
         super(vertebra.getTransform(), vertebra.getBoundingBox(), vertebra.getParent(), vertebra.getAncestor(), vertebra.getJoint());
-        this.shoulderJoint = shoulderJoint;
+        this.shoulderJoint = new DummyJoint(ShoulderVertebra.getShoulderJointPosition(vertebra.getBoundingBox()));
     }
 
     public String getKind() {
@@ -40,5 +41,12 @@ public class ShoulderVertebra extends Vertebra {
     public ShoulderVertebra calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
         System.out.println("Tried to mirror an element that should not be mirrored!");
         return null;
+    }
+
+    /**
+     * @return the relative position for the joint between this element and it's child
+     */
+    private static Point3f getShoulderJointPosition(BoundingBox boundingBox) {
+        return new Point3f(boundingBox.getXLength()/2f, 0f, 0f);
     }
 }

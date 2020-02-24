@@ -1,9 +1,12 @@
 package skeleton.elements.terminal;
 
+import skeleton.SpinePosition;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 public class Head extends TerminalElement {
@@ -23,5 +26,18 @@ public class Head extends TerminalElement {
     public Head calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
         System.out.println("Tried to mirror an element that should not be mirrored!");
         return null;
+    }
+
+    public static Point3f getGlobalHeadPosition(SpinePosition spine, BoundingBox boundingBox) {
+        Point3f headPosition = spine.getNeck().apply3d(0f);
+        headPosition.add(Head.getLocalTranslationFromJoint(boundingBox));
+        return headPosition;
+    }
+
+    /**
+     * @return the translation to move the joint between this element and its parent from this origin somewhere else.
+     */
+    public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
+        return new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength() / 2f, -boundingBox.getZLength() / 2f);
     }
 }

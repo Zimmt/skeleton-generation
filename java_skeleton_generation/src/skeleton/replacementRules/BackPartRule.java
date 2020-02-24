@@ -3,8 +3,6 @@ package skeleton.replacementRules;
 import skeleton.SpinePart;
 import skeleton.SpinePosition;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.DummyJoint;
-import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvic;
@@ -14,7 +12,10 @@ import util.BoundingBox;
 import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
-import javax.vecmath.*;
+import javax.vecmath.Point2f;
+import javax.vecmath.Tuple2f;
+import javax.vecmath.Vector2f;
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,27 +70,15 @@ public class BackPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    /**
-     * position: the last control point of the back spine is in the middle of the pelvic
-     * tail joint: right side in the middle
-     * leg joint: down side in the middle of one half
-     */
     private Pelvic generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
-
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
         parent.getJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
+
         TransformationMatrix transform = parent.getJoint().calculateChildTransform(parent);
-        Vector3f localTranslation = new Vector3f(0f, -boundingBox.getYLength()/2f, -boundingBox.getZLength()/2f);
-        transform.translate(localTranslation);
+        transform.translate(Pelvic.getLocalTranslationFromJoint(boundingBox));
 
-        Point3f tailJointPosition = new Point3f(boundingBox.getXLength(), boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
-        SpineOrientedJoint tailJoint = new SpineOrientedJoint(tailJointPosition, SpinePart.TAIL, intervalAndLength.get(1), parent.getGenerator());
-        Point3f legJointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/4f);
-        DummyJoint legJoint = new DummyJoint(legJointPosition);
-
-        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, tailJoint, legJoint);
+        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, intervalAndLength.get(1));
         parent.addChild(pelvic);
 
         return pelvic;

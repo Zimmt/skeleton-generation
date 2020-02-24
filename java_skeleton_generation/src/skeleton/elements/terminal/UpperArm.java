@@ -5,6 +5,8 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 public class UpperArm extends TerminalElement {
@@ -12,9 +14,9 @@ public class UpperArm extends TerminalElement {
     private final String kind = "upper arm";
     DummyJoint joint;
 
-    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, DummyJoint joint) {
+    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = joint;
+        this.joint = new DummyJoint(UpperArm.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {
@@ -35,6 +37,20 @@ public class UpperArm extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                joint.calculateMirroredJoint(parent, mirroredParent.orElse(parent)));
+                true);
+    }
+
+    /**
+     * @return the translation to move the joint between this element and its parent from this origin somewhere else.
+     */
+    public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
+        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
+    }
+
+    /**
+     * @return the relative position for the joint between this element and it's child
+     */
+    public static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
+        return new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);
     }
 }

@@ -1,10 +1,13 @@
 package skeleton.elements.terminal;
 
+import skeleton.SpinePart;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 /**
@@ -16,11 +19,14 @@ public class RootVertebra extends TerminalElement {
     SpineOrientedJoint frontPartJoint;
     SpineOrientedJoint backPartJoint;
 
-    public RootVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
-                        SpineOrientedJoint frontPartJoint, SpineOrientedJoint backPartJoint) {
-        super(transform, boundingBox, parent, ancestor);
-        this.frontPartJoint = frontPartJoint;
-        this.backPartJoint = backPartJoint;
+    /**
+     * root vertebra has zero extend (bounding box is a point)
+     */
+    public RootVertebra(TransformationMatrix transform, NonTerminalElement ancestor, float spinePosition) {
+        super(transform, new BoundingBox(new Vector3f(), new Vector3f(), new Vector3f()), null, ancestor);
+        Point3f center = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(spinePosition);
+        this.frontPartJoint = new SpineOrientedJoint(center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
+        this.backPartJoint = new SpineOrientedJoint(center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
     }
 
     public String getKind() {

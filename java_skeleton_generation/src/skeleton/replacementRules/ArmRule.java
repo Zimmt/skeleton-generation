@@ -1,7 +1,6 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.terminal.Hand;
 import skeleton.elements.terminal.LowerArm;
@@ -70,16 +69,12 @@ public class ArmRule extends ReplacementRule {
 
     private UpperArm generateUpperArm(Vector3f scale, Arm arm) {
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = arm.getParent().getJoint().calculateChildTransform(arm.getParent());
-        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(UpperArm.getLocalTranslationFromJoint(boundingBox));
 
-        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);
-        DummyJoint joint = new DummyJoint(jointPosition);
-
-        UpperArm upperArm = new UpperArm(transform, boundingBox, arm.getParent(), arm, joint);
+        UpperArm upperArm = new UpperArm(transform, boundingBox, arm.getParent(), arm, false);
         arm.getParent().replaceChild(arm, upperArm);
 
         return upperArm;
@@ -87,16 +82,12 @@ public class ArmRule extends ReplacementRule {
 
     private LowerArm generateLowerArm(Vector3f scale, Arm arm, UpperArm upperArm) {
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(upperArm);
-        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(LowerArm.getLocalTranslationFromJoint(boundingBox));
 
-        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
-        DummyJoint joint = new DummyJoint(jointPosition);
-
-        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, joint);
+        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, false);
         upperArm.addChild(lowerArm);
 
         return lowerArm;
@@ -104,11 +95,10 @@ public class ArmRule extends ReplacementRule {
 
     private Hand generateHand(Vector3f scale, Arm arm, LowerArm lowerArm) {
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = lowerArm.getJoint().calculateChildTransform(lowerArm);
-        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(Hand.getLocalTranslationFromJoint(boundingBox));
 
         Hand hand = new Hand(transform, boundingBox, lowerArm, arm);
         lowerArm.addChild(hand);

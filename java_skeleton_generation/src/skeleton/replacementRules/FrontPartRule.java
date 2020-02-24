@@ -2,10 +2,12 @@ package skeleton.replacementRules;
 
 import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.ShoulderGirdle;
-import skeleton.elements.terminal.*;
+import skeleton.elements.terminal.Head;
+import skeleton.elements.terminal.ShoulderVertebra;
+import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -50,9 +52,7 @@ public class FrontPartRule extends ReplacementRule {
         generatedParts.addAll(frontBack);
 
         Vertebra toBeShoulderVertebra = frontBack.get(frontBack.size()-1);
-        Point3f shoulderJointPosition = new Point3f(toBeShoulderVertebra.getBoundingBox().getXLength()/2f, 0f, 0f);
-        DummyJoint shoulderJoint = new DummyJoint(shoulderJointPosition);
-        ShoulderVertebra shoulderVertebra = new ShoulderVertebra(toBeShoulderVertebra, shoulderJoint);
+        ShoulderVertebra shoulderVertebra = new ShoulderVertebra(toBeShoulderVertebra);
         frontBack.get(frontBack.size() - 2).replaceChild(toBeShoulderVertebra, shoulderVertebra);
 
         ShoulderGirdle shoulderGirdle = new ShoulderGirdle(shoulderVertebra, frontPart);
@@ -70,17 +70,10 @@ public class FrontPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    /**
-     * position: middle of right side is the end point of the neck part of the spine
-     * joint rotation point: middle of the right side
-     */
     private Head generateHead(FrontPart frontPart, Vector3f boundingBoxScale, TerminalElement parent) {
-        BoundingBox headBox = BoundingBox.defaultBox();
-        headBox.scale(boundingBoxScale);
+        BoundingBox headBox = new BoundingBox(boundingBoxScale);
 
-        Point3f neckStartPoint = frontPart.getGenerator().getSkeletonMetaData().getSpine().getNeck().apply3d(0f);
-        Point3f globalHeadPosition = new Point3f(neckStartPoint);
-        globalHeadPosition.sub(new Point3f(headBox.getXLength(), headBox.getYLength() / 2f, headBox.getZLength() / 2f));
+        Point3f globalHeadPosition = Head.getGlobalHeadPosition(frontPart.getGenerator().getSkeletonMetaData().getSpine(), headBox);
 
         TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
         headTransform.translate(new Vector3f(globalHeadPosition));

@@ -1,15 +1,12 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Shoulder;
-import skeleton.elements.terminal.ShoulderVertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,21 +44,14 @@ public class ShoulderGirdleRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f dimensions) {
+    private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f scale) {
+        BoundingBox boundingBox = new BoundingBox(scale);
 
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(dimensions);
+        TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(shoulderGirdle.getParent());
+        transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
 
-        ShoulderVertebra shoulderVertebra = shoulderGirdle.getParent();
-
-        TransformationMatrix transform = shoulderVertebra.getShoulderJoint().calculateChildTransform(shoulderVertebra);
-        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength()));
-
-        Point3f shoulderJointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
-        DummyJoint joint = new DummyJoint(shoulderJointPosition);
-
-        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderVertebra, shoulderGirdle, joint);
-        shoulderVertebra.replaceChild(shoulderGirdle, shoulder);
+        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false);
+        shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
 
         return shoulder;
     }

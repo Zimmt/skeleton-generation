@@ -4,6 +4,7 @@ import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 public class Foot extends TerminalElement {
@@ -28,5 +29,12 @@ public class Foot extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor());
+    }
+
+    /**
+     * @return the translation to move the joint between this element and its parent from this origin somewhere else.
+     */
+    public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
+        return new Vector3f(-3f/4f * boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
     }
 }

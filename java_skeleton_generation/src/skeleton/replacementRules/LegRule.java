@@ -1,7 +1,6 @@
 package skeleton.replacementRules;
 
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Shin;
@@ -9,7 +8,6 @@ import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,46 +67,34 @@ public class LegRule extends ReplacementRule {
     }
 
     private Thigh generateThigh(Vector3f scale, Leg leg) {
-
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(leg.getParent());
-        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(Thigh.getLocalTranslationFromJoint(boundingBox));
 
-        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
-        DummyJoint thighJoint = new DummyJoint(jointPosition);
-
-        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, thighJoint);
+        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false);
         leg.getParent().replaceChild(leg, thigh);
 
         return thigh;
     }
 
     private Shin generateShin(Vector3f scale, Leg leg, Thigh thigh) {
-
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = thigh.getJoint().calculateChildTransform(thigh);
-        transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(Shin.getLocalTranslationFromJoint(boundingBox));
 
-        Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
-        DummyJoint joint = new DummyJoint(jointPosition);
-
-        Shin shin = new Shin(transform, boundingBox, thigh, leg, joint);
+        Shin shin = new Shin(transform, boundingBox, thigh, leg, false);
         thigh.addChild(shin);
 
         return shin;
     }
 
     private Foot generateFoot(Vector3f scale, Leg leg, Shin shin) {
-
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(scale);
+        BoundingBox boundingBox = new BoundingBox(scale);
 
         TransformationMatrix transform = shin.getJoint().calculateChildTransform(shin);
-        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
+        transform.translate(Foot.getLocalTranslationFromJoint(boundingBox));
 
         Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
