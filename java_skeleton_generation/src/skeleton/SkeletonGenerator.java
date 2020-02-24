@@ -13,7 +13,6 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 import util.pca.PcaHandler;
 
-import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
@@ -259,18 +258,27 @@ public class SkeletonGenerator {
         boundingBox.scale(boundingBoxScale);
         Vector3f localBoxTranslation = new Vector3f(0f, -boundingBox.getYLength() / 2f, -boundingBox.getZLength() / 2f);
 
-        float intervalLength = Math.abs(interval.y - interval.x);
+        float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
-        float vertebraSpineWidth = intervalLength / (float) vertebraCount;
+        float oneIntervalStep = sign * totalIntervalLength / (float) vertebraCount;;
 
-        if (firstParentJoint instanceof SpineOrientedJoint) {
-            ((SpineOrientedJoint) firstParentJoint).setSpineWidth(vertebraSpineWidth);
-        }
         Vertebra parent = null;
-        for (int i = 0; i < vertebraCount-1; i++) { // todo: calculation of transform of second to last child may be out of spine bounds
+        for (int i = 0; i < vertebraCount; i++) {
 
-            float left = interval.x + sign * (float) i / (float) vertebraCount * intervalLength;
-            float right = left + sign * 1f / (float) vertebraCount * intervalLength;
+            float childSpineEndPosition;
+            if (parent == null) {
+                childSpineEndPosition = interval.x + oneIntervalStep;
+                if (firstParentJoint instanceof SpineOrientedJoint) {
+                    ((SpineOrientedJoint) firstParentJoint).setChildSpineEndPosition(childSpineEndPosition, spinePart);
+                }
+            } else {
+                if (i == vertebraCount-1) {
+                    childSpineEndPosition = interval.y;
+                } else {
+                    childSpineEndPosition = parent.getJoint().getSpinePosition() + oneIntervalStep;
+                }
+                parent.getJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
+            }
 
             TransformationMatrix transform;
             if (parent == null) {
@@ -283,8 +291,7 @@ public class SkeletonGenerator {
             BoundingBox childBox = boundingBox.cloneBox();
 
             Point3f jointPosition = new Point3f(sign > 0 ? boundingBox.getXLength() : 0f, boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
-            SpineOrientedJoint joint = new SpineOrientedJoint(jointPosition, spinePart, right, sign > 0, ancestor.getGenerator());
-            joint.setSpineWidth(vertebraSpineWidth);
+            SpineOrientedJoint joint = new SpineOrientedJoint(jointPosition, spinePart, childSpineEndPosition, ancestor.getGenerator());
 
             Vertebra child;
             if (parent == null) {
@@ -300,53 +307,5 @@ public class SkeletonGenerator {
         }
 
         return generatedParts;
-    }
-
-    /**
-     * The position of transform is the left point of the interval on the spine.
-     * The points of the interval can lie in different spine parts.
-     * @param interval [x, y], x can be bigger than y then the interval is handled as [y, x]
-     */
-    public TransformationMatrix generateTransformForElementInSpineInterval(SpinePart spinePart1, SpinePart spinePart2, Tuple2f interval, TerminalElement parent) {
-
-        Tuple2f sortedInterval = new Point2f(interval);
-        if ((spinePart1 == spinePart2 && interval.x > interval.y) ||
-                spinePart1 == SpinePart.TAIL || (spinePart1 == SpinePart.BACK && spinePart2 == SpinePart.NECK)) {
-            sortedInterval = new Point2f(interval.y, interval.x);
-        }
-        float angle = getSpineAngle(spinePart1, spinePart2, sortedInterval.x, sortedInterval.y);
-
-        Vector3f position = new Vector3f(skeletonMetaData.getSpine().getPart(spinePart1).apply3d(sortedInterval.x)); // world position
-
-        TransformationMatrix inverseParentWorldTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
-
-        TransformationMatrix psi = new TransformationMatrix(position);
-        psi.rotateAroundZ(angle);
-
-        return TransformationMatrix.multiply(inverseParentWorldTransform, psi);
-    }
-
-    /**
-     * Interval borders have to be ascending.
-     * @param spinePart1 the spine part for the first point
-     * @param spinePart2 the spine part for the second point
-     * @param t1 first point on spine
-     * @param t2 second point on spine
-     * @return angle between spine vector (from first to second point on spine) and the vector (1,0,0)
-     */
-    private float getSpineAngle(SpinePart spinePart1, SpinePart spinePart2, float t1, float t2) {
-        Point3f position1 = skeletonMetaData.getSpine().getPart(spinePart1).apply3d(t1);
-        Point3f position2 = skeletonMetaData.getSpine().getPart(spinePart2).apply3d(t2);
-        Point3f diff = new Point3f(position2);
-        diff.sub(position1);
-        Vector3f spineVector = new Vector3f(diff);
-
-        float angle = spineVector.angle(new Vector3f(1f, 0f, 0f));
-
-        // determine in which direction we should turn
-        if (position1.y > position2.y) {
-            angle = -angle;
-        }
-        return angle;
     }
 }

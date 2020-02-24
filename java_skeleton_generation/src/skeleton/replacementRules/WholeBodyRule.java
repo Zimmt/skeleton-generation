@@ -36,7 +36,7 @@ public class WholeBodyRule extends ReplacementRule {
             return Arrays.asList(skeletonPart);
         }
         WholeBody wholeBody = (WholeBody) skeletonPart;
-        Vector3f rootVertebraScales = new Vector3f(1f, 1f, 1f);
+        Vector3f rootVertebraScales = new Vector3f(12f, 12f, 12f);
 
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
@@ -73,8 +73,8 @@ public class WholeBodyRule extends ReplacementRule {
         // todo: spine position for joints not correct
         Point3f leftJointPosition = new Point3f(position.x, center.y, center.z);
         Point3f rightJointPosition = new Point3f(position.x + boundingBox.getXLength(), center.y, center.z);
-        SpineOrientedJoint leftJoint = new SpineOrientedJoint(leftJointPosition, SpinePart.BACK, spinePosition, false, ancestor.getGenerator());
-        SpineOrientedJoint rightJoint = new SpineOrientedJoint(rightJointPosition, SpinePart.BACK, spinePosition, true, ancestor.getGenerator());
+        SpineOrientedJoint leftJoint = new SpineOrientedJoint(leftJointPosition, SpinePart.BACK, spinePosition, ancestor.getGenerator());
+        SpineOrientedJoint rightJoint = new SpineOrientedJoint(rightJointPosition, SpinePart.BACK, spinePosition, ancestor.getGenerator());
 
         return new RootVertebra(transform, boundingBox, null, ancestor, leftJoint, rightJoint);
     }

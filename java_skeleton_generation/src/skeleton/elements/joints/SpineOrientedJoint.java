@@ -14,64 +14,50 @@ public class SpineOrientedJoint extends Joint {
 
     private SpinePart spinePart;
     private float spinePosition; // where the joint rotation point lies on spine, as bezier curve parameter
-    private boolean spineDirection; // if child will be spawned in positive (true) or negative (false) direction of bezier curve
     private SkeletonGenerator skeletonGenerator; // skeleton generator is only needed because root vertebra has no parent where generator can be accessed
 
-    float spineWidth;
+    // where the child should end on the spine; this and spinePosition are the points where the beziercurve is evaluated
+    // this does not determine the width of the child element
+    private float childSpineEndPosition;
+    private SpinePart childSpinePart;
 
-    /**
-     * @param spineDirection true: positive direction, false: negative direction
-     */
-    public SpineOrientedJoint(Point3f position, SpinePart spinePart, float spinePosition, boolean spineDirection, SkeletonGenerator skeletonGenerator) {
+    public SpineOrientedJoint(Point3f position, SpinePart spinePart, float spinePosition, SkeletonGenerator skeletonGenerator) {
         super(position);
         this.spinePart = spinePart;
         this.spinePosition = spinePosition;
-        this.spineDirection = spineDirection;
         this.skeletonGenerator = skeletonGenerator;
     }
 
-    public void setSpineWidth(float spineWidth) {
-        if (spineWidth <= 0) {
-            System.err.println("Invalid spine width");
-        }
-        this.spineWidth = spineWidth;
+    public void setChildSpineEndPosition(float childSpineEndPosition, SpinePart childSpinePart) {
+        this.childSpineEndPosition = childSpineEndPosition;
+        this.childSpinePart = childSpinePart;
     }
 
     /**
-     * child width: spinePosition to spinePosition +- spineWidth
+     * The position of transform is the left point of the interval on the spine.
+     * The points of the interval can lie in different spine parts.
      */
     public TransformationMatrix calculateChildTransform(TerminalElement parent) {
-        if (spineWidth <= 0) {
-            System.err.println("Set child spine width first before generating child transform is possible");
+        if (childSpineEndPosition < 0 || childSpinePart == null) {
+            System.err.println("Set child spine end point first before generating child transform is possible");
             return null;
         }
 
-        Tuple2f spineInterval;
-        if (spineDirection) {
-            spineInterval = new Point2f(spinePosition, spinePosition + spineWidth);
-        } else {
-            spineInterval = new Point2f(spinePosition - spineWidth, spinePosition);
+        Tuple2f spineInterval = new Point2f(spinePosition, childSpineEndPosition);
+        SpinePart spinePart1 = spinePart;
+        SpinePart spinePart2 = childSpinePart;
+
+        if (SpinePart.isLeftOf(childSpinePart, spinePart)) {
+            spinePart1 = childSpinePart;
+            spinePart2 = spinePart;
+            spineInterval = new Point2f(childSpineEndPosition, spinePosition);
+        } else if (spinePart == childSpinePart && childSpineEndPosition < spinePosition) {
+            spineInterval = new Point2f(childSpineEndPosition, spinePosition);
         }
 
-        SpinePart spinePart1 = spinePart;
-        SpinePart spinePart2 = spinePart;
-        if (spineInterval.x < 0) {
-            spineInterval.x += 1f;
-            spinePart1 = SpinePart.getSmallerSpinePart(spinePart1);
-            if (spinePart1 == null) {
-                return null;
-            }
-        }
-        if (spineInterval.y > 1) {
-            spineInterval.y -= 1f;
-            spinePart2 = SpinePart.getBiggerSpinePart(spinePart2);
-            if (spinePart2 == null) {
-                return null;
-            }
-        }
         float angle = getSpineAngle(spinePart1, spinePart2, spineInterval.x, spineInterval.y);
 
-        Vector3f worldPosition = new Vector3f(skeletonGenerator.getSkeletonMetaData().getSpine().getPart(spinePart).apply3d(spinePosition));
+        Vector3f worldPosition = new Vector3f(skeletonGenerator.getSkeletonMetaData().getSpine().getPart(spinePart1).apply3d(spineInterval.x));
         TransformationMatrix childWorldTransform = new TransformationMatrix(worldPosition);
         childWorldTransform.rotateAroundZ(angle);
 
@@ -87,7 +73,11 @@ public class SpineOrientedJoint extends Joint {
 
     public Joint calculateMirroredJoint(TerminalElement parent, TerminalElement mirroredParent) {
         return new SpineOrientedJoint(calculateMirroredJointPosition(parent, mirroredParent),
-                spinePart, spinePosition, spineDirection, skeletonGenerator);
+                spinePart, spinePosition, skeletonGenerator);
+    }
+
+    public float getSpinePosition() {
+        return spinePosition;
     }
 
     /**
