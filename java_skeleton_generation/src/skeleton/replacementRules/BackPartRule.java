@@ -41,10 +41,7 @@ public class BackPartRule extends ReplacementRule {
         }
 
         BackPart backPart = (BackPart) skeletonPart;
-        if (! (backPart.getParent() instanceof RootVertebra)) {
-            System.err.println("Back part parent is not root vertebra");
-        }
-        RootVertebra rootVertebra = (RootVertebra) backPart.getParent();
+        RootVertebra rootVertebra = backPart.getParent();
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Vector3f pelvicScale = new Vector3f(30f, 20f, 100f);
@@ -53,8 +50,8 @@ public class BackPartRule extends ReplacementRule {
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), pelvicIntervalAndLength.get(0));
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
         List<Vertebra> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 10, vertebraScale, backPart.getParent(), rootVertebra.getBackPartJoint());
-        backPart.getParent().removeChild(backPart);
+                backBackInterval, 10, vertebraScale, rootVertebra, rootVertebra.getBackPartJoint());
+        rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
         Pelvic pelvic = generatePelvic(backPart, backBack.get(backBack.size()-1), pelvicScale, pelvicIntervalAndLength);
@@ -157,7 +154,6 @@ public class BackPartRule extends ReplacementRule {
             interval.set(1, wantedTailLength * interval.get(1) / tailLength);
             interval.set(2, wantedWidth);
         }
-
         return interval;
     }
 }

@@ -5,7 +5,6 @@ import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.terminal.Hand;
 import skeleton.elements.terminal.LowerArm;
-import skeleton.elements.terminal.Shoulder;
 import skeleton.elements.terminal.UpperArm;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -74,7 +73,7 @@ public class ArmRule extends ReplacementRule {
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        TransformationMatrix transform = ((Shoulder) arm.getParent()).getJoint().calculateChildTransform(arm.getParent()); // todo
+        TransformationMatrix transform = arm.getParent().getJoint().calculateChildTransform(arm.getParent());
         transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
 
         Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);

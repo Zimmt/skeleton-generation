@@ -42,10 +42,10 @@ public class FrontPartRule extends ReplacementRule {
         FrontPart frontPart = (FrontPart) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Tuple2f frontBackInterval = new Point2f(frontPart.getEndPosition(), 0f);
+        Tuple2f frontBackInterval = new Point2f(frontPart.getParent().getFrontPartJoint().getSpinePosition(), 0f);
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
         List<Vertebra> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
-                frontBackInterval, 10, vertebraScale, frontPart.getParent(), ((RootVertebra) frontPart.getParent()).getFrontPartJoint()); //todo: remove cast
+                frontBackInterval, 10, vertebraScale, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
         generatedParts.addAll(frontBack);
 

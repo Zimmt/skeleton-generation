@@ -52,7 +52,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(dimensions);
 
-        ShoulderVertebra shoulderVertebra = (ShoulderVertebra) shoulderGirdle.getParent(); // todo
+        ShoulderVertebra shoulderVertebra = shoulderGirdle.getParent();
 
         TransformationMatrix transform = shoulderVertebra.getShoulderJoint().calculateChildTransform(shoulderVertebra);
         transform.translate(new Vector3f(-boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength()));

@@ -4,7 +4,6 @@ import skeleton.elements.SkeletonPart;
 import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
-import skeleton.elements.terminal.Pelvic;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
@@ -74,10 +73,7 @@ public class LegRule extends ReplacementRule {
         BoundingBox boundingBox = BoundingBox.defaultBox();
         boundingBox.scale(scale);
 
-        if (!(leg.getParent() instanceof Pelvic)) {
-            System.err.println("parent is not pelvic");
-        }
-        TransformationMatrix transform = ((Pelvic) leg.getParent()).getLegJoint().calculateChildTransform(leg.getParent());
+        TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(leg.getParent());
         transform.translate(new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
 
         Point3f jointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);

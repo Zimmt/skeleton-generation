@@ -1,5 +1,6 @@
 package skeleton.elements.nonterminal;
 
+import skeleton.elements.terminal.Pelvic;
 import skeleton.elements.terminal.TerminalElement;
 
 public class Leg extends NonTerminalElement {
@@ -15,4 +16,13 @@ public class Leg extends NonTerminalElement {
     }
 
     public boolean isMirrored() { return true; }
+
+    public Pelvic getParent() {
+        if (super.getParent() instanceof Pelvic) {
+            return (Pelvic) super.getParent();
+        } else {
+            System.err.println("Parent of leg is not pelvic!");
+            return null;
+        }
+    }
 }

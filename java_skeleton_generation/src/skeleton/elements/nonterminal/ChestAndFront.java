@@ -1,6 +1,7 @@
 package skeleton.elements.nonterminal;
 
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.Vertebra;
 
 public class ChestAndFront extends NonTerminalElement {
 
@@ -15,4 +16,13 @@ public class ChestAndFront extends NonTerminalElement {
     }
 
     public boolean isMirrored() { return false; }
+
+    public Vertebra getParent() {
+        if (super.getParent() instanceof Vertebra) {
+            return (Vertebra) super.getParent();
+        } else {
+            System.err.println("Parent of chest and front is no vertebra!");
+            return null;
+        }
+    }
 }

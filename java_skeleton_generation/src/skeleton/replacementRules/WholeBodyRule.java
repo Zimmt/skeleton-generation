@@ -41,11 +41,11 @@ public class WholeBodyRule extends ReplacementRule {
         RootVertebra root = generateRootVertebra(wholeBody);
         generatedParts.add(root);
 
-        FrontPart frontPart = new FrontPart(root, wholeBody, 0.5f);
+        FrontPart frontPart = new FrontPart(root, wholeBody);
         root.addChild(frontPart);
         generatedParts.add(frontPart);
 
-        BackPart backPart = new BackPart(root, wholeBody, 0.5f);
+        BackPart backPart = new BackPart(root, wholeBody);
         root.addChild(backPart);
         generatedParts.add(backPart);
 
