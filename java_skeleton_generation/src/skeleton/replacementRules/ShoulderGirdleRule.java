@@ -57,7 +57,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         TransformationMatrix transform = shoulderVertebra.getShoulderJoint().calculateChildTransform(shoulderVertebra);
         transform.translate(new Vector3f(-boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength()));
 
-        Point3f shoulderJointPosition = new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, -boundingBox.getZLength());
+        Point3f shoulderJointPosition = new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
         DummyJoint joint = new DummyJoint(shoulderJointPosition);
 
         Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderVertebra, shoulderGirdle, joint);

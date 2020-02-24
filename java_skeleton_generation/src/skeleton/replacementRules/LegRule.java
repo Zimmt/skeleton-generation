@@ -112,7 +112,7 @@ public class LegRule extends ReplacementRule {
         boundingBox.scale(scale);
 
         TransformationMatrix transform = shin.getJoint().calculateChildTransform(shin);
-        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), boundingBox.getZLength()/2f));
+        transform.translate(new Vector3f(-boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f));
 
         Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
