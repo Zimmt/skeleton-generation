@@ -36,11 +36,9 @@ public class WholeBodyRule extends ReplacementRule {
             return Arrays.asList(skeletonPart);
         }
         WholeBody wholeBody = (WholeBody) skeletonPart;
-        Vector3f rootVertebraScales = new Vector3f(12f, 12f, 12f);
-
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        RootVertebra root = generateRootVertebra(wholeBody, rootVertebraScales);
+        RootVertebra root = generateRootVertebra(wholeBody);
         generatedParts.add(root);
 
         FrontPart frontPart = new FrontPart(root, wholeBody, 0.5f);
@@ -55,24 +53,19 @@ public class WholeBodyRule extends ReplacementRule {
     }
 
     /**
+     * Generates root vertebra with zero extend
      * position: the center of the back spine is in the middle of the generated vertebra
      * joints: left and right side in the middle
      */
-    private RootVertebra generateRootVertebra(WholeBody ancestor, Vector3f vertebraScales) {
-        BoundingBox boundingBox = BoundingBox.defaultBox();
-        boundingBox.scale(vertebraScales);
+    private RootVertebra generateRootVertebra(WholeBody ancestor) {
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(), new Vector3f(), new Vector3f());
 
         float spinePosition = 0.5f;
         Point3f center = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(spinePosition);
-        Point3f position = new Point3f(center);
-        position.x = position.x - boundingBox.getXLength() / 2f;
-        position.y = position.y - boundingBox.getYLength() / 2f;
-        position.z = position.z - boundingBox.getZLength() / 2f;
-        TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
+        TransformationMatrix transform = new TransformationMatrix(new Vector3f(center));
 
-        // todo: spine position for joints not correct
-        Point3f leftJointPosition = new Point3f(position.x, center.y, center.z);
-        Point3f rightJointPosition = new Point3f(position.x + boundingBox.getXLength(), center.y, center.z);
+        Point3f leftJointPosition = new Point3f(center);
+        Point3f rightJointPosition = new Point3f(center);
         SpineOrientedJoint leftJoint = new SpineOrientedJoint(leftJointPosition, SpinePart.BACK, spinePosition, ancestor.getGenerator());
         SpineOrientedJoint rightJoint = new SpineOrientedJoint(rightJointPosition, SpinePart.BACK, spinePosition, ancestor.getGenerator());
 
