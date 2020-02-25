@@ -1,5 +1,6 @@
 package skeleton.replacementRules;
 
+import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.terminal.Hand;
@@ -8,7 +9,6 @@ import skeleton.elements.terminal.UpperArm;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,32 +34,25 @@ public class ArmRule extends ReplacementRule {
 
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
-
-        float upperLowerArmRate = 2f / 3f;
-        float handHeight = 10f;
-
-        // todo hand and lower arm only touch when arm is vertical
-        Point3f parentPosition = new Point3f(arm.getParent().getWorldPosition());
-        float upperArmHeight = (parentPosition.y - handHeight) * upperLowerArmRate;
-        float lowerArmHeight = parentPosition.y - handHeight - upperArmHeight;
+        ExtremityData extremityData = arm.getGenerator().getSkeletonMetaData().getExtremities();
 
         Vector3f upperArmScale = new Vector3f(
                 0.6f * arm.getParent().getBoundingBox().getXLength(),
-                upperArmHeight,
+                extremityData.getLengthUpperArm(),
                 0.4f * arm.getParent().getBoundingBox().getZLength());
         UpperArm upperArm = generateUpperArm(upperArmScale, arm);
         generatedParts.add(upperArm);
 
         Vector3f lowerArmScale = new Vector3f(
                 0.8f * upperArm.getBoundingBox().getXLength(),
-                lowerArmHeight,
+                extremityData.getLengthLowerArm(),
                 0.8f * upperArm.getBoundingBox().getZLength());
         LowerArm lowerArm = generateLowerArm(lowerArmScale, arm, upperArm);
         generatedParts.add(lowerArm);
 
         Vector3f handScale = new Vector3f(
-                4f * lowerArm.getBoundingBox().getXLength(),
-                handHeight,
+                extremityData.getLengthHand(),
+                0.8f * lowerArm.getBoundingBox().getXLength(),
                 2f * lowerArm.getBoundingBox().getZLength());
         Hand hand = generateHand(handScale, arm, lowerArm);
         generatedParts.add(hand);

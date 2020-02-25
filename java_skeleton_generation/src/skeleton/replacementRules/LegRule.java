@@ -1,5 +1,6 @@
 package skeleton.replacementRules;
 
+import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
@@ -35,30 +36,25 @@ public class LegRule extends ReplacementRule {
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
-
-        float thighShinRate = 2f / 3f;
-        float footHeight = 10f;
-
-        float thighHeight = (leg.getParent().getWorldPosition().y - footHeight) * thighShinRate;
-        float shinHeight = (leg.getParent().getWorldPosition().y - footHeight) - thighHeight;
+        ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
 
         Vector3f thighScale = new Vector3f(
                 0.6f * leg.getParent().getBoundingBox().getXLength(),
-                thighHeight,
+                extremityData.getLengthUpperLeg(),
                 0.2f * leg.getParent().getBoundingBox().getZLength());
         Thigh thigh = generateThigh(thighScale, leg);
         generatedParts.add(thigh);
 
         Vector3f shinScale = new Vector3f(
                 0.8f * thigh.getBoundingBox().getXLength(),
-                shinHeight,
+                extremityData.getLengthLowerLeg(),
                 0.8f * thigh.getBoundingBox().getZLength());
         Shin shin = generateShin(shinScale, leg, thigh);
         generatedParts.add(shin);
 
         Vector3f footScale = new Vector3f(
-                4f * shin.getBoundingBox().getXLength(),
-                footHeight,
+                extremityData.getLengthFoot(),
+                0.8f * shin.getBoundingBox().getXLength(),
                 2f * shin.getBoundingBox().getZLength());
         Foot foot = generateFoot(footScale, leg, shin);
         generatedParts.add(foot);

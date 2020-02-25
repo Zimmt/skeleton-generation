@@ -1,57 +1,57 @@
 package skeleton;
 
 public class ExtremityData {
-    private double wings;
-    private double flooredLegs; // #legs/2, [0,2]
+    private float wings;
+    private float flooredLegs; // #legs/2, [0,2]
 
-    private double lengthUpperArm; // [0, 1000]
-    private double lengthLowerArm; // [0, 1000]
-    private double lengthHand; // [0, 1000]
+    private float lengthUpperArm; // [0, 1000]
+    private float lengthLowerArm; // [0, 1000]
+    private float lengthHand; // [0, 1000]
 
-    private double lengthUpperLeg; // [0, 1000]
-    private double lengthLowerLeg; // [0, 1000]
-    private double lengthFoot; // [0, 1000]
+    private float lengthUpperLeg; // [0, 1000]
+    private float lengthLowerLeg; // [0, 1000]
+    private float lengthFoot; // [0, 1000]
 
     public ExtremityData(double wings, double flooredLegs, double lengthUpperArm, double lengthLowerArm, double lengthHand, double lengthUpperLeg, double lengthLowerLeg, double lengthFoot) {
-        this.wings = wings;
-        this.flooredLegs = flooredLegs;
-        this.lengthUpperArm = lengthUpperArm;
-        this.lengthLowerArm = lengthLowerArm;
-        this.lengthHand = lengthHand;
-        this.lengthUpperLeg = lengthUpperLeg;
-        this.lengthLowerLeg = lengthLowerLeg;
-        this.lengthFoot = lengthFoot;
+        this.wings = (float) wings;
+        this.flooredLegs = (float) flooredLegs;
+        this.lengthUpperArm = (float) lengthUpperArm;
+        this.lengthLowerArm = (float) lengthLowerArm;
+        this.lengthHand = (float) lengthHand;
+        this.lengthUpperLeg = (float) lengthUpperLeg;
+        this.lengthLowerLeg = (float) lengthLowerLeg;
+        this.lengthFoot = (float) lengthFoot;
     }
 
-    public double getWings() {
+    public float getWings() {
         return wings;
     }
 
-    public double getFlooredLegs() {
+    public float getFlooredLegs() {
         return flooredLegs;
     }
 
-    public double getLengthUpperArm() {
+    public float getLengthUpperArm() {
         return lengthUpperArm;
     }
 
-    public double getLengthLowerArm() {
+    public float getLengthLowerArm() {
         return lengthLowerArm;
     }
 
-    public double getLengthHand() {
+    public float getLengthHand() {
         return lengthHand;
     }
 
-    public double getLengthUpperLeg() {
+    public float getLengthUpperLeg() {
         return lengthUpperLeg;
     }
 
-    public double getLengthLowerLeg() {
+    public float getLengthLowerLeg() {
         return lengthLowerLeg;
     }
 
-    public double getLengthFoot() {
+    public float getLengthFoot() {
         return lengthFoot;
     }
 }
