@@ -1,8 +1,8 @@
 package skeleton.elements.terminal;
 
 import skeleton.SpinePart;
-import skeleton.elements.joints.DummyJoint;
 import skeleton.elements.joints.Joint;
+import skeleton.elements.joints.PelvicThighJoint;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
@@ -19,12 +19,12 @@ public class Pelvic extends TerminalElement {
 
     private final String kind = "pelvic";
     private SpineOrientedJoint tailJoint;
-    private DummyJoint legJoint;
+    private PelvicThighJoint legJoint;
 
     public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, float tailJointSpinePosition) {
         super(transform, boundingBox, parent, ancestor);
         this.tailJoint = new SpineOrientedJoint(Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
-        this.legJoint = new DummyJoint(Pelvic.getLegJointPosition(boundingBox));
+        this.legJoint = new PelvicThighJoint(Pelvic.getLegJointPosition(boundingBox), true);
     }
 
     public String getKind() {

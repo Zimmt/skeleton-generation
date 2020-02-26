@@ -1,6 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.DummyJoint;
+import skeleton.elements.joints.ThighShinJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -15,18 +15,18 @@ import java.util.Optional;
 public class Thigh extends TerminalElement {
 
     private final String kind = "thigh";
-    private DummyJoint joint;
+    private ThighShinJoint joint;
 
     public Thigh(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(Thigh.getJointPosition(boundingBox, mirrored));
+        this.joint = new ThighShinJoint(Thigh.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {
         return kind;
     }
 
-    public DummyJoint getJoint() {
+    public ThighShinJoint getJoint() {
         return joint;
     }
 

@@ -1,7 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.DummyJoint;
-import skeleton.elements.joints.Joint;
+import skeleton.elements.joints.ShinFootJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -16,18 +15,18 @@ import java.util.Optional;
 public class Shin extends TerminalElement {
 
     private final String kind = "shin";
-    private DummyJoint joint;
+    private ShinFootJoint joint;
 
     public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(Shin.getJointPosition(boundingBox, mirrored));
+        this.joint = new ShinFootJoint(Shin.getJointPosition(boundingBox, mirrored), true);
     }
 
     public String getKind() {
         return kind;
     }
 
-    public Joint getJoint() {
+    public ShinFootJoint getJoint() {
         return joint;
     }
 
