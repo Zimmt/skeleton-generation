@@ -74,13 +74,11 @@ public class FrontPartRule extends ReplacementRule {
         BoundingBox headBox = new BoundingBox(boundingBoxScale);
 
         Point3f globalHeadPosition = Head.getGlobalHeadPosition(frontPart.getGenerator().getSkeletonMetaData().getSpine(), headBox);
-
         TransformationMatrix headTransform = TransformationMatrix.getInverse(parent.calculateWorldTransform());
         headTransform.translate(new Vector3f(globalHeadPosition));
 
         Head head = new Head(headTransform, headBox, parent, frontPart);
         parent.addChild(head);
-
         return head;
     }
 }

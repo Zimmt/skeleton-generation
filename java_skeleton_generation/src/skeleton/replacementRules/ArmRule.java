@@ -61,41 +61,32 @@ public class ArmRule extends ReplacementRule {
     }
 
     private UpperArm generateUpperArm(Vector3f scale, Arm arm) {
-
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = arm.getParent().getJoint().calculateChildTransform(arm.getParent());
+        TransformationMatrix transform = arm.getParent().getJoint().calculateChildTransform(boundingBox);
         transform.translate(UpperArm.getLocalTranslationFromJoint(boundingBox));
 
         UpperArm upperArm = new UpperArm(transform, boundingBox, arm.getParent(), arm, false);
         arm.getParent().replaceChild(arm, upperArm);
-
         return upperArm;
     }
 
     private LowerArm generateLowerArm(Vector3f scale, Arm arm, UpperArm upperArm) {
-
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(upperArm);
+        TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(boundingBox);
         transform.translate(LowerArm.getLocalTranslationFromJoint(boundingBox));
 
         LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, false);
         upperArm.addChild(lowerArm);
-
         return lowerArm;
     }
 
     private Hand generateHand(Vector3f scale, Arm arm, LowerArm lowerArm) {
-
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = lowerArm.getJoint().calculateChildTransform(lowerArm);
+        TransformationMatrix transform = lowerArm.getJoint().calculateChildTransform(boundingBox);
         transform.translate(Hand.getLocalTranslationFromJoint(boundingBox));
 
         Hand hand = new Hand(transform, boundingBox, lowerArm, arm);
         lowerArm.addChild(hand);
-
         return hand;
     }
 }

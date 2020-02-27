@@ -16,7 +16,7 @@ public class Shoulder extends TerminalElement {
 
     public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(Shoulder.getJointPosition(boundingBox, mirrored));
+        this.joint = new DummyJoint(this, Shoulder.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {

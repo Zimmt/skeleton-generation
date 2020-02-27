@@ -71,16 +71,14 @@ public class BackPartRule extends ReplacementRule {
     }
 
     private Pelvic generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
-
         BoundingBox boundingBox = new BoundingBox(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
         parent.getJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
 
-        TransformationMatrix transform = parent.getJoint().calculateChildTransform(parent);
+        TransformationMatrix transform = parent.getJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvic.getLocalTranslationFromJoint(boundingBox));
 
         Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, intervalAndLength.get(1));
         parent.addChild(pelvic);
-
         return pelvic;
     }
 

@@ -46,13 +46,11 @@ public class ShoulderGirdleRule extends ReplacementRule {
 
     private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f scale) {
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(shoulderGirdle.getParent());
+        TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(boundingBox);
         transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
 
         Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false);
         shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
-
         return shoulder;
     }
 }

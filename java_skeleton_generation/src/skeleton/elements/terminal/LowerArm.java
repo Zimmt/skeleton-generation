@@ -19,7 +19,7 @@ public class LowerArm extends TerminalElement {
      */
     public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(LowerArm.getJointPosition(boundingBox, mirrored));
+        this.joint = new DummyJoint(this, LowerArm.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {

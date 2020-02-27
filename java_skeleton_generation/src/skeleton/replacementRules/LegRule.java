@@ -64,37 +64,28 @@ public class LegRule extends ReplacementRule {
 
     private Thigh generateThigh(Vector3f scale, Leg leg) {
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(leg.getParent());
-        transform.translate(Thigh.getLocalTranslationFromJoint(boundingBox));
+        TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(boundingBox);
 
         Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false);
         leg.getParent().replaceChild(leg, thigh);
-
         return thigh;
     }
 
     private Shin generateShin(Vector3f scale, Leg leg, Thigh thigh) {
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = thigh.getJoint().calculateChildTransform(thigh);
-        transform.translate(Shin.getLocalTranslationFromJoint(boundingBox));
+        TransformationMatrix transform = thigh.getJoint().calculateChildTransform(boundingBox);
 
         Shin shin = new Shin(transform, boundingBox, thigh, leg, false);
         thigh.addChild(shin);
-
         return shin;
     }
 
     private Foot generateFoot(Vector3f scale, Leg leg, Shin shin) {
         BoundingBox boundingBox = new BoundingBox(scale);
-
-        TransformationMatrix transform = shin.getJoint().calculateChildTransform(shin);
-        transform.translate(Foot.getLocalTranslationFromJoint(boundingBox));
+        TransformationMatrix transform = shin.getJoint().calculateChildTransform(boundingBox);
 
         Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
-
         return foot;
     }
 }

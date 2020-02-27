@@ -19,7 +19,7 @@ public class Thigh extends TerminalElement {
 
     public Thigh(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new ThighShinJoint(Thigh.getJointPosition(boundingBox, mirrored));
+        this.joint = new ThighShinJoint(this, Thigh.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {

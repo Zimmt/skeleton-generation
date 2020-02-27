@@ -16,7 +16,7 @@ public class UpperArm extends TerminalElement {
 
     public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(UpperArm.getJointPosition(boundingBox, mirrored));
+        this.joint = new DummyJoint(this, UpperArm.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {

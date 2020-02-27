@@ -3,6 +3,7 @@ package skeleton.elements.joints;
 import skeleton.SkeletonGenerator;
 import skeleton.SpinePart;
 import skeleton.elements.terminal.TerminalElement;
+import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point2f;
@@ -21,8 +22,8 @@ public class SpineOrientedJoint extends Joint {
     private float childSpineEndPosition;
     private SpinePart childSpinePart;
 
-    public SpineOrientedJoint(Point3f position, SpinePart spinePart, float spinePosition, SkeletonGenerator skeletonGenerator) {
-        super(position);
+    public SpineOrientedJoint(TerminalElement parent, Point3f position, SpinePart spinePart, float spinePosition, SkeletonGenerator skeletonGenerator) {
+        super(parent, position);
         this.spinePart = spinePart;
         this.spinePosition = spinePosition;
         this.skeletonGenerator = skeletonGenerator;
@@ -37,7 +38,7 @@ public class SpineOrientedJoint extends Joint {
      * The position of transform is the left point of the interval on the spine.
      * The points of the interval can lie in different spine parts.
      */
-    public TransformationMatrix calculateChildTransform(TerminalElement parent) {
+    public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
         if (childSpineEndPosition < 0 || childSpinePart == null) {
             System.err.println("Set child spine end point first before generating child transform is possible");
             return null;
@@ -71,13 +72,17 @@ public class SpineOrientedJoint extends Joint {
         return TransformationMatrix.multiply(inverseParentWorldTransform, childWorldTransform);
     }
 
-    public Joint calculateMirroredJoint(TerminalElement parent, TerminalElement mirroredParent) {
-        return new SpineOrientedJoint(calculateMirroredJointPosition(parent, mirroredParent),
+    public Joint calculateMirroredJoint(TerminalElement mirroredParent) {
+        return new SpineOrientedJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent),
                 spinePart, spinePosition, skeletonGenerator);
     }
 
     public float getSpinePosition() {
         return spinePosition;
+    }
+
+    public SpinePart getSpinePart() {
+        return spinePart;
     }
 
     /**

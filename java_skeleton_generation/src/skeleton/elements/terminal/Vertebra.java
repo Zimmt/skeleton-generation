@@ -1,5 +1,6 @@
 package skeleton.elements.terminal;
 
+import skeleton.SpinePart;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
@@ -17,9 +18,15 @@ public class Vertebra extends TerminalElement {
     private final String kind = "vertebra";
     SpineOrientedJoint joint;
 
+    public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
+                    boolean positiveXDir, SpinePart spinePart, float jointSpinePosition) {
+        super(transform, boundingBox, parent, ancestor);
+        this.joint = new SpineOrientedJoint(this, Vertebra.getJointPosition(boundingBox, positiveXDir), spinePart, jointSpinePosition, parent.getGenerator());
+    }
+
     public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, SpineOrientedJoint joint) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = joint;
+        this.joint = new SpineOrientedJoint(this, joint.getPosition(), joint.getSpinePart(), joint.getSpinePosition(), parent.getGenerator());
     }
 
     public String getKind() {

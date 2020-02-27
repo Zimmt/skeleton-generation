@@ -55,8 +55,8 @@ public class WholeBodyRule extends ReplacementRule {
     private RootVertebra generateRootVertebra(WholeBody ancestor) {
         float spinePosition = 0.5f;
         Point3f center = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(spinePosition);
-        TransformationMatrix transform = new TransformationMatrix(new Vector3f(center));
 
+        TransformationMatrix transform = new TransformationMatrix(new Vector3f(center));
         return new RootVertebra(transform, ancestor, spinePosition);
     }
 }

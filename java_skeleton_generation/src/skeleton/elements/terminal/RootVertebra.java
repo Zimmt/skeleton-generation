@@ -25,8 +25,8 @@ public class RootVertebra extends TerminalElement {
     public RootVertebra(TransformationMatrix transform, NonTerminalElement ancestor, float spinePosition) {
         super(transform, new BoundingBox(new Vector3f(), new Vector3f(), new Vector3f()), null, ancestor);
         Point3f center = ancestor.getGenerator().getSkeletonMetaData().getSpine().getBack().apply3d(spinePosition);
-        this.frontPartJoint = new SpineOrientedJoint(center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
-        this.backPartJoint = new SpineOrientedJoint(center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
+        this.frontPartJoint = new SpineOrientedJoint(this, center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
+        this.backPartJoint = new SpineOrientedJoint(this, center, SpinePart.BACK, spinePosition, ancestor.getGenerator());
     }
 
     public String getKind() {

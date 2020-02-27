@@ -1,38 +1,40 @@
 package skeleton.elements.joints;
 
 import skeleton.elements.terminal.TerminalElement;
+import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.Random;
 
-public class OneAngleBasedJoint extends Joint {
+public abstract class OneAngleBasedJoint extends Joint {
 
     private float minAngle;
     private float maxAngle;
-    private Random random = new Random();
+    float currentAngle = 0f;
 
-    public OneAngleBasedJoint(Point3f position, float minAngle, float maxAngle) {
-        super(position);
+    public OneAngleBasedJoint(TerminalElement parent, Point3f position, float minAngle, float maxAngle) {
+        super(parent, position);
         float eps = 0.01f;
         if (minAngle > maxAngle || Math.abs(minAngle) > Math.toRadians(180)+eps || Math.abs(maxAngle) > Math.toRadians(180)+eps) {
             System.err.println("Invalid angle");
+        }
+        if (!(minAngle <= 0f && maxAngle >= 0f)) {
+            System.err.println("The initial position of this one angle joint is not at 0 degrees");
         }
         this.minAngle = minAngle;
         this.maxAngle = maxAngle;
     }
 
-    public TransformationMatrix calculateChildTransform(TerminalElement parent) {
-        float angle = (random.nextFloat() * (maxAngle - minAngle)) + minAngle;
+    public abstract boolean movementPossible(boolean nearerToFloor);
+    public abstract void setNewAngle(boolean nearerToFloor, float stepSize);
 
+    /**
+     * Uses an angle of 0° for the initial child.
+     */
+    public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
-        transform.rotateAroundZ(angle);
-        System.out.println("one angle rotation " + Math.toDegrees(angle));
+        transform.rotateAroundZ(currentAngle);
         return transform;
-    }
-
-    public OneAngleBasedJoint calculateMirroredJoint(TerminalElement parent, TerminalElement mirroredParent) {
-        return new OneAngleBasedJoint(position, maxAngle, minAngle);
     }
 }

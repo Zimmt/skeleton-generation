@@ -1,74 +1,101 @@
 package skeleton.elements.joints;
 
 import skeleton.elements.terminal.TerminalElement;
+import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.Random;
+import java.util.List;
 
-public class TwoAngleBasedJoint extends Joint {
+public abstract class TwoAngleBasedJoint extends Joint {
 
-    // max angles in radians
-    private float maxTheta; // angle from polar axis (this determines a circle)
-    // angle from reference direction (this determines a point on the circle)
-    private float minPhi;
-    private float maxPhi;
+    float minFrontAngle;
+    float maxFrontAngle;
+    float minSideAngle;
+    float maxSideAngle;
 
-    private boolean floorRestricted;
-    private Random random = new Random(); // todo use some kind of normal distribution?
+    float currentFrontAngle = 0f;
+    float currentSideAngle = 0f;
 
-    // needed for floor calculations
-    private float childLengthToNextJoint;
-    private float restExtremityLength; // length of extremity from joint of child to floor
-
-    public TwoAngleBasedJoint(Point3f position, float maxTheta, float minPhi, float maxPhi, boolean floorRestricted) {
-        super(position);
-        float eps = 0.01f;
-        if (Math.abs(maxTheta) < -eps || maxTheta > Math.toRadians(180)+eps) {
-            System.err.println("Invalid theta angle");
+    public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFrontAngle, float maxFrontAngle, float minSideAngle, float maxSideAngle) {
+        super(parent, position);
+        if (minFrontAngle > maxFrontAngle || Math.abs(minFrontAngle) > Math.toRadians(180) || Math.abs(maxFrontAngle) > Math.toRadians(180) ||
+            minSideAngle > maxSideAngle || Math.abs(minSideAngle) > Math.toRadians(180) || Math.abs(maxSideAngle) > Math.toRadians(180)) {
+            System.err.println("Invalid angle");
         }
-        if (minPhi > maxPhi || Math.abs(minPhi) > Math.toRadians(360)+eps || Math.abs(maxPhi) > Math.toRadians(360)+eps) {
-            System.err.println("Invalid phi angle");
+        if (!(minFrontAngle <= 0f && maxFrontAngle >= 0f) || !(minSideAngle <= 0f && maxSideAngle >= 0f)) {
+            System.err.println("The initial position of this one angle joint is not at 0 degrees");
         }
-
-        this.maxTheta = maxTheta;
-        this.minPhi = minPhi;
-        this.maxPhi = maxPhi;
-        this.floorRestricted = floorRestricted;
+        this.minFrontAngle = minFrontAngle;
+        this.maxFrontAngle = maxFrontAngle;
+        this.minSideAngle = minSideAngle;
+        this.maxSideAngle = maxSideAngle;
     }
 
     /**
-     * Values needed for floor restricted calculations of child transform
-     * @param childLengthToNextJoint length from this joint to child joint
-     * @param restExtremityLength max length from child joint to floor
+     * first entry in the list is the side turn direction (or null), second the front turn direction (or null)
+     * true: anti-clockwise
+     * false: clockwise
+     * @return null if no turn direction would bring foot nearer to floor
      */
-    public void setLengthsToFloor(float childLengthToNextJoint, float restExtremityLength) {
-        this.childLengthToNextJoint = childLengthToNextJoint;
-        this.restExtremityLength = restExtremityLength;
-    }
+    abstract List<Boolean> getTurnDirectionsNearerToFloor();
 
-    public TransformationMatrix calculateChildTransform(TerminalElement parent) {
-        /*if (floorRestricted && (childLengthToNextJoint <= 0 || restExtremityLength <= 0)) {
-            System.err.println("Cannot calculate child transform, set lengths first!");
-            return null;
-        }*/
-
-        // todo floor restriction
-
-        float theta = random.nextFloat() * maxTheta;
-        float phi = (random.nextFloat() * (maxPhi - minPhi)) + minPhi;
-
-        System.out.println("Two angle rotation " + Math.toDegrees(theta) + ", " + Math.toDegrees(phi));
-
+    public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
-        transform.rotateAroundY(-phi);
-        transform.rotateAroundZ(-theta);
+        transform.rotateAroundX(currentFrontAngle);
+        transform.rotateAroundZ(currentSideAngle);
 
         return transform;
     }
 
-    public TwoAngleBasedJoint calculateMirroredJoint(TerminalElement parent, TerminalElement mirroredParent) {
-        return new TwoAngleBasedJoint(calculateMirroredJointPosition(parent, mirroredParent), maxTheta, -minPhi, -maxPhi, floorRestricted);
+    public boolean movementPossible(boolean nearerToFloor, boolean side) {
+        List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
+        if (turnDirections == null) {
+            return !nearerToFloor;
+        }
+        if (side) {
+            return turnDirections.get(0) != null;
+        } else {
+            return turnDirections.get(1) != null;
+        }
+    }
+
+    public void setNewSideAngle(boolean nearerToFloor, float stepSize) {
+        List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
+        if (turnDirections == null) {
+            System.err.println("can't set new side angle");
+            return;
+        }
+        float sign = nearerToFloor ? 1f : -1f;
+        currentSideAngle = currentSideAngle + sign * stepSize;
+        if (currentSideAngle > maxSideAngle) {
+            currentSideAngle = maxSideAngle;
+        } else if (currentSideAngle < minSideAngle) {
+            currentSideAngle = minSideAngle;
+        }
+    }
+
+    public void setNewFrontAngle(boolean nearerToFloor, float stepSize) {
+        List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
+        if (turnDirections == null) {
+            System.err.println("can't set new front angle");
+            return;
+        }
+        float sign = nearerToFloor ? 1f : -1f;
+        currentFrontAngle = currentFrontAngle + sign * stepSize;
+        if (currentFrontAngle > maxFrontAngle) {
+            currentFrontAngle = maxFrontAngle;
+        } else if (currentFrontAngle < minFrontAngle) {
+            currentFrontAngle = minFrontAngle;
+        }
+    }
+
+    public void setMaxSideAngle(float maxSideAngle) {
+        this.maxSideAngle = maxSideAngle;
+    }
+
+    public void setCurrentSideAngle(float currentSideAngle) {
+        this.currentSideAngle = currentSideAngle;
     }
 }

@@ -23,8 +23,8 @@ public class Pelvic extends TerminalElement {
 
     public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, float tailJointSpinePosition) {
         super(transform, boundingBox, parent, ancestor);
-        this.tailJoint = new SpineOrientedJoint(Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
-        this.legJoint = new PelvicThighJoint(Pelvic.getLegJointPosition(boundingBox), true);
+        this.tailJoint = new SpineOrientedJoint(this, Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
+        this.legJoint = new PelvicThighJoint(this, Pelvic.getLegJointPosition(boundingBox));
     }
 
     public String getKind() {

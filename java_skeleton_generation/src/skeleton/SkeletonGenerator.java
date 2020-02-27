@@ -281,21 +281,18 @@ public class SkeletonGenerator {
 
             TransformationMatrix transform;
             if (parent == null) {
-                transform = firstParentJoint.calculateChildTransform(firstParent);
+                transform = firstParentJoint.calculateChildTransform(childBox);
             } else {
-                transform = parent.getJoint().calculateChildTransform(parent);
+                transform = parent.getJoint().calculateChildTransform(childBox);
             }
             transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
 
-            SpineOrientedJoint joint = new SpineOrientedJoint(Vertebra.getJointPosition(boundingBox, sign > 0),
-                    spinePart, childSpineEndPosition, ancestor.getGenerator());
-
             Vertebra child;
             if (parent == null) {
-                child = new Vertebra(transform, childBox, firstParent, ancestor, joint);
+                child = new Vertebra(transform, childBox, firstParent, ancestor, sign > 0, spinePart, childSpineEndPosition);
                 firstParent.addChild(child);
             } else {
-                child = new Vertebra(transform, childBox, parent, ancestor, joint);
+                child = new Vertebra(transform, childBox, parent, ancestor, sign > 0, spinePart, childSpineEndPosition);
                 parent.addChild(child);
             }
 

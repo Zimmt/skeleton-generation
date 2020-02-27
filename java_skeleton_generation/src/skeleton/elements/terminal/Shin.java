@@ -19,7 +19,7 @@ public class Shin extends TerminalElement {
 
     public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new ShinFootJoint(Shin.getJointPosition(boundingBox, mirrored), true);
+        this.joint = new ShinFootJoint(this, Shin.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {
