@@ -86,4 +86,8 @@ public abstract class TerminalElement extends SkeletonPart {
 
         return TransformationMatrix.multiply(translation, reflection);
     }
+
+    public void setTransform(TransformationMatrix transform) {
+        this.transform = transform;
+    }
 }

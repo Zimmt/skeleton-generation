@@ -6,6 +6,7 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import java.util.Random;
 
 public abstract class OneAngleBasedJoint extends Joint {
 
@@ -14,6 +15,7 @@ public abstract class OneAngleBasedJoint extends Joint {
     float currentAngle = 0f;
 
     TerminalElement child;
+    Random random = new Random();
 
     public OneAngleBasedJoint(TerminalElement parent, Point3f position, float minAngle, float maxAngle) {
         super(parent, position);
@@ -46,14 +48,26 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     public void setNewAngle(boolean nearerToFloor, float stepSize) {
         Boolean turnDirection = getTurnDirectionNearerToFloor();
-        if (turnDirection == null) {
+        if (nearerToFloor && turnDirection == null) {
             System.err.println("Cannot set new angle");
             return;
         }
 
-        float sign = turnDirection ? 1f : -1f;
-        if (!nearerToFloor) {
-            sign = -sign;
+        float sign;
+        if (turnDirection == null) {
+            float eps = 0.1f;
+            if (Math.abs(currentAngle) - minAngle < eps) {
+                sign = 1f;
+            } else if (Math.abs(currentAngle) - maxAngle < eps) {
+                sign = -1f;
+            } else {
+                sign = random.nextFloat() > 0.5 ? 1f : -1f;
+            }
+        } else {
+            sign = turnDirection ? 1f : -1f;
+            if (!nearerToFloor) {
+                sign = -sign;
+            }
         }
         currentAngle = currentAngle + sign * stepSize;
         if (currentAngle > maxAngle) {

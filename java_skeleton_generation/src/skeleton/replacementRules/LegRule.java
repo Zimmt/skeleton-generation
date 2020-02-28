@@ -4,11 +4,13 @@ import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
+import skeleton.elements.terminal.Pelvic;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.Thigh;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,11 +55,15 @@ public class LegRule extends ReplacementRule {
         generatedParts.add(shin);
 
         Vector3f footScale = new Vector3f(
-                extremityData.getLengthFoot(),
                 0.8f * shin.getBoundingBox().getXLength(),
+                extremityData.getLengthFoot(),
                 2f * shin.getBoundingBox().getZLength());
         Foot foot = generateFoot(footScale, leg, shin);
         generatedParts.add(foot);
+
+        if (!findFlooredPosition(leg.getParent(), thigh, shin, foot, true)) {
+            findFlooredPosition(leg.getParent(), thigh, shin, foot, false);
+        }
 
         return generatedParts;
     }
@@ -87,5 +93,75 @@ public class LegRule extends ReplacementRule {
         Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
         return foot;
+    }
+
+    private boolean findFlooredPosition(Pelvic pelvic, Thigh thigh, Shin shin, Foot foot, boolean flooredAnkle) {
+        pelvic.getLegJoint().setChild(thigh);
+        thigh.getJoint().setChild(shin);
+        shin.getJoint().setChild(foot);
+
+        float eps = 1f;
+        float angleStepSize = (float) Math.toRadians(10);
+        int maxSteps = 10;
+        int step = 0;
+        Point3f endPosition;
+        if (flooredAnkle) {
+            endPosition = shin.getWorldPosition();
+        } else {
+            endPosition = foot.getWorldPosition();
+        }
+        if (endPosition.y > 0) {
+            System.err.println("Leg is too short!");
+            return false;
+        }
+
+        while (Math.abs(endPosition.y) > eps && step < maxSteps) {
+            System.out.println("Distance to floor is " + endPosition.y);
+            boolean nearerToFloor = endPosition.y > 0;
+
+            if (pelvic.getLegJoint().movementPossible(nearerToFloor, true)) {
+                pelvic.getLegJoint().setNewSideAngle(nearerToFloor, angleStepSize);
+            }
+            if (pelvic.getLegJoint().movementPossible(nearerToFloor, false)) {
+                pelvic.getLegJoint().setNewFrontAngle(nearerToFloor, angleStepSize);
+            }
+            thigh.setTransform(pelvic.getLegJoint().calculateChildTransform(thigh.getBoundingBox()));
+
+            if (thigh.getJoint().movementPossible(nearerToFloor)) {
+                thigh.getJoint().setNewAngle(nearerToFloor, angleStepSize);
+            }
+            shin.setTransform(thigh.getJoint().calculateChildTransform(shin.getBoundingBox()));
+
+            if (flooredAnkle) {
+                endPosition = shin.getWorldPosition();
+            } else {
+                if (shin.getJoint().movementPossible(nearerToFloor, true)) {
+                    shin.getJoint().setNewSideAngle(nearerToFloor, angleStepSize);
+                }
+                if (shin.getJoint().movementPossible(nearerToFloor, false)) {
+                    shin.getJoint().setNewFrontAngle(nearerToFloor, angleStepSize);
+                }
+                foot.setTransform(shin.getJoint().calculateChildTransform(foot.getBoundingBox()));
+
+                endPosition = foot.getWorldPosition();
+            }
+
+            step++;
+            angleStepSize /= 2f;
+        }
+
+        if (Math.abs(endPosition.y) < eps) {
+            if (flooredAnkle) { // adjust foot
+                Vector3f localXDir = new Vector3f(1f, 0f, 0f);
+                foot.calculateWorldTransform().applyOnVector(localXDir);
+                float angle = localXDir.angle(new Vector3f(1f, 0f, 0f)); // todo correct angle?
+                shin.getJoint().setCurrentSideAngle(-angle);
+                foot.setTransform(shin.getJoint().calculateChildTransform(foot.getBoundingBox()));
+            }
+            return true;
+        } else {
+            System.err.println("Could not reach floor");
+            return false;
+        }
     }
 }

@@ -10,10 +10,10 @@ import javax.vecmath.Vector3f;
 
 public class ThighShinJoint extends OneAngleBasedJoint {
 
-    private static float maxAngle = (float) Math.toRadians(170);
+    private static float maxAngleThigh = (float) Math.toRadians(170);
 
     public ThighShinJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, 0f, maxAngle);
+        super(parent, position, 0f, maxAngleThigh);
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

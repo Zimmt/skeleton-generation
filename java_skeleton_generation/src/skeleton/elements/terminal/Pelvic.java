@@ -1,7 +1,6 @@
 package skeleton.elements.terminal;
 
 import skeleton.SpinePart;
-import skeleton.elements.joints.Joint;
 import skeleton.elements.joints.PelvicThighJoint;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
@@ -35,7 +34,7 @@ public class Pelvic extends TerminalElement {
         return tailJoint;
     }
 
-    public Joint getLegJoint() {
+    public PelvicThighJoint getLegJoint() {
         return legJoint;
     }
 

@@ -7,18 +7,16 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PelvicThighJoint extends TwoAngleBasedJoint {
 
-    private static float maxFrontAngle = (float) Math.toRadians(170);
-    private static float minSideAngle = (float) -Math.toRadians(170);
+    private static float maxFrontAnglePelvic = (float) Math.toRadians(170);
+    private static float minSideAnglePelvic = (float) -Math.toRadians(170);
 
     private float sideAngleOffset; // the angle between local x axis and global x axis
 
     public PelvicThighJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, 0f, maxFrontAngle, minSideAngle, 0f);
+        super(parent, position, 0f, maxFrontAnglePelvic, minSideAnglePelvic, 0f);
         initializeSideAngle();
     }
 
@@ -33,36 +31,6 @@ public class PelvicThighJoint extends TwoAngleBasedJoint {
 
     public PelvicThighJoint calculateMirroredJoint(TerminalElement mirroredParent) {
         return new PelvicThighJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
-    }
-
-    /**
-     * first entry in the list is the side turn direction (or null), second the front turn direction (or null)
-     * true: anti-clockwise
-     * false: clockwise
-     * @return null if no turn direction would bring foot nearer to floor
-     */
-    List<Boolean> getTurnDirectionsNearerToFloor() {
-        Vector3f testVector = new Vector3f(0f, -1f, 0f);
-        child.calculateWorldTransform().applyOnVector(testVector);
-        float eps = 0.01f;
-
-        if (Math.abs(testVector.y + 1f) < eps) {
-            return null;
-        }
-        List<Boolean> turnDirections = new ArrayList<>(2);
-        if (Math.abs(testVector.x) < eps) {
-            turnDirections.add(null);
-        } else {
-            turnDirections.add(testVector.x < 0);
-        }
-
-        if (Math.abs(testVector.z) < eps) {
-            turnDirections.add(null);
-        } else {
-            turnDirections.add(testVector.z < 0);
-        }
-
-        return turnDirections;
     }
 
     /**
