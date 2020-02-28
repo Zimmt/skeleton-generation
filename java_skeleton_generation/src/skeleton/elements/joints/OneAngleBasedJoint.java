@@ -13,6 +13,8 @@ public abstract class OneAngleBasedJoint extends Joint {
     private float maxAngle;
     float currentAngle = 0f;
 
+    TerminalElement child;
+
     public OneAngleBasedJoint(TerminalElement parent, Point3f position, float minAngle, float maxAngle) {
         super(parent, position);
         float eps = 0.01f;
@@ -26,8 +28,40 @@ public abstract class OneAngleBasedJoint extends Joint {
         this.maxAngle = maxAngle;
     }
 
-    public abstract boolean movementPossible(boolean nearerToFloor);
-    public abstract void setNewAngle(boolean nearerToFloor, float stepSize);
+    /**
+     * the turn direction (or null)
+     * true: anti-clockwise
+     * false: clockwise
+     * @return null if no turn direction would bring foot nearer to floor
+     */
+    abstract Boolean getTurnDirectionNearerToFloor();
+
+    public boolean movementPossible(boolean nearerToFloor) {
+        Boolean turnDirection = getTurnDirectionNearerToFloor();
+        if (turnDirection == null) {
+            return !nearerToFloor;
+        }
+        return (turnDirection && currentAngle < maxAngle) || (!turnDirection && currentAngle > minAngle);
+    }
+
+    public void setNewAngle(boolean nearerToFloor, float stepSize) {
+        Boolean turnDirection = getTurnDirectionNearerToFloor();
+        if (turnDirection == null) {
+            System.err.println("Cannot set new angle");
+            return;
+        }
+
+        float sign = turnDirection ? 1f : -1f;
+        if (!nearerToFloor) {
+            sign = -sign;
+        }
+        currentAngle = currentAngle + sign * stepSize;
+        if (currentAngle > maxAngle) {
+            currentAngle = maxAngle;
+        } else if (currentAngle < minAngle) {
+            currentAngle = minAngle;
+        }
+    }
 
     /**
      * Uses an angle of 0° for the initial child.
@@ -36,5 +70,9 @@ public abstract class OneAngleBasedJoint extends Joint {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
         transform.rotateAroundZ(currentAngle);
         return transform;
+    }
+
+    public void setChild(TerminalElement child) {
+        this.child = child;
     }
 }

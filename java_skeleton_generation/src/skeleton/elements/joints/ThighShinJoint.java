@@ -6,6 +6,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 public class ThighShinJoint extends OneAngleBasedJoint {
 
@@ -21,33 +22,17 @@ public class ThighShinJoint extends OneAngleBasedJoint {
         return transform;
     }
 
-    public boolean movementPossible(boolean nearerToFloor) {
-        if (nearerToFloor) {
-            return currentAngle > 0;
+    Boolean getTurnDirectionNearerToFloor() {
+        Vector3f testVectorParent = new Vector3f(0f, -1f, 0f);
+        parent.calculateWorldTransform().applyOnVector(testVectorParent);
+        Vector3f testVectorWorld = new Vector3f(0f, -1f, 0f);
+
+        float eps = 0.01f;
+        float wantedAngle = testVectorWorld.angle(testVectorParent);
+        if (Math.abs(wantedAngle - currentAngle) < eps) {
+            return null;
         } else {
-            return currentAngle < maxAngle;
-        }
-    }
-
-    public void setNewAngle(boolean nearerToFloor, float stepSize) {
-        if (!movementPossible(nearerToFloor)) {
-            System.err.println("Cannot set new angle as it is already set to max/min");
-            return;
-        }
-
-        if (nearerToFloor) { // [0, currentAngle)
-            if (currentAngle - stepSize > 0) {
-                currentAngle -= stepSize;
-            } else {
-                currentAngle = 0f;
-            }
-
-        } else { // [currentAngle, maxAngle)
-            if (currentAngle + stepSize < maxAngle) {
-                currentAngle += stepSize;
-            } else {
-                currentAngle = maxAngle;
-            }
+            return currentAngle < wantedAngle;
         }
     }
 

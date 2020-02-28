@@ -43,7 +43,7 @@ public class PelvicThighJoint extends TwoAngleBasedJoint {
      */
     List<Boolean> getTurnDirectionsNearerToFloor() {
         Vector3f testVector = new Vector3f(0f, -1f, 0f);
-        parent.calculateWorldTransform().applyOnVector(testVector);
+        child.calculateWorldTransform().applyOnVector(testVector);
         float eps = 0.01f;
 
         if (Math.abs(testVector.y + 1f) < eps) {

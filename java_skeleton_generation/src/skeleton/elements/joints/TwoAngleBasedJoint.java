@@ -18,6 +18,8 @@ public abstract class TwoAngleBasedJoint extends Joint {
     float currentFrontAngle = 0f;
     float currentSideAngle = 0f;
 
+    TerminalElement child;
+
     public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFrontAngle, float maxFrontAngle, float minSideAngle, float maxSideAngle) {
         super(parent, position);
         if (minFrontAngle > maxFrontAngle || Math.abs(minFrontAngle) > Math.toRadians(180) || Math.abs(maxFrontAngle) > Math.toRadians(180) ||
@@ -54,11 +56,15 @@ public abstract class TwoAngleBasedJoint extends Joint {
         if (turnDirections == null) {
             return !nearerToFloor;
         }
-        if (side) {
-            return turnDirections.get(0) != null;
-        } else {
-            return turnDirections.get(1) != null;
+        boolean movementPossible = false;
+        if (side && turnDirections.get(0) != null) {
+            movementPossible = (turnDirections.get(0) && currentSideAngle < maxSideAngle) ||
+                    (!turnDirections.get(0) && currentSideAngle > minSideAngle);
+        } else if (!side && turnDirections.get(1) != null) {
+            movementPossible = (turnDirections.get(1) && currentFrontAngle < maxFrontAngle) ||
+                    (!turnDirections.get(1) && currentFrontAngle > minFrontAngle);
         }
+        return movementPossible;
     }
 
     public void setNewSideAngle(boolean nearerToFloor, float stepSize) {
@@ -67,7 +73,10 @@ public abstract class TwoAngleBasedJoint extends Joint {
             System.err.println("can't set new side angle");
             return;
         }
-        float sign = nearerToFloor ? 1f : -1f;
+        float sign = turnDirections.get(0) ? 1f : -1f;
+        if (!nearerToFloor) {
+            sign = -sign;
+        }
         currentSideAngle = currentSideAngle + sign * stepSize;
         if (currentSideAngle > maxSideAngle) {
             currentSideAngle = maxSideAngle;
@@ -82,7 +91,10 @@ public abstract class TwoAngleBasedJoint extends Joint {
             System.err.println("can't set new front angle");
             return;
         }
-        float sign = nearerToFloor ? 1f : -1f;
+        float sign = turnDirections.get(1) ? 1f : -1f;
+        if (!nearerToFloor) {
+            sign = -sign;
+        }
         currentFrontAngle = currentFrontAngle + sign * stepSize;
         if (currentFrontAngle > maxFrontAngle) {
             currentFrontAngle = maxFrontAngle;
@@ -97,5 +109,9 @@ public abstract class TwoAngleBasedJoint extends Joint {
 
     public void setCurrentSideAngle(float currentSideAngle) {
         this.currentSideAngle = currentSideAngle;
+    }
+
+    public void setChild(TerminalElement child) {
+        this.child = child;
     }
 }
