@@ -8,9 +8,9 @@ import java.util.List;
 
 public class SpinePosition {
 
-    CubicBezierCurve neck;
-    CubicBezierCurve back;
-    CubicBezierCurve tail;
+    private CubicBezierCurve neck;
+    private CubicBezierCurve back;
+    private CubicBezierCurve tail;
 
     public SpinePosition(List<Point2d> spinePoints) {
         if (spinePoints.size() != 10) {

@@ -14,7 +14,7 @@ public class SkeletonMetaData {
     private SpinePosition spine;
     private ExtremityData extremities;
     private double weight;
-    private float floorHeight = 150f;
+
 
     public SkeletonMetaData(PcaDataPoint p) {
         this.spine = preprocessSpine(p.getSpine());
@@ -24,7 +24,7 @@ public class SkeletonMetaData {
         }
         this.extremities = new ExtremityData(p.getWings(), p.getFlooredLegs(),
                 p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
-                p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot());
+                p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine);
         this.weight = p.getWeight();
     }
 
@@ -38,14 +38,6 @@ public class SkeletonMetaData {
 
     public double getWeight() {
         return weight;
-    }
-
-    public float getFloorHeight() {
-        return floorHeight;
-    }
-
-    public void setFloorHeight(float floorHeight) {
-        this.floorHeight = floorHeight;
     }
 
     private SpinePosition preprocessSpine(List<Point2d> spinePoints) {

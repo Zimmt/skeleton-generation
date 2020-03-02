@@ -62,8 +62,8 @@ public class LegRule extends ReplacementRule {
         Foot foot = generateFoot(footScale, leg, shin);
         generatedParts.add(foot);
 
-        if (!findFlooredPosition(leg.getParent(), thigh, shin, foot, true)) {
-            findFlooredPosition(leg.getParent(), thigh, shin, foot, false);
+        if (leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredLegs() > 0) {
+            findFlooredPosition(leg.getParent(), thigh, shin, foot, leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
         }
 
         return generatedParts;
@@ -98,12 +98,12 @@ public class LegRule extends ReplacementRule {
 
     /**
      * Adapts angles of leg until a position is reached where the floor is touched
-     * @param flooredAnkle if the ankle or the tip of the foot should touch the floor
+     * @param flooredAnkleProbability probability for the ankle to touch the floor (otherwise the tip of the foot will be used)
      * @return if it was successful; reasons for failing could be that
      * - the leg is too short to reach the floor
      * - or the maximum number of steps was exceeded (but angles have already been changed)
      */
-    private boolean findFlooredPosition(Pelvic pelvic, Thigh thigh, Shin shin, Foot foot, boolean flooredAnkle) {
+    private boolean findFlooredPosition(Pelvic pelvic, Thigh thigh, Shin shin, Foot foot, float flooredAnkleProbability) {
         pelvic.getLegJoint().setChild(thigh);
         thigh.getJoint().setChild(shin);
         shin.getJoint().setChild(foot);
@@ -119,20 +119,15 @@ public class LegRule extends ReplacementRule {
         float footSideAngleP = 0.9f;
         float oppositeDirP = 0f;
         Random random = new Random();
-        float floorHeight = pelvic.getGenerator().getSkeletonMetaData().getFloorHeight();
+        boolean flooredAnkle = random.nextFloat() < flooredAnkleProbability;
+        pelvic.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle); // other extremities do the same
+        float floorHeight = pelvic.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
 
         Point3f endPosition;
-        float maxLength;
         if (flooredAnkle) {
             endPosition = shin.getWorldPosition();
-            maxLength = thigh.getBoundingBox().getYLength() + shin.getBoundingBox().getYLength();
         } else {
             endPosition = foot.getWorldPosition();
-            maxLength = thigh.getBoundingBox().getYLength() + shin.getBoundingBox().getYLength() + foot.getBoundingBox().getYLength();
-        }
-        if (pelvic.getWorldPosition().y - maxLength > floorHeight) {
-            System.out.println("Leg is too short to touch the floor.");
-            return false;
         }
 
         while (Math.abs(endPosition.y - floorHeight) > eps && step < maxSteps) {
