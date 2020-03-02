@@ -6,7 +6,6 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 
 public class ThighShinJoint extends OneAngleBasedJoint {
 
@@ -21,20 +20,6 @@ public class ThighShinJoint extends OneAngleBasedJoint {
         TransformationMatrix transform = super.calculateChildTransform(childBoundingBox);
         transform.translate(Shin.getLocalTranslationFromJoint(childBoundingBox));
         return transform;
-    }
-
-    Boolean getTurnDirectionNearerToFloor() {
-        Vector3f testVectorParent = new Vector3f(0f, -1f, 0f);
-        parent.calculateWorldTransform().applyOnVector(testVectorParent);
-        Vector3f testVectorWorld = new Vector3f(0f, -1f, 0f);
-
-        float eps = 0.01f;
-        float wantedAngle = testVectorWorld.angle(testVectorParent);
-        if (Math.abs(wantedAngle - currentAngle) < eps) {
-            return null;
-        } else {
-            return currentAngle < wantedAngle;
-        }
     }
 
     public ThighShinJoint calculateMirroredJoint(TerminalElement mirroredParent) {

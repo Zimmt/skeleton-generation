@@ -36,7 +36,19 @@ public abstract class OneAngleBasedJoint extends Joint {
      * false: clockwise
      * @return null if no turn direction would bring foot nearer to floor
      */
-    abstract Boolean getTurnDirectionNearerToFloor();
+    private Boolean getTurnDirectionNearerToFloor() {
+        Vector3f testVectorParent = new Vector3f(0f, -1f, 0f);
+        parent.calculateWorldTransform().applyOnVector(testVectorParent);
+        Vector3f testVectorWorld = new Vector3f(0f, -1f, 0f);
+
+        float eps = 0.01f;
+        float wantedAngle = testVectorWorld.angle(testVectorParent);
+        if (Math.abs(wantedAngle - currentAngle) < eps) {
+            return null;
+        } else {
+            return currentAngle < wantedAngle;
+        }
+    }
 
     public boolean movementPossible(boolean nearerToFloor) {
         Boolean turnDirection = getTurnDirectionNearerToFloor();
@@ -84,6 +96,10 @@ public abstract class OneAngleBasedJoint extends Joint {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
         transform.rotateAroundZ(currentAngle);
         return transform;
+    }
+
+    public void setCurrentAngle(float currentAngle) {
+        this.currentAngle = currentAngle;
     }
 
     public void setChild(TerminalElement child) {

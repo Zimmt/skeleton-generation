@@ -45,7 +45,6 @@ public class Main {
             }
         }
         skeletonGenerator.calculateMirroredElements();
-        System.out.println(skeletonGenerator.toString());
 
         ObjGenerator objGenerator = new ObjGenerator();
         objGenerator.generateObjFrom(skeletonGenerator);

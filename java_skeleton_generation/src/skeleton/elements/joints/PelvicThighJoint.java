@@ -7,14 +7,14 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 
-public class PelvicThighJoint extends TwoAngleBasedJoint {
+public class PelvicThighJoint extends XZAngleBasedJoint {
 
     private static float maxFrontAnglePelvic = (float) Math.toRadians(170);
     private static float minSideAnglePelvic = (float) -Math.toRadians(170);
 
     public PelvicThighJoint(TerminalElement parent, Point3f position) {
         super(parent, position, 0f, maxFrontAnglePelvic, minSideAnglePelvic, 0f);
-        currentSideAngle = (float) - Math.toRadians(45);
+        currentSecondAngle = (float) - Math.toRadians(45);
     }
 
     /**

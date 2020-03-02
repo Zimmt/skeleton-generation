@@ -1,73 +1,40 @@
 package skeleton.elements.joints;
 
 import skeleton.elements.terminal.TerminalElement;
-import util.BoundingBox;
-import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class TwoAngleBasedJoint extends Joint {
 
-    float minFrontAngle;
-    float maxFrontAngle;
-    float minSideAngle;
-    float maxSideAngle;
+    float minFirstAngle;
+    float maxFirstAngle;
+    float minSecondAngle;
+    float maxSecondAngle;
 
-    float currentFrontAngle = 0f;
-    float currentSideAngle = 0f;
+    float currentFirstAngle = 0f;
+    float currentSecondAngle = 0f;
 
     TerminalElement child;
     Random random = new Random();
 
-    public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFrontAngle, float maxFrontAngle, float minSideAngle, float maxSideAngle) {
+    public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle) {
         super(parent, position);
-        if (minFrontAngle > maxFrontAngle || Math.abs(minFrontAngle) > Math.toRadians(180) || Math.abs(maxFrontAngle) > Math.toRadians(180) ||
-            minSideAngle > maxSideAngle || Math.abs(minSideAngle) > Math.toRadians(180) || Math.abs(maxSideAngle) > Math.toRadians(180)) {
+        if (minFirstAngle > maxFirstAngle || Math.abs(minFirstAngle) > Math.toRadians(180) || Math.abs(maxFirstAngle) > Math.toRadians(180) ||
+            minSecondAngle > maxSecondAngle || Math.abs(minSecondAngle) > Math.toRadians(180) || Math.abs(maxSecondAngle) > Math.toRadians(180)) {
             System.err.println("Invalid angle");
         }
-        if (!(minFrontAngle <= 0f && maxFrontAngle >= 0f) || !(minSideAngle <= 0f && maxSideAngle >= 0f)) {
+        if (!(minFirstAngle <= 0f && maxFirstAngle >= 0f) || !(minSecondAngle <= 0f && maxSecondAngle >= 0f)) {
             System.err.println("The initial position of this one angle joint is not at 0 degrees");
         }
-        this.minFrontAngle = minFrontAngle;
-        this.maxFrontAngle = maxFrontAngle;
-        this.minSideAngle = minSideAngle;
-        this.maxSideAngle = maxSideAngle;
+        this.minFirstAngle = minFirstAngle;
+        this.maxFirstAngle = maxFirstAngle;
+        this.minSecondAngle = minSecondAngle;
+        this.maxSecondAngle = maxSecondAngle;
     }
 
-    /**
-     * first entry in the list is the side turn direction (or null), second the front turn direction (or null)
-     * true: anti-clockwise
-     * false: clockwise
-     * @return null if no turn direction would bring foot nearer to floor
-     */
-    List<Boolean> getTurnDirectionsNearerToFloor() {
-        List<Boolean> turnDirections = new ArrayList<>(2);
-
-        Vector3f testVectorChild = new Vector3f(0f, -1f, 0f);
-        child.calculateWorldTransform().applyOnVector(testVectorChild);
-
-        float eps = 0.01f;
-        turnDirections.add(Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null);
-        turnDirections.add(Math.abs(testVectorChild.z) > eps ? testVectorChild.z > 0 : null); // todo why??
-
-        if (turnDirections.get(0) == null && turnDirections.get(1) == null) {
-            return null;
-        }
-
-        return turnDirections;
-    }
-
-    public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
-        TransformationMatrix transform = new TransformationMatrix(new Vector3f(position));
-        transform.rotateAroundX(currentFrontAngle);
-        transform.rotateAroundZ(currentSideAngle);
-
-        return transform;
-    }
+    abstract List<Boolean> getTurnDirectionsNearerToFloor();
 
     public boolean movementPossible(boolean nearerToFloor, boolean side) {
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
@@ -77,56 +44,26 @@ public abstract class TwoAngleBasedJoint extends Joint {
         boolean movementPossible = false;
         if (side && turnDirections.get(0) != null) {
             if (nearerToFloor) {
-                movementPossible = (turnDirections.get(0) && currentSideAngle < maxSideAngle) ||
-                        (!turnDirections.get(0) && currentSideAngle > minSideAngle);
+                movementPossible = (turnDirections.get(0) && currentSecondAngle < maxSecondAngle) ||
+                        (!turnDirections.get(0) && currentSecondAngle > minSecondAngle);
             } else {
-                movementPossible = (turnDirections.get(0) && currentSideAngle > minSideAngle) ||
-                        (!turnDirections.get(0) && currentSideAngle < maxSideAngle);
+                movementPossible = (turnDirections.get(0) && currentSecondAngle > minSecondAngle) ||
+                        (!turnDirections.get(0) && currentSecondAngle < maxSecondAngle);
             }
         } else if (!side && turnDirections.get(1) != null) {
             if (nearerToFloor) {
-                movementPossible = (turnDirections.get(1) && currentFrontAngle < maxFrontAngle) ||
-                        (!turnDirections.get(1) && currentFrontAngle > minFrontAngle);
+                movementPossible = (turnDirections.get(1) && currentFirstAngle < maxFirstAngle) ||
+                        (!turnDirections.get(1) && currentFirstAngle > minFirstAngle);
             } else {
-                movementPossible = (turnDirections.get(1) && currentFrontAngle > minFrontAngle) ||
-                        (!turnDirections.get(1) && currentFrontAngle < maxFrontAngle);
+                movementPossible = (turnDirections.get(1) && currentFirstAngle > minFirstAngle) ||
+                        (!turnDirections.get(1) && currentFirstAngle < maxFirstAngle);
             }
         }
 
         return movementPossible;
     }
 
-    public void setNewSideAngle(boolean nearerToFloor, float stepSize) {
-        List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
-        if (nearerToFloor && turnDirections == null) {
-            System.err.println("can't set new side angle");
-            return;
-        }
-        float sign;
-        if (turnDirections == null || turnDirections.get(0) == null) {
-            float eps = 0.1f;
-            if (Math.abs(currentSideAngle) - minSideAngle < eps) {
-                sign = 1f;
-            } else if (Math.abs(currentSideAngle) - maxSideAngle < eps) {
-                sign = -1f;
-            } else {
-                sign = random.nextFloat() > 0.5 ? 1f : -1f;
-            }
-        } else {
-            sign = turnDirections.get(0) ? 1f : -1f;
-            if (!nearerToFloor) {
-                sign = -sign;
-            }
-        }
-        currentSideAngle = currentSideAngle + sign * stepSize;
-        if (currentSideAngle > maxSideAngle) {
-            currentSideAngle = maxSideAngle;
-        } else if (currentSideAngle < minSideAngle) {
-            currentSideAngle = minSideAngle;
-        }
-    }
-
-    public void setNewFrontAngle(boolean nearerToFloor, float stepSize) {
+    public void setNewFirstAngle(boolean nearerToFloor, float stepSize) {
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
         if (nearerToFloor && turnDirections == null) {
             System.err.println("can't set new front angle");
@@ -135,9 +72,9 @@ public abstract class TwoAngleBasedJoint extends Joint {
         float sign;
         if (turnDirections == null || turnDirections.get(1) == null) {
             float eps = 0.1f;
-            if (Math.abs(currentFrontAngle) - minFrontAngle < eps) {
+            if (Math.abs(currentFirstAngle) - minFirstAngle < eps) {
                 sign = 1f;
-            } else if (Math.abs(currentFrontAngle) - maxFrontAngle < eps) {
+            } else if (Math.abs(currentFirstAngle) - maxFirstAngle < eps) {
                 sign = -1f;
             } else {
                 sign = random.nextFloat() > 0.5 ? 1f : -1f;
@@ -149,20 +86,46 @@ public abstract class TwoAngleBasedJoint extends Joint {
             }
         }
 
-        currentFrontAngle = currentFrontAngle + sign * stepSize;
-        if (currentFrontAngle > maxFrontAngle) {
-            currentFrontAngle = maxFrontAngle;
-        } else if (currentFrontAngle < minFrontAngle) {
-            currentFrontAngle = minFrontAngle;
+        currentFirstAngle = currentFirstAngle + sign * stepSize;
+        if (currentFirstAngle > maxFirstAngle) {
+            currentFirstAngle = maxFirstAngle;
+        } else if (currentFirstAngle < minFirstAngle) {
+            currentFirstAngle = minFirstAngle;
         }
     }
 
-    public void setMaxSideAngle(float maxSideAngle) {
-        this.maxSideAngle = maxSideAngle;
+    public void setNewSecondAngle(boolean nearerToFloor, float stepSize) {
+        List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
+        if (nearerToFloor && turnDirections == null) {
+            System.err.println("can't set new side angle");
+            return;
+        }
+        float sign;
+        if (turnDirections == null || turnDirections.get(0) == null) {
+            float eps = 0.1f;
+            if (Math.abs(currentSecondAngle) - minSecondAngle < eps) {
+                sign = 1f;
+            } else if (Math.abs(currentSecondAngle) - maxSecondAngle < eps) {
+                sign = -1f;
+            } else {
+                sign = random.nextFloat() > 0.5 ? 1f : -1f;
+            }
+        } else {
+            sign = turnDirections.get(0) ? 1f : -1f;
+            if (!nearerToFloor) {
+                sign = -sign;
+            }
+        }
+        currentSecondAngle = currentSecondAngle + sign * stepSize;
+        if (currentSecondAngle > maxSecondAngle) {
+            currentSecondAngle = maxSecondAngle;
+        } else if (currentSecondAngle < minSecondAngle) {
+            currentSecondAngle = minSecondAngle;
+        }
     }
 
-    public void setCurrentSideAngle(float currentSideAngle) {
-        this.currentSideAngle = currentSideAngle;
+    public void setCurrentFirstAngle(float currentFirstAngle) {
+        this.currentFirstAngle = currentFirstAngle;
     }
 
     public void setChild(TerminalElement child) {

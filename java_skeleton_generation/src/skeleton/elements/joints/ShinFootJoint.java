@@ -7,15 +7,13 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 
-public class ShinFootJoint extends TwoAngleBasedJoint {
+public class ShinFootJoint extends OneAngleBasedJoint {
 
-    private static float minFrontAngleShin = (float) -Math.toRadians(45);
-    private static float maxFrontAngleShin = (float) Math.toRadians(45);
-    private static float minSideAngleShin = (float) -Math.toRadians(170);
+    private static float minAngleShin = (float) -Math.toRadians(170);
 
     public ShinFootJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, minFrontAngleShin, maxFrontAngleShin, minSideAngleShin, 0f);
-        currentSideAngle = (float) -Math.toRadians(160);
+        super(parent, position, minAngleShin, 0f);
+        currentAngle = (float) -Math.toRadians(160);
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
