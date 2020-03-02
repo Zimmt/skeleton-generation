@@ -11,9 +11,10 @@ public class PelvicThighJoint extends XZAngleBasedJoint {
 
     private static float maxFrontAnglePelvic = (float) Math.toRadians(170);
     private static float minSideAnglePelvic = (float) -Math.toRadians(170);
+    private static float maxSideAnglePelvic = (float) Math.toRadians(90);
 
     public PelvicThighJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, 0f, maxFrontAnglePelvic, minSideAnglePelvic, 0f);
+        super(parent, position, 0f, maxFrontAnglePelvic, minSideAnglePelvic, maxSideAnglePelvic);
         currentSecondAngle = (float) - Math.toRadians(45);
     }
 

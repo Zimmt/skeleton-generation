@@ -128,6 +128,10 @@ public abstract class TwoAngleBasedJoint extends Joint {
         this.currentFirstAngle = currentFirstAngle;
     }
 
+    public void setCurrentSecondAngle(float currentSecondAngle) {
+        this.currentSecondAngle = currentSecondAngle;
+    }
+
     public void setChild(TerminalElement child) {
         this.child = child;
     }

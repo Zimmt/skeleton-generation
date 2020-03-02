@@ -64,6 +64,8 @@ public class LegRule extends ReplacementRule {
 
         if (leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredLegs() > 0) {
             findFlooredPosition(leg.getParent(), thigh, shin, foot, leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
+        } else {
+            findFloatingPosition(leg.getParent(), thigh, shin, foot);
         }
 
         return generatedParts;
@@ -94,6 +96,18 @@ public class LegRule extends ReplacementRule {
         Foot foot = new Foot(transform, boundingBox, shin, leg);
         shin.addChild(foot);
         return foot;
+    }
+
+    private void findFloatingPosition(Pelvic pelvic, Thigh thigh, Shin shin, Foot foot) {
+        pelvic.getLegJoint().setCurrentFirstAngle((float) Math.toRadians(90));
+        pelvic.getLegJoint().setCurrentSecondAngle((float) Math.toRadians(90));
+        thigh.setTransform(pelvic.getLegJoint().calculateChildTransform(thigh.getBoundingBox()));
+
+        thigh.getJoint().setCurrentAngle(0f);
+        shin.setTransform(thigh.getJoint().calculateChildTransform(shin.getBoundingBox()));
+
+        shin.getJoint().setCurrentAngle(0f);
+        foot.setTransform(shin.getJoint().calculateChildTransform(foot.getBoundingBox()));
     }
 
     /**
