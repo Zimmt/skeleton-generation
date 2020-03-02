@@ -14,6 +14,7 @@ public class ThighShinJoint extends OneAngleBasedJoint {
 
     public ThighShinJoint(TerminalElement parent, Point3f position) {
         super(parent, position, 0f, maxAngleThigh);
+        currentAngle = (float) Math.toRadians(90);
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

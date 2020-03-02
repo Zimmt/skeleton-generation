@@ -15,6 +15,7 @@ public class ShinFootJoint extends TwoAngleBasedJoint {
 
     public ShinFootJoint(TerminalElement parent, Point3f position) {
         super(parent, position, minFrontAngleShin, maxFrontAngleShin, minSideAngleShin, 0f);
+        currentSideAngle = (float) -Math.toRadians(160);
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
