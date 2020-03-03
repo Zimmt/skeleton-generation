@@ -36,6 +36,7 @@ public class LegRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
+        System.out.println("Legs");
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();

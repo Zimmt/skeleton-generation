@@ -1,6 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.DummyJoint;
+import skeleton.elements.joints.UpperLowerArmJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -12,18 +12,18 @@ import java.util.Optional;
 public class UpperArm extends TerminalElement {
 
     private final String kind = "upper arm";
-    DummyJoint joint;
+    UpperLowerArmJoint joint;
 
     public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new DummyJoint(this, UpperArm.getJointPosition(boundingBox, mirrored));
+        this.joint = new UpperLowerArmJoint(this, UpperArm.getJointPosition(boundingBox, mirrored));
     }
 
     public String getKind() {
         return kind;
     }
 
-    public DummyJoint getJoint() {
+    public UpperLowerArmJoint getJoint() {
         return joint;
     }
 

@@ -23,9 +23,6 @@ public abstract class OneAngleBasedJoint extends Joint {
         if (minAngle > maxAngle || Math.abs(minAngle) > Math.toRadians(180)+eps || Math.abs(maxAngle) > Math.toRadians(180)+eps) {
             System.err.println("Invalid angle");
         }
-        if (!(minAngle <= 0f && maxAngle >= 0f)) {
-            System.err.println("The initial position of this one angle joint is not at 0 degrees");
-        }
         this.minAngle = minAngle;
         this.maxAngle = maxAngle;
     }
@@ -100,6 +97,10 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     public void setCurrentAngle(float currentAngle) {
         this.currentAngle = currentAngle;
+    }
+
+    public float getCurrentAngle() {
+        return currentAngle;
     }
 
     public void setChild(TerminalElement child) {
