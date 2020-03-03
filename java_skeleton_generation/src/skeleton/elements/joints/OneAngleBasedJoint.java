@@ -10,8 +10,8 @@ import java.util.Random;
 
 public abstract class OneAngleBasedJoint extends Joint {
 
-    private float minAngle;
-    private float maxAngle;
+    float minAngle;
+    float maxAngle;
     float currentAngle = 0f;
 
     TerminalElement child;

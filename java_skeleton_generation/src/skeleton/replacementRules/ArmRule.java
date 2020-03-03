@@ -61,9 +61,11 @@ public class ArmRule extends ReplacementRule {
         Hand hand = generateHand(handScale, arm, lowerArm);
         generatedParts.add(hand);
 
-        if (arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredLegs() > 1) {
+        if (extremityData.getFlooredLegs() > 1) {
             findFlooredPosition(arm.getParent(), upperArm, lowerArm, hand, arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
-        } else { // todo wings1
+        } else if (extremityData.getWings() > 0) {
+            findWingPosition(arm.getParent(), upperArm, lowerArm, hand);
+        } else {
             findFloatingPosition(arm.getParent(), upperArm, lowerArm, hand);
         }
 
@@ -109,6 +111,17 @@ public class ArmRule extends ReplacementRule {
         hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
     }
 
+    private void findWingPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
+        shoulder.getJoint().setRandomWingAngles();
+        upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
+
+        upperArm.getJoint().setRandomWingAngle();
+        lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
+
+        lowerArm.getJoint().setRandomWingAngle();
+        hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
+    }
+
     /**
      * Adapts angles of arm until a position is reached where the floor is touched
      * @param flooredWristProbability probability for the wrist to touch the floor (otherwise the tip of the hand will be used)
@@ -144,21 +157,21 @@ public class ArmRule extends ReplacementRule {
         }
 
         while (Math.abs(endPosition.y - floorHeight) > eps && step < maxSteps) {
-            System.out.println("Distance to floor is " + (endPosition.y-floorHeight) + ", angle step size: " + Math.toDegrees(angleStepSize));
+            //System.out.println("Distance to floor is " + (endPosition.y-floorHeight) + ", angle step size: " + Math.toDegrees(angleStepSize));
             boolean nearerToFloor = endPosition.y-floorHeight > 0;
 
             if (random.nextFloat() < shoulderSideAngleP && shoulder.getJoint().movementPossible(nearerToFloor, true)) {
                 shoulder.getJoint().setNewSecondAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
             }
             if (random.nextFloat() < shoulderFrontAngleP && shoulder.getJoint().movementPossible(nearerToFloor, false)) {
-                System.out.println("shoulder front angle");
+                //System.out.println("shoulder front angle");
                 shoulder.getJoint().setNewFirstAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
             }
             upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
 
             if (random.nextFloat() < upperLowerArmAngleP && upperArm.getJoint().movementPossible(nearerToFloor)) {
                 upperArm.getJoint().setNewAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
-                System.out.println("new upper lower arm angle: " + Math.toDegrees(upperArm.getJoint().getCurrentAngle()));
+                //System.out.println("new upper lower arm angle: " + Math.toDegrees(upperArm.getJoint().getCurrentAngle()));
             }
             lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
 
@@ -180,7 +193,7 @@ public class ArmRule extends ReplacementRule {
         }
 
         System.out.println("needed steps: " + step);
-        System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
+        //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
 
         if (Math.abs(endPosition.y-floorHeight) < eps) {
             if (flooredWrist) { // adjust hand todo also change angle to world y axis ?

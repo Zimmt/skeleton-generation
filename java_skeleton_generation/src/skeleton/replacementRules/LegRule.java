@@ -146,14 +146,14 @@ public class LegRule extends ReplacementRule {
         }
 
         while (Math.abs(endPosition.y - floorHeight) > eps && step < maxSteps) {
-            System.out.println("Distance to floor is " + (endPosition.y-floorHeight) + ", angle step size: " + Math.toDegrees(angleStepSize));
+            //System.out.println("Distance to floor is " + (endPosition.y-floorHeight) + ", angle step size: " + Math.toDegrees(angleStepSize));
             boolean nearerToFloor = endPosition.y-floorHeight > 0;
 
             if (random.nextFloat() < pelvicSideAngleP && pelvic.getLegJoint().movementPossible(nearerToFloor, true)) {
                 pelvic.getLegJoint().setNewSecondAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
             }
             if (random.nextFloat() < pelvicFrontAngleP && pelvic.getLegJoint().movementPossible(nearerToFloor, false)) {
-                System.out.println("pelvic front angle");
+                //System.out.println("pelvic front angle");
                 pelvic.getLegJoint().setNewFirstAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
             }
             thigh.setTransform(pelvic.getLegJoint().calculateChildTransform(thigh.getBoundingBox()));
@@ -181,7 +181,7 @@ public class LegRule extends ReplacementRule {
         }
 
         System.out.println("needed steps: " + step);
-        System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
+        //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
 
         if (Math.abs(endPosition.y-floorHeight) < eps) {
             if (flooredAnkle) { // adjust foot todo also change angle to world y axis ?

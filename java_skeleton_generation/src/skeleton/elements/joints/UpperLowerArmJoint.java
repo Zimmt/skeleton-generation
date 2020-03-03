@@ -10,10 +10,16 @@ import javax.vecmath.Point3f;
 public class UpperLowerArmJoint extends OneAngleBasedJoint {
 
     private static float min = (float) -Math.toRadians(170);
+    private static float minWing = (float) -Math.toRadians(45);
 
     public UpperLowerArmJoint(TerminalElement parent, Point3f position) {
         super(parent, position, min, 0f);
         currentAngle = (float) -Math.toRadians(160);
+    }
+
+    public void setRandomWingAngle() {
+        currentAngle = (random.nextFloat() * (maxAngle - minWing)) + minWing;
+        System.out.println("upper lower arm angle: " + Math.toDegrees(currentAngle));
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

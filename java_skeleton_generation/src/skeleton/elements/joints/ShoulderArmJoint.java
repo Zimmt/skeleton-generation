@@ -13,9 +13,19 @@ public class ShoulderArmJoint extends XZAngleBasedJoint {
     private static float minSideAngle = (float) -Math.toRadians(90);
     private static float maxSideAngle = (float) Math.toRadians(170);
 
+    private static float minFrontAngleWing = (float) Math.toRadians(130);
+    private static float minSideAngleWing = 0f;
+    private static float maxSideAngleWing = (float) Math.toRadians(45);
+
     public ShoulderArmJoint(TerminalElement parent, Point3f position) {
         super(parent, position, 0f, maxFrontAngle, minSideAngle, maxSideAngle);
         currentSecondAngle = (float) Math.toRadians(90);
+    }
+
+    public void setRandomWingAngles() {
+        currentFirstAngle = (random.nextFloat() * (maxFirstAngle - minFrontAngleWing)) + minFrontAngleWing;
+        currentSecondAngle = (random.nextFloat() * (maxSideAngleWing - minSideAngleWing)) + minSideAngleWing;
+        System.out.println("wing angles: " + Math.toDegrees(currentFirstAngle) + " , " + Math.toDegrees(currentSecondAngle));
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
