@@ -19,7 +19,7 @@ public class ObjGenerator {
 
     public ObjGenerator() {}
 
-    public void generateObjFrom(SkeletonGenerator skeleton) throws IOException {
+    public void generateObjFrom(SkeletonGenerator skeleton, String fileName) throws IOException {
         if (!skeleton.isFinished()) {
             System.err.println("Cannot generate .obj from unfinished skeleton!");
             return;
@@ -66,7 +66,7 @@ public class ObjGenerator {
 
         }
 
-        String path = "skeleton.obj";
+        String path = fileName + ".obj";
         OutputStream objOutputStream = new FileOutputStream(path);
         ObjWriter.write(obj, objOutputStream);
     }

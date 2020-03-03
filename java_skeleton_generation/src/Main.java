@@ -37,16 +37,19 @@ public class Main {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         PcaHandler pcaHandler = new PcaHandler(dataPoints);
 
-        SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler);
-        while (!skeletonGenerator.isFinished()) {
-            boolean stepDone = skeletonGenerator.doOneStep();
-            if (!stepDone) { // there might be missing rules
-                break;
+        int skeletonCount = 10;
+        for (int i = 0; i < skeletonCount; i++) {
+            SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler);
+            while (!skeletonGenerator.isFinished()) {
+                boolean stepDone = skeletonGenerator.doOneStep();
+                if (!stepDone) { // there might be missing rules
+                    break;
+                }
             }
-        }
-        skeletonGenerator.calculateMirroredElements();
+            skeletonGenerator.calculateMirroredElements();
 
-        ObjGenerator objGenerator = new ObjGenerator();
-        objGenerator.generateObjFrom(skeletonGenerator);
+            ObjGenerator objGenerator = new ObjGenerator();
+            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i);
+        }
     }
 }

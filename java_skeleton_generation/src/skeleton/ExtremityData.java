@@ -80,13 +80,13 @@ public class ExtremityData {
 
     private void calculateDerivedValues(SpinePosition spine) {
         Random random = new Random();
-        calculateWings(random.nextFloat());
+        calculateWings();
         calculateLegs(random.nextFloat());
         calculateFloorHeight(spine);
     }
 
-    private void calculateWings(float probability) {
-        if (wingProbability >= 1 || probability > 0.5f) {
+    private void calculateWings() {
+        if (wingProbability > 0.2f) { // todo what probability is good here?
             wings = 1;
         } else {
             wings = 0;
