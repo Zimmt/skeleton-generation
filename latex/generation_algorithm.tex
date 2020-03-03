@@ -1,0 +1,25 @@
+%-------------------------------------------
+%-------------------------------------------
+\chapter{Algorithmus zur Skelettgenerierung}
+
+%---------------------
+\section{Extremitäten}
+
+Extremitäten werden zunächst danach unterschieden, ob sie Bodenkontakt haben sollen oder nicht.
+Wenn nicht, dann sind es entweder Flügel oder Flossen: \todo{Was ist mit Armen?}
+
+\begin{itemize}
+ \item Flossen: gerade nach hinten \todo{bessere Idee?}
+ \item Flügel: spezielles Winkelintervall für jedes beteiligte Gelenk, daraus jeweils zufällig gewählte Winkel \todo{bessere Idee?}
+\end{itemize}
+
+Bei Extremitäten mit Bodenkontakt wird iterativ vorgegangen. \todo{Der allgemeinste Ansatz wäre hier inverse Kinematik zu verwenden. Das ist hier aber nicht nötig, da in jedem Schritt klar ist, wie die Winkel verändert werden müssen, dass der Endpunkt näher zum Boden kommt.}
+Von der Startposition aus, werden die Winkel an den Gelenken in jedem Schritt jeweils so vergrößert oder verkleinert, dass sich der Punkt, der zum Schluss den Boden berühren soll, sich der Bodenoberfläche nähert. Ob die Winkel jeweils vergößert oder verkleinert werden sollen, wird bestimmt, indem die Ausrichtung des Kindelements mit der y-Achse des Weltkoordinatensystems verglichen wird. Soll der Endpunkt der Extremität dem Boden nähern, so wird der Winkel so verändert, dass die Ausrichtung des Kindelements sich der Senkrechten nähert. Wenn nicht, so wird der Winkel in die entgegengesetzte Richtung verändert.
+
+Je nach Ausgangsposition sieht das Ergebnis aber nicht unbedingt natürlich aus. Zum Beispiel kann es passieren, dass das Fußgelenk nicht gedreht wird, also der Fuß das Schienbein einfach verlängert und die Spitze des Fußes Bodenkontakt hat. Wenn dann die Oberseite des Fußes näher am Boden ist als die Unterseite, dann ist das keine sinnvolle Position.
+Um so etwas zu verhindern, wird die Startposition der Extremität so gewählt, dass alle Gelenke stark angewinkelt sind. \todo{Abbildung}
+So wird nicht garantiert, dass Positionen, wie oben beschrieben, nicht auftreten können, aber in den meisten Fällen treten sie nicht auf.
+
+In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht.
+Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadruch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen?}
+Außerdem gibt es eine gewisse Fehlerwahrscheinlichkeit, die ein Gelenk in die entgegengesetzte Richtung dreht, als die, die eigentlich "`richtig"' wäre. Dadurch soll verhindert werden, dass in bestimmten Situationen immer die gleichen "`Fehler"' gemacht werden. \todo{bringt das was?}
