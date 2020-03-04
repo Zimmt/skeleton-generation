@@ -34,7 +34,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         ShoulderGirdle shoulderGirdle = (ShoulderGirdle) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(40f, 10f, 50f));
+        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(80f, 20f, 100f));
         generatedParts.add(shoulder);
 
         Arm arm = new Arm(shoulder, shoulderGirdle);

@@ -45,7 +45,7 @@ public class BackPartRule extends ReplacementRule {
         RootVertebra rootVertebra = backPart.getParent();
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Vector3f pelvicScale = new Vector3f(30f, 20f, 100f);
+        Vector3f pelvicScale = new Vector3f(100f, 30f, 150f);
         List<Float> pelvicIntervalAndLength = findPelvicIntervalAndLength(backPart.getGenerator().getSkeletonMetaData().getSpine(), pelvicScale.x, 0.1f);;
 
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), pelvicIntervalAndLength.get(0));

@@ -41,9 +41,9 @@ public class ArmRule extends ReplacementRule {
         ExtremityData extremityData = arm.getGenerator().getSkeletonMetaData().getExtremities();
 
         Vector3f upperArmScale = new Vector3f(
-                0.6f * arm.getParent().getBoundingBox().getXLength(),
+                0.4f * arm.getParent().getBoundingBox().getXLength(),
                 extremityData.getLengthUpperArm(),
-                0.4f * arm.getParent().getBoundingBox().getZLength());
+                0.3f * arm.getParent().getBoundingBox().getZLength());
         UpperArm upperArm = generateUpperArm(upperArmScale, arm);
         generatedParts.add(upperArm);
 

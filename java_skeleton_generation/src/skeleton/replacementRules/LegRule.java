@@ -43,7 +43,7 @@ public class LegRule extends ReplacementRule {
         ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
 
         Vector3f thighScale = new Vector3f(
-                0.6f * leg.getParent().getBoundingBox().getXLength(),
+                0.4f * leg.getParent().getBoundingBox().getXLength(),
                 extremityData.getLengthUpperLeg(),
                 0.2f * leg.getParent().getBoundingBox().getZLength());
         Thigh thigh = generateThigh(thighScale, leg);
