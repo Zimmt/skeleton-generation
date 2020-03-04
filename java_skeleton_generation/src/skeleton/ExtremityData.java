@@ -142,7 +142,7 @@ public class ExtremityData {
             }
 
             if (minFloorHeight > 0f) {
-                floorHeight = minFloorHeight; // todo ?
+                floorHeight = minFloorHeight + 10f; // todo ?
             }
             System.out.println("Floor height: " + floorHeight);
             System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
