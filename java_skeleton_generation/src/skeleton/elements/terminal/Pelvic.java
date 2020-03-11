@@ -1,8 +1,9 @@
 package skeleton.elements.terminal;
 
 import skeleton.SpinePart;
-import skeleton.elements.joints.PelvicThighJoint;
+import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.joints.SpineOrientedJoint;
+import skeleton.elements.joints.leg.PelvicJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -18,12 +19,12 @@ public class Pelvic extends TerminalElement {
 
     private final String kind = "pelvic";
     private SpineOrientedJoint tailJoint;
-    private PelvicThighJoint legJoint;
+    private PelvicJoint legJoint;
 
-    public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, float tailJointSpinePosition) {
+    public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, float tailJointSpinePosition, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
         this.tailJoint = new SpineOrientedJoint(this, Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
-        this.legJoint = new PelvicThighJoint(this, Pelvic.getLegJointPosition(boundingBox));
+        this.legJoint = PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getLegJointPosition(boundingBox), extremityKind);
     }
 
     public String getKind() {
@@ -34,7 +35,7 @@ public class Pelvic extends TerminalElement {
         return tailJoint;
     }
 
-    public PelvicThighJoint getLegJoint() {
+    public PelvicJoint getLegJoint() {
         return legJoint;
     }
 

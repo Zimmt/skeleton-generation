@@ -1,6 +1,7 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.ThighShinJoint;
+import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.joints.leg.KneeJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -15,18 +16,18 @@ import java.util.Optional;
 public class Thigh extends TerminalElement {
 
     private final String kind = "thigh";
-    private ThighShinJoint joint;
+    private KneeJoint joint;
 
-    public Thigh(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
+    public Thigh(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new ThighShinJoint(this, Thigh.getJointPosition(boundingBox, mirrored));
+        this.joint = KneeJoint.newSpecificKneeJoint(this, Thigh.getJointPosition(boundingBox, mirrored), extremityKind);
     }
 
     public String getKind() {
         return kind;
     }
 
-    public ThighShinJoint getJoint() {
+    public KneeJoint getJoint() {
         return joint;
     }
 
@@ -40,7 +41,7 @@ public class Thigh extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                true);
+                true, joint.getExtremityKind());
     }
 
     /**

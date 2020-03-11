@@ -2,6 +2,7 @@ package skeleton.replacementRules;
 
 import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Pelvic;
@@ -41,19 +42,20 @@ public class LegRule extends ReplacementRule {
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
         ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
+        ExtremityKind extremityKind = leg.getParent().getLegJoint().getExtremityKind();
 
         Vector3f thighScale = new Vector3f(
                 0.4f * leg.getParent().getBoundingBox().getXLength(),
                 extremityData.getLengthUpperLeg(),
                 0.2f * leg.getParent().getBoundingBox().getZLength());
-        Thigh thigh = generateThigh(thighScale, leg);
+        Thigh thigh = generateThigh(thighScale, leg, extremityKind);
         generatedParts.add(thigh);
 
         Vector3f shinScale = new Vector3f(
                 0.8f * thigh.getBoundingBox().getXLength(),
                 extremityData.getLengthLowerLeg(),
                 0.8f * thigh.getBoundingBox().getZLength());
-        Shin shin = generateShin(shinScale, leg, thigh);
+        Shin shin = generateShin(shinScale, leg, thigh, extremityKind);
         generatedParts.add(shin);
 
         Vector3f footScale = new Vector3f(
@@ -63,7 +65,7 @@ public class LegRule extends ReplacementRule {
         Foot foot = generateFoot(footScale, leg, shin);
         generatedParts.add(foot);
 
-        if (leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredLegs() > 0) {
+        if (extremityKind == ExtremityKind.FLOORED_LEG) {
             findFlooredPosition(leg.getParent(), thigh, shin, foot, leg.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
         } else {
             findFloatingPosition(leg.getParent(), thigh, shin, foot);
@@ -73,20 +75,20 @@ public class LegRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Thigh generateThigh(Vector3f scale, Leg leg) {
+    private Thigh generateThigh(Vector3f scale, Leg leg, ExtremityKind extremityKind) {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(boundingBox);
 
-        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false);
+        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false, extremityKind);
         leg.getParent().replaceChild(leg, thigh);
         return thigh;
     }
 
-    private Shin generateShin(Vector3f scale, Leg leg, Thigh thigh) {
+    private Shin generateShin(Vector3f scale, Leg leg, Thigh thigh, ExtremityKind extremityKind) {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = thigh.getJoint().calculateChildTransform(boundingBox);
 
-        Shin shin = new Shin(transform, boundingBox, thigh, leg, false);
+        Shin shin = new Shin(transform, boundingBox, thigh, leg, false, extremityKind);
         thigh.addChild(shin);
         return shin;
     }
