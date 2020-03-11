@@ -34,7 +34,7 @@ public class ArmRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.println("Arms");
+        System.out.print("Arm generation... ");
 
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -65,9 +65,12 @@ public class ArmRule extends ReplacementRule {
             findFlooredPosition(arm.getParent(), upperArm, lowerArm, hand, arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
         } else if (extremityData.getWings() > 0) {
             findWingPosition(arm.getParent(), upperArm, lowerArm, hand);
+        } else if (extremityData.getArms() >= 1) {
+            findArmPosition(arm.getParent(), upperArm, lowerArm, hand);
         } else {
             findFloatingPosition(arm.getParent(), upperArm, lowerArm, hand);
         }
+        System.out.println("...finished.");
 
         return generatedParts;
     }
@@ -105,6 +108,18 @@ public class ArmRule extends ReplacementRule {
         upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
 
         upperArm.getJoint().setCurrentAngle(0f);
+        lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
+
+        lowerArm.getJoint().setCurrentAngle(0f);
+        hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
+    }
+
+    private void findArmPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
+        shoulder.getJoint().setCurrentFirstAngle(0f);
+        shoulder.getJoint().setCurrentSecondAngle(0f);
+        upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
+
+        upperArm.getJoint().setCurrentAngle((float) -Math.toRadians(90));
         lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
 
         lowerArm.getJoint().setCurrentAngle(0f);
@@ -192,7 +207,7 @@ public class ArmRule extends ReplacementRule {
             }
         }
 
-        System.out.println("needed steps: " + step);
+        System.out.print("finding floored position needed " + step + " steps");
         //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
 
         if (Math.abs(endPosition.y-floorHeight) < eps) {

@@ -19,7 +19,7 @@ public class UpperLowerArmJoint extends OneAngleBasedJoint {
 
     public void setRandomWingAngle() {
         currentAngle = (random.nextFloat() * (maxAngle - minWing)) + minWing;
-        System.out.println("upper lower arm angle: " + Math.toDegrees(currentAngle));
+        //System.out.println("upper lower arm angle: " + Math.toDegrees(currentAngle));
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

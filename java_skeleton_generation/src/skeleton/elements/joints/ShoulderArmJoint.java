@@ -25,7 +25,7 @@ public class ShoulderArmJoint extends XZAngleBasedJoint {
     public void setRandomWingAngles() {
         currentFirstAngle = (random.nextFloat() * (maxFirstAngle - minFrontAngleWing)) + minFrontAngleWing;
         currentSecondAngle = (random.nextFloat() * (maxSideAngleWing - minSideAngleWing)) + minSideAngleWing;
-        System.out.println("wing angles: " + Math.toDegrees(currentFirstAngle) + " , " + Math.toDegrees(currentSecondAngle));
+        //System.out.println("wing angles: " + Math.toDegrees(currentFirstAngle) + " , " + Math.toDegrees(currentSecondAngle));
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

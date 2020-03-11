@@ -36,7 +36,7 @@ public class LegRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.println("Legs");
+        System.out.print("Leg generation... ");
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -68,6 +68,7 @@ public class LegRule extends ReplacementRule {
         } else {
             findFloatingPosition(leg.getParent(), thigh, shin, foot);
         }
+        System.out.println("...finished.");
 
         return generatedParts;
     }
@@ -180,7 +181,7 @@ public class LegRule extends ReplacementRule {
             }
         }
 
-        System.out.println("needed steps: " + step);
+        System.out.print("finding floored position needed " + step + " steps ");
         //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
 
         if (Math.abs(endPosition.y-floorHeight) < eps) {

@@ -21,7 +21,7 @@ public class LowerArmHandJoint extends OneAngleBasedJoint {
 
     public void setRandomWingAngle() {
         currentAngle = (random.nextFloat() * (max - minWing)) + minWing;
-        System.out.println("hand angle: " + Math.toDegrees(currentAngle));
+        //System.out.println("hand angle: " + Math.toDegrees(currentAngle));
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {

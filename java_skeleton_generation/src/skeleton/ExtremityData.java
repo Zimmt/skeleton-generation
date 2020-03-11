@@ -16,6 +16,7 @@ public class ExtremityData {
 
     private int flooredLegs;
     private int wings;
+    private int arms;
     private float floorHeight = 0f;
     private float flooredAnkleWristProbability;
 
@@ -66,6 +67,10 @@ public class ExtremityData {
         return wings;
     }
 
+    public int getArms() {
+        return arms;
+    }
+
     public float getFloorHeight() {
         return floorHeight;
     }
@@ -81,12 +86,12 @@ public class ExtremityData {
     private void calculateDerivedValues(SpinePosition spine) {
         Random random = new Random();
         calculateWings();
-        calculateLegs(random.nextFloat());
-        calculateFloorHeight(spine);
+        calculateLegsAndFloorHeight(random.nextFloat(), spine);
+        calculateArms();
     }
 
     private void calculateWings() {
-        if (wingProbability > 0.2f) { // todo what probability is good here?
+        if (wingProbability > 0.4f) { // todo what probability is good here?
             wings = 1;
         } else {
             wings = 0;
@@ -94,7 +99,7 @@ public class ExtremityData {
         System.out.println("wings: " + wings);
     }
 
-    private void calculateLegs(float probability) {
+    private void calculateLegsAndFloorHeight(float probability, SpinePosition spine) {
         if (flooredLegProbability >= 2 || (probability > 0.5f && flooredLegProbability > 1)) {
             flooredLegs = 2;
         } else if (flooredLegProbability <= 0 || (probability < 0.5f && flooredLegProbability < 1)) {
@@ -103,8 +108,10 @@ public class ExtremityData {
             flooredLegs = 1;
         }
         System.out.println("floored legs: " + flooredLegs);
+        calculateFloorHeight(spine);
     }
 
+    // Must be called _after_ number of floored legs is calculated
     private void calculateFloorHeight(SpinePosition spine) {
         if (flooredLegs > 0) {
             float minFloorHeight = 0f;
@@ -147,5 +154,13 @@ public class ExtremityData {
             System.out.println("Floor height: " + floorHeight);
             System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
         }
+    }
+
+
+    private void calculateArms() {
+        if (flooredLegs == 1 && wings == 0) {
+            arms = 1;
+        }
+        System.out.println("Arms: " + arms);
     }
 }

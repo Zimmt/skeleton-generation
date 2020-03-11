@@ -39,6 +39,7 @@ public class Main {
 
         int skeletonCount = 10;
         for (int i = 0; i < skeletonCount; i++) {
+            System.out.println("- " + i + " --------------------------------------------------------------");
             SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler);
             while (!skeletonGenerator.isFinished()) {
                 boolean stepDone = skeletonGenerator.doOneStep();
