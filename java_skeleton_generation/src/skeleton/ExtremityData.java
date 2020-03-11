@@ -115,6 +115,7 @@ public class ExtremityData {
     private void calculateFloorHeight(SpinePosition spine) {
         if (flooredLegs > 0) {
             float minFloorHeight = 0f;
+            float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
 
             float pelvicHeight = spine.getBack().getControlPoint3().y;
             float legLength = lengthUpperLeg + lengthLowerLeg + lengthFoot;
@@ -122,10 +123,10 @@ public class ExtremityData {
                 flooredAnkleWristProbability = 1f;
             } else if (legLength < pelvicHeight) {
                 flooredAnkleWristProbability = 0f;
-                minFloorHeight = pelvicHeight - legLength;
+                minFloorHeight = pelvicHeight - bentRatio*legLength;
             } else {
                 flooredAnkleWristProbability = (legLength - pelvicHeight) / lengthFoot;
-                minFloorHeight = pelvicHeight - lengthUpperLeg - lengthLowerLeg;
+                minFloorHeight = pelvicHeight - bentRatio*lengthUpperLeg - bentRatio*lengthLowerLeg;
             }
 
             if (flooredLegs > 1) {
@@ -136,20 +137,20 @@ public class ExtremityData {
                 } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {
                     if (flooredAnkleWristProbability > 0f) {
                         //System.out.println("arms are too short, but legs not");
-                        minFloorHeight = shoulderHeight - armLength;
+                        minFloorHeight = shoulderHeight - bentRatio*armLength;
                     } else {
-                        minFloorHeight = Math.max(minFloorHeight, shoulderHeight - armLength);
+                        minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*armLength);
                     }
                     flooredAnkleWristProbability = 0f;
                 } else {
                     float flooredWristProbability = (armLength - shoulderHeight) / lengthHand;
                     flooredAnkleWristProbability = (flooredWristProbability + flooredAnkleWristProbability) / 2f;
-                    minFloorHeight = Math.max(minFloorHeight, shoulderHeight - lengthUpperArm - lengthLowerArm);
+                    minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*lengthUpperArm - bentRatio*lengthLowerArm);
                 }
             }
 
             if (minFloorHeight > 0f) {
-                floorHeight = minFloorHeight + 10f; // todo ?
+                floorHeight = minFloorHeight;
             }
             System.out.println("Floor height: " + floorHeight);
             System.out.println("floored ankle probability: " + flooredAnkleWristProbability);

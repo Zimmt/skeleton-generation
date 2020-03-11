@@ -136,6 +136,7 @@ public class LegRule extends ReplacementRule {
         float oppositeDirP = 0f;
         Random random = new Random();
         boolean flooredAnkle = random.nextFloat() < flooredAnkleProbability;
+        System.out.print("floored ankle: " + flooredAnkle + "... ");
         pelvic.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle); // other extremities do the same
         float floorHeight = pelvic.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
 
@@ -181,7 +182,7 @@ public class LegRule extends ReplacementRule {
             }
         }
 
-        System.out.print("finding floored position needed " + step + " steps ");
+        //System.out.print("finding floored position needed " + step + " steps ");
         //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
 
         if (Math.abs(endPosition.y-floorHeight) < eps) {
