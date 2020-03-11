@@ -113,23 +113,26 @@ public class BackPartRule extends ReplacementRule {
         // lengths can be calculated like that because curve is nearly a line in the interval
         Point2f backPoint = back.apply(interval.get(0));
         backPoint.sub(back.apply(1f));
-        float backLength = new Vector2f(backPoint).length();
+        float maxBackLength = new Vector2f(backPoint).length();
 
         Point2f tailPoint = tail.apply(interval.get(1));
         tailPoint.sub(tail.apply(0f));
-        float tailLength = new Vector2f(tailPoint).length();
+        float maxTailLength = new Vector2f(tailPoint).length();
 
-        interval.add(backLength + tailLength);
+        interval.add(maxBackLength + maxTailLength);
 
-        if (backLength + tailLength > wantedWidth) {
+        if (maxBackLength + maxTailLength > wantedWidth) {
+            interval.set(2, wantedWidth);  // wanted width can be achieved
             float wantedBackLength = wantedWidth/2f;
             float wantedTailLength = wantedWidth/2f;
-            if (backLength < wantedBackLength) {
-                float diff = wantedBackLength - backLength;
-               wantedTailLength = wantedTailLength + diff;
-            } else if (tailLength < wantedTailLength) {
-                float diff = wantedTailLength - tailLength;
-                wantedBackLength = wantedBackLength + diff;
+            if (maxBackLength < wantedBackLength) {
+                float diff = wantedBackLength - maxBackLength;
+                wantedBackLength -= diff;
+                wantedTailLength += diff;
+            } else if (maxTailLength < wantedTailLength) {
+                float diff = wantedTailLength - maxTailLength;
+                wantedBackLength += diff;
+                wantedTailLength -= diff;
             } // no other case as the length of the interval has enough space for whole length (else initial interval is returned)
 
             // length = k * associated bezier curve parameter (as curve is nearly straight)
@@ -137,8 +140,8 @@ public class BackPartRule extends ReplacementRule {
             // new parameter = wanted length / k; k = length / old parameter
             // or in inverted direction:
             // new parameter = 1 - (wanted length / k); k = length / (1 - old parameter)
-            interval.set(0, 1f - (wantedBackLength * (1-interval.get(0)) / backLength));
-            interval.set(1, wantedTailLength * interval.get(1) / tailLength);
+            interval.set(0, 1f - (wantedBackLength * (1-interval.get(0)) / maxBackLength));
+            interval.set(1, wantedTailLength * interval.get(1) / maxTailLength);
             interval.set(2, wantedWidth);
         }
         return interval;
