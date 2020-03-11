@@ -1,6 +1,7 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.UpperLowerArmJoint;
+import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.joints.arm.ElbowJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -12,18 +13,18 @@ import java.util.Optional;
 public class UpperArm extends TerminalElement {
 
     private final String kind = "upper arm";
-    UpperLowerArmJoint joint;
+    ElbowJoint joint;
 
-    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
+    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new UpperLowerArmJoint(this, UpperArm.getJointPosition(boundingBox, mirrored));
+        this.joint = ElbowJoint.newSpecificElbowJoint(this, UpperArm.getJointPosition(boundingBox, mirrored), extremityKind);
     }
 
     public String getKind() {
         return kind;
     }
 
-    public UpperLowerArmJoint getJoint() {
+    public ElbowJoint getJoint() {
         return joint;
     }
 
@@ -37,7 +38,7 @@ public class UpperArm extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                true);
+                true, joint.getExtremityKind());
     }
 
     /**

@@ -1,6 +1,7 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.LowerArmHandJoint;
+import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.joints.arm.WristJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -12,21 +13,21 @@ import java.util.Optional;
 public class LowerArm extends TerminalElement {
 
     private final String kind = "lower arm";
-    private LowerArmHandJoint joint;
+    private WristJoint joint;
 
     /**
      * @param mirrored if this is the mirrored instance of this element
      */
-    public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored) {
+    public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = new LowerArmHandJoint(this, LowerArm.getJointPosition(boundingBox, mirrored));
+        this.joint = WristJoint.newSpecificWristJoint(this, LowerArm.getJointPosition(boundingBox, mirrored), extremityKind);
     }
 
     public String getKind() {
         return kind;
     }
 
-    public LowerArmHandJoint getJoint() {
+    public WristJoint getJoint() {
         return joint;
     }
 
@@ -40,7 +41,7 @@ public class LowerArm extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                true);
+                true, joint.getExtremityKind());
     }
 
     /**

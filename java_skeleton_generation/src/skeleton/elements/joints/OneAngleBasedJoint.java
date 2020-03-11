@@ -55,6 +55,10 @@ public abstract class OneAngleBasedJoint extends Joint {
         return (turnDirection && currentAngle < maxAngle) || (!turnDirection && currentAngle > minAngle);
     }
 
+    public void setRandomAngle() {
+        currentAngle = (random.nextFloat() * (maxAngle - minAngle)) + minAngle;
+    }
+
     public void setNewAngle(boolean nearerToFloor, float stepSize) {
         Boolean turnDirection = getTurnDirectionNearerToFloor();
         if (nearerToFloor && turnDirection == null) {
@@ -101,6 +105,14 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     public float getCurrentAngle() {
         return currentAngle;
+    }
+
+    public float getMinAngle() {
+        return minAngle;
+    }
+
+    public float getMaxAngle() {
+        return maxAngle;
     }
 
     public void setChild(TerminalElement child) {

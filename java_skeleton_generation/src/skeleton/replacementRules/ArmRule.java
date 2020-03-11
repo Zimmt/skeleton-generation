@@ -2,6 +2,7 @@ package skeleton.replacementRules;
 
 import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.terminal.Hand;
 import skeleton.elements.terminal.LowerArm;
@@ -39,19 +40,21 @@ public class ArmRule extends ReplacementRule {
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
         ExtremityData extremityData = arm.getGenerator().getSkeletonMetaData().getExtremities();
+        Shoulder shoulder = arm.getParent();
+        ExtremityKind extremityKind = shoulder.getJoint().getExtremityKind();
 
         Vector3f upperArmScale = new Vector3f(
-                0.4f * arm.getParent().getBoundingBox().getXLength(),
+                0.4f * shoulder.getBoundingBox().getXLength(),
                 extremityData.getLengthUpperArm(),
-                0.3f * arm.getParent().getBoundingBox().getZLength());
-        UpperArm upperArm = generateUpperArm(upperArmScale, arm);
+                0.3f * shoulder.getBoundingBox().getZLength());
+        UpperArm upperArm = generateUpperArm(upperArmScale, arm, extremityKind);
         generatedParts.add(upperArm);
 
         Vector3f lowerArmScale = new Vector3f(
                 0.8f * upperArm.getBoundingBox().getXLength(),
                 extremityData.getLengthLowerArm(),
                 0.8f * upperArm.getBoundingBox().getZLength());
-        LowerArm lowerArm = generateLowerArm(lowerArmScale, arm, upperArm);
+        LowerArm lowerArm = generateLowerArm(lowerArmScale, arm, upperArm, extremityKind);
         generatedParts.add(lowerArm);
 
         Vector3f handScale = new Vector3f(
@@ -61,34 +64,42 @@ public class ArmRule extends ReplacementRule {
         Hand hand = generateHand(handScale, arm, lowerArm);
         generatedParts.add(hand);
 
-        if (extremityData.getFlooredLegs() > 1) {
-            findFlooredPosition(arm.getParent(), upperArm, lowerArm, hand, arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
-        } else if (extremityData.getWings() > 0) {
-            findWingPosition(arm.getParent(), upperArm, lowerArm, hand);
-        } else if (extremityData.getArms() >= 1) {
-            findArmPosition(arm.getParent(), upperArm, lowerArm, hand);
-        } else {
-            findFloatingPosition(arm.getParent(), upperArm, lowerArm, hand);
+        switch (extremityKind) {
+            case FLOORED_LEG:
+                findFlooredPosition(shoulder, upperArm, lowerArm, hand, arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
+                break;
+            case NON_FLOORED_LEG:
+                findArmPosition(shoulder, upperArm, lowerArm, hand);
+                break;
+            case WING:
+                findWingPosition(shoulder, upperArm, lowerArm, hand);
+                break;
+            case FIN:
+                findFloatingPosition(shoulder, upperArm, lowerArm, hand);
+                break;
+            default:
+                System.err.println("Unknown shoulder joint type");
         }
         System.out.println("...finished.");
 
         return generatedParts;
     }
 
-    private UpperArm generateUpperArm(Vector3f scale, Arm arm) {
+    private UpperArm generateUpperArm(Vector3f scale, Arm arm, ExtremityKind extremityKind) {
+        Shoulder shoulder = arm.getParent();
         BoundingBox boundingBox = new BoundingBox(scale);
-        TransformationMatrix transform = arm.getParent().getJoint().calculateChildTransform(boundingBox);
+        TransformationMatrix transform = shoulder.getJoint().calculateChildTransform(boundingBox);
 
-        UpperArm upperArm = new UpperArm(transform, boundingBox, arm.getParent(), arm, false);
-        arm.getParent().replaceChild(arm, upperArm);
+        UpperArm upperArm = new UpperArm(transform, boundingBox, shoulder, arm, false, extremityKind);
+        shoulder.replaceChild(arm, upperArm);
         return upperArm;
     }
 
-    private LowerArm generateLowerArm(Vector3f scale, Arm arm, UpperArm upperArm) {
+    private LowerArm generateLowerArm(Vector3f scale, Arm arm, UpperArm upperArm, ExtremityKind extremityKind) {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(boundingBox);
 
-        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, false);
+        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, false, extremityKind);
         upperArm.addChild(lowerArm);
         return lowerArm;
     }
@@ -127,13 +138,13 @@ public class ArmRule extends ReplacementRule {
     }
 
     private void findWingPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
-        shoulder.getJoint().setRandomWingAngles();
+        shoulder.getJoint().setRandomAngles();
         upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
 
-        upperArm.getJoint().setRandomWingAngle();
+        upperArm.getJoint().setRandomAngle();
         lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
 
-        lowerArm.getJoint().setRandomWingAngle();
+        lowerArm.getJoint().setRandomAngle();
         hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
     }
 

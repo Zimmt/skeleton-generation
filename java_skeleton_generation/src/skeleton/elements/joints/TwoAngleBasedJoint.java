@@ -61,6 +61,11 @@ public abstract class TwoAngleBasedJoint extends Joint {
         return movementPossible;
     }
 
+    public void setRandomAngles() {
+        currentFirstAngle = (random.nextFloat() * (maxFirstAngle - minFirstAngle)) + minFirstAngle;
+        currentSecondAngle = (random.nextFloat() * (maxSecondAngle - minSecondAngle)) + minSecondAngle;
+    }
+
     public void setNewFirstAngle(boolean nearerToFloor, float stepSize) {
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
         if (nearerToFloor && turnDirections == null) {
@@ -70,9 +75,9 @@ public abstract class TwoAngleBasedJoint extends Joint {
         float sign;
         if (turnDirections == null || turnDirections.get(1) == null) {
             float eps = 0.1f;
-            if (Math.abs(currentFirstAngle) - minFirstAngle < eps) {
+            if (Math.abs(currentFirstAngle-minFirstAngle) < eps) {
                 sign = 1f;
-            } else if (Math.abs(currentFirstAngle) - maxFirstAngle < eps) {
+            } else if (Math.abs(currentFirstAngle-maxFirstAngle) < eps) {
                 sign = -1f;
             } else {
                 sign = random.nextFloat() > 0.5 ? 1f : -1f;
@@ -101,9 +106,9 @@ public abstract class TwoAngleBasedJoint extends Joint {
         float sign;
         if (turnDirections == null || turnDirections.get(0) == null) {
             float eps = 0.1f;
-            if (Math.abs(currentSecondAngle) - minSecondAngle < eps) {
+            if (Math.abs(currentSecondAngle-minSecondAngle) < eps) {
                 sign = 1f;
-            } else if (Math.abs(currentSecondAngle) - maxSecondAngle < eps) {
+            } else if (Math.abs(currentSecondAngle-maxSecondAngle) < eps) {
                 sign = -1f;
             } else {
                 sign = random.nextFloat() > 0.5 ? 1f : -1f;
@@ -123,11 +128,19 @@ public abstract class TwoAngleBasedJoint extends Joint {
     }
 
     public void setCurrentFirstAngle(float currentFirstAngle) {
-        this.currentFirstAngle = currentFirstAngle;
+        if (currentFirstAngle < minFirstAngle || currentFirstAngle > maxFirstAngle) {
+            System.err.println("Invalid first angle to set");
+        } else {
+            this.currentFirstAngle = currentFirstAngle;
+        }
     }
 
     public void setCurrentSecondAngle(float currentSecondAngle) {
-        this.currentSecondAngle = currentSecondAngle;
+        if (currentSecondAngle < minSecondAngle || currentSecondAngle > maxSecondAngle) {
+            System.err.println("Invalid second angle to set");
+        } else {
+            this.currentSecondAngle = currentSecondAngle;
+        }
     }
 
     public void setChild(TerminalElement child) {

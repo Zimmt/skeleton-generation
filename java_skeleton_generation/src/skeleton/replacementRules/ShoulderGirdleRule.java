@@ -1,6 +1,8 @@
 package skeleton.replacementRules;
 
+import skeleton.ExtremityData;
 import skeleton.elements.SkeletonPart;
+import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.nonterminal.ShoulderGirdle;
 import skeleton.elements.terminal.Shoulder;
@@ -49,7 +51,19 @@ public class ShoulderGirdleRule extends ReplacementRule {
         TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(boundingBox);
         transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
 
-        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false);
+        ExtremityData extremityData = shoulderGirdle.getGenerator().getSkeletonMetaData().getExtremities();
+        ExtremityKind extremityKind;
+        if (extremityData.getFlooredLegs() > 1) {
+            extremityKind = ExtremityKind.FLOORED_LEG;
+        } else if (extremityData.getWings() > 0) {
+            extremityKind = ExtremityKind.WING;
+        } else if (extremityData.getArms() >= 1) {
+            extremityKind = ExtremityKind.NON_FLOORED_LEG;
+        } else {
+            extremityKind = ExtremityKind.FIN;
+        }
+
+        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false, extremityKind);
         shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
         return shoulder;
     }
