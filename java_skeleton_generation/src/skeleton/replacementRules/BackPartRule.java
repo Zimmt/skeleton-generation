@@ -1,7 +1,7 @@
 package skeleton.replacementRules;
 
 import skeleton.SpinePart;
-import skeleton.SpinePosition;
+import skeleton.SpineData;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.BackPart;
@@ -20,6 +20,7 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Generates
@@ -51,8 +52,10 @@ public class BackPartRule extends ReplacementRule {
 
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), pelvicIntervalAndLength.get(0));
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
+        Vector3f chestVertebraScale = new Vector3f(10f, 100f, 120f);
         List<Vertebra> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 10, vertebraScale, rootVertebra, rootVertebra.getBackPartJoint());
+                backBackInterval, 10, vertebraScale, Optional.of(chestVertebraScale),
+                rootVertebra, rootVertebra.getBackPartJoint());
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
@@ -65,7 +68,7 @@ public class BackPartRule extends ReplacementRule {
 
         Tuple2f tailInterval = new Point2f(pelvic.getTailJoint().getSpinePosition(), 1f);
         List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, 15, vertebraScale, pelvic, pelvic.getTailJoint());
+                tailInterval, 15, vertebraScale, Optional.empty(), pelvic, pelvic.getTailJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
@@ -96,11 +99,11 @@ public class BackPartRule extends ReplacementRule {
      * Changes width of pelvic only if the calculated interval is smaller.
      * @return bezier curve parameter for start point on back spine, parameter for end point on tail spine, width
      */
-    private List<Float> findPelvicIntervalAndLength(SpinePosition spinePosition, float wantedWidth, float slopeEps) {
+    private List<Float> findPelvicIntervalAndLength(SpineData spineData, float wantedWidth, float slopeEps) {
         List<Float> interval = new ArrayList<>(2);
 
         // find possible space for pelvic
-        CubicBezierCurve back = spinePosition.getBack();
+        CubicBezierCurve back = spineData.getBack();
         float slope = back.getGradient(1f);
         List<Float> backIntervals = back.getIntervalsByGradientEpsilon(slope, slopeEps);
         if (backIntervals.get(backIntervals.size()-1) != 1f) {
@@ -108,7 +111,7 @@ public class BackPartRule extends ReplacementRule {
         }
         interval.add(backIntervals.get(backIntervals.size()-2));
 
-        CubicBezierCurve tail = spinePosition.getTail();
+        CubicBezierCurve tail = spineData.getTail();
         float tailSlope = tail.getGradient(0f);
         List<Float> tailIntervals = tail.getIntervalsByGradientEpsilon(tailSlope, slopeEps);
         if (tailIntervals.get(0) != 0f) {

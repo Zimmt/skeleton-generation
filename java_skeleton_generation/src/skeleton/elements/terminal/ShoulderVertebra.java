@@ -2,7 +2,6 @@ package skeleton.elements.terminal;
 
 import skeleton.SpinePart;
 import skeleton.elements.joints.DummyJoint;
-import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -15,7 +14,7 @@ import java.util.Optional;
  */
 public class ShoulderVertebra extends Vertebra {
 
-    private final String kind = "vertebra";
+    private final String kind = "shoulder vertebra";
     DummyJoint shoulderJoint;
 
     public ShoulderVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
@@ -48,6 +47,6 @@ public class ShoulderVertebra extends Vertebra {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getShoulderJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, 0f, 0f);
+        return new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength(), boundingBox.getZLength()/4);
     }
 }

@@ -1,6 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.SpinePosition;
+import skeleton.SpineData;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -28,7 +28,7 @@ public class Head extends TerminalElement {
         return null;
     }
 
-    public static Point3f getGlobalHeadPosition(SpinePosition spine, BoundingBox boundingBox) {
+    public static Point3f getGlobalHeadPosition(SpineData spine, BoundingBox boundingBox) {
         Point3f headPosition = spine.getNeck().apply3d(0f);
         headPosition.add(Head.getLocalTranslationFromJoint(boundingBox));
         return headPosition;

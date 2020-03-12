@@ -4,7 +4,7 @@ import de.javagl.obj.Obj;
 import de.javagl.obj.ObjWriter;
 import de.javagl.obj.Objs;
 import skeleton.SkeletonGenerator;
-import skeleton.SpinePosition;
+import skeleton.SpineData;
 import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point2f;
@@ -72,7 +72,7 @@ public class ObjGenerator {
     }
 
     private void addSpineVertices(Obj obj, SkeletonGenerator skeleton) {
-        SpinePosition spine = skeleton.getSkeletonMetaData().getSpine();
+        SpineData spine = skeleton.getSkeletonMetaData().getSpine();
         obj.setActiveGroupNames(Collections.singletonList("spine"));
         int precision = 10;
 

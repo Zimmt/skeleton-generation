@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SkeletonMetaData {
-    private SpinePosition spine;
+    private SpineData spine;
     private ExtremityData extremities;
     private double weight;
 
@@ -28,7 +28,7 @@ public class SkeletonMetaData {
         this.weight = p.getWeight();
     }
 
-    public SpinePosition getSpine() {
+    public SpineData getSpine() {
         return spine;
     }
 
@@ -40,7 +40,7 @@ public class SkeletonMetaData {
         return weight;
     }
 
-    private SpinePosition preprocessSpine(List<Point2d> spinePoints) {
+    private SpineData preprocessSpine(List<Point2d> spinePoints) {
         List<Point2d> preprocessedPoints = new ArrayList<>(spinePoints.size());
         for (Point2d p : spinePoints) {
             preprocessedPoints.add(new Point2d(p));
@@ -53,7 +53,7 @@ public class SkeletonMetaData {
         preprocessedPoints.set(5, alignedTailPoints.get(0));
         preprocessedPoints.set(7, alignedTailPoints.get(1));
 
-        return new SpinePosition(preprocessedPoints);
+        return new SpineData(preprocessedPoints);
     }
 
     private List<Point2d> alignControlPoints(Point2d p1, Point2d center, Point2d p2) {

@@ -4,21 +4,27 @@ import util.CubicBezierCurve;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point2f;
+import javax.vecmath.Tuple2f;
 import java.util.List;
+import java.util.Random;
 
-public class SpinePosition {
+public class SpineData {
 
     private CubicBezierCurve neck;
     private CubicBezierCurve back;
     private CubicBezierCurve tail;
 
-    public SpinePosition(List<Point2d> spinePoints) {
+    private Tuple2f chestIntervalOnBack;
+
+    public SpineData(List<Point2d> spinePoints) {
         if (spinePoints.size() != 10) {
             System.err.println("Cannot create spine!");
         }
         this.neck = new CubicBezierCurve(new Point2f(spinePoints.get(0)), new Point2f(spinePoints.get(1)), new Point2f(spinePoints.get(2)), new Point2f(spinePoints.get(3)));
         this.back = new CubicBezierCurve(new Point2f(spinePoints.get(3)), new Point2f(spinePoints.get(4)), new Point2f(spinePoints.get(5)), new Point2f(spinePoints.get(6)));
         this.tail = new CubicBezierCurve(new Point2f(spinePoints.get(6)), new Point2f(spinePoints.get(7)), new Point2f(spinePoints.get(8)), new Point2f(spinePoints.get(9)));
+        this.chestIntervalOnBack = new Point2f(0f, (new Random().nextFloat()));
+        System.out.println("Chest interval: " + chestIntervalOnBack);
     }
 
     public CubicBezierCurve getPart(SpinePart spinePart) {
@@ -46,5 +52,9 @@ public class SpinePosition {
 
     public CubicBezierCurve getTail() {
         return tail;
+    }
+
+    public boolean isInChestInterval(float backSpinePosition) {
+        return backSpinePosition <= chestIntervalOnBack.y;
     }
 }

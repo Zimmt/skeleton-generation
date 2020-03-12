@@ -18,11 +18,12 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Generates
  * - non terminal shoulder girdle
- * - terminal vertebrae between root and shoulder girdle TODO: add chest
+ * - terminal vertebrae between root and shoulder girdle
  * - terminal vertebra that is parent of shoulder girdle
  * - terminal vertebrae of neck
  * - terminal head
@@ -46,8 +47,10 @@ public class FrontPartRule extends ReplacementRule {
 
         Tuple2f frontBackInterval = new Point2f(frontPart.getParent().getFrontPartJoint().getSpinePosition(), 0f);
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
+        Vector3f chestVertebraScale = new Vector3f(10f, 100f, 120f);
         List<Vertebra> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
-                frontBackInterval, 10, vertebraScale, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
+                frontBackInterval, 10, vertebraScale, Optional.of(chestVertebraScale),
+                frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
         generatedParts.addAll(frontBack);
 
@@ -61,7 +64,7 @@ public class FrontPartRule extends ReplacementRule {
 
         Tuple2f neckInterval = new Point2f(1f, 0f);
         List<Vertebra> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
-                neckInterval, 10, vertebraScale, shoulderVertebra, shoulderVertebra.getJoint());
+                neckInterval, 10, vertebraScale, Optional.empty(), shoulderVertebra, shoulderVertebra.getJoint());
         generatedParts.addAll(neck);
 
         Head head = generateHead(frontPart, new Vector3f(50f, 25f, 30f), neck.get(neck.size() - 1));

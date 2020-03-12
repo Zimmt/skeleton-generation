@@ -5,6 +5,7 @@ import skeleton.elements.joints.Joint;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.nonterminal.WholeBody;
+import skeleton.elements.terminal.RibVertebra;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
@@ -244,9 +245,9 @@ public class SkeletonGenerator {
      * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
-    public List<Vertebra> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval,
-                                                             int vertebraCount, Vector3f boundingBoxScale,
-                                                             TerminalElement firstParent, Joint firstParentJoint) {
+    public List<Vertebra> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
+                                                      Vector3f boundingBoxScale, Optional<Vector3f> chestBoundingBoxScale,
+                                                      TerminalElement firstParent, Joint firstParentJoint) {
 
         ArrayList<Vertebra> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
@@ -255,6 +256,7 @@ public class SkeletonGenerator {
         }
 
         BoundingBox boundingBox = new BoundingBox(boundingBoxScale);
+        BoundingBox chestBoundingBox = new BoundingBox(chestBoundingBoxScale.orElse(boundingBoxScale));
 
         float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
@@ -263,39 +265,48 @@ public class SkeletonGenerator {
         Vertebra parent = null;
         for (int i = 0; i < vertebraCount; i++) {
 
+            float spinePosition;
             float childSpineEndPosition;
             if (parent == null) {
-                childSpineEndPosition = interval.x + oneIntervalStep;
+                spinePosition = interval.x;
+                childSpineEndPosition = spinePosition + oneIntervalStep;
                 if (firstParentJoint instanceof SpineOrientedJoint) {
                     ((SpineOrientedJoint) firstParentJoint).setChildSpineEndPosition(childSpineEndPosition, spinePart);
                 }
             } else {
+                spinePosition = parent.getJoint().getSpinePosition();
                 if (i == vertebraCount-1) {
                     childSpineEndPosition = interval.y;
                 } else {
-                    childSpineEndPosition = parent.getJoint().getSpinePosition() + oneIntervalStep;
+                    childSpineEndPosition = spinePosition + oneIntervalStep;
                 }
                 parent.getJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
             }
-            BoundingBox childBox = boundingBox.cloneBox();
 
-            TransformationMatrix transform;
-            if (parent == null) {
-                transform = firstParentJoint.calculateChildTransform(childBox);
+            boolean rib = spinePart == SpinePart.BACK && getSkeletonMetaData().getSpine().isInChestInterval(spinePosition);
+            BoundingBox childBox;
+            if (rib) {
+                childBox = chestBoundingBox.cloneBox();
             } else {
-                transform = parent.getJoint().calculateChildTransform(childBox);
+                childBox = boundingBox.cloneBox();
             }
-            transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
+
+            Joint joint = parent == null ? firstParentJoint : parent.getJoint();
+            TransformationMatrix transform = joint.calculateChildTransform(childBox);
+            if (rib) {
+                transform.translate(RibVertebra.getLocalTranslationFromJoint(childBox, boundingBox));
+            } else {
+                transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
+            }
 
             Vertebra child;
-            if (parent == null) {
-                child = new Vertebra(transform, childBox, firstParent, ancestor, sign > 0, spinePart, childSpineEndPosition);
-                firstParent.addChild(child);
+            TerminalElement parentElement = parent == null ? firstParent : parent;
+            if (rib) {
+                child = new RibVertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
             } else {
-                child = new Vertebra(transform, childBox, parent, ancestor, sign > 0, spinePart, childSpineEndPosition);
-                parent.addChild(child);
+                child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
             }
-
+            parentElement.addChild(child);
             generatedParts.add(child);
             parent = child;
         }

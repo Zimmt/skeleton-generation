@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class RootVertebra extends TerminalElement {
 
-    private final String kind = "vertebra";
+    private final String kind = "root vertebra";
     SpineOrientedJoint frontPartJoint;
     SpineOrientedJoint backPartJoint;
 

@@ -23,7 +23,7 @@ public class ExtremityData {
     public ExtremityData(double wingProbability, double flooredLegProbability,
                          double lengthUpperArm, double lengthLowerArm, double lengthHand,
                          double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
-                         SpinePosition spine) {
+                         SpineData spine) {
         this.wingProbability = (float) wingProbability;
         this.flooredLegProbability = (float) flooredLegProbability;
         this.lengthUpperArm = (float) lengthUpperArm;
@@ -83,7 +83,7 @@ public class ExtremityData {
         this.flooredAnkleWristProbability = probability ? 1f : 0f;
     }
 
-    private void calculateDerivedValues(SpinePosition spine) {
+    private void calculateDerivedValues(SpineData spine) {
         Random random = new Random();
         calculateWings();
         calculateLegsAndFloorHeight(random.nextFloat(), spine);
@@ -99,7 +99,7 @@ public class ExtremityData {
         System.out.println("wings: " + wings);
     }
 
-    private void calculateLegsAndFloorHeight(float probability, SpinePosition spine) {
+    private void calculateLegsAndFloorHeight(float probability, SpineData spine) {
         if (flooredLegProbability >= 2 || (probability > 0.5f && flooredLegProbability > 1)) {
             flooredLegs = 2;
         } else if (flooredLegProbability <= 0 || (probability < 0.5f && flooredLegProbability < 1)) {
@@ -112,7 +112,7 @@ public class ExtremityData {
     }
 
     // Must be called _after_ number of floored legs is calculated
-    private void calculateFloorHeight(SpinePosition spine) {
+    private void calculateFloorHeight(SpineData spine) {
         if (flooredLegs > 0) {
             float minFloorHeight = 0f;
             float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
