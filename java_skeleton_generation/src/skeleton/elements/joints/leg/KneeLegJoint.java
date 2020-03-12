@@ -15,7 +15,7 @@ public class KneeLegJoint extends KneeJoint {
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid knee leg joint kind");
         }
-        setCurrentAngle((float) Math.toRadians(90));
+        setCurrentAngle((float) Math.toRadians(160));
     }
 
     public KneeLegJoint calculateMirroredJoint(TerminalElement mirroredParent) {

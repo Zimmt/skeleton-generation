@@ -18,7 +18,7 @@ public class PelvicLegJoint extends PelvicJoint {
             System.err.println("Invalid pelvic leg joint kind");
         }
         setCurrentFirstAngle(minFrontAnglePelvic);
-        setCurrentSecondAngle((float) -Math.toRadians(45));
+        setCurrentSecondAngle((float) -Math.toRadians(90));
     }
 
     public PelvicLegJoint calculateMirroredJoint(TerminalElement mirroredParent) {

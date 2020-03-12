@@ -12,6 +12,7 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     float minAngle;
     float maxAngle;
+    float lastAngle = 0f; // angle to which joint was set before
     float currentAngle = 0f;
 
     TerminalElement child;
@@ -34,12 +35,27 @@ public abstract class OneAngleBasedJoint extends Joint {
      * @return null if no turn direction would bring foot nearer to floor
      */
     private Boolean getTurnDirectionNearerToFloor() {
-        Vector3f testVectorParent = new Vector3f(0f, -1f, 0f);
-        parent.calculateWorldTransform().applyOnVector(testVectorParent);
-        Vector3f testVectorWorld = new Vector3f(0f, -1f, 0f);
+        Vector3f testVectorParentY = new Vector3f(0f, -1f, 0f);
+        TransformationMatrix parentWorldTransform = parent.calculateWorldTransform();
+        parentWorldTransform.applyOnVector(testVectorParentY);
+        Vector3f testVectorWorldY = new Vector3f(0f, -1f, 0f);
 
         float eps = 0.01f;
-        float wantedAngle = testVectorWorld.angle(testVectorParent);
+        float wantedAngle = testVectorWorldY.angle(testVectorParentY);
+
+        // check if angle is positive or negative
+        Vector3f crossWantedAngle = new Vector3f();
+        crossWantedAngle.cross(testVectorParentY, testVectorWorldY);
+
+        Vector3f testVectorParentX = new Vector3f(1f, 0f, 0f);
+        parentWorldTransform.applyOnVector(testVectorParentX);
+        Vector3f normal = new Vector3f();
+        normal.cross(testVectorParentY, testVectorParentX);
+
+        if (normal.dot(crossWantedAngle) < 0) {
+            wantedAngle = -wantedAngle;
+        }
+
         if (Math.abs(wantedAngle - currentAngle) < eps) {
             return null;
         } else {
@@ -56,10 +72,13 @@ public abstract class OneAngleBasedJoint extends Joint {
     }
 
     public void setRandomAngle() {
+        lastAngle = currentAngle;
         currentAngle = (random.nextFloat() * (maxAngle - minAngle)) + minAngle;
     }
 
     public void setNewAngle(boolean nearerToFloor, float stepSize) {
+        lastAngle = currentAngle;
+
         Boolean turnDirection = getTurnDirectionNearerToFloor();
         if (nearerToFloor && turnDirection == null) {
             System.err.println("Cannot set new angle");
@@ -91,6 +110,13 @@ public abstract class OneAngleBasedJoint extends Joint {
     }
 
     /**
+     * sets current angle to the value it was set the step before
+     */
+    public void resetAngle() {
+        currentAngle = lastAngle;
+    }
+
+    /**
      * Uses an angle of 0° for the initial child.
      */
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
@@ -100,6 +126,7 @@ public abstract class OneAngleBasedJoint extends Joint {
     }
 
     public void setCurrentAngle(float currentAngle) {
+        this.lastAngle = this.currentAngle;
         this.currentAngle = currentAngle;
     }
 
