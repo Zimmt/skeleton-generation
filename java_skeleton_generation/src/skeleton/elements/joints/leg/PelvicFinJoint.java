@@ -17,7 +17,7 @@ public class PelvicFinJoint extends PelvicJoint {
     }
 
     @Override
-    public boolean movementPossible(boolean nearerToFloor, boolean side) {
+    public boolean movementPossible(boolean nearerToFloor, boolean second) {
         return false;
     }
 

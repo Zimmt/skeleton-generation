@@ -36,27 +36,27 @@ public abstract class TwoAngleBasedJoint extends Joint {
 
     abstract List<Boolean> getTurnDirectionsNearerToFloor();
 
-    public boolean movementPossible(boolean nearerToFloor, boolean side) {
+    public boolean movementPossible(boolean nearerToFloor, boolean second) {
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
         if (turnDirections == null) {
             return !nearerToFloor;
         }
         boolean movementPossible = false;
-        if (side && turnDirections.get(0) != null) {
+        if (!second && turnDirections.get(0) != null) {
             if (nearerToFloor) {
-                movementPossible = (turnDirections.get(0) && currentSecondAngle < maxSecondAngle) ||
-                        (!turnDirections.get(0) && currentSecondAngle > minSecondAngle);
+                movementPossible = (turnDirections.get(0) && currentFirstAngle < maxFirstAngle) ||
+                        (!turnDirections.get(0) && currentFirstAngle > minFirstAngle);
             } else {
-                movementPossible = (turnDirections.get(0) && currentSecondAngle > minSecondAngle) ||
-                        (!turnDirections.get(0) && currentSecondAngle < maxSecondAngle);
+                movementPossible = (turnDirections.get(0) && currentFirstAngle > minFirstAngle) ||
+                        (!turnDirections.get(0) && currentFirstAngle < maxFirstAngle);
             }
-        } else if (!side && turnDirections.get(1) != null) {
+        } else if (second && turnDirections.get(1) != null) {
             if (nearerToFloor) {
-                movementPossible = (turnDirections.get(1) && currentFirstAngle < maxFirstAngle) ||
-                        (!turnDirections.get(1) && currentFirstAngle > minFirstAngle);
+                movementPossible = (turnDirections.get(1) && currentSecondAngle < maxSecondAngle) ||
+                        (!turnDirections.get(1) && currentSecondAngle > minSecondAngle);
             } else {
-                movementPossible = (turnDirections.get(1) && currentFirstAngle > minFirstAngle) ||
-                        (!turnDirections.get(1) && currentFirstAngle < maxFirstAngle);
+                movementPossible = (turnDirections.get(1) && currentSecondAngle > minSecondAngle) ||
+                        (!turnDirections.get(1) && currentSecondAngle < maxSecondAngle);
             }
         }
 
@@ -78,7 +78,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
             return;
         }
         float sign;
-        if (turnDirections == null || turnDirections.get(1) == null) {
+        if (turnDirections == null || turnDirections.get(0) == null) {
             float eps = 0.1f;
             if (Math.abs(currentFirstAngle-minFirstAngle) < eps) {
                 sign = 1f;
@@ -88,7 +88,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
                 sign = random.nextFloat() > 0.5 ? 1f : -1f;
             }
         } else {
-            sign = turnDirections.get(1) ? 1f : -1f;
+            sign = turnDirections.get(0) ? 1f : -1f;
             if (!nearerToFloor) {
                 sign = -sign;
             }
@@ -110,7 +110,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
             return;
         }
         float sign;
-        if (turnDirections == null || turnDirections.get(0) == null) {
+        if (turnDirections == null || turnDirections.get(1) == null) {
             float eps = 0.1f;
             if (Math.abs(currentSecondAngle-minSecondAngle) < eps) {
                 sign = 1f;
@@ -120,7 +120,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
                 sign = random.nextFloat() > 0.5 ? 1f : -1f;
             }
         } else {
-            sign = turnDirections.get(0) ? 1f : -1f;
+            sign = turnDirections.get(1) ? 1f : -1f;
             if (!nearerToFloor) {
                 sign = -sign;
             }

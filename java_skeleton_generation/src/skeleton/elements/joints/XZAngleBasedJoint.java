@@ -24,7 +24,7 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
     }
 
     /**
-     * first entry in the list is the side turn direction (or null), second the front turn direction (or null)
+     * first entry in the list is the turn direction for the first angle (or null), second the turn direction for the second (or null)
      * (nearer to floor means nearer to vertical position)
      * true: anti-clockwise
      * false: clockwise
@@ -37,8 +37,8 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
         child.calculateWorldTransform().applyOnVector(testVectorChild);
 
         float eps = 0.01f;
-        turnDirections.add(Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null);
         turnDirections.add(Math.abs(testVectorChild.z) > eps ? testVectorChild.z > 0 : null); // todo why??
+        turnDirections.add(Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null);
 
         if (turnDirections.get(0) == null && turnDirections.get(1) == null) {
             return null;
