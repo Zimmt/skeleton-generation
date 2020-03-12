@@ -11,7 +11,6 @@ import skeleton.elements.terminal.UpperArm;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,18 +63,28 @@ public class ArmRule extends ReplacementRule {
         Hand hand = generateHand(handScale, arm, lowerArm);
         generatedParts.add(hand);
 
+        ExtremityPositioning extremityPositioning = new ExtremityPositioning(
+                shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
+
         switch (extremityKind) {
             case FLOORED_LEG:
-                findFlooredPosition(shoulder, upperArm, lowerArm, hand, arm.getGenerator().getSkeletonMetaData().getExtremities().getFlooredAnkleWristProbability());
+                extremityPositioning.setInitialAngleStepSize((float) Math.toRadians(30));
+                boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
+                System.out.print("floored wrist: " + flooredWrist + "... ");
+
+                // other extremities do the same
+                upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
+
+                extremityPositioning.findFlooredPosition(flooredWrist);
                 break;
             case NON_FLOORED_LEG:
-                findArmPosition(shoulder, upperArm, lowerArm, hand);
+                extremityPositioning.findArmPosition();
                 break;
             case WING:
-                findWingPosition(shoulder, upperArm, lowerArm, hand);
+                extremityPositioning.findWingPosition();
                 break;
             case FIN:
-                findFloatingPosition(shoulder, upperArm, lowerArm, hand);
+                extremityPositioning.findFloatingPosition();
                 break;
             default:
                 System.err.println("Unknown shoulder joint type");
@@ -111,128 +120,5 @@ public class ArmRule extends ReplacementRule {
         Hand hand = new Hand(transform, boundingBox, lowerArm, arm);
         lowerArm.addChild(hand);
         return hand;
-    }
-
-    private void findFloatingPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
-        shoulder.getJoint().setCurrentFirstAngle((float) Math.toRadians(90));
-        shoulder.getJoint().setCurrentSecondAngle((float) Math.toRadians(90));
-        upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
-
-        upperArm.getJoint().setCurrentAngle(0f);
-        lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
-
-        lowerArm.getJoint().setCurrentAngle(0f);
-        hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
-    }
-
-    private void findArmPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
-        shoulder.getJoint().setCurrentFirstAngle(0f);
-        shoulder.getJoint().setCurrentSecondAngle(0f);
-        upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
-
-        upperArm.getJoint().setCurrentAngle((float) -Math.toRadians(90));
-        lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
-
-        lowerArm.getJoint().setCurrentAngle(0f);
-        hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
-    }
-
-    private void findWingPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand) {
-        shoulder.getJoint().setRandomAngles();
-        upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
-
-        upperArm.getJoint().setRandomAngle();
-        lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
-
-        lowerArm.getJoint().setRandomAngle();
-        hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
-    }
-
-    /**
-     * Adapts angles of arm until a position is reached where the floor is touched
-     * @param flooredWristProbability probability for the wrist to touch the floor (otherwise the tip of the hand will be used)
-     * @return if it was successful; reasons for failing could be that
-     * - the arm is too short to reach the floor
-     * - or the maximum number of steps was exceeded (but angles have already been changed)
-     */
-    private boolean findFlooredPosition(Shoulder shoulder, UpperArm upperArm, LowerArm lowerArm, Hand hand, float flooredWristProbability) {
-        shoulder.getJoint().setChild(upperArm);
-        upperArm.getJoint().setChild(lowerArm);
-        lowerArm.getJoint().setChild(hand);
-
-        float eps = 1f;
-        float angleStepSize = (float) Math.toRadians(30);
-        int maxSteps = 40;
-        int step = 0;
-
-        float shoulderSideAngleP = 0.5f;
-        float shoulderFrontAngleP = 0.3f;
-        float upperLowerArmAngleP = 0.7f;
-        float handSideAngleP = 0.9f;
-        float oppositeDirP = 0f;
-        Random random = new Random();
-        boolean flooredWrist = random.nextFloat() < flooredWristProbability;
-        shoulder.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist); // other extremities do the same
-        float floorHeight = shoulder.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
-
-        Point3f endPosition;
-        if (flooredWrist) {
-            endPosition = hand.getWorldPosition();
-        } else {
-            endPosition = hand.getWorldPosition();
-        }
-
-        while (Math.abs(endPosition.y - floorHeight) > eps && step < maxSteps) {
-            //System.out.println("Distance to floor is " + (endPosition.y-floorHeight) + ", angle step size: " + Math.toDegrees(angleStepSize));
-            boolean nearerToFloor = endPosition.y-floorHeight > 0;
-
-            if (random.nextFloat() < shoulderSideAngleP && shoulder.getJoint().movementPossible(nearerToFloor, true)) {
-                shoulder.getJoint().setNewSecondAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
-            }
-            if (random.nextFloat() < shoulderFrontAngleP && shoulder.getJoint().movementPossible(nearerToFloor, false)) {
-                //System.out.println("shoulder front angle");
-                shoulder.getJoint().setNewFirstAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
-            }
-            upperArm.setTransform(shoulder.getJoint().calculateChildTransform(upperArm.getBoundingBox()));
-
-            if (random.nextFloat() < upperLowerArmAngleP && upperArm.getJoint().movementPossible(nearerToFloor)) {
-                upperArm.getJoint().setNewAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
-                //System.out.println("new upper lower arm angle: " + Math.toDegrees(upperArm.getJoint().getCurrentAngle()));
-            }
-            lowerArm.setTransform(upperArm.getJoint().calculateChildTransform(lowerArm.getBoundingBox()));
-
-            if (flooredWrist) {
-                endPosition = lowerArm.getWorldPosition();
-            } else {
-                if (random.nextFloat() < handSideAngleP && lowerArm.getJoint().movementPossible(nearerToFloor)) {
-                    lowerArm.getJoint().setNewAngle((random.nextFloat() < oppositeDirP) != nearerToFloor, angleStepSize);
-                }
-                hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
-
-                endPosition = hand.getWorldPosition();
-            }
-
-            step++;
-            if (Math.toDegrees(angleStepSize) > 1) {
-                angleStepSize *= 11f/12f;
-            }
-        }
-
-        System.out.print("finding floored position needed " + step + " steps");
-        //System.out.println("Final distance to floor: " + (endPosition.y-floorHeight));
-
-        if (Math.abs(endPosition.y-floorHeight) < eps) {
-            if (flooredWrist) { // adjust hand todo also change angle to world y axis ?
-                Vector3f localDir = new Vector3f(0f, 1f, 0f);
-                lowerArm.calculateWorldTransform().applyOnVector(localDir);
-                float angle = new Vector3f(1f, 0f, 0f).angle(new Vector3f(localDir.x, localDir.y, 0f));
-                lowerArm.getJoint().setCurrentAngle(-angle);
-                hand.setTransform(lowerArm.getJoint().calculateChildTransform(hand.getBoundingBox()));
-            }
-            return true;
-        } else {
-            System.err.println("Could not reach floor");
-            return false;
-        }
     }
 }
