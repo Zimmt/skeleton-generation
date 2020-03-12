@@ -35,32 +35,11 @@ public abstract class OneAngleBasedJoint extends Joint {
      * @return null if no turn direction would bring foot nearer to floor
      */
     private Boolean getTurnDirectionNearerToFloor() {
-        Vector3f testVectorParentY = new Vector3f(0f, -1f, 0f);
-        TransformationMatrix parentWorldTransform = parent.calculateWorldTransform();
-        parentWorldTransform.applyOnVector(testVectorParentY);
-        Vector3f testVectorWorldY = new Vector3f(0f, -1f, 0f);
+        Vector3f testVectorChild = new Vector3f(0f, -1f, 0f);
+        child.calculateWorldTransform().applyOnVector(testVectorChild);
 
         float eps = 0.01f;
-        float wantedAngle = testVectorWorldY.angle(testVectorParentY);
-
-        // check if angle is positive or negative
-        Vector3f crossWantedAngle = new Vector3f();
-        crossWantedAngle.cross(testVectorParentY, testVectorWorldY);
-
-        Vector3f testVectorParentX = new Vector3f(1f, 0f, 0f);
-        parentWorldTransform.applyOnVector(testVectorParentX);
-        Vector3f normal = new Vector3f();
-        normal.cross(testVectorParentY, testVectorParentX);
-
-        if (normal.dot(crossWantedAngle) < 0) {
-            wantedAngle = -wantedAngle;
-        }
-
-        if (Math.abs(wantedAngle - currentAngle) < eps) {
-            return null;
-        } else {
-            return currentAngle < wantedAngle;
-        }
+        return Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null;
     }
 
     public boolean movementPossible(boolean nearerToFloor) {

@@ -17,7 +17,7 @@ public class PelvicLegJoint extends PelvicJoint {
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid pelvic leg joint kind");
         }
-        setCurrentFirstAngle(minFrontAnglePelvic);
+        setCurrentFirstAngle((float) Math.toRadians(90));
         setCurrentSecondAngle((float) -Math.toRadians(90));
     }
 
