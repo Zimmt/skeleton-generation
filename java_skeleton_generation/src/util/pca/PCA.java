@@ -1,7 +1,8 @@
 package util.pca;
 
-import org.apache.commons.math3.linear.*;
-import org.apache.commons.math3.stat.correlation.Covariance;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,30 +10,19 @@ import java.util.List;
 
 public class PCA {
 
-    private double[][] inputData; // one row represents one data point
-    private RealMatrix covarianceMatrix;
+    private RealMatrix covariance;
     private EigenDecomposition ed;
     private Integer[] sortedEigenvalueIndices;
 
-    public PCA(double[][] inputData) {
-        this.inputData = inputData;
+    public PCA(RealMatrix covariance) {
+        this.covariance = covariance;
     }
 
-    /**
-     * taken from https://stackoverflow.com/questions/10604507/pca-implementation-in-java
-     */
     public EigenDecomposition run() {
         System.out.print("Running PCA... ");
-        if (inputData.length == 0) {
-            System.err.println("Input data for PCA is empty!");
-            return null;
-        }
 
-        RealMatrix data = MatrixUtils.createRealMatrix(inputData); // preprocessing not needed as Covariance calculates mean
-
-        Covariance covariance = new Covariance(data, false);
-        covarianceMatrix = covariance.getCovarianceMatrix();
-        ed = new EigenDecomposition(covarianceMatrix);
+        // taken from https://stackoverflow.com/questions/10604507/pca-implementation-in-java
+        ed = new EigenDecomposition(covariance);
 
         double[] eigenvalues = ed.getRealEigenvalues();
         sortedEigenvalueIndices = new Integer[eigenvalues.length];
@@ -96,11 +86,11 @@ public class PCA {
     }
 
     public double getVariance(int inputDimension) {
-        if (covarianceMatrix == null) {
+        if (covariance == null) {
             System.err.println("Cannot get variance when pca did not run!");
             return 0;
         }
-        return covarianceMatrix.getEntry(inputDimension, inputDimension);
+        return covariance.getEntry(inputDimension, inputDimension);
     }
 
     private void printData(EigenDecomposition ed) {

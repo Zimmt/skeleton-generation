@@ -12,9 +12,6 @@ public class CubicBezierCurve {
     Point2f controlPoint3;
 
     public CubicBezierCurve(Point2f controlPoint0, Point2f controlPoint1, Point2f controlPoint2, Point2f controlPoint3) {
-        if (controlPoint0.x > controlPoint3.x) {
-            System.err.println("Found bezier curve with end.x > start.x!");
-        }
         this.controlPoint0 = controlPoint0;
         this.controlPoint1 = controlPoint1;
         this.controlPoint2 = controlPoint2;

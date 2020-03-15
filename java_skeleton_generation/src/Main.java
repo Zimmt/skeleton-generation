@@ -15,27 +15,28 @@ public class Main {
 
     private static void pca(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaHandler pcaHandler = new PcaHandler(dataPoints);
+        PcaHandler pcaHandler = new PcaHandler(dataPoints, new PcaConditions());
         pcaHandler.visualize();
     }
 
     private static void pcaOnlyWings(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         dataPoints = dataPoints.stream().filter(p -> p.getWings() > 0).collect(Collectors.toList());
-        PcaHandler pcaHandlerOnlyWings = new PcaHandler(dataPoints);
+        PcaHandler pcaHandlerOnlyWings = new PcaHandler(dataPoints, new PcaConditions());
         pcaHandlerOnlyWings.visualize();
     }
 
     private static void pcaNoWings(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         dataPoints = dataPoints.stream().filter(p -> p.getWings() <= 0).collect(Collectors.toList());
-        PcaHandler pcaHandlerNoWings = new PcaHandler(dataPoints);
+        PcaHandler pcaHandlerNoWings = new PcaHandler(dataPoints, new PcaConditions());
         pcaHandlerNoWings.visualize();
     }
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaHandler pcaHandler = new PcaHandler(dataPoints);
+        PcaConditions conditions = new PcaConditions(null, null);
+        PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
 
         int skeletonCount = 10;
         for (int i = 0; i < skeletonCount; i++) {

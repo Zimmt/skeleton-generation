@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class PcaHandler {
 
     private List<PcaDataPoint> dataPoints;
-    private PcaDataPoint mean;
+    private PcaMetaData pcaMetaData;
     private PCA pca;
     private DataExporter dataExporter;
     private Visualization visualization;
@@ -24,10 +24,10 @@ public class PcaHandler {
      * Initializes everything needed for PCA and visualization
      * and runs the PCA
      */
-    public PcaHandler(List<PcaDataPoint> dataPoints) {
+    public PcaHandler(List<PcaDataPoint> dataPoints, PcaConditions pcaConditions) {
         this.dataPoints = dataPoints;
-        this.mean = PcaDataPoint.getMean(dataPoints);
-        this.pca = preparePCA(dataPoints);
+        this.pcaMetaData = new PcaMetaData(dataPoints, pcaConditions);
+        this.pca = new PCA(pcaMetaData.getConditionedCovariance());
         pca.run();
         this.dataExporter = new DataExporter(dataPoints);
     }
@@ -38,7 +38,7 @@ public class PcaHandler {
         for (int j = 0; j < pca.getEigenvectorCount(); j++) {
             scaledEigenvectors.add(pca.getEigenvector(j).mapMultiply(eigenvectorScales[j]));
         }
-        return mean.getMovedPoint(scaledEigenvectors);
+        return pcaMetaData.getConditionedMean().getMovedPoint(scaledEigenvectors);
     }
 
     public List<PcaDataPoint> getDataPoints() {
@@ -159,7 +159,7 @@ public class PcaHandler {
     }
 
     public void visualize() {
-        this.visualization = Visualization.start(pca, mean);
+        this.visualization = Visualization.start(pca, pcaMetaData.getConditionedMean());
     }
 
     public void printFirstEigenvectors(int count) {
@@ -174,7 +174,11 @@ public class PcaHandler {
      * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
      */
     public List<RealVector> getEigenvectorScalesForPoints(double minEigenvalueSize) {
-        RealVector meanVector = new ArrayRealVector(mean.getScaledDataForPCA());
+        if (pcaMetaData.getConditions() != null && pcaMetaData.getConditions().anyConditionPresent()) {
+            System.err.println("Can only calculate eigenvector scales for points without conditions!");
+            return null;
+        }
+        RealVector meanVector = new ArrayRealVector(pcaMetaData.getOriginalMean().getScaledDataForPCA());
         int dimension = pca.getEigenvalues(minEigenvalueSize).size();
         List<RealVector> results = new ArrayList<>(dimension);
 
@@ -237,7 +241,7 @@ public class PcaHandler {
             for (int j = 0; j < scales.getDimension(); j++) {
                 scaledEigenvectors.add(pca.getEigenvector(j).mapMultiply(scales.getEntry(j)));
             }
-            PcaDataPoint testPoint = mean.getMovedPoint(scaledEigenvectors);
+            PcaDataPoint testPoint = pcaMetaData.getOriginalMean().getMovedPoint(scaledEigenvectors);
 
             if (!testPoint.equals(dataPoints.get(i))) {
                 System.err.println("Input and output points not equal!");
@@ -262,7 +266,7 @@ public class PcaHandler {
         PcaDataPoint maxPoint = null;
         PcaDataPoint secondMaxPoint = null;
         PcaDataPoint minPoint = null;
-        RealVector meanVector = new ArrayRealVector(mean.getScaledDataForPCA());
+        RealVector meanVector = new ArrayRealVector(pcaMetaData.getOriginalMean().getScaledDataForPCA());
         for (PcaDataPoint point : dataPoints) {
             double distance = new ArrayRealVector(point.getScaledDataForPCA()).getDistance(meanVector);
             if (distance > maxDistance) {
@@ -281,15 +285,6 @@ public class PcaHandler {
         }
 
         return new PcaDataPoint[] {minPoint, secondMaxPoint, maxPoint};
-    }
-
-    private PCA preparePCA(List<PcaDataPoint> dataPoints) {
-
-        double[][] pcaData = new double[dataPoints.size()][PcaDataPoint.getDimension()];
-        for (int i = 0; i < dataPoints.size(); i++) {
-            pcaData[i] = dataPoints.get(i).getScaledDataForPCA();
-        }
-        return new PCA(pcaData);
     }
 
     private double[] getRandomScalesForEachEigenvector() {

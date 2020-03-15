@@ -18,8 +18,8 @@ public class SkeletonMetaData {
 
     public SkeletonMetaData(PcaDataPoint p) {
         this.spine = preprocessSpine(p.getSpine());
-        if ((Math.abs(spine.getNeck().getGradient(1f) - spine.getBack().getGradient(0f)) > 0.01) ||
-                (Math.abs(spine.getBack().getGradient(1f) - spine.getTail().getGradient(0f)) > 0.01)) {
+        if ((Math.abs(spine.getNeck().getGradient(1f) - spine.getBack().getGradient(0f)) > 0.1) ||
+                (Math.abs(spine.getBack().getGradient(1f) - spine.getTail().getGradient(0f)) > 0.1)) {
             System.err.println("Alignment of spine went wrong");
         }
         this.extremities = new ExtremityData(p.getWings(), p.getFlooredLegs(),

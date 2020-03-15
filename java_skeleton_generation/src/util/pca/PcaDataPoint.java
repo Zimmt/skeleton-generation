@@ -7,37 +7,73 @@ import java.util.*;
 
 public class PcaDataPoint {
     private static final int dimension = 29;
-    private static final double coordinateScaleFactor = 1000;
-    private static final double wingScaleFactor = 1;
-    private static final double flooredLegsScaleFactor = 2;
-    private static final double weightScaleFactor = 120000;
-    private static final double downscaleFactor = 100;
+    static final double coordinateScaleFactor = 1000;
+    static final double wingScaleFactor = 1;
+    static final double flooredLegsScaleFactor = 2;
+    static final double weightScaleFactor = 120000;
+    static final double downscaleFactor = 100;
 
-    private String name;
+    String name;
 
-    private List<Point2d> neck = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
-    private List<Point2d> back; // the 4 control points of cubic bezier curve
-    private List<Point2d> tail = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
-    private List<Point2d> spine; // is calculated from neck, back and tail, consists of 10 points
+    List<Point2d> neck = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
+    List<Point2d> back; // the 4 control points of cubic bezier curve
+    List<Point2d> tail = new ArrayList<>(); // if not there empty, else 4 points (1 point is contained in back)
+    List<Point2d> spine; // is calculated from neck, back and tail, consists of 10 points
 
-    private double wings;
-    private double flooredLegs; // #legs/2, [0,2]
+    double wings;
+    double flooredLegs; // #legs/2, [0,2]
 
-    private double lengthUpperArm; // [0, 1000]
-    private double lengthLowerArm; // [0, 1000]
-    private double lengthHand; // [0, 1000]
+    double lengthUpperArm; // [0, 1000]
+    double lengthLowerArm; // [0, 1000]
+    double lengthHand; // [0, 1000]
 
-    private double lengthUpperLeg; // [0, 1000]
-    private double lengthLowerLeg; // [0, 1000]
-    private double lengthFoot; // [0, 1000]
+    double lengthUpperLeg; // [0, 1000]
+    double lengthLowerLeg; // [0, 1000]
+    double lengthFoot; // [0, 1000]
 
-    private double weight; // [0, 120.000]
+    double weight; // [0, 120.000]
     private boolean logWeight;
 
-    private AnimalClass animalClass;
+    AnimalClass animalClass;
 
     public PcaDataPoint(boolean logWeight) {
         this.logWeight = logWeight;
+    }
+
+    PcaDataPoint(String name, List<Point2d> neck, List<Point2d> back, List<Point2d> tail, List<Point2d> spine,
+                 double wings, double flooredLegs,
+                 double lengthUpperArm, double lengthLowerArm, double lengthHand,
+                 double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
+                 double weight, boolean logWeight, AnimalClass animalClass) {
+        this.name = name;
+        this.neck = neck;
+        this.back = back;
+        this.tail = tail;
+        this.spine = spine;
+        this.wings = wings;
+        this.flooredLegs = flooredLegs;
+        this.lengthUpperArm = lengthUpperArm;
+        this.lengthLowerArm = lengthLowerArm;
+        this.lengthHand = lengthHand;
+        this.lengthUpperLeg = lengthUpperLeg;
+        this.lengthLowerLeg = lengthLowerLeg;
+        this.lengthFoot = lengthFoot;
+        this.weight = weight;
+        this.logWeight = logWeight;
+        this.animalClass = animalClass;
+    }
+
+    public void setAllZeros() {
+        spine = Arrays.asList(new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d(), new Point2d());
+        wings = 0f;
+        flooredLegs = 0f;
+        lengthUpperArm = 0f;
+        lengthLowerArm = 0f;
+        lengthHand = 0f;
+        lengthUpperLeg = 0f;
+        lengthLowerLeg = 0f;
+        lengthFoot = 0f;
+        weight = 0f;
     }
 
     /**
@@ -52,6 +88,10 @@ public class PcaDataPoint {
         for (int i = 0; i < spine.size(); i++) {
             Point2d p = new Point2d(spine.get(i));
             for (RealVector scaledEigenvector : scaledEigenvectors) {
+                if (scaledEigenvector.getDimension() != PcaDataPoint.getDimension()) {
+                    System.err.println("Wrong eigenvector dimension found!");
+                    return null;
+                }
                 p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor, scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
             }
             newSpine.add(p);
@@ -155,14 +195,14 @@ public class PcaDataPoint {
             data[nextIndex+1] = p.y / coordinateScaleFactor;
             nextIndex += 2;
         }
-        data[nextIndex] = wings / (wingScaleFactor * downscaleFactor); nextIndex++;
-        data[nextIndex] = flooredLegs / (flooredLegsScaleFactor * downscaleFactor); nextIndex++;
-        data[nextIndex] = lengthUpperArm / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthLowerArm / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthHand / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthUpperLeg / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthLowerLeg / coordinateScaleFactor; nextIndex++;
-        data[nextIndex] = lengthFoot / coordinateScaleFactor; nextIndex++;
+        data[nextIndex++] = wings / (wingScaleFactor * downscaleFactor);
+        data[nextIndex++] = flooredLegs / (flooredLegsScaleFactor * downscaleFactor);
+        data[nextIndex++] = lengthUpperArm / coordinateScaleFactor;
+        data[nextIndex++] = lengthLowerArm / coordinateScaleFactor;
+        data[nextIndex++] = lengthHand / coordinateScaleFactor;
+        data[nextIndex++] = lengthUpperLeg / coordinateScaleFactor;
+        data[nextIndex++] = lengthLowerLeg / coordinateScaleFactor;
+        data[nextIndex++] = lengthFoot / coordinateScaleFactor;
         if (logWeight) {
             data[nextIndex] = Math.log10(weight+1) / (Math.log10(weightScaleFactor+1) * downscaleFactor);
         } else {
@@ -282,7 +322,7 @@ public class PcaDataPoint {
         this.tail = tail;
     }
 
-    private void setSpine(List<Point2d> spine) {
+    void setSpine(List<Point2d> spine) {
         if (spine.size() != 10) {
             System.err.println("Spine has not correct number of control points.");
         }
@@ -385,6 +425,10 @@ public class PcaDataPoint {
 
     public double getWeight() {
         return weight;
+    }
+
+    public boolean getLogWeight() {
+        return logWeight;
     }
 
     public AnimalClass getAnimalClass() {

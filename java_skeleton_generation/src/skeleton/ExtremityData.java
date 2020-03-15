@@ -100,7 +100,7 @@ public class ExtremityData {
     }
 
     private void calculateLegsAndFloorHeight(float probability, SpineData spine) {
-        if (flooredLegProbability >= 2 || (probability > 0.5f && flooredLegProbability > 1)) {
+        if (wings < 1 && (flooredLegProbability >= 2 || (probability > 0.5f && flooredLegProbability > 1))) {
             flooredLegs = 2;
         } else if (flooredLegProbability <= 0 || (probability < 0.5f && flooredLegProbability < 1)) {
             flooredLegs = 0;
