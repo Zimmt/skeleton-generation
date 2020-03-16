@@ -35,7 +35,7 @@ public class Main {
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaConditions conditions = new PcaConditions(null, null);
+        PcaConditions conditions = new PcaConditions(null, null, null);
         PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
 
         int skeletonCount = 10;

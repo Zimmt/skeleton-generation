@@ -5,7 +5,6 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,20 +110,15 @@ public class PcaMetaData {
     }
 
     private List<int[]> getLineIndicesWithAndWithoutConditions() {
-        List<Integer> lineIndicesWithConditions = new ArrayList<>(conditions.getConditionCount());
-
-        if (conditions.hasWings()) {
-            lineIndicesWithConditions.add(20);
-        }
-        if (conditions.hasFlooredLegs()) {
-            lineIndicesWithConditions.add(21);
-        }
-        int[] linesWithConditions = lineIndicesWithConditions.stream().mapToInt(i -> i).toArray();
-        int[] linesWithoutConditions = new int[PcaDataPoint.getDimension() - conditions.getConditionCount()];
-        int next = 0;
+        int[] linesWithConditions = conditions.getPcaDimensionsWithConditions();
+        int[] linesWithoutConditions = new int[PcaDataPoint.getDimension() - linesWithConditions.length];
+        int nextWithC = 0;
+        int nextWithoutC = 0;
         for (int i = 0; i < PcaDataPoint.getDimension(); i++) {
-            if (!lineIndicesWithConditions.contains(i)) {
-                linesWithoutConditions[next++] = i;
+            if (linesWithConditions.length > nextWithC && linesWithConditions[nextWithC] == i) {
+                nextWithC++;
+            } else {
+                linesWithoutConditions[nextWithoutC++] = i;
             }
         }
         return Arrays.asList(linesWithConditions, linesWithoutConditions);

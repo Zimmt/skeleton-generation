@@ -17,7 +17,7 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         super(logWeight);
         this.conditions = conditions;
         this.reducedDimension = PcaDataPoint.getDimension() - conditions.getConditionCount();
-        conditions.setConditions(this);
+        conditions.setAbsoluteConditions(this);
     }
 
     public PcaDataPointConditioned(PcaDataPoint point, PcaConditions conditions) {
@@ -27,27 +27,17 @@ public class PcaDataPointConditioned extends PcaDataPoint {
                 point.weight, point.getLogWeight(), point.animalClass);
         this.conditions = conditions;
         this.reducedDimension = PcaDataPoint.getDimension() - conditions.getConditionCount();
-        conditions.setConditions(this);
+        conditions.setAbsoluteConditions(this);
     }
 
     @Override
     public PcaDataPointConditioned getMovedPoint(List<RealVector> scaledEigenvectors) {
         PcaDataPointConditioned conditionedPoint = new PcaDataPointConditioned(super.getLogWeight(), conditions);
 
-        List<Point2d> newSpine = new ArrayList<>();
-        for (int i = 0; i < super.getSpine().size(); i++) {
-            Point2d p = new Point2d(super.getSpine().get(i));
-            for (RealVector scaledEigenvector : scaledEigenvectors) {
-                if (scaledEigenvector.getDimension() != reducedDimension) {
-                    System.err.println("Wrong eigenvector dimension found!");
-                    return null;
-                }
-                p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor, scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
-            }
-            newSpine.add(p);
+        List<Point2d> newSpine = new ArrayList<>(super.getSpine().size());
+        for (Point2d p : super.getSpine()) {
+            newSpine.add(new Point2d(p));
         }
-        conditionedPoint.setSpine(newSpine);
-
         double newWings = super.getWings();
         double newFlooredLegs = super.getFlooredLegs();
         double newLengthUpperArm = super.getLengthUpperArm();
@@ -59,7 +49,28 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         double newWeight = super.getWeight();
 
         for (RealVector scaledEigenvector : scaledEigenvectors) {
-            int eigenvectorPosition = 20;
+            if (scaledEigenvector.getDimension() != reducedDimension) {
+                System.err.println("Found eigenvector with wrong dimension. Can't calculate moved point.");
+                return null;
+            }
+            int eigenvectorPosition = 0;
+
+            for (int i = 0; i < newSpine.size(); i++) {
+                Point2d currentSpinePoint = newSpine.get(i);
+
+                // x-coordinate of last control point of tail in PCA space represents difference to x-coordinate of first control point
+                // if tail condition is present x-coordinate is replaced with correct value when tail is set
+                if (i*2 == PcaDimension.TAIL4X.ordinal()) {
+                    if (!conditions.hasTailLength()) {
+                        currentSpinePoint.x += (scaledEigenvector.getEntry(PcaDimension.BACK4X.ordinal()) +
+                                scaledEigenvector.getEntry(eigenvectorPosition++)) * coordinateScaleFactor;
+                    }
+                } else {
+                    currentSpinePoint.x += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                }
+
+                currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+            }
 
             if (!conditions.hasWings()) {
                 newWings += scaledEigenvector.getEntry(eigenvectorPosition++) * wingScaleFactor * downscaleFactor;
@@ -81,6 +92,10 @@ public class PcaDataPointConditioned extends PcaDataPoint {
             }
         }
 
+        conditionedPoint.setNeck(new ArrayList<>(newSpine.subList(0, 4)));
+        conditionedPoint.setBack(new ArrayList<>(newSpine.subList(3, 7)));
+        conditionedPoint.setTail(new ArrayList<>(newSpine.subList(6, 10)));
+        // if absolute conditions are present values are set in advance, so don't overwrite them!
         if (!conditions.hasWings()) {
             conditionedPoint.setWings(newWings);
         }
@@ -94,12 +109,13 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         conditionedPoint.setLengthLowerLeg(newLengthLowerLeg);
         conditionedPoint.setLengthFoot(newLengthFoot);
         conditionedPoint.setWeight(newWeight);
+        conditionedPoint.processData(); // generate spine from neck, back and tail
 
         return conditionedPoint;
     }
 
     @Override
-    public double[] getScaledDataForPCA() {
+    public double[] getScaledDataForPCA() { // todo simplify
         if (!dataSetMaybeComplete()) {
             System.err.println("Incomplete data!");
         }
@@ -107,10 +123,12 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         double[] data = new double[reducedDimension];
         int nextIndex = 0;
 
-        for (Point2d p : super.getSpine()) {
-            data[nextIndex] = p.x / coordinateScaleFactor;
-            data[nextIndex+1] = p.y / coordinateScaleFactor;
-            nextIndex += 2;
+        for (int i = 0; i < super.getSpine().size(); i++) {
+            Point2d p = super.getSpine().get(i);
+            if (!(i*2 == PcaDimension.TAIL4X.ordinal() && conditions.hasTailLength())) {
+                data[nextIndex++] = p.x / coordinateScaleFactor;
+            }
+                data[nextIndex++] = p.y / coordinateScaleFactor;
         }
         if (!conditions.hasWings()) {
             data[nextIndex++] = super.getWings() / (wingScaleFactor * downscaleFactor);
@@ -133,26 +151,43 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         return data;
     }
 
+    @Override
+    public void setTail(List<Point2d> tail) {
+        if (tail.size() != 4) {
+            System.err.println("Tail has not correct number of control points.");
+        }
+        if (conditions.hasTailLength()) {
+            tail.get(3).x = tail.get(0).x + conditions.getTailLength();
+        }
+        this.tail = tail;
+    }
+
     public static double[] getScaledConditions(PcaConditions conditions) {
         double[] scaledConditions = new double[conditions.getConditionCount()];
         int next = 0;
+        if (conditions.hasTailLength()) {
+            scaledConditions[next++] = conditions.getTailLength() / coordinateScaleFactor;
+        }
         if (conditions.hasWings()) {
             scaledConditions[next++] = conditions.getWings() / (wingScaleFactor * downscaleFactor);
         }
         if (conditions.hasFlooredLegs()) {
-            scaledConditions[next] = conditions.getFlooredLegs() / (flooredLegsScaleFactor * downscaleFactor);
+            scaledConditions[next++] = conditions.getFlooredLegs() / (flooredLegsScaleFactor * downscaleFactor);
         }
         return scaledConditions;
     }
 
     public static PcaDataPointConditioned newPointWithValuesFromScaledData(double[] scaledData, PcaConditions conditions, boolean logWeight) {
+        double[] scaledConditions = getScaledConditions(conditions);
         double[] scaledDataWithConditions = new double[PcaDataPoint.getDimension()];
         int nextWithoutConditions = 0;
         for (int i = 0; i < PcaDataPoint.getDimension(); i++) {
-            if (i == 20 && conditions.hasWings()) {
-                scaledDataWithConditions[i] = conditions.getWings();
-            } else if (i == 21 && conditions.hasFlooredLegs()) {
-                scaledDataWithConditions[i] = conditions.getFlooredLegs();
+            if (i == PcaDimension.TAIL4Y.ordinal() && conditions.hasTailLength()) {
+                scaledDataWithConditions[i] = scaledConditions[0];
+            } else if (i == PcaDimension.WINGS.ordinal() && conditions.hasWings()) {
+                scaledDataWithConditions[i] = scaledConditions[1];
+            } else if (i == PcaDimension.FLOORED_LEGS.ordinal() && conditions.hasFlooredLegs()) {
+                scaledDataWithConditions[i] = scaledConditions[2];
             } else {
                 scaledDataWithConditions[i] = scaledData[nextWithoutConditions++];
             }

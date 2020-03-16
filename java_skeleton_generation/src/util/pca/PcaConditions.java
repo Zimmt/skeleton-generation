@@ -2,28 +2,44 @@ package util.pca;
 
 public class PcaConditions {
 
+    private Double tailLength; // the x-difference between first control point of tail and the last
+
     private Integer wings;
     private Integer flooredLegs;
 
     public PcaConditions() { }
 
-    public PcaConditions(Integer wings, Integer flooredLegs) {
+    public PcaConditions(Double tailLength, Integer wings, Integer flooredLegs) {
+        this.tailLength = tailLength;
         this.wings = wings;
         this.flooredLegs = flooredLegs;
     }
 
     public boolean anyConditionPresent() {
-        return wings != null || flooredLegs != null;
+        return hasWings() || hasFlooredLegs() || hasTailLength();
     }
 
     public int getConditionCount() {
         int count = 0;
-        if (wings != null) count++;
-        if (flooredLegs != null) count++;
+        if (hasTailLength()) count++;
+        if (hasWings()) count++;
+        if (hasFlooredLegs()) count++;
         return count;
     }
 
-    public void setConditions(PcaDataPointConditioned point) {
+    public int[] getPcaDimensionsWithConditions() {
+        int[] dimensions = new int[getConditionCount()];
+        int next = 0;
+        if (hasTailLength()) dimensions[next++] = PcaDimension.TAIL4X.ordinal();
+        if (hasWings()) dimensions[next++] = PcaDimension.WINGS.ordinal();
+        if (hasFlooredLegs()) dimensions[next++] = PcaDimension.FLOORED_LEGS.ordinal();
+        return dimensions;
+    }
+
+    /**
+     * tailLength is not set as it depends on other values
+     */
+    public void setAbsoluteConditions(PcaDataPointConditioned point) {
         if (wings != null) {
             point.setWings((double) wings);
         }
@@ -46,5 +62,13 @@ public class PcaConditions {
 
     public Integer getFlooredLegs() {
         return flooredLegs;
+    }
+
+    public boolean hasTailLength() {
+        return tailLength != null;
+    }
+
+    public Double getTailLength() {
+        return tailLength;
     }
 }
