@@ -7,6 +7,8 @@ import javax.vecmath.Point2d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class PcaDataPointConditioned extends PcaDataPoint {
 
@@ -115,40 +117,25 @@ public class PcaDataPointConditioned extends PcaDataPoint {
     }
 
     @Override
-    public double[] getScaledDataForPCA() { // todo simplify
+    public double[] getScaledDataForPCA() {
         if (!dataSetMaybeComplete()) {
             System.err.println("Incomplete data!");
         }
 
-        double[] data = new double[reducedDimension];
-        int nextIndex = 0;
+        List<Double> data = DoubleStream.of(super.getScaledDataForPCA()).boxed().collect(Collectors.toList());
+        int removed = 0;
 
-        for (int i = 0; i < super.getSpine().size(); i++) {
-            Point2d p = super.getSpine().get(i);
-            if (!(i*2 == PcaDimension.TAIL4X.ordinal() && conditions.hasTailLength())) {
-                data[nextIndex++] = p.x / coordinateScaleFactor;
-            }
-                data[nextIndex++] = p.y / coordinateScaleFactor;
+        if (conditions.hasTailLength()) {
+            data.remove(PcaDimension.TAIL4X.ordinal() - removed++);
         }
-        if (!conditions.hasWings()) {
-            data[nextIndex++] = super.getWings() / (wingScaleFactor * downscaleFactor);
+        if (conditions.hasWings()) {
+            data.remove(PcaDimension.WINGS.ordinal() - removed++);
         }
-        if (!conditions.hasFlooredLegs()) {
-            data[nextIndex++] = super.getFlooredLegs() / (flooredLegsScaleFactor * downscaleFactor);
-        }
-        data[nextIndex++] = super.getLengthUpperArm() / coordinateScaleFactor;
-        data[nextIndex++] = super.getLengthLowerArm() / coordinateScaleFactor;
-        data[nextIndex++] = super.getLengthHand() / coordinateScaleFactor;
-        data[nextIndex++] = super.getLengthUpperLeg() / coordinateScaleFactor;
-        data[nextIndex++] = super.getLengthLowerLeg() / coordinateScaleFactor;
-        data[nextIndex++] = super.getLengthFoot() / coordinateScaleFactor;
-        if (super.getLogWeight()) {
-            data[nextIndex] = Math.log10(super.getWeight()+1) / (Math.log10(weightScaleFactor+1) * downscaleFactor);
-        } else {
-            data[nextIndex] = super.getWeight() / (weightScaleFactor * downscaleFactor);
+        if (conditions.hasFlooredLegs()) {
+            data.remove(PcaDimension.FLOORED_LEGS.ordinal() - removed++);
         }
 
-        return data;
+        return data.stream().mapToDouble(x -> x).toArray();
     }
 
     @Override
@@ -180,14 +167,15 @@ public class PcaDataPointConditioned extends PcaDataPoint {
     public static PcaDataPointConditioned newPointWithValuesFromScaledData(double[] scaledData, PcaConditions conditions, boolean logWeight) {
         double[] scaledConditions = getScaledConditions(conditions);
         double[] scaledDataWithConditions = new double[PcaDataPoint.getDimension()];
+        int nextWithConditions = 0;
         int nextWithoutConditions = 0;
         for (int i = 0; i < PcaDataPoint.getDimension(); i++) {
-            if (i == PcaDimension.TAIL4Y.ordinal() && conditions.hasTailLength()) {
-                scaledDataWithConditions[i] = scaledConditions[0];
+            if (i == PcaDimension.TAIL4X.ordinal() && conditions.hasTailLength()) {
+                scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];
             } else if (i == PcaDimension.WINGS.ordinal() && conditions.hasWings()) {
-                scaledDataWithConditions[i] = scaledConditions[1];
+                scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];
             } else if (i == PcaDimension.FLOORED_LEGS.ordinal() && conditions.hasFlooredLegs()) {
-                scaledDataWithConditions[i] = scaledConditions[2];
+                scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];
             } else {
                 scaledDataWithConditions[i] = scaledData[nextWithoutConditions++];
             }

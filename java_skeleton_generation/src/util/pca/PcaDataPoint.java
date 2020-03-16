@@ -92,28 +92,10 @@ public class PcaDataPoint {
     public PcaDataPoint getMovedPoint(List<RealVector> scaledEigenvectors) {
         PcaDataPoint point = new PcaDataPoint(logWeight);
 
-        List<Point2d> newSpine = new ArrayList<>();
-        for (int i = 0; i < spine.size(); i++) {
-            Point2d p = new Point2d(spine.get(i));
-            for (RealVector scaledEigenvector : scaledEigenvectors) {
-                if (scaledEigenvector.getDimension() != PcaDataPoint.getDimension()) {
-                    System.err.println("Wrong eigenvector dimension found!");
-                    return null;
-                }
-                if (i*2 == PcaDimension.TAIL4X.ordinal()) { // x-coordinate of last control point of tail in PCA space represents difference to x-coordinate of first control point
-                    p.add(new Point2d((scaledEigenvector.getEntry(PcaDimension.BACK4X.ordinal()) + scaledEigenvector.getEntry(2*i)) * coordinateScaleFactor,
-                            scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
-                } else {
-                    p.add(new Point2d(scaledEigenvector.getEntry(2*i) * coordinateScaleFactor,
-                            scaledEigenvector.getEntry(2*i + 1) * coordinateScaleFactor));
-                }
-            }
-            newSpine.add(p);
+        List<Point2d> newSpine = new ArrayList<>(spine.size());
+        for (Point2d p : spine) {
+            newSpine.add(new Point2d(p));
         }
-        point.setNeck(new ArrayList<>(newSpine.subList(0, 4)));
-        point.setBack(new ArrayList<>(newSpine.subList(3, 7)));
-        point.setTail(new ArrayList<>(newSpine.subList(6, 10)));
-
         double newWings = wings;
         double newFlooredLegs = flooredLegs;
         double newLengthUpperArm = lengthUpperArm;
@@ -125,6 +107,26 @@ public class PcaDataPoint {
         double newWeight = weight;
 
         for (RealVector scaledEigenvector : scaledEigenvectors) {
+            if (scaledEigenvector.getDimension() != dimension) {
+                System.err.println("Found eigenvector with wrong dimension. Can't calculate moved point.");
+                return null;
+            }
+
+            int eigenvectorPosition = 0;
+            for (int i = 0; i < newSpine.size(); i++) {
+                Point2d currentSpinePoint = newSpine.get(i);
+
+                // x-coordinate of last control point of tail in PCA space represents difference to x-coordinate of first control point
+                if (i*2 == PcaDimension.TAIL4X.ordinal()) {
+                    currentSpinePoint.x += (scaledEigenvector.getEntry(PcaDimension.BACK4X.ordinal()) +
+                        scaledEigenvector.getEntry(eigenvectorPosition++)) * coordinateScaleFactor;
+                } else {
+                    currentSpinePoint.x += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                }
+
+                currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+            }
+
             newWings += scaledEigenvector.getEntry(PcaDimension.WINGS.ordinal()) * wingScaleFactor * downscaleFactor;
             newFlooredLegs += scaledEigenvector.getEntry(PcaDimension.FLOORED_LEGS.ordinal()) * flooredLegsScaleFactor * downscaleFactor;
             newLengthUpperArm += scaledEigenvector.getEntry(PcaDimension.LENGTH_UPPER_ARM.ordinal()) * coordinateScaleFactor;
@@ -141,6 +143,9 @@ public class PcaDataPoint {
             }
         }
 
+        point.setNeck(new ArrayList<>(newSpine.subList(0, 4)));
+        point.setBack(new ArrayList<>(newSpine.subList(3, 7)));
+        point.setTail(new ArrayList<>(newSpine.subList(6, 10)));
         point.setWings(newWings);
         point.setFlooredLegs(newFlooredLegs);
         point.setLengthUpperArm(newLengthUpperArm);
