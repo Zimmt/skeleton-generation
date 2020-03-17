@@ -22,7 +22,7 @@ public class ExtremityPositioning {
     private float floorDistanceEps = 1f;
     private float initialAngleStepSize = (float) Math.toRadians(20);
     private int maxSteps = 40;
-    private float firstJointXAngleProbability = 1f;
+    private float firstJointXAngleProbability = 0.8f;
     private float firstJointZAngleProbability = 1f;
     private float secondJointAngleProbability = 1f;
     private float thirdJointAngleProbability = 1f;

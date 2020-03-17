@@ -1,8 +1,15 @@
 package skeleton;
 
+import skeleton.elements.ExtremityKind;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ExtremityData {
+    private static int maxExtremityCount = 4;
+
+    // PCA data
     private float wingProbability; // [0, 1]
     private float flooredLegProbability; // #legs/2, [0,2]
 
@@ -14,16 +21,25 @@ public class ExtremityData {
     private float lengthLowerLeg; // [0, 1000]
     private float lengthFoot; // [0, 1000]
 
+    // non-PCA / user input
+    private UserInput userInput;
+
+    // derived / calculated values
     private int flooredLegs;
     private int wings;
     private int arms;
+    private int fins;
     private float floorHeight = 0f;
     private float flooredAnkleWristProbability;
+
+    // a two element array of extremity kinds for each extremity starting point
+    // the first entry concerns the extremity starting point that is nearest to the tail
+    private List<ExtremityKind[]> extremityKindsForStartingPoints;
 
     public ExtremityData(double wingProbability, double flooredLegProbability,
                          double lengthUpperArm, double lengthLowerArm, double lengthHand,
                          double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
-                         SpineData spine) {
+                         SpineData spine, UserInput userInput) {
         this.wingProbability = (float) wingProbability;
         this.flooredLegProbability = (float) flooredLegProbability;
         this.lengthUpperArm = (float) lengthUpperArm;
@@ -32,6 +48,7 @@ public class ExtremityData {
         this.lengthUpperLeg = (float) lengthUpperLeg;
         this.lengthLowerLeg = (float) lengthLowerLeg;
         this.lengthFoot = (float) lengthFoot;
+        this.userInput = userInput;
         calculateDerivedValues(spine);
     }
 
@@ -59,18 +76,6 @@ public class ExtremityData {
         return lengthFoot;
     }
 
-    public int getFlooredLegs() {
-        return flooredLegs;
-    }
-
-    public int getWings() {
-        return wings;
-    }
-
-    public int getArms() {
-        return arms;
-    }
-
     public float getFloorHeight() {
         return floorHeight;
     }
@@ -83,15 +88,104 @@ public class ExtremityData {
         this.flooredAnkleWristProbability = probability ? 1f : 0f;
     }
 
-    private void calculateDerivedValues(SpineData spine) {
-        Random random = new Random();
-        calculateWings();
-        calculateLegsAndFloorHeight(random.nextFloat(), spine);
-        calculateArms();
+    /**
+     * @param position is counting from the back (so pelvic in a normal animal would be 0)
+     */
+    public ExtremityKind[] getExtremityKindsForStartingPoint(int position) {
+        return extremityKindsForStartingPoints.get(position);
     }
 
+    private void calculateDerivedValues(SpineData spine) {
+        calculateWings();
+        calculateLegsAndFloorHeight(spine);
+        calculateArmsAndFins();
+        calculateExtremityPositions();
+    }
+
+    private void calculateExtremityPositions() {
+        extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[2], new ExtremityKind[2]);
+        int legCount = 0;
+        int finCount = 0;
+        int wingCount = 0;
+        int armCount = 0;
+
+        // first back extremity
+        if (flooredLegs > 0) {
+            extremityKindsForStartingPoints.get(0)[0] = ExtremityKind.FLOORED_LEG;
+            legCount++;
+        } else if (fins > 0) {
+            extremityKindsForStartingPoints.get(0)[0] = ExtremityKind.FIN;
+            finCount++;
+        }
+
+        // first front extremity
+        if (wings > 0) {
+            extremityKindsForStartingPoints.get(1)[0] = ExtremityKind.WING;
+            wingCount++;
+        } else if (arms > 0) {
+            extremityKindsForStartingPoints.get(1)[0] = ExtremityKind.NON_FLOORED_LEG;
+            armCount++;
+        } else if (flooredLegs > legCount) {
+            extremityKindsForStartingPoints.get(1)[0] = ExtremityKind.FLOORED_LEG;
+            legCount++;
+        } else if (fins > finCount) {
+            extremityKindsForStartingPoints.get(1)[0] = ExtremityKind.FIN;
+            finCount++;
+        }
+
+        // second front extremity
+        if (wings > wingCount) {
+            extremityKindsForStartingPoints.get(1)[1] = ExtremityKind.WING;
+            wingCount++;
+        } else if (arms > armCount) {
+            extremityKindsForStartingPoints.get(1)[1] = ExtremityKind.NON_FLOORED_LEG;
+            armCount++;
+        } else if (flooredLegs > legCount) {
+            extremityKindsForStartingPoints.get(1)[1] = ExtremityKind.FLOORED_LEG;
+            legCount++;
+        } else if (fins > finCount) {
+            extremityKindsForStartingPoints.get(1)[1] = ExtremityKind.FIN;
+            finCount++;
+        }
+
+        // second back extremity
+        if (flooredLegs > legCount) {
+            extremityKindsForStartingPoints.get(0)[1] = ExtremityKind.FLOORED_LEG;
+            legCount++;
+        } else if (fins > finCount) {
+            extremityKindsForStartingPoints.get(0)[1] = ExtremityKind.FIN;
+            finCount++;
+        }
+
+        if (legCount + armCount + wingCount + finCount != flooredLegs + arms + wings + fins) {
+            System.err.println("Something went wrong with extremity sorting!");
+        }
+    }
+
+    /**
+     * arms: user input or 0
+     * fins: user input or, if extremity count < 2, 2 - extremity count
+     */
+    private void calculateArmsAndFins() {
+        arms = userInput.hasArms() ? userInput.getArms() : 0;
+        if (userInput.hasFins()) {
+            fins = userInput.getFins();
+        } else if (flooredLegs + wings + arms < 2) {
+            fins = 2 - (flooredLegs + wings + arms);
+        } else {
+            fins = 0;
+        }
+        System.out.println("arms: " + arms);
+        System.out.println("fins: " + fins);
+    }
+
+    /**
+     * wings: user input or calculated by wingProbability
+     */
     private void calculateWings() {
-        if (wingProbability > 0.4f) { // todo what probability is good here?
+        if (userInput.hasWings()) {
+            wings = userInput.getWings();
+        } else if (userInput.getTotal() < maxExtremityCount && (new Random()).nextFloat() < wingProbability) { // todo wing probability too small?
             wings = 1;
         } else {
             wings = 0;
@@ -99,13 +193,23 @@ public class ExtremityData {
         System.out.println("wings: " + wings);
     }
 
-    private void calculateLegsAndFloorHeight(float probability, SpineData spine) {
-        if (wings < 1 && (flooredLegProbability >= 2 || (probability > 0.5f && flooredLegProbability > 1))) {
-            flooredLegs = 2;
-        } else if (flooredLegProbability <= 0 || (probability < 0.5f && flooredLegProbability < 1)) {
-            flooredLegs = 0;
+    /**
+     * legs: user input or calculated by flooredLegProbability
+     */
+    private void calculateLegsAndFloorHeight(SpineData spine) {
+        float probability = (new Random()).nextFloat();
+        if (userInput.hasFlooredLegs()) {
+            flooredLegs = userInput.getFlooredLegs();
+        } else if (userInput.getTotal() < maxExtremityCount) {
+            if (userInput.getTotal()+1 < maxExtremityCount && (flooredLegProbability > 1 && probability < (flooredLegProbability-1.0))) {
+                flooredLegs = 2;
+            } else if (flooredLegProbability >= 1 || (flooredLegProbability > 0 && probability < flooredLegProbability)) {
+                flooredLegs = 1;
+            } else {
+                flooredLegs = 0;
+            }
         } else {
-            flooredLegs = 1;
+            flooredLegs = 0;
         }
         System.out.println("floored legs: " + flooredLegs);
         calculateFloorHeight(spine);
@@ -155,13 +259,5 @@ public class ExtremityData {
             System.out.println("Floor height: " + floorHeight);
             System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
         }
-    }
-
-
-    private void calculateArms() {
-        if (flooredLegs == 1 && wings == 0) {
-            arms = 1;
-        }
-        System.out.println("Arms: " + arms);
     }
 }

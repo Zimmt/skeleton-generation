@@ -1,9 +1,8 @@
 package skeleton.replacementRules;
 
-import skeleton.SpinePart;
 import skeleton.SpineData;
+import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvic;
@@ -81,14 +80,8 @@ public class BackPartRule extends ReplacementRule {
         TransformationMatrix transform = parent.getJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvic.getLocalTranslationFromJoint(boundingBox));
 
-        ExtremityKind extremityKind;
-        if (backPart.getGenerator().getSkeletonMetaData().getExtremities().getFlooredLegs() > 0) {
-            extremityKind = ExtremityKind.FLOORED_LEG;
-        } else {
-            extremityKind = ExtremityKind.FIN;
-        }
-
-        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, intervalAndLength.get(1), extremityKind);
+        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, intervalAndLength.get(1),
+                backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0));
         parent.addChild(pelvic);
         return pelvic;
     }

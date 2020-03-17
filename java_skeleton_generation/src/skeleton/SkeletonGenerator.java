@@ -33,13 +33,13 @@ public class SkeletonGenerator {
     private int stepCount = 0;
     private int nextBoneId = 0;
 
-    public SkeletonGenerator(PcaHandler pcaHandler) {
+    public SkeletonGenerator(PcaHandler pcaHandler, UserInput userInput) {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
         this.pcaHandler = pcaHandler;
-        this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint());
+        this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint(), userInput);
     }
 
     /**

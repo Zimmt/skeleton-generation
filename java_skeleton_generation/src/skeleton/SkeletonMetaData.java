@@ -16,7 +16,7 @@ public class SkeletonMetaData {
     private double weight;
 
 
-    public SkeletonMetaData(PcaDataPoint p) {
+    public SkeletonMetaData(PcaDataPoint p, UserInput userInput) {
         this.spine = preprocessSpine(p.getSpine());
         if ((Math.abs(spine.getNeck().getGradient(1f) - spine.getBack().getGradient(0f)) > 0.1) ||
                 (Math.abs(spine.getBack().getGradient(1f) - spine.getTail().getGradient(0f)) > 0.1)) {
@@ -24,7 +24,7 @@ public class SkeletonMetaData {
         }
         this.extremities = new ExtremityData(p.getWings(), p.getFlooredLegs(),
                 p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
-                p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine);
+                p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine, userInput);
         this.weight = p.getWeight();
     }
 

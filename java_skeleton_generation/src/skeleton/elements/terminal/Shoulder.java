@@ -1,31 +1,40 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.arm.ShoulderJoint;
-import skeleton.elements.joints.ExtremityKind;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Shoulder extends TerminalElement {
 
     private final String kind = "shoulder";
-    private ShoulderJoint joint;
+    private ExtremityKind[] extremityKinds;
+    private List<ShoulderJoint> joints;
 
-    public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind jointKind) {
+    public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind[] extremityKinds) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox, mirrored), jointKind);
+        this.extremityKinds = extremityKinds;
+        this.joints = new ArrayList<>(extremityKinds.length);
+        for (ExtremityKind extremityKind : extremityKinds) {
+            if (extremityKind != null) {
+                joints.add(ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox, mirrored), extremityKind));
+            }
+        }
     }
 
     public String getKind() {
         return kind;
     }
 
-    public ShoulderJoint getJoint() {
-        return joint;
+    public List<ShoulderJoint> getJoints() {
+        return joints;
     }
 
     public boolean isMirrored() { return true; }
@@ -38,7 +47,7 @@ public class Shoulder extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                true, joint.getExtremityKind());
+                true, extremityKinds);
     }
 
     /**

@@ -1,6 +1,6 @@
 package skeleton.elements.joints.arm;
 
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.XZAngleBasedJoint;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.UpperArm;

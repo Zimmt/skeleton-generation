@@ -1,8 +1,9 @@
 package skeleton.replacementRules;
 
 import skeleton.ExtremityData;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.joints.leg.PelvicJoint;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Shin;
@@ -40,51 +41,55 @@ public class LegRule extends ReplacementRule {
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
         ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
-        ExtremityKind extremityKind = leg.getParent().getLegJoint().getExtremityKind();
 
-        Vector3f thighScale = new Vector3f(
-                0.4f * leg.getParent().getBoundingBox().getXLength(),
-                extremityData.getLengthUpperLeg(),
-                0.2f * leg.getParent().getBoundingBox().getZLength());
-        Thigh thigh = generateThigh(thighScale, leg, extremityKind);
-        generatedParts.add(thigh);
+        for (PelvicJoint pelvicJoint : leg.getParent().getLegJoints()) {
+            ExtremityKind extremityKind = pelvicJoint.getExtremityKind();
 
-        Vector3f shinScale = new Vector3f(
-                0.8f * thigh.getBoundingBox().getXLength(),
-                extremityData.getLengthLowerLeg(),
-                0.8f * thigh.getBoundingBox().getZLength());
-        Shin shin = generateShin(shinScale, leg, thigh, extremityKind);
-        generatedParts.add(shin);
+            Vector3f thighScale = new Vector3f(
+                    0.4f * leg.getParent().getBoundingBox().getXLength(),
+                    extremityData.getLengthUpperLeg(),
+                    0.2f * leg.getParent().getBoundingBox().getZLength());
+            Thigh thigh = generateThigh(thighScale, leg, pelvicJoint, extremityKind);
+            generatedParts.add(thigh);
 
-        Vector3f footScale = new Vector3f(
-                0.8f * shin.getBoundingBox().getXLength(),
-                extremityData.getLengthFoot(),
-                2f * shin.getBoundingBox().getZLength());
-        Foot foot = generateFoot(footScale, leg, shin);
-        generatedParts.add(foot);
+            Vector3f shinScale = new Vector3f(
+                    0.8f * thigh.getBoundingBox().getXLength(),
+                    extremityData.getLengthLowerLeg(),
+                    0.8f * thigh.getBoundingBox().getZLength());
+            Shin shin = generateShin(shinScale, leg, thigh, extremityKind);
+            generatedParts.add(shin);
 
-        ExtremityPositioning extremityPositioning = new ExtremityPositioning(
-                leg.getParent().getLegJoint(), thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
+            Vector3f footScale = new Vector3f(
+                    0.8f * shin.getBoundingBox().getXLength(),
+                    extremityData.getLengthFoot(),
+                    2f * shin.getBoundingBox().getZLength());
+            Foot foot = generateFoot(footScale, leg, shin);
+            generatedParts.add(foot);
 
-        if (extremityKind == ExtremityKind.FLOORED_LEG) {
-            boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-            System.out.print("floored ankle: " + flooredAnkle + "... ");
+            ExtremityPositioning extremityPositioning = new ExtremityPositioning(
+                    pelvicJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
 
-            // other extremities do the same
-            thigh.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle);
+            if (extremityKind == ExtremityKind.FLOORED_LEG) {
+                boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
+                System.out.print("floored ankle: " + flooredAnkle + "... ");
 
-            extremityPositioning.findFlooredPosition(flooredAnkle);
-        } else {
-            extremityPositioning.findFloatingPosition();
+                // other extremities do the same
+                thigh.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle);
+
+                extremityPositioning.findFlooredPosition(flooredAnkle);
+            } else {
+                extremityPositioning.findFloatingPosition();
+            }
         }
+
         System.out.println("...finished.");
 
         return generatedParts;
     }
 
-    private Thigh generateThigh(Vector3f scale, Leg leg, ExtremityKind extremityKind) {
+    private Thigh generateThigh(Vector3f scale, Leg leg, PelvicJoint pelvicJoint, ExtremityKind extremityKind) {
         BoundingBox boundingBox = new BoundingBox(scale);
-        TransformationMatrix transform = leg.getParent().getLegJoint().calculateChildTransform(boundingBox);
+        TransformationMatrix transform = pelvicJoint.calculateChildTransform(boundingBox);
 
         Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false, extremityKind);
         leg.getParent().replaceChild(leg, thigh);

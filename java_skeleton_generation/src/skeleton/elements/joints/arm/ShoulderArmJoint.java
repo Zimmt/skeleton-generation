@@ -1,6 +1,6 @@
 package skeleton.elements.joints.arm;
 
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point3f;

@@ -67,7 +67,9 @@ public abstract class SkeletonPart {
     }
 
     public boolean replaceChild(SkeletonPart oldChild, SkeletonPart newChild) {
-        return removeChild(oldChild) && addChild(newChild);
+        boolean successful = removeChild(oldChild);
+        successful = addChild(newChild) && successful;
+        return  successful;
     }
 
     public List<SkeletonPart> getChildren() {

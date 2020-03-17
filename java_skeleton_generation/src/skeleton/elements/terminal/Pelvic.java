@@ -1,7 +1,7 @@
 package skeleton.elements.terminal;
 
 import skeleton.SpinePart;
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.joints.leg.PelvicJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
@@ -10,6 +10,8 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,12 +21,18 @@ public class Pelvic extends TerminalElement {
 
     private final String kind = "pelvic";
     private SpineOrientedJoint tailJoint;
-    private PelvicJoint legJoint;
+    private List<PelvicJoint> legJoints;
 
-    public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, float tailJointSpinePosition, ExtremityKind extremityKind) {
+    public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
+                  float tailJointSpinePosition, ExtremityKind[] extremityKinds) {
         super(transform, boundingBox, parent, ancestor);
         this.tailJoint = new SpineOrientedJoint(this, Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
-        this.legJoint = PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getLegJointPosition(boundingBox), extremityKind);
+        this.legJoints = new ArrayList<>(extremityKinds.length);
+        for (ExtremityKind extremityKind : extremityKinds) {
+            if (extremityKind != null) {
+                legJoints.add(PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getLegJointPosition(boundingBox), extremityKind));
+            }
+        }
     }
 
     public String getKind() {
@@ -35,8 +43,8 @@ public class Pelvic extends TerminalElement {
         return tailJoint;
     }
 
-    public PelvicJoint getLegJoint() {
-        return legJoint;
+    public List<PelvicJoint> getLegJoints() {
+        return legJoints;
     }
 
     public boolean isMirrored() { return false; }

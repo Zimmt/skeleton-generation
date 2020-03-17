@@ -1,6 +1,10 @@
 import skeleton.SkeletonGenerator;
+import skeleton.UserInput;
 import util.ObjGenerator;
-import util.pca.*;
+import util.pca.PcaConditions;
+import util.pca.PcaDataPoint;
+import util.pca.PcaDataReader;
+import util.pca.PcaHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,14 +38,22 @@ public class Main {
     }
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
+        Integer userInputFlooredLegs = null;
+        Integer userInputWings = null;
+        Integer userInputArms = null;
+        Integer userInputFins = null;
+        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins);
+        Integer legCondition = userInput.getLegConditionForPCA();
+        Integer wingCondition = userInput.getWingConditionForPCA();
+
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaConditions conditions = new PcaConditions(null, null, null);
+        PcaConditions conditions = new PcaConditions(null, wingCondition, legCondition);
         PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
 
         int skeletonCount = 10;
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println("- " + i + " --------------------------------------------------------------");
-            SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler);
+            SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
             while (!skeletonGenerator.isFinished()) {
                 boolean stepDone = skeletonGenerator.doOneStep();
                 if (!stepDone) { // there might be missing rules

@@ -1,4 +1,4 @@
-package skeleton.elements.joints;
+package skeleton.elements;
 
 public enum ExtremityKind {
     LEG, // subsumes floored and non floored legs

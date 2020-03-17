@@ -1,6 +1,6 @@
 package skeleton.elements.joints.leg;
 
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.OneAngleBasedJoint;
 import skeleton.elements.terminal.Shin;
 import skeleton.elements.terminal.TerminalElement;

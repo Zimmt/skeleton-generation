@@ -1,6 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.joints.ExtremityKind;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.arm.ElbowJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
