@@ -18,13 +18,13 @@ public class UserInput {
         if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
             System.err.println("Invalid user input for legs");
         }
-        if (wings != null && (wings < 0 || wings > 2)) {
+        if (wings != null && (wings < 0 || wings > 4)) {
             System.err.println("Invalid user input for wings");
         }
-        if (arms != null && (arms < 0 || arms > 2)) {
+        if (arms != null && (arms < 0 || arms > 4)) {
             System.err.println("Invalid user input for arms");
         }
-        if (fins != null && (fins < 0 || fins > 4)) {
+        if (fins != null && (fins < 0 || fins > 6)) {
             System.err.println("Invalid user input for fins");
         }
         this.flooredLegs = flooredLegs;
@@ -37,13 +37,17 @@ public class UserInput {
         if (wings != null) total += wings;
         if (arms != null) total += arms;
         if (fins != null) total += fins;
-        if (total > 4) {
+        if (total > 6) {
             System.err.println("Too many extremities found!");
         }
     }
 
+    public boolean hasSecondShoulder() {
+        return getTotal() > 4;
+    }
+
     /**
-     * userInput +- 0.5
+     * min( userInput, 4)  +- 0.5
      * if input > 4 there is a probability that it is reduced by two
      * if input > 3 there is a probability that it is reduced by one
      * @return null or a value in [-0.5, 4.5]
@@ -52,7 +56,7 @@ public class UserInput {
         Double legCondition = null;
         if (flooredLegs != null) {
             double variance = random.nextDouble() - 0.5;
-            legCondition = flooredLegs.doubleValue() + variance;
+            legCondition = Math.min(4.0, flooredLegs.doubleValue()) + variance;
             if (legCondition >= 4.0 && random.nextDouble() > 0.5) {
                 legCondition -= 2.0;
             } else if (legCondition >= 3.0 && random.nextDouble() > 0.5) {

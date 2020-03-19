@@ -38,9 +38,13 @@ public class ShoulderGirdleRule extends ReplacementRule {
         Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(80f, 20f, 100f));
         generatedParts.add(shoulder);
 
-        Arm arm = new Arm(shoulder, shoulderGirdle);
-        shoulder.addChild(arm);
-        generatedParts.add(arm);
+        if (!shoulder.getJoints().isEmpty()) {
+            Arm arm = new Arm(shoulder, shoulderGirdle);
+            shoulder.addChild(arm);
+            generatedParts.add(arm);
+        } else {
+            System.out.println("no arms generated");
+        }
 
         return generatedParts;
     }

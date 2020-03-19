@@ -61,9 +61,13 @@ public class BackPartRule extends ReplacementRule {
         Pelvic pelvic = generatePelvic(backPart, backBack.get(backBack.size()-1), pelvicScale, pelvicIntervalAndLength);
         generatedParts.add(pelvic);
 
-        Leg leg = new Leg(pelvic, backPart);
-        pelvic.addChild(leg);
-        generatedParts.add(leg);
+        if (!pelvic.getLegJoints().isEmpty()) {
+            Leg leg = new Leg(pelvic, backPart);
+            pelvic.addChild(leg);
+            generatedParts.add(leg);
+        } else {
+            System.out.println("No legs generated");
+        }
 
         Tuple2f tailInterval = new Point2f(pelvic.getTailJoint().getSpinePosition(), 1f);
         List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
