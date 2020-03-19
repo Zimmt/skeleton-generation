@@ -53,9 +53,10 @@ public class ShoulderGirdleRule extends ReplacementRule {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(boundingBox);
         transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
-        ExtremityKind[] extremityKinds = shoulderGirdle.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(1);
+        int startingPosition = shoulderGirdle.isSecondShoulderGirdle() ? 2 : 1;
+        ExtremityKind[] extremityKinds = shoulderGirdle.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(startingPosition);
 
-        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false, extremityKinds);
+        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, false, extremityKinds, shoulderGirdle.isSecondShoulderGirdle());
         shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
         return shoulder;
     }

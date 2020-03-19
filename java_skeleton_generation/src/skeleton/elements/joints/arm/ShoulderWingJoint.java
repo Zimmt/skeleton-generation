@@ -12,13 +12,13 @@ public class ShoulderWingJoint extends ShoulderJoint {
     private static float minSideAngle = 0f;
     private static float maxSideAngle = (float) Math.toRadians(45);
 
-    public ShoulderWingJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, ExtremityKind.WING);
+    public ShoulderWingJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
+        super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, ExtremityKind.WING, secondShoulder);
         setCurrentFirstAngle(minFrontAngle);
         setCurrentSecondAngle(minSideAngle);
     }
 
     public ShoulderWingJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ShoulderWingJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
+        return new ShoulderWingJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), secondShoulder);
     }
 }

@@ -12,8 +12,8 @@ public class ShoulderArmJoint extends ShoulderJoint {
     private static float minSideAngle = 0f;
     private static float maxSideAngle = (float) Math.toRadians(170);
 
-    public ShoulderArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
-        super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, extremityKind);
+    public ShoulderArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind, boolean secondShoulder) {
+        super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, extremityKind, secondShoulder);
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid shoulder arm joint kind");
         }
@@ -22,6 +22,6 @@ public class ShoulderArmJoint extends ShoulderJoint {
     }
 
     public ShoulderArmJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ShoulderArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind());
+        return new ShoulderArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind(), secondShoulder);
     }
 }

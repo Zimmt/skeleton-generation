@@ -25,6 +25,10 @@ public class ExtremityStartingPoints {
         }
     }
 
+    public boolean hasSecondShoulder() {
+        return extremityKindsForStartingPoints.size() > 2;
+    }
+
     public int getStartingPointCount() {
         return extremityKindsForStartingPoints.size();
     }

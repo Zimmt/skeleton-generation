@@ -10,8 +10,8 @@ public class ShoulderFinJoint extends ShoulderJoint {
     private static float frontAngle = (float) Math.toRadians(90);
     private static float sideAngle = (float) Math.toRadians(90);
 
-    public ShoulderFinJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, frontAngle, frontAngle, sideAngle, sideAngle, ExtremityKind.FIN);
+    public ShoulderFinJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
+        super(parent, position, frontAngle, frontAngle, sideAngle, sideAngle, ExtremityKind.FIN, secondShoulder);
         setCurrentFirstAngle(frontAngle);
         setCurrentSecondAngle(sideAngle);
     }
@@ -22,6 +22,6 @@ public class ShoulderFinJoint extends ShoulderJoint {
     }
 
     public ShoulderFinJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ShoulderFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
+        return new ShoulderFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), secondShoulder);
     }
 }

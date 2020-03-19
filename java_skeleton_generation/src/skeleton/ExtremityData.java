@@ -86,6 +86,10 @@ public class ExtremityData {
         this.flooredAnkleWristProbability = probability ? 1f : 0f;
     }
 
+    public boolean hasSecondShoulder() {
+        return extremityStartingPoints.hasSecondShoulder();
+    }
+
     /**
      * @param position is counting from the back (so pelvic in a normal animal would be 0)
      */

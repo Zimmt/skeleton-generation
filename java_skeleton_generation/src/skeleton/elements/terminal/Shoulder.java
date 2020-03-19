@@ -17,16 +17,19 @@ public class Shoulder extends TerminalElement {
     private final String kind = "shoulder";
     private ExtremityKind[] extremityKinds;
     private List<ShoulderJoint> joints;
+    private boolean secondShoulder;
 
-    public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind[] extremityKinds) {
+    public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
+                    boolean mirrored, ExtremityKind[] extremityKinds, boolean secondShoulder) {
         super(transform, boundingBox, parent, ancestor);
         this.extremityKinds = extremityKinds;
         this.joints = new ArrayList<>(extremityKinds.length);
         for (ExtremityKind extremityKind : extremityKinds) {
             if (extremityKind != null) {
-                joints.add(ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox, mirrored), extremityKind));
+                joints.add(ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox, mirrored), extremityKind, secondShoulder));
             }
         }
+        this.secondShoulder = secondShoulder;
     }
 
     public String getKind() {
@@ -47,7 +50,7 @@ public class Shoulder extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(),
-                true, extremityKinds);
+                true, extremityKinds, secondShoulder);
     }
 
     /**
