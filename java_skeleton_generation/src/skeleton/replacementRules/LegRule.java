@@ -36,7 +36,7 @@ public class LegRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.print("Leg generation... ");
+        //System.out.print("Leg generation... ");
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -71,7 +71,7 @@ public class LegRule extends ReplacementRule {
 
             if (extremityKind == ExtremityKind.FLOORED_LEG) {
                 boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-                System.out.print("floored ankle: " + flooredAnkle + "... ");
+                //System.out.print("floored ankle: " + flooredAnkle + "... ");
 
                 // other extremities do the same
                 thigh.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle);
@@ -82,7 +82,7 @@ public class LegRule extends ReplacementRule {
             }
         }
 
-        System.out.println("...finished.");
+        //System.out.println("...finished.");
 
         return generatedParts;
     }

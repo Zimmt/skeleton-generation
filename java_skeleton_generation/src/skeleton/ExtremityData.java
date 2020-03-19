@@ -36,6 +36,8 @@ public class ExtremityData {
     // the first entry concerns the extremity starting point that is nearest to the tail
     private List<ExtremityKind[]> extremityKindsForStartingPoints;
 
+    private Random random = new Random();
+
     public ExtremityData(double wingProbability, double flooredLegProbability,
                          double lengthUpperArm, double lengthLowerArm, double lengthHand,
                          double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
@@ -95,6 +97,9 @@ public class ExtremityData {
         return extremityKindsForStartingPoints.get(position);
     }
 
+    /**
+     * sets between 2 and 4 extremities
+     */
     private void calculateDerivedValues(SpineData spine) {
         calculateWings();
         calculateLegsAndFloorHeight(spine);
@@ -160,18 +165,33 @@ public class ExtremityData {
         if (legCount + armCount + wingCount + finCount != flooredLegs + arms + wings + fins) {
             System.err.println("Something went wrong with extremity sorting!");
         }
+        if (extremityKindsForStartingPoints.get(0)[0] == null && extremityKindsForStartingPoints.get(0)[1] == null) {
+            System.err.println("Back extremities missing?");
+        }
+        if (extremityKindsForStartingPoints.get(1)[0] == null && extremityKindsForStartingPoints.get(1)[1] == null) {
+            System.err.println("Front extremities missing?");
+        }
     }
 
     /**
-     * arms: user input or 0
+     * arms: user input or calculated by wingProbability if there is still space for arms
      * fins: user input or, if extremity count < 2, 2 - extremity count
      */
     private void calculateArmsAndFins() {
-        arms = userInput.hasArms() ? userInput.getArms() : 0;
+        if (userInput.hasArms()) {
+            arms = userInput.getArms();
+        } else if (userInput.getTotal() < maxExtremityCount && wings < 2 && random.nextFloat() < wingProbability) {
+            arms = 1;
+        } else {
+            arms = 0;
+        }
+
         if (userInput.hasFins()) {
             fins = userInput.getFins();
+        } else if (flooredLegs == 0) {
+            fins = (wings + arms == 0) ? 2 : 1;
         } else if (flooredLegs + wings + arms < 2) {
-            fins = 2 - (flooredLegs + wings + arms);
+            fins = 1;
         } else {
             fins = 0;
         }
@@ -185,7 +205,7 @@ public class ExtremityData {
     private void calculateWings() {
         if (userInput.hasWings()) {
             wings = userInput.getWings();
-        } else if (userInput.getTotal() < maxExtremityCount && (new Random()).nextFloat() < wingProbability) { // todo wing probability too small?
+        } else if (userInput.getTotal() < maxExtremityCount && random.nextFloat() < wingProbability) { // todo wing probability too small?
             wings = 1;
         } else {
             wings = 0;
@@ -197,19 +217,18 @@ public class ExtremityData {
      * legs: user input or calculated by flooredLegProbability
      */
     private void calculateLegsAndFloorHeight(SpineData spine) {
-        float probability = (new Random()).nextFloat();
         if (userInput.hasFlooredLegs()) {
             flooredLegs = userInput.getFlooredLegs();
-        } else if (userInput.getTotal() < maxExtremityCount) {
-            if (userInput.getTotal()+1 < maxExtremityCount && (flooredLegProbability > 1 && probability < (flooredLegProbability-1.0))) {
-                flooredLegs = 2;
-            } else if (flooredLegProbability >= 1 || (flooredLegProbability > 0 && probability < flooredLegProbability)) {
-                flooredLegs = 1;
-            } else {
-                flooredLegs = 0;
-            }
         } else {
-            flooredLegs = 0;
+            float probability = random.nextFloat();
+            boolean moreLegs = probability > (flooredLegProbability % 1);
+            if (moreLegs) {
+                flooredLegs = (int) Math.ceil(flooredLegProbability);
+            } else {
+                flooredLegs = (int) Math.floor(flooredLegProbability);
+            }
+            flooredLegs = Math.min(4, flooredLegs);
+            flooredLegs = Math.max(0, flooredLegs);
         }
         System.out.println("floored legs: " + flooredLegs);
         calculateFloorHeight(spine);
@@ -257,7 +276,7 @@ public class ExtremityData {
                 floorHeight = minFloorHeight;
             }
             System.out.println("Floor height: " + floorHeight);
-            System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
+            //System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
         }
     }
 }

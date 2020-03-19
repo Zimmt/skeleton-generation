@@ -124,7 +124,7 @@ public class ExtremityPositioning {
         while (Math.abs(endPosition.y - floorHeight) > floorDistanceEps && step < maxSteps) {
             boolean nearerToFloor = true;
             float oldDistance = endPosition.y - floorHeight;
-            System.out.println("Distance to floor: " + oldDistance);
+            //System.out.println("Distance to floor: " + oldDistance);
 
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < firstJointXAngleProbability && firstJoint.movementPossible(nearerToFloor, true)) {

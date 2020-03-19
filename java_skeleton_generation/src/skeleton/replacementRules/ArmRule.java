@@ -35,7 +35,7 @@ public class ArmRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.print("Arm generation... ");
+        //System.out.print("Arm generation... ");
 
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -73,7 +73,7 @@ public class ArmRule extends ReplacementRule {
                 case FLOORED_LEG:
                     extremityPositioning.setInitialAngleStepSize((float) Math.toRadians(30));
                     boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-                    System.out.print("floored wrist: " + flooredWrist + "... ");
+                    //System.out.print("floored wrist: " + flooredWrist + "... ");
 
                     // other extremities do the same
                     upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
@@ -94,7 +94,7 @@ public class ArmRule extends ReplacementRule {
             }
         }
 
-        System.out.println("...finished.");
+        //System.out.println("...finished.");
 
         return generatedParts;
     }

@@ -1,5 +1,7 @@
 package skeleton;
 
+import java.util.Random;
+
 public class UserInput {
     private Integer flooredLegs;
     private Integer wings;
@@ -7,7 +9,24 @@ public class UserInput {
     private Integer fins;
     private int total;
 
+    private Double pcaLegCondition = null;
+    private Double pcaWingCondtion = null;
+
+    private Random random = new Random();
+
     public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins) {
+        if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
+            System.err.println("Invalid user input for legs");
+        }
+        if (wings != null && (wings < 0 || wings > 2)) {
+            System.err.println("Invalid user input for wings");
+        }
+        if (arms != null && (arms < 0 || arms > 2)) {
+            System.err.println("Invalid user input for arms");
+        }
+        if (fins != null && (fins < 0 || fins > 4)) {
+            System.err.println("Invalid user input for fins");
+        }
         this.flooredLegs = flooredLegs;
         this.wings = wings;
         this.arms = arms;
@@ -23,19 +42,40 @@ public class UserInput {
         }
     }
 
-    public Integer getLegConditionForPCA() {
-        Integer legCondition = flooredLegs;
-        if (legCondition != null && legCondition > 2) {
-            legCondition = 2;
+    /**
+     * userInput +- 0.5
+     * if input > 4 there is a probability that it is reduced by two
+     * if input > 3 there is a probability that it is reduced by one
+     * @return null or a value in [-0.5, 4.5]
+     */
+    public Double getLegConditionForPCA() {
+        Double legCondition = null;
+        if (flooredLegs != null) {
+            double variance = random.nextDouble() - 0.5;
+            legCondition = flooredLegs.doubleValue() + variance;
+            if (legCondition >= 4.0 && random.nextDouble() > 0.5) {
+                legCondition -= 2.0;
+            } else if (legCondition >= 3.0 && random.nextDouble() > 0.5) {
+                legCondition -= 1.0;
+            }
         }
+        pcaLegCondition = legCondition;
+        System.out.println("PCA leg condition: " + pcaLegCondition);
         return legCondition;
     }
 
-    public Integer getWingConditionForPCA() {
-        Integer wingCondition = wings;
-        if (wingCondition != null && wingCondition > 1) {
-            wingCondition = 1;
+    /**
+     * min( 1, userInput) +- 0.5
+     * @return null or a value in [-0.5, 1.5]
+     */
+    public Double getWingConditionForPCA() {
+        Double wingCondition = null;
+        if (wings != null) {
+            double variance = random.nextDouble() - 0.5;
+            wingCondition = Math.min(1.0, wings.doubleValue()) + variance;
         }
+        pcaWingCondtion = wingCondition;
+        System.out.println("PCA wing condition: " + pcaWingCondtion);
         return wingCondition;
     }
 

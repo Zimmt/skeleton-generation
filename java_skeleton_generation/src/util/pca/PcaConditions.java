@@ -4,12 +4,12 @@ public class PcaConditions {
 
     private Double tailLength; // the x-difference between first control point of tail and the last
 
-    private Integer wings;
-    private Integer flooredLegs;
+    private Double wings;
+    private Double flooredLegs;
 
     public PcaConditions() { }
 
-    public PcaConditions(Double tailLength, Integer wings, Integer flooredLegs) {
+    public PcaConditions(Double tailLength, Double wings, Double flooredLegs) {
         this.tailLength = tailLength;
         this.wings = wings;
         this.flooredLegs = flooredLegs;
@@ -52,7 +52,7 @@ public class PcaConditions {
         return wings != null;
     }
 
-    public Integer getWings() {
+    public Double getWings() {
         return wings;
     }
 
@@ -60,7 +60,7 @@ public class PcaConditions {
         return flooredLegs != null;
     }
 
-    public Integer getFlooredLegs() {
+    public Double getFlooredLegs() {
         return flooredLegs;
     }
 

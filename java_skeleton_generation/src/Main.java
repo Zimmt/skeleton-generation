@@ -43,8 +43,8 @@ public class Main {
         Integer userInputArms = null;
         Integer userInputFins = null;
         UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins);
-        Integer legCondition = userInput.getLegConditionForPCA();
-        Integer wingCondition = userInput.getWingConditionForPCA();
+        Double legCondition = userInput.getLegConditionForPCA();
+        Double wingCondition = userInput.getWingConditionForPCA();
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         PcaConditions conditions = new PcaConditions(null, wingCondition, legCondition);
