@@ -30,7 +30,7 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
      * false: clockwise
      * @return null if no turn direction would bring foot nearer to floor
      */
-    List<Boolean> getTurnDirectionsNearerToFloor() {
+    public List<Boolean> getTurnDirectionsNearerToFloor() {
         List<Boolean> turnDirections = new ArrayList<>(2);
 
         Vector3f testVectorChild = new Vector3f(0f, -1f, 0f);

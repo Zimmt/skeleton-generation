@@ -2,10 +2,11 @@ package skeleton.replacementRules;
 
 import skeleton.elements.joints.OneAngleBasedJoint;
 import skeleton.elements.joints.XZAngleBasedJoint;
-import skeleton.elements.terminal.*;
+import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import java.util.List;
 import java.util.Random;
 
 public class ExtremityPositioning {
@@ -37,6 +38,10 @@ public class ExtremityPositioning {
         this.firstBone = firstBone;
         this.secondBone = secondBone;
         this.thirdBone = thirdBone;
+
+        firstJoint.setChild(firstBone);
+        secondJoint.setChild(secondBone);
+        thirdJoint.setChild(thirdBone);
     }
 
     /**
@@ -65,7 +70,17 @@ public class ExtremityPositioning {
      */
     public void findArmPosition() {
         firstJoint.setCurrentFirstAngle(0f);
-        firstJoint.setCurrentSecondAngle(0f);
+
+        Vector3f localY = new Vector3f(0f, -1f, 0f);
+        firstBone.getParent().calculateWorldTransform().applyOnVector(localY);
+        Vector3f worldY = new Vector3f(0f, -1f, 0f);
+        float secondAngle = worldY.angle(localY);
+        List<Boolean> turnDirecionsNearerToFloor = firstJoint.getTurnDirectionsNearerToFloor();
+        if (turnDirecionsNearerToFloor != null && turnDirecionsNearerToFloor.get(1) != null && !turnDirecionsNearerToFloor.get(1)) {
+            secondAngle = -secondAngle;
+        }
+
+        firstJoint.setCurrentSecondAngle(secondAngle);
         firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
 
         secondJoint.setCurrentAngle((float) -Math.toRadians(90));
@@ -97,10 +112,6 @@ public class ExtremityPositioning {
      * - or the maximum number of steps was exceeded (but angles have already been changed)
      */
     public boolean findFlooredPosition(boolean flooredSecondBone) {
-        firstJoint.setChild(firstBone);
-        secondJoint.setChild(secondBone);
-        thirdJoint.setChild(thirdBone);
-
         int step = 0;
         float angleStepSize = initialAngleStepSize;
         float floorHeight = firstBone.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();

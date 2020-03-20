@@ -28,9 +28,6 @@ public abstract class ShoulderJoint extends XZAngleBasedJoint {
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
         TransformationMatrix transform = super.calculateChildTransform(childBoundingBox);
-        if (secondShoulder && extremityKind != ExtremityKind.WING) {
-            transform.rotateAroundZ((float) Math.toRadians(80));
-        }
         transform.translate(UpperArm.getLocalTranslationFromJoint(childBoundingBox));
         return transform;
     }

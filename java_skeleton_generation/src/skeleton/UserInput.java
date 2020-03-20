@@ -51,6 +51,8 @@ public class UserInput {
     public boolean hasSecondShoulder() {
         if (secondShoulder != null) {
             return secondShoulder;
+        } else if ((wings != null && wings > 2) || (arms != null && arms > 2) || (wings != null && arms != null && wings + arms > 2)) {
+            return true;
         } else {
             return totalExtremityCount > 4;
         }
