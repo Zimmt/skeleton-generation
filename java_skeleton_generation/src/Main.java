@@ -42,7 +42,8 @@ public class Main {
         Integer userInputWings = null;
         Integer userInputArms = null;
         Integer userInputFins = null;
-        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins);
+        Boolean userInputSecondShoulder = null;
+        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, userInputSecondShoulder);
         Double legCondition = userInput.getLegConditionForPCA();
         Double wingCondition = userInput.getWingConditionForPCA();
 

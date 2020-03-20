@@ -101,18 +101,36 @@ public class ExtremityData {
      * sets between 2 and 6 extremities
      */
     private void calculateDerivedValues(SpineData spine) {
+        setUserSetExtremities();
         calculateAndSetLegsAndFloorHeight(spine);
         calculateAndSetWings();
         calculateAndSetArmsAndFins();
+    }
+
+    private void setUserSetExtremities() {
+        if (userInput.hasFlooredLegs()) {
+            flooredLegs = userInput.getFlooredLegs();
+            extremityStartingPoints.setLegs(flooredLegs);
+        }
+        if (userInput.hasWings()) {
+            wings = userInput.getWings();
+            extremityStartingPoints.setWings(wings);
+        }
+        if (userInput.hasArms()) {
+            arms = userInput.getArms();
+            extremityStartingPoints.setArms(arms);
+        }
+        if (userInput.hasFins()) {
+            fins = userInput.getFins();
+            extremityStartingPoints.setFins(fins);
+        }
     }
 
     /**
      * legs: user input or calculated by flooredLegProbability
      */
     private void calculateAndSetLegsAndFloorHeight(SpineData spine) {
-        if (userInput.hasFlooredLegs()) {
-            flooredLegs = userInput.getFlooredLegs();
-        } else {
+        if (!userInput.hasFlooredLegs() && extremityStartingPoints.getFreeLegCount() > 0) {
             float probability = random.nextFloat();
             boolean moreLegs = probability > (flooredLegProbability % 1);
             if (moreLegs) {
@@ -120,11 +138,11 @@ public class ExtremityData {
             } else {
                 flooredLegs = (int) Math.floor(flooredLegProbability);
             }
-            flooredLegs = Math.min(4, flooredLegs);
+            flooredLegs = Math.min(extremityStartingPoints.getFreeLegCount(), flooredLegs);
             flooredLegs = Math.max(0, flooredLegs);
+            extremityStartingPoints.setLegs(flooredLegs);
         }
         System.out.println("floored legs: " + flooredLegs);
-        extremityStartingPoints.setLegs(flooredLegs);
         calculateFloorHeight(spine);
     }
 
@@ -178,19 +196,17 @@ public class ExtremityData {
      * wings: user input or calculated by wingProbability (but then max 1 per shoulder)
      */
     private void calculateAndSetWings() {
-        if (userInput.hasWings()) {
-            wings = userInput.getWings();
-        } else {
-            int freeWingCount = extremityStartingPoints.getFreeWingOrArmCount();
-            if (freeWingCount > 0 && random.nextDouble() < wingProbability) {
+        if (!userInput.hasWings() && extremityStartingPoints.getFreeWingCount() > 0) {
+            int freeWingCount = extremityStartingPoints.getFreeWingCount();
+            if (random.nextDouble() < wingProbability) {
                 wings = 1;
             }
             if (userInput.hasSecondShoulder() && freeWingCount > 1 && random.nextDouble() < wingProbability) {
                 wings++;
             }
+            extremityStartingPoints.setWings(wings);
         }
         System.out.println("wings: " + wings);
-        extremityStartingPoints.setWings(wings);
     }
 
     /**
@@ -198,26 +214,22 @@ public class ExtremityData {
      * fins: user input or one per empty extremity starting point
      */
     private void calculateAndSetArmsAndFins() {
-        if (userInput.hasArms()) {
-            arms = userInput.getArms();
-        } else {
-            int freeArmCount = extremityStartingPoints.getFreeWingOrArmCount();
-            if (freeArmCount > 0 && random.nextDouble() < wingProbability) {
+        if (!userInput.hasArms() && extremityStartingPoints.getFreeArmCount() > 0) {
+            int freeArmCount = extremityStartingPoints.getFreeWingCount();
+            if (random.nextDouble() < wingProbability) {
                 arms = 1;
             }
             if (userInput.hasSecondShoulder() && freeArmCount > 1 && random.nextDouble() < wingProbability) {
                 arms++;
             }
+            extremityStartingPoints.setArms(arms);
         }
-        extremityStartingPoints.setArms(arms);
 
-        if (userInput.hasFins()) {
-            fins = userInput.getFins();
-            extremityStartingPoints.setFins(fins);
-        } else {
+        if (!userInput.hasFins()) {
             for (int i = 0; i < extremityStartingPoints.getStartingPointCount(); i++) {
                 if (extremityStartingPoints.getFreeExtremityCountAtPosition(i) >= 2) {
                     extremityStartingPoints.setKindAtPosition(ExtremityKind.FIN, i);
+                    fins += 1;
                 }
             }
         }

@@ -68,12 +68,20 @@ public class ExtremityStartingPoints {
         return count;
     }
 
-    public int getFreeWingOrArmCount() {
-        int count = 0;
-        for (int i = 0; i < possibleWingPositions.length; i++) {
-            count += getFreeExtremityCountAtPosition(possibleWingPositions[i]);
-        }
-        return count;
+    public int getFreeWingCount() {
+        return getFreeCount(possibleWingPositions);
+    }
+
+    public int getFreeArmCount() {
+        return getFreeCount(possibleArmPositions);
+    }
+
+    public int getFreeLegCount() {
+        return getFreeCount(possibleLegPositions);
+    }
+
+    public int getFreeFinCount() {
+        return getFreeCount(possibleFinPositions);
     }
 
     public void setKindAtPosition(ExtremityKind kind, int position) {
@@ -104,5 +112,13 @@ public class ExtremityStartingPoints {
                 toSet--;
             }
         }
+    }
+
+    private int getFreeCount(int[] possiblePositions) {
+        int count = 0;
+        for (int i = 0; i < possiblePositions.length; i++) {
+            count += getFreeExtremityCountAtPosition(possiblePositions[i]);
+        }
+        return count;
     }
 }

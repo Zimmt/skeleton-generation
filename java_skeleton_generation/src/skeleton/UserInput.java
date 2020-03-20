@@ -7,14 +7,15 @@ public class UserInput {
     private Integer wings;
     private Integer arms;
     private Integer fins;
-    private int total;
+    private int totalExtremityCount;
+    private Boolean secondShoulder;
 
     private Double pcaLegCondition = null;
     private Double pcaWingCondtion = null;
 
     private Random random = new Random();
 
-    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins) {
+    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder) {
         if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
             System.err.println("Invalid user input for legs");
         }
@@ -32,18 +33,27 @@ public class UserInput {
         this.arms = arms;
         this.fins = fins;
 
-        this.total = 0;
-        if (flooredLegs != null) total += flooredLegs;
-        if (wings != null) total += wings;
-        if (arms != null) total += arms;
-        if (fins != null) total += fins;
-        if (total > 6) {
+        this.totalExtremityCount = 0;
+        if (flooredLegs != null) totalExtremityCount += flooredLegs;
+        if (wings != null) totalExtremityCount += wings;
+        if (arms != null) totalExtremityCount += arms;
+        if (fins != null) totalExtremityCount += fins;
+        if (totalExtremityCount > 6) {
             System.err.println("Too many extremities found!");
+        }
+
+        this.secondShoulder = secondShoulder;
+        if (secondShoulder != null && !secondShoulder && ((wings != null && wings > 2) || (arms != null && arms > 2) || (fins != null && fins > 4))) {
+            System.err.println("Too many extremities, need second shoulder!");
         }
     }
 
     public boolean hasSecondShoulder() {
-        return getTotal() > 4;
+        if (secondShoulder != null) {
+            return secondShoulder;
+        } else {
+            return totalExtremityCount > 4;
+        }
     }
 
     /**
@@ -113,9 +123,5 @@ public class UserInput {
 
     public boolean hasFins() {
         return fins != null;
-    }
-
-    public int getTotal() {
-        return total;
     }
 }
