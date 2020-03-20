@@ -46,13 +46,19 @@ public class ExtremityPositioning {
 
     /**
      * sets the following angles:
-     * - first joint: both angles 90°
+     * - first joint: first angle 90°, second angle: like world x-axis
      * - second joint: 0°
      * - third joint: 0°
      */
     public void findFloatingPosition() {
-        firstJoint.setCurrentFirstAngle((float) Math.toRadians(90));
-        firstJoint.setCurrentSecondAngle((float) Math.toRadians(90));
+        firstJoint.setCurrentFirstAngle(0);
+
+        Vector3f localY = new Vector3f(0f, -1f, 0f);
+        firstBone.getParent().calculateWorldTransform().applyOnVector(localY);
+        Vector3f worldX = new Vector3f(1f, 0f, 0f);
+        float secondAngle = worldX.angle(localY); // turn direction is always positive
+
+        firstJoint.setCurrentSecondAngle(secondAngle);
         firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
 
         secondJoint.setCurrentAngle(0f);
@@ -64,7 +70,7 @@ public class ExtremityPositioning {
 
     /**
      * sets the following angles:
-     * - first joint: both angles 0°
+     * - first joint: first angle 0°, second angle: like world y-axis
      * - second joint: -90°
      * - third joint: 0°
      */

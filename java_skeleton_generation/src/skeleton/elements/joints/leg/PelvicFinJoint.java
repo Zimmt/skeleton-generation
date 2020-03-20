@@ -7,13 +7,14 @@ import javax.vecmath.Point3f;
 
 public class PelvicFinJoint extends PelvicJoint {
 
-    private static float sideAngle = (float) Math.toRadians(90);
-    private static float frontAngle = (float) Math.toRadians(90);
+    private static float frontAngle = 0f;
+    private static float minSideAngle = (float) Math.toRadians(45);
+    private static float maxSideAngle = (float) Math.toRadians(225);
 
     public PelvicFinJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, sideAngle, sideAngle, frontAngle, frontAngle, ExtremityKind.FIN);
-        setCurrentFirstAngle(sideAngle);
-        setCurrentSecondAngle(frontAngle);
+        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.FIN);
+        setCurrentFirstAngle(frontAngle);
+        setCurrentSecondAngle(minSideAngle);
     }
 
     @Override

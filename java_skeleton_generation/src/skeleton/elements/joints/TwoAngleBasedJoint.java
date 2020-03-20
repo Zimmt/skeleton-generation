@@ -24,8 +24,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
     public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle) {
         super(parent, position);
         float eps = 0.01f;
-        if (minFirstAngle > maxFirstAngle || Math.abs(minFirstAngle) > Math.toRadians(180)+eps || Math.abs(maxFirstAngle) > Math.toRadians(180)+eps ||
-            minSecondAngle > maxSecondAngle || Math.abs(minSecondAngle) > Math.toRadians(180)+eps || Math.abs(maxSecondAngle) > Math.toRadians(180)+eps) {
+        if (minFirstAngle > maxFirstAngle || minSecondAngle > maxSecondAngle) {
             System.err.println("Invalid angle");
         }
         this.minFirstAngle = minFirstAngle;
@@ -153,10 +152,10 @@ public abstract class TwoAngleBasedJoint extends Joint {
     public void setCurrentSecondAngle(float currentSecondAngle) {
         if (currentSecondAngle < minSecondAngle || currentSecondAngle > maxSecondAngle) {
             System.err.println("Invalid second angle to set");
-        } else {
+        } //else {
             this.lastSecondAngle = this.currentSecondAngle;
             this.currentSecondAngle = currentSecondAngle;
-        }
+        //}
     }
 
     public void setChild(TerminalElement child) {

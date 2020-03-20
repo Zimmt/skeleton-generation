@@ -7,13 +7,14 @@ import javax.vecmath.Point3f;
 
 public class ShoulderFinJoint extends ShoulderJoint {
 
-    private static float frontAngle = (float) Math.toRadians(90);
-    private static float sideAngle = (float) Math.toRadians(90);
+    private static float frontAngle = 0f;
+    private static float minSideAngle = (float) Math.toRadians(45);
+    private static float maxSideAngle = (float) Math.toRadians(225);
 
     public ShoulderFinJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
-        super(parent, position, frontAngle, frontAngle, sideAngle, sideAngle, ExtremityKind.FIN, secondShoulder);
+        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.FIN, secondShoulder);
         setCurrentFirstAngle(frontAngle);
-        setCurrentSecondAngle(sideAngle);
+        setCurrentSecondAngle(minSideAngle);
     }
 
     @Override
