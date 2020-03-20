@@ -43,12 +43,14 @@ public class Main {
         Integer userInputArms = null;
         Integer userInputFins = null;
         Boolean userInputSecondShoulder = null;
-        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, userInputSecondShoulder);
-        Double legCondition = userInput.getLegConditionForPCA();
-        Double wingCondition = userInput.getWingConditionForPCA();
+        Double userInputNeckYLength = null;
+        Double userInputTailXLength = null;
+        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins,
+                userInputSecondShoulder, userInputNeckYLength, userInputTailXLength);
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaConditions conditions = new PcaConditions(null, wingCondition, legCondition);
+        PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
+                userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
         PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
 
         int skeletonCount = 10;

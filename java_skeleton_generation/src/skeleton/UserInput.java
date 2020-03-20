@@ -8,14 +8,17 @@ public class UserInput {
     private Integer arms;
     private Integer fins;
     private int totalExtremityCount;
+
     private Boolean secondShoulder;
+    private Double neckYLength;
+    private Double tailXLength;
 
     private Double pcaLegCondition = null;
     private Double pcaWingCondtion = null;
 
     private Random random = new Random();
 
-    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder) {
+    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder, Double neckYLength, Double tailXLength) {
         if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
             System.err.println("Invalid user input for legs");
         }
@@ -28,11 +31,14 @@ public class UserInput {
         if (fins != null && (fins < 0 || fins > 6)) {
             System.err.println("Invalid user input for fins");
         }
+        if (secondShoulder != null && !secondShoulder && ((wings != null && wings > 2) || (arms != null && arms > 2) || (fins != null && fins > 4))) {
+            System.err.println("Too many extremities, need second shoulder!");
+        }
+
         this.flooredLegs = flooredLegs;
         this.wings = wings;
         this.arms = arms;
         this.fins = fins;
-
         this.totalExtremityCount = 0;
         if (flooredLegs != null) totalExtremityCount += flooredLegs;
         if (wings != null) totalExtremityCount += wings;
@@ -43,9 +49,8 @@ public class UserInput {
         }
 
         this.secondShoulder = secondShoulder;
-        if (secondShoulder != null && !secondShoulder && ((wings != null && wings > 2) || (arms != null && arms > 2) || (fins != null && fins > 4))) {
-            System.err.println("Too many extremities, need second shoulder!");
-        }
+        this.tailXLength = tailXLength;
+        this.neckYLength = neckYLength;
     }
 
     public boolean hasSecondShoulder() {
@@ -125,5 +130,16 @@ public class UserInput {
 
     public boolean hasFins() {
         return fins != null;
+    }
+
+    public Double getNeckYLength() {
+        if (neckYLength == null && hasSecondShoulder()) {
+            return 200.0 + random.nextDouble() * 100;
+        }
+        return neckYLength;
+    }
+
+    public Double getTailXLength() {
+        return tailXLength;
     }
 }

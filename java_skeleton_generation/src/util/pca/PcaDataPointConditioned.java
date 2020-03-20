@@ -61,7 +61,7 @@ public class PcaDataPointConditioned extends PcaDataPoint {
                 Point2d currentSpinePoint = newSpine.get(i);
 
                 // x-coordinate of last control point of tail in PCA space represents difference to x-coordinate of first control point
-                // if tail condition is present x-coordinate is replaced with correct value when tail is set
+                // if tail condition is present x-coordinate is replaced with correct value when tail is set (do NOT advance eigenvectorPosition!)
                 if (i*2 == PcaDimension.TAIL4X.ordinal()) {
                     if (!conditions.hasTailLength()) {
                         currentSpinePoint.x += (scaledEigenvector.getEntry(PcaDimension.BACK4X.ordinal()) +
@@ -71,7 +71,16 @@ public class PcaDataPointConditioned extends PcaDataPoint {
                     currentSpinePoint.x += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
                 }
 
-                currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                // y-coordinate of first control point of back in PCA space represents difference to y-coordinate of first control point of neck
+                // if neck condition is present y-coordinate is replaced with correct value when neck is set (do NOT advance eigenvectorPosition!)
+                if (i*2 == PcaDimension.BACK1X.ordinal()) {
+                    if (!conditions.hasNeckLength()) {
+                        currentSpinePoint.y += (scaledEigenvector.getEntry(PcaDimension.NECK1Y.ordinal()) -
+                                scaledEigenvector.getEntry(eigenvectorPosition++)) * coordinateScaleFactor;
+                    }
+                } else {
+                    currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                }
             }
 
             if (!conditions.hasWings()) {
@@ -125,6 +134,9 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         List<Double> data = DoubleStream.of(super.getScaledDataForPCA()).boxed().collect(Collectors.toList());
         int removed = 0;
 
+        if (conditions.hasNeckLength()) {
+            data.remove(PcaDimension.BACK1Y.ordinal() - removed++);
+        }
         if (conditions.hasTailLength()) {
             data.remove(PcaDimension.TAIL4X.ordinal() - removed++);
         }
@@ -140,20 +152,40 @@ public class PcaDataPointConditioned extends PcaDataPoint {
 
     @Override
     public void setTail(List<Point2d> tail) {
-        if (tail.size() != 4) {
-            System.err.println("Tail has not correct number of control points.");
-        }
+        super.setTail(tail);
         if (conditions.hasTailLength()) {
-            tail.get(3).x = tail.get(0).x + conditions.getTailLength();
+            tail.get(3).x = tail.get(0).x + conditions.getTailXLength();
         }
-        this.tail = tail;
+    }
+
+    @Override
+    public void setNeck(List<Point2d> neck) {
+        super.setNeck(neck);
+        if (conditions.hasNeckLength()) {
+            double neck4yValue = neck.get(0).y - conditions.getNeckYLength();
+            neck.get(3).y = neck4yValue;
+            if (back != null && back.size() == 4) { // set new value also on back if it is already initialized
+                back.set(0, new Point2d(back.get(0).x, neck4yValue));
+            }
+        }
+    }
+
+    @Override
+    public void setBack(List<Point2d> back) {
+        super.setBack(back);
+        if (conditions.hasNeckLength() && neck != null && neck.size() == 4) { // set new neck value also on back if neck is already initialized
+            back.set(0, new Point2d(back.get(0).x, neck.get(3).y));
+        }
     }
 
     public static double[] getScaledConditions(PcaConditions conditions) {
         double[] scaledConditions = new double[conditions.getConditionCount()];
         int next = 0;
+        if (conditions.hasNeckLength()) {
+            scaledConditions[next++] = conditions.getNeckYLength() / coordinateScaleFactor;
+        }
         if (conditions.hasTailLength()) {
-            scaledConditions[next++] = conditions.getTailLength() / coordinateScaleFactor;
+            scaledConditions[next++] = conditions.getTailXLength() / coordinateScaleFactor;
         }
         if (conditions.hasWings()) {
             scaledConditions[next++] = conditions.getWings() / (wingScaleFactor * downscaleFactor);
@@ -164,13 +196,20 @@ public class PcaDataPointConditioned extends PcaDataPoint {
         return scaledConditions;
     }
 
+    /**
+     * @param scaledData scaled pca data without conditioned values
+     * @return new conditioned pca data point
+     */
     public static PcaDataPointConditioned newPointWithValuesFromScaledData(double[] scaledData, PcaConditions conditions, boolean logWeight) {
+        // generate vector of scaled data with conditions
         double[] scaledConditions = getScaledConditions(conditions);
         double[] scaledDataWithConditions = new double[PcaDataPoint.getDimension()];
         int nextWithConditions = 0;
         int nextWithoutConditions = 0;
         for (int i = 0; i < PcaDataPoint.getDimension(); i++) {
-            if (i == PcaDimension.TAIL4X.ordinal() && conditions.hasTailLength()) {
+            if (i == PcaDimension.BACK1Y.ordinal() && conditions.hasNeckLength()) {
+                scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];
+            } else if (i == PcaDimension.TAIL4X.ordinal() && conditions.hasTailLength()) {
                 scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];
             } else if (i == PcaDimension.WINGS.ordinal() && conditions.hasWings()) {
                 scaledDataWithConditions[i] = scaledConditions[nextWithConditions++];

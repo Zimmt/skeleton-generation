@@ -124,7 +124,13 @@ public class PcaDataPoint {
                     currentSpinePoint.x += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
                 }
 
-                currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                // y-coordinate of first control point of back in PCA space represents difference to y-coordinate of first control point of neck
+                if (i*2 == PcaDimension.BACK1X.ordinal()) {
+                    currentSpinePoint.y += (scaledEigenvector.getEntry(PcaDimension.NECK1Y.ordinal()) -
+                            scaledEigenvector.getEntry(eigenvectorPosition++)) * coordinateScaleFactor;
+                } else {
+                    currentSpinePoint.y += scaledEigenvector.getEntry(eigenvectorPosition++) * coordinateScaleFactor;
+                }
             }
 
             newWings += scaledEigenvector.getEntry(PcaDimension.WINGS.ordinal()) * wingScaleFactor * downscaleFactor;
@@ -219,7 +225,12 @@ public class PcaDataPoint {
             } else {
                 data[nextIndex++] = p.x / coordinateScaleFactor;
             }
-            data[nextIndex++] = p.y / coordinateScaleFactor;
+
+            if (i*2 == PcaDimension.BACK1X.ordinal()) {
+                data[nextIndex++] = (spine.get(PcaDimension.NECK1X.ordinal()/2).y - p.y) / coordinateScaleFactor;
+            } else {
+                data[nextIndex++] = p.y / coordinateScaleFactor;
+            }
         }
         data[nextIndex++] = wings / (wingScaleFactor * downscaleFactor);
         data[nextIndex++] = flooredLegs / (flooredLegsScaleFactor * downscaleFactor);
