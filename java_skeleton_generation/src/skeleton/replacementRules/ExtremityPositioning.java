@@ -3,10 +3,10 @@ package skeleton.replacementRules;
 import skeleton.elements.joints.OneAngleBasedJoint;
 import skeleton.elements.joints.XZAngleBasedJoint;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.UpperArm;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.List;
 import java.util.Random;
 
 public class ExtremityPositioning {
@@ -22,7 +22,6 @@ public class ExtremityPositioning {
     // these values are only used to find floored position
     private float floorDistanceEps = 1f;
     private float initialAngleStepSize = (float) Math.toRadians(20);
-    private int maxSteps = 40;
     private float firstJointXAngleProbability = 0.8f;
     private float firstJointZAngleProbability = 1f;
     private float secondJointAngleProbability = 1f;
@@ -80,11 +79,7 @@ public class ExtremityPositioning {
         Vector3f localY = new Vector3f(0f, -1f, 0f);
         firstBone.getParent().calculateWorldTransform().applyOnVector(localY);
         Vector3f worldY = new Vector3f(0f, -1f, 0f);
-        float secondAngle = worldY.angle(localY);
-        List<Boolean> turnDirecionsNearerToFloor = firstJoint.getTurnDirectionsNearerToFloor();
-        if (turnDirecionsNearerToFloor != null && turnDirecionsNearerToFloor.get(1) != null && !turnDirecionsNearerToFloor.get(1)) {
-            secondAngle = -secondAngle;
-        }
+        float secondAngle = worldY.angle(localY); // turn direction is (most probably) always positive (and if not the angle is small)
 
         firstJoint.setCurrentSecondAngle(secondAngle);
         firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
@@ -112,6 +107,7 @@ public class ExtremityPositioning {
 
     /**
      * Adapts angles of joints until a position is reached where the floor is touched
+     * ! initial position is determined by the inital angles set by joints
      * @param flooredSecondBone if end of second bone should touch the floor (otherwise the third bone will be used)
      * @return if it was successful; reasons for failing could be that
      * - the bones are too short to reach the floor
@@ -127,7 +123,12 @@ public class ExtremityPositioning {
         Point3f thirdBoneEndPosition = thirdBone.getWorldPosition();
 
         if (firstBoneEndPosition.y < floorHeight-floorDistanceEps || secondBoneEndPosition.y < floorHeight-floorDistanceEps || thirdBoneEndPosition.y < floorHeight-floorDistanceEps ) {
-            System.err.println("Other start position needed!");
+            System.err.println("Other start position needed! Bone end position already below floor.");
+            return false;
+        }
+
+        if (boneOverturned(1) || boneOverturned(3)) {
+            System.err.println("Other start position needed! There is an 'overturned' bone.");
             return false;
         }
 
@@ -138,6 +139,8 @@ public class ExtremityPositioning {
             endPosition = thirdBoneEndPosition;
         }
 
+        int maxSteps = 50;
+        float otherDirectionProbability = 0f;
         while (Math.abs(endPosition.y - floorHeight) > floorDistanceEps && step < maxSteps) {
             boolean nearerToFloor = true;
             float oldDistance = endPosition.y - floorHeight;
@@ -145,21 +148,18 @@ public class ExtremityPositioning {
 
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < firstJointXAngleProbability && firstJoint.movementPossible(nearerToFloor, true)) {
-                firstJoint.setNewSecondAngle(nearerToFloor, angleStepSize);
+                firstJoint.setNewSecondAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(1)) {
                     firstJoint.resetCurrentSecondAngle();
                     firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
-                    if (!bonePositionsOverFloor(floorHeight)) {
-                        System.err.println("reverting side angle of first joint went wrong");
-                    }
                 }
             }
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(nearerToFloor, false)) {
-                firstJoint.setNewFirstAngle(nearerToFloor, angleStepSize);
+                firstJoint.setNewFirstAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(1)) {
                     firstJoint.resetCurrentFirstAngle();
                     firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
                 }
@@ -167,9 +167,9 @@ public class ExtremityPositioning {
             secondBoneEndPosition = secondBone.getWorldPosition();
             if (secondBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < secondJointAngleProbability && secondJoint.movementPossible(nearerToFloor)) {
-                secondJoint.setNewAngle(nearerToFloor, angleStepSize);
+                secondJoint.setNewAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 secondBoneEndPosition = secondBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(2)) {
                     secondJoint.resetAngle();
                     secondBoneEndPosition = secondBoneSetTransformAndCalculateWorldPosition();
                 }
@@ -181,9 +181,9 @@ public class ExtremityPositioning {
                 thirdBoneEndPosition = thirdBone.getWorldPosition();
                 if (thirdBoneEndPosition.y > floorHeight+floorDistanceEps &&
                         random.nextFloat() < thirdJointAngleProbability && thirdJoint.movementPossible(nearerToFloor)) {
-                    thirdJoint.setNewAngle(nearerToFloor, angleStepSize);
+                    thirdJoint.setNewAngle((random.nextFloat() < otherDirectionProbability *2) != nearerToFloor, angleStepSize);
                     thirdBoneEndPosition = thirdBoneSetTransformAndCalculateWorldPosition();
-                    if (!bonePositionsOverFloor(floorHeight)) {
+                    if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(3)) {
                         thirdJoint.resetAngle();
                         thirdBoneEndPosition = thirdBoneSetTransformAndCalculateWorldPosition();
                     }
@@ -191,7 +191,7 @@ public class ExtremityPositioning {
                 endPosition = thirdBoneEndPosition;
             }
 
-            if (!bonePositionsOverFloor(floorHeight)) {
+            if (!bonePositionsOverFloor(floorHeight, flooredSecondBone)) {
                 System.err.println("Something went terribly wrong with floored leg positioning!");
             }
 
@@ -206,7 +206,8 @@ public class ExtremityPositioning {
             }
         }
 
-        if (Math.abs(endPosition.y-floorHeight) < floorDistanceEps) {
+        float finalDistanceToFloor = Math.abs(endPosition.y-floorHeight);
+        if (finalDistanceToFloor < floorDistanceEps) {
             if (flooredSecondBone) { // adjust foot
                 Vector3f localDir = new Vector3f(0f, 1f, 0f);
                 secondBone.calculateWorldTransform().applyOnVector(localDir);
@@ -216,7 +217,7 @@ public class ExtremityPositioning {
             }
             return true;
         } else {
-            System.err.println("Could not reach floor");
+            System.err.println("Could not reach floor. Final distance to floor is: " + finalDistanceToFloor);
             return false;
         }
     }
@@ -256,10 +257,27 @@ public class ExtremityPositioning {
         return thirdBone.getWorldPosition();
     }
 
-    private boolean bonePositionsOverFloor(float floorHeight) {
+    private boolean bonePositionsOverFloor(float floorHeight, boolean flooredSecondBone) {
         boolean valid = firstBone.getWorldPosition().y > floorHeight-floorDistanceEps;
         valid = valid && secondBone.getWorldPosition().y > floorHeight-floorDistanceEps;
-        valid = valid && thirdBone.getWorldPosition().y > floorHeight-floorDistanceEps;
+        if (!flooredSecondBone) {
+            valid = valid && thirdBone.getWorldPosition().y > floorHeight-floorDistanceEps;
+        }
         return valid;
+    }
+
+    /**
+     * Only for first and third bone
+     */
+    private boolean boneOverturned(int boneNumber) {
+        TerminalElement bone = boneNumber == 1 ? firstBone : thirdBone;
+        Vector3f lokalYAxis = new Vector3f(0f, 1f, 0f);
+        bone.calculateWorldTransform().applyOnVector(lokalYAxis);
+
+        if (boneNumber == 1 && firstBone instanceof UpperArm) {
+            return lokalYAxis.x > 0;
+        } else {
+            return lokalYAxis.x < 0;
+        }
     }
 }
