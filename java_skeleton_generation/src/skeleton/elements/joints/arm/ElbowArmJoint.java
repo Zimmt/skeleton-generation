@@ -15,7 +15,7 @@ public class ElbowArmJoint extends ElbowJoint {
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid elbow arm joint kind");
         }
-        setCurrentAngle((float) -Math.toRadians(160));
+        setCurrentAngle(min);
     }
 
     public ElbowArmJoint calculateMirroredJoint(TerminalElement mirroredParent) {

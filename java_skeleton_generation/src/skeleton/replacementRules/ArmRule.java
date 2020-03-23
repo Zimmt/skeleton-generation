@@ -71,7 +71,6 @@ public class ArmRule extends ReplacementRule {
 
             switch (extremityKind) {
                 case FLOORED_LEG:
-                    extremityPositioning.setInitialAngleStepSize((float) Math.toRadians(30));
                     boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
                     System.out.print("floored wrist: " + flooredWrist + "... ");
 

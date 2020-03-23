@@ -8,7 +8,7 @@ import javax.vecmath.Point3f;
 public class PelvicLegJoint extends PelvicJoint {
 
     private static float minFrontAnglePelvic = 0f;
-    private static float maxFrontAnglePelvic = (float) Math.toRadians(170);
+    private static float maxFrontAnglePelvic = (float) Math.toRadians(45);
     private static float minSideAnglePelvic = (float) -Math.toRadians(170);
     private static float maxSideAnglePelvic = 0f;
 
@@ -17,8 +17,8 @@ public class PelvicLegJoint extends PelvicJoint {
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid pelvic leg joint kind");
         }
-        setCurrentFirstAngle((float) Math.toRadians(90));
-        setCurrentSecondAngle((float) -Math.toRadians(90));
+        setCurrentFirstAngle(minFrontAnglePelvic);
+        setCurrentSecondAngle(minSideAnglePelvic);
     }
 
     public PelvicLegJoint calculateMirroredJoint(TerminalElement mirroredParent) {

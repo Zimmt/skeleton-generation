@@ -19,14 +19,6 @@ public class ExtremityPositioning {
     private TerminalElement secondBone;
     private TerminalElement thirdBone;
 
-    // these values are only used to find floored position
-    private float floorDistanceEps = 1f;
-    private float initialAngleStepSize = (float) Math.toRadians(20);
-    private float firstJointXAngleProbability = 0.8f;
-    private float firstJointZAngleProbability = 1f;
-    private float secondJointAngleProbability = 1f;
-    private float thirdJointAngleProbability = 1f;
-
     private Random random = new Random();
 
     public ExtremityPositioning(XZAngleBasedJoint firstJoint, OneAngleBasedJoint secondJoint, OneAngleBasedJoint thirdJoint,
@@ -114,9 +106,12 @@ public class ExtremityPositioning {
      * - or the maximum number of steps was exceeded (but angles have already been changed)
      */
     public boolean findFlooredPosition(boolean flooredSecondBone) {
-        int step = 0;
-        float angleStepSize = initialAngleStepSize;
         float floorHeight = firstBone.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
+        float floorDistanceEps = 1f;
+
+        if (anyOverturnedBone()) {
+            fixOverturnedBones();
+        }
 
         Point3f firstBoneEndPosition = firstBone.getWorldPosition();
         Point3f secondBoneEndPosition = secondBone.getWorldPosition();
@@ -127,11 +122,6 @@ public class ExtremityPositioning {
             return false;
         }
 
-        if (boneOverturned(1) || boneOverturned(3)) {
-            System.err.println("Other start position needed! There is an 'overturned' bone.");
-            return false;
-        }
-
         Point3f endPosition;
         if (flooredSecondBone) {
             endPosition = secondBoneEndPosition;
@@ -139,29 +129,44 @@ public class ExtremityPositioning {
             endPosition = thirdBoneEndPosition;
         }
 
+        int step = 0;
         int maxSteps = 50;
+        float initialAngleStepSize = (float) Math.toRadians(30);
+        float firstJointXAngleProbability = 0.5f;
+        float firstJointZAngleProbability = 1f;
+        float secondJointAngleProbability = 1f;
+        float thirdJointAngleProbability = 1f;
         float otherDirectionProbability = 0f;
+
+        float angleStepSize = initialAngleStepSize;
         while (Math.abs(endPosition.y - floorHeight) > floorDistanceEps && step < maxSteps) {
             boolean nearerToFloor = true;
             float oldDistance = endPosition.y - floorHeight;
-            //System.out.println("Distance to floor: " + oldDistance);
+            System.out.println("Distance to floor: " + oldDistance);
+            /*System.out.println(String.format("1.front: %f, 1.side: %f, 2.: %f, 3.: %f",
+                    Math.toDegrees(firstJoint.getCurrentFirstAngle()), Math.toDegrees(firstJoint.getCurrentSecondAngle()),
+                    Math.toDegrees(secondJoint.getCurrentAngle()), Math.toDegrees(thirdJoint.getCurrentAngle())));*/
 
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                    random.nextFloat() < firstJointXAngleProbability && firstJoint.movementPossible(nearerToFloor, true)) {
+                    random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(nearerToFloor, true)) {
                 firstJoint.setNewSecondAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(1)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
                     firstJoint.resetCurrentSecondAngle();
                     firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
+                } else if (anyOverturnedBone()) {
+                    fixOverturnedBones();
                 }
             }
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                    random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(nearerToFloor, false)) {
+                    random.nextFloat() < firstJointXAngleProbability && firstJoint.movementPossible(nearerToFloor, false)) {
                 firstJoint.setNewFirstAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(1)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
                     firstJoint.resetCurrentFirstAngle();
                     firstBoneEndPosition = firstBoneSetTransformAndCalculateWorldPosition();
+                } else if (anyOverturnedBone()) {
+                    fixOverturnedBones();
                 }
             }
             secondBoneEndPosition = secondBone.getWorldPosition();
@@ -169,9 +174,11 @@ public class ExtremityPositioning {
                     random.nextFloat() < secondJointAngleProbability && secondJoint.movementPossible(nearerToFloor)) {
                 secondJoint.setNewAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                 secondBoneEndPosition = secondBoneSetTransformAndCalculateWorldPosition();
-                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(2)) {
+                if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
                     secondJoint.resetAngle();
                     secondBoneEndPosition = secondBoneSetTransformAndCalculateWorldPosition();
+                } else if (boneOverturned(3)) {
+                    fixOverturnedBones();
                 }
             }
 
@@ -181,17 +188,19 @@ public class ExtremityPositioning {
                 thirdBoneEndPosition = thirdBone.getWorldPosition();
                 if (thirdBoneEndPosition.y > floorHeight+floorDistanceEps &&
                         random.nextFloat() < thirdJointAngleProbability && thirdJoint.movementPossible(nearerToFloor)) {
-                    thirdJoint.setNewAngle((random.nextFloat() < otherDirectionProbability *2) != nearerToFloor, angleStepSize);
+                    thirdJoint.setNewAngle((random.nextFloat() < otherDirectionProbability) != nearerToFloor, angleStepSize);
                     thirdBoneEndPosition = thirdBoneSetTransformAndCalculateWorldPosition();
-                    if (!bonePositionsOverFloor(floorHeight, flooredSecondBone) || boneOverturned(3)) {
+                    if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
                         thirdJoint.resetAngle();
                         thirdBoneEndPosition = thirdBoneSetTransformAndCalculateWorldPosition();
+                    } else if (boneOverturned(3)) {
+                        fixOverturnedBones();
                     }
                 }
                 endPosition = thirdBoneEndPosition;
             }
 
-            if (!bonePositionsOverFloor(floorHeight, flooredSecondBone)) {
+            if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
                 System.err.println("Something went terribly wrong with floored leg positioning!");
             }
 
@@ -222,26 +231,6 @@ public class ExtremityPositioning {
         }
     }
 
-    public void setInitialAngleStepSize(float initialAngleStepSize) {
-        this.initialAngleStepSize = initialAngleStepSize;
-    }
-
-    public void setFirstJointXAngleProbability(float firstJointXAngleProbability) {
-        this.firstJointXAngleProbability = firstJointXAngleProbability;
-    }
-
-    public void setFirstJointZAngleProbability(float firstJointZAngleProbability) {
-        this.firstJointZAngleProbability = firstJointZAngleProbability;
-    }
-
-    public void setSecondJointAngleProbability(float secondJointAngleProbability) {
-        this.secondJointAngleProbability = secondJointAngleProbability;
-    }
-
-    public void setThirdJointAngleProbability(float thirdJointAngleProbability) {
-        this.thirdJointAngleProbability = thirdJointAngleProbability;
-    }
-
     private Point3f firstBoneSetTransformAndCalculateWorldPosition() {
         firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
         return firstBone.getWorldPosition();
@@ -257,7 +246,7 @@ public class ExtremityPositioning {
         return thirdBone.getWorldPosition();
     }
 
-    private boolean bonePositionsOverFloor(float floorHeight, boolean flooredSecondBone) {
+    private boolean bonePositionsOverFloor(float floorHeight, boolean flooredSecondBone, float floorDistanceEps) {
         boolean valid = firstBone.getWorldPosition().y > floorHeight-floorDistanceEps;
         valid = valid && secondBone.getWorldPosition().y > floorHeight-floorDistanceEps;
         if (!flooredSecondBone) {
@@ -271,13 +260,39 @@ public class ExtremityPositioning {
      */
     private boolean boneOverturned(int boneNumber) {
         TerminalElement bone = boneNumber == 1 ? firstBone : thirdBone;
-        Vector3f lokalYAxis = new Vector3f(0f, 1f, 0f);
+        Vector3f lokalYAxis = new Vector3f(0f, -1f, 0f);
         bone.calculateWorldTransform().applyOnVector(lokalYAxis);
 
         if (boneNumber == 1 && firstBone instanceof UpperArm) {
-            return lokalYAxis.x > 0;
-        } else {
             return lokalYAxis.x < 0;
+        } else {
+            return lokalYAxis.x > 0;
+        }
+    }
+
+    private boolean anyOverturnedBone() {
+        return boneOverturned(1) || boneOverturned(3);
+    }
+
+    private void fixOverturnedBones() {
+        float eps = (float)Math.toRadians(1.0);
+        Vector3f localYAxis = new Vector3f(0f, -1f, 0f);
+        Vector3f globalYAxis = new Vector3f(0f, 1f, 0f);
+
+        if (boneOverturned(1)) {
+            firstBone.calculateWorldTransform().applyOnVector(localYAxis);
+            float angle = localYAxis.angle(globalYAxis) + eps;
+            if (firstBone instanceof UpperArm) {
+                angle = -angle;
+            }
+            firstJoint.setCurrentSecondAngle(firstJoint.getCurrentSecondAngle() + angle);
+            firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
+        }
+        if (boneOverturned(3)) {
+            thirdBone.calculateWorldTransform().applyOnVector(localYAxis);
+            float angle = localYAxis.angle(globalYAxis) + eps;
+            thirdJoint.setCurrentAngle(thirdJoint.getCurrentAngle() + angle);
+            thirdBone.setTransform((thirdJoint.calculateChildTransform(thirdBone.getBoundingBox())));
         }
     }
 }

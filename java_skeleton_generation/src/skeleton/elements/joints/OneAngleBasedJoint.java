@@ -39,7 +39,13 @@ public abstract class OneAngleBasedJoint extends Joint {
         child.calculateWorldTransform().applyOnVector(testVectorChild);
 
         float eps = 0.01f;
-        return Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null;
+        if (Math.abs(testVectorChild.x) > eps) {
+            return testVectorChild.x < 0;
+        } else if (Math.abs(testVectorChild.z) > eps) {
+            return testVectorChild.z > 0;
+        } else {
+            return null;
+        }
     }
 
     public boolean movementPossible(boolean nearerToFloor) {

@@ -15,7 +15,7 @@ public class AnkleLegJoint extends AnkleJoint {
         if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
             System.err.println("Invalid ankle leg joint kind");
         }
-        setCurrentAngle((float) -Math.toRadians(160));
+        setCurrentAngle(minAngleShin);
     }
 
     public AnkleLegJoint calculateMirroredJoint(TerminalElement mirroredParent) {

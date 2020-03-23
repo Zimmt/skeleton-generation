@@ -152,10 +152,18 @@ public abstract class TwoAngleBasedJoint extends Joint {
     public void setCurrentSecondAngle(float currentSecondAngle) {
         if (currentSecondAngle < minSecondAngle || currentSecondAngle > maxSecondAngle) {
             System.err.println("Invalid second angle to set");
-        } //else {
+        } else {
             this.lastSecondAngle = this.currentSecondAngle;
             this.currentSecondAngle = currentSecondAngle;
-        //}
+        }
+    }
+
+    public float getCurrentFirstAngle() {
+        return currentFirstAngle;
+    }
+
+    public float getCurrentSecondAngle() {
+        return currentSecondAngle;
     }
 
     public void setChild(TerminalElement child) {

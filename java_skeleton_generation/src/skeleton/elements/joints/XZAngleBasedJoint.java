@@ -9,10 +9,16 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Only used for pelvic leg joint and for shoulder arm joint
+ */
 public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
 
     public XZAngleBasedJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle) {
         super(parent, position, minFirstAngle, maxFirstAngle, minSecondAngle, maxSecondAngle);
+        if (minFirstAngle < 0) {
+            System.err.println("What kind of joint is this??");
+        }
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox boundingBox) {
@@ -37,7 +43,11 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
         child.calculateWorldTransform().applyOnVector(testVectorChild);
 
         float eps = 0.01f;
-        turnDirections.add(Math.abs(testVectorChild.z) > eps ? testVectorChild.z > 0 : null); // todo why??
+        if (Math.abs(testVectorChild.z) > eps) { // testVectorChild is > 0 (it can't be < 0)
+            turnDirections.add(testVectorChild.y > 0);
+        } else {
+            turnDirections.add(testVectorChild.y > 0 ? true : null);
+        }
         turnDirections.add(Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null);
 
         if (turnDirections.get(0) == null && turnDirections.get(1) == null) {
