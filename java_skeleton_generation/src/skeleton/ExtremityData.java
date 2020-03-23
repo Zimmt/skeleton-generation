@@ -2,6 +2,7 @@ package skeleton;
 
 import skeleton.elements.ExtremityKind;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class ExtremityData {
@@ -148,48 +149,51 @@ public class ExtremityData {
 
     // Must be called _after_ number of floored legs is calculated
     private void calculateFloorHeight(SpineData spine) {
-        if (flooredLegs > 0) {
-            float minFloorHeight = 0f;
-            float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
+        float minFloorHeight = 0f;
+        float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
+        int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.FLOORED_LEG).count();
+        int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(1)).filter(e -> e == ExtremityKind.FLOORED_LEG).count();
 
+        if (backLegs > 0) {
             float pelvicHeight = spine.getBack().getControlPoint3().y;
             float legLength = lengthUpperLeg + lengthLowerLeg + lengthFoot;
             if (lengthUpperLeg + lengthLowerLeg >= pelvicHeight) {
                 flooredAnkleWristProbability = 1f;
             } else if (legLength < pelvicHeight) {
                 flooredAnkleWristProbability = 0f;
-                minFloorHeight = pelvicHeight - bentRatio*legLength;
+                minFloorHeight = pelvicHeight - bentRatio * legLength;
             } else {
                 flooredAnkleWristProbability = (legLength - pelvicHeight) / lengthFoot;
-                minFloorHeight = pelvicHeight - bentRatio*lengthUpperLeg - bentRatio*lengthLowerLeg;
+                minFloorHeight = pelvicHeight - bentRatio * lengthUpperLeg - bentRatio * lengthLowerLeg;
             }
-
-            if (flooredLegs > 1) {
-                float shoulderHeight = spine.getBack().getControlPoint0().y;
-                float armLength = lengthUpperArm + lengthLowerArm + lengthHand;
-                if (flooredAnkleWristProbability >= 1f || lengthUpperArm + lengthLowerArm >= shoulderHeight) {
-                    flooredAnkleWristProbability = 1f;
-                } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {
-                    if (flooredAnkleWristProbability > 0f) {
-                        //System.out.println("arms are too short, but legs not");
-                        minFloorHeight = shoulderHeight - bentRatio*armLength;
-                    } else {
-                        minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*armLength);
-                    }
-                    flooredAnkleWristProbability = 0f;
-                } else {
-                    float flooredWristProbability = (armLength - shoulderHeight) / lengthHand;
-                    flooredAnkleWristProbability = (flooredWristProbability + flooredAnkleWristProbability) / 2f;
-                    minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*lengthUpperArm - bentRatio*lengthLowerArm);
-                }
-            }
-
-            if (minFloorHeight > 0f) {
-                floorHeight = minFloorHeight;
-            }
-            System.out.println("Floor height: " + floorHeight);
-            //System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
         }
+
+        if (frontLegs > 0) {
+            float shoulderHeight = spine.getBack().getControlPoint0().y;
+            float armLength = lengthUpperArm + lengthLowerArm + lengthHand;
+            if (flooredAnkleWristProbability >= 1f || lengthUpperArm + lengthLowerArm >= shoulderHeight) {
+                flooredAnkleWristProbability = 1f;
+            } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {
+                if (flooredAnkleWristProbability > 0f) {
+                    //System.out.println("arms are too short, but legs not");
+                    minFloorHeight = shoulderHeight - bentRatio*armLength;
+                } else {
+                    minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*armLength);
+                }
+                flooredAnkleWristProbability = 0f;
+            } else {
+                float flooredWristProbability = (armLength - shoulderHeight) / lengthHand;
+                flooredAnkleWristProbability = (flooredWristProbability + flooredAnkleWristProbability) / 2f;
+                minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*lengthUpperArm - bentRatio*lengthLowerArm);
+            }
+        }
+
+        if (minFloorHeight > 0f) {
+            floorHeight = minFloorHeight;
+        }
+        System.out.println("Floor height: " + floorHeight);
+        //System.out.println("floored ankle probability: " + flooredAnkleWristProbability);
+
     }
 
     /**
