@@ -37,7 +37,14 @@ public class ExtremityStartingPoints {
         if (startingPoint >= extremityKindsForStartingPoints.size()) {
             return new ExtremityKind[0];
         } else {
-            return extremityKindsForStartingPoints.get(startingPoint);
+            List<ExtremityKind> extremityKinds = new ArrayList<>(2);
+            if (extremityKindsForStartingPoints.get(startingPoint)[0] != null) {
+                extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[0]);
+            }
+            if (extremityKindsForStartingPoints.get(startingPoint)[1] != null) {
+                extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[1]);
+            }
+            return extremityKinds.toArray(ExtremityKind[]::new);
         }
     }
 
@@ -46,11 +53,11 @@ public class ExtremityStartingPoints {
     }
 
     public void setLegs(int legCount) {
-        setKindAtPositions(ExtremityKind.FLOORED_LEG, legCount, possibleLegPositions);
+        setKindAtPositions(ExtremityKind.LEG, legCount, possibleLegPositions);
     }
 
     public void setArms(int armCount) {
-        setKindAtPositions(ExtremityKind.NON_FLOORED_LEG, armCount, possibleArmPositions);
+        setKindAtPositions(ExtremityKind.ARM, armCount, possibleArmPositions);
     }
 
     public void setFins(int finCount) {
@@ -59,13 +66,7 @@ public class ExtremityStartingPoints {
 
     public int getFreeExtremityCountAtPosition(int position) {
         ExtremityKind[] kinds = getExtremityKindsForStartingPoint(position);
-        int count = 0;
-        for (ExtremityKind kind : kinds) {
-            if (kind == null) {
-                count++;
-            }
-        }
-        return count;
+        return 2 - kinds.length;
     }
 
     public int getFreeWingCount() {

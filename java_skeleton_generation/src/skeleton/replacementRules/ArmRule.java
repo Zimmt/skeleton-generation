@@ -70,7 +70,7 @@ public class ArmRule extends ReplacementRule {
                     shoulderJoint, upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
 
             switch (extremityKind) {
-                case FLOORED_LEG:
+                case LEG:
                     boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
                     System.out.print("floored wrist: " + flooredWrist + "... ");
 
@@ -79,7 +79,7 @@ public class ArmRule extends ReplacementRule {
 
                     extremityPositioning.findFlooredPosition(flooredWrist);
                     break;
-                case NON_FLOORED_LEG:
+                case ARM:
                     extremityPositioning.findArmPosition();
                     break;
                 case WING:

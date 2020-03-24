@@ -8,26 +8,28 @@ import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Shoulder extends TerminalElement {
 
     private final String kind = "shoulder";
     private ExtremityKind[] extremityKinds;
-    private List<ShoulderJoint> joints;
+    private ShoulderJoint firstJoint;
+    private ShoulderJoint secondJoint;
     private boolean secondShoulder;
 
     public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
-                    boolean mirrored, ExtremityKind[] extremityKinds, boolean secondShoulder) {
+                    ExtremityKind[] extremityKinds, boolean secondShoulder) {
         super(transform, boundingBox, parent, ancestor);
         this.extremityKinds = extremityKinds;
-        this.joints = new ArrayList<>(extremityKinds.length);
-        for (ExtremityKind extremityKind : extremityKinds) {
-            if (extremityKind != null) {
-                joints.add(ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox, mirrored), extremityKind, secondShoulder));
-            }
+        if (extremityKinds.length == 1) {
+            this.firstJoint = ShoulderJoint.newSpecificShoulderJoint(this,
+                    Shoulder.getOnlyJointPosition(boundingBox, extremityKinds[0], secondShoulder), extremityKinds[0], secondShoulder);
+        } else if (extremityKinds.length == 2) {
+            this.firstJoint = ShoulderJoint.newSpecificShoulderJoint(this,
+                    Shoulder.getFirstJointPosition(boundingBox, extremityKinds[0], secondShoulder), extremityKinds[0], secondShoulder);
+            this.secondJoint = ShoulderJoint.newSpecificShoulderJoint(this,
+                    Shoulder.getSecondJointPosition(boundingBox, extremityKinds[1], secondShoulder), extremityKinds[1], secondShoulder);
         }
         this.secondShoulder = secondShoulder;
     }
@@ -37,7 +39,10 @@ public class Shoulder extends TerminalElement {
     }
 
     public List<ShoulderJoint> getJoints() {
-        return joints;
+        List<ShoulderJoint> jointList = new ArrayList<>(2);
+        if (firstJoint != null) jointList.add(firstJoint);
+        if (secondJoint != null) jointList.add(secondJoint);
+        return jointList;
     }
 
     public boolean isMirrored() { return true; }
@@ -49,8 +54,7 @@ public class Shoulder extends TerminalElement {
         return new Shoulder(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(),
-                true, extremityKinds, secondShoulder);
+                mirroredParent.orElse(parent), this.getAncestor(), extremityKinds, secondShoulder);
     }
 
     /**
@@ -61,9 +65,32 @@ public class Shoulder extends TerminalElement {
     }
 
     /**
+     * @return the relative positions for the joints between this element and it's first child
+     */
+    private static Point3f getFirstJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder) {
+        return getJointPosition(childBoundingBox, extremityKind, secondShoulder,1f/4f);
+    }
+
+    /**
+     * @return the relative position for the joint between this element and it's second child
+     */
+    private static Point3f getSecondJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder) {
+        return getJointPosition(childBoundingBox, extremityKind, secondShoulder,3f/4f);
+    }
+
+    /**
+     * Only use this if the shoulder has only one child!
      * @return the relative position for the joint between this element and it's child
      */
-    private static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
-        return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+    private static Point3f getOnlyJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder) {
+        return getJointPosition(childBoundingBox, extremityKind, secondShoulder, 1f/2f);
+    }
+
+    private static Point3f getJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder, float relativeXPosition) {
+        float yValue = 0f;
+        if (extremityKind == ExtremityKind.WING || (secondShoulder && extremityKind == ExtremityKind.FIN)) {
+            yValue = childBoundingBox.getYLength();
+        }
+        return new Point3f(childBoundingBox.getXLength()*relativeXPosition, yValue, childBoundingBox.getZLength()/2f);
     }
 }

@@ -275,7 +275,7 @@ public class ExtremityPositioning {
     }
 
     private void fixOverturnedBones() {
-        float eps = (float)Math.toRadians(1.0);
+        float eps = (float) Math.toRadians(2.0);
         Vector3f localYAxis = new Vector3f(0f, -1f, 0f);
         Vector3f globalYAxis = new Vector3f(0f, 1f, 0f);
 

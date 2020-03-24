@@ -12,7 +12,7 @@ public class AnkleLegJoint extends AnkleJoint {
 
     public AnkleLegJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         super(parent, position, minAngleShin, maxAngleShin, extremityKind);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
+        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
             System.err.println("Invalid ankle leg joint kind");
         }
         setCurrentAngle(minAngleShin);

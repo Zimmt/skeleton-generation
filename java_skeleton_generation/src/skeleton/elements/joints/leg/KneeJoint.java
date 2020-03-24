@@ -31,8 +31,7 @@ public abstract class KneeJoint extends OneAngleBasedJoint {
     public static KneeJoint newSpecificKneeJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:
-            case FLOORED_LEG:
-            case NON_FLOORED_LEG:
+            case ARM:
                 return new KneeLegJoint(parent, position, extremityKind);
             case FIN:
                 return new KneeFinJoint(parent, position);

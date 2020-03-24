@@ -31,8 +31,7 @@ public abstract class AnkleJoint extends OneAngleBasedJoint {
     public static AnkleJoint newSpecificAnkleJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:
-            case FLOORED_LEG:
-            case NON_FLOORED_LEG:
+            case ARM:
                 return new AnkleLegJoint(parent, position, extremityKind);
             case FIN:
                 return new AnkleFinJoint(parent, position);

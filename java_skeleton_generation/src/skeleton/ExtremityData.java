@@ -151,8 +151,8 @@ public class ExtremityData {
     private void calculateFloorHeight(SpineData spine) {
         float minFloorHeight = 0f;
         float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
-        int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.FLOORED_LEG).count();
-        int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(1)).filter(e -> e == ExtremityKind.FLOORED_LEG).count();
+        int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.LEG).count();
+        int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(1)).filter(e -> e == ExtremityKind.LEG).count();
 
         if (backLegs > 0) {
             float pelvicHeight = spine.getBack().getControlPoint3().y;

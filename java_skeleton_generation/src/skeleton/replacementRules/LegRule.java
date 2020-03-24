@@ -69,7 +69,7 @@ public class LegRule extends ReplacementRule {
             ExtremityPositioning extremityPositioning = new ExtremityPositioning(
                     pelvicJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
 
-            if (extremityKind == ExtremityKind.FLOORED_LEG) {
+            if (extremityKind == ExtremityKind.LEG) {
                 boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
                 System.out.print("floored ankle: " + flooredAnkle + "... ");
 

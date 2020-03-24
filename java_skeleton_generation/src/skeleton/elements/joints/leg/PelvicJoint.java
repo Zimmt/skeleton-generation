@@ -31,8 +31,7 @@ public abstract class PelvicJoint extends XZAngleBasedJoint {
     public static PelvicJoint newSpecificPelvicJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:
-            case FLOORED_LEG:
-            case NON_FLOORED_LEG:
+            case ARM:
                 return new PelvicLegJoint(parent, position, extremityKind);
             case FIN:
                 return new PelvicFinJoint(parent, position);

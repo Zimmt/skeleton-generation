@@ -14,7 +14,7 @@ public class ShoulderArmJoint extends ShoulderJoint {
 
     public ShoulderArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind, boolean secondShoulder) {
         super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, extremityKind, secondShoulder);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.FLOORED_LEG && extremityKind != ExtremityKind.NON_FLOORED_LEG) {
+        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
             System.err.println("Invalid shoulder arm joint kind");
         }
         setCurrentFirstAngle(minFrontAngle);

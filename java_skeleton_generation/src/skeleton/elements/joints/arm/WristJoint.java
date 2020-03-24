@@ -31,8 +31,7 @@ public abstract class WristJoint extends OneAngleBasedJoint {
     public static WristJoint newSpecificWristJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:
-            case FLOORED_LEG:
-            case NON_FLOORED_LEG:
+            case ARM:
                 return new WristArmJoint(parent, position, extremityKind);
             case FIN:
                 return new WristFinJoint(parent, position);
