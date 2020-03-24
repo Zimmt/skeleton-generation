@@ -4,6 +4,8 @@
 
 % apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
 
+ \todo{einheitliche Benennung von PCA Dimension, erhobenen Daten etc.}
+
  Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse wir auf einer Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen ausgeführt. Sie findet diejenigen Richtungen im $n$-dimensionalen Raum, in denen sich die Beispiele am meisten unterscheiden, die "`principal components"'. Das Ziel ist in den meisten Fällen die Dimensionalität der Daten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden, da die anderen Dimensionen optimalerweise nur einen marginalen Einfluss auf die Daten haben.
  
  Das Ziel im Bezug auf die Generierung von Skeletten war vor allem die Position und Krümmung der Wirbelsäule bei unterschiedlichen Tieren zu untersuchen, da diese sehr charakteristische Merkmale eines Skeletts sind. Aus dem gleichen Grund soll der Algorithmus zur Generierung der Skelette mit der Generierung der Wirbelsäule starten und daraus dann den Rest der Knochen "`wachsen"' lassen.
@@ -16,6 +18,7 @@
  \section{Funktionsweise}
  
  \todo{PCA Quelle} % Folien? Oder besser Standardwerk zitieren?
+ \todo{PCA-Algorithmus mit Pseudocode und Ein- und Ausgabe als Referenz (Eingabe ist Kovarianzmatrix, Rest Vorberechnung?)}
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll. Hier sind die Datenpunkte Skelette von Wirbeltieren. Für jede Eigenschaft des Skeletts, die untersucht werden soll, hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten mit jeweils $n$ Dimensionen. Die PCA nimmt an, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. In diesem Fall bilden die Punkte im $n$-dimensionalen Raum einen Ellipsoid.
  
@@ -192,7 +195,7 @@
  \end{figure}
  
 
- %- - - - - - - - - - - - - - - - - -
+ %-----------------------------------
  \section{Analyse der PCA-Ergebnisse}
  \label{section_pca_result_analysis}
  
@@ -237,4 +240,42 @@
  Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen.
  Das wäre ein Argument dafür keine Aufteilung vorzunehmen. Dasselbe gilt für die Cluster, die durch die Aufteilung anhand der Anzahl der Beine mit Bodenkontakt entstehen.
  
+ \todo{Schaubild mit verschiedenen erzeugten Wirbelsäulen?}
+ 
+ %-------------------------------------------------
+ \section{Bedingte Verteilung der PCA Eingabedaten}
+ 
+ 
+ Aus den Ergebnissen der PCA lassen sich sehr gut zufällige Skelette erzeugen. Es ist aber schwer gezielt Eigenschaften festzulegen.
+ Der erste Schritt ist Eigenschaften auf gewählte Werte festzulegen, die so schon in den erhobenen Daten vorkommen. Das können beispielsweise die Anzahl der Beine sein oder ob das Skelett Flügel haben soll.
+ 
+ Dazu kann man, statt die ursprünglichen Daten und deren Verteilung zu verwenden, die bedingten Verteilungen bilden. Dazu muss der bedingte Mittelwert und die bedingte Kovarianzmatrix bestimmt werden.
+ 
+ \todo{Berechnung beschreiben: \url{https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions}}
+ Verwendet man nun die bedingte Kovarianzmatrix als Eingabe für die PCA, so erhält man nur noch Daten für Skelette mit den vorher festgelegten Bedingungen. Zu beachten ist hier, dass die Eigenvektoren sich im Vergleich zur PCA ohne Bedingungen verändern. Falls man diese also zur Bestimmung eines Datenpunktes verwendet hat (\zb in einer Benutzeroberfläche), so müssen die Werte für die neuen Eigenvektoren ganz neu ausgerechnet werden. \todo{ist das relevant für mein Benutzerinterface?}
+ 
+ % feste Werte variieren
+ Betrachtet man erzeugte Beispiele aus bedingten Verteilungen, zeigt sich sehr deutlich, dass das Festlegen einer Dimension auch die anderen Dimensionen sehr stark einschränkt. Legt man \zb die Anzahl der Beine fest, so haben die Skelette, die dann bedingt zufällig generiert werden, eine recht geringe Varianz. Das ist deutlich daran zu erkennen, dass der Verlauf der Wirbelsäule immer sehr ähnlich ist.
 
+ Um das etwas zu umgehen, wird die Eingabe als Intervall aufgefasst, aus dem zufällig ein Wert gezogen wird. Legt \zb der Benutzer einen ganzzahligen Wert fest, so wird ein kleiner zufälliger Wert aufaddiert oder abgezogen. \todo{welches Intervall?} So wird nicht immer genau der gleiche Wert verwendet.
+ 
+ % Übergang Krokodil -> Fisch
+ Schaut man sich nun die erzeugten Skelette mit zwei tragenden Beinen an, so sind darunter nicht nur Vögel, sondern auch Skelette, die kurze Extremitäten haben und deren Wirbelsäule sich nahe über dem Boden befindet. \todo{Beispielbild}
+ Das liegt daran, dass es einen Übergang von bodennahen Vierbeinern wie Krokodilen oder Fröschen zu Fischen geben muss. Da es hier aber in der Natur eher wenige Beispiele für Zweibeiner gibt (in den erhobenen Daten sind das nur der Seehund und die Ohrenrobbe), wirkten diese Tiere eher ungewöhnlich.
+ Da das Problem hier aber inhärent in der Vorgehensweise der PCA ist, lässt es sich nicht wirklich beheben.
+ 
+ % Bedingungen an abgeleitet Werte
+ Nun möchte man vielleicht Bedingungen an das zu generierende Skelett stellen, die nicht schon genau so in den erhobenen Daten repräsentiert sind. Das könnten beispielsweise die Schwanz- oder Halslänge sein.
+ 
+ Sind es Bedingungen an Dimensionen, die nicht erhoben wurden, können  sie entweder, unabhängig von der PCA, in den Ersetzungsregeln erzwungen werden, wie \zb die Anzahl der Flossen, oder sie müssen in die Erhebung eingefügt werden.
+ 
+ Für Bedingungen, die schon implizit in den erhobenen Daten enthalten sind,
+ könnte man es ebenso machen und einfach eine zusätzliche Dimension einfügen, die aus schon bestehenden Dimensionen errechnet wird. Dabei wäre aber das Problem, dass nur die Dimensionalität erhöht wird, nicht aber die eingegebenen Daten. Es wären also mehr Eingabebeispiele nötig, nur dafür, dass die PCA eine offensichtliche Korrelation der Dimensionen erkennt.
+ 
+ Die bessere Alternative ist es die Eingabedimensionen der PCA umzuparametrisieren. Die Länge des Schwanzes in x-Richtung, ist \zb implizit in der Differenz der x-Koordinaten des ersten und letzten Kontrollpunktes der Bezièrkurve des Schwanzes enthalten. Ersetzt man nun den absoluten x-Wert des letzten Kontrollpunktes durch den Abstand in x-Richtung zum ersten Kontrollpunkt, so lässt sich die Schwanzlänge in x-Richtung ganz einfach als Bedingung an die PCA stellen. 
+ 
+ % Schwanzlänge messen
+ Betrachtet man nun konkret den Wunsch die Schwanzlänge festzulegen, ist das nicht ganz so einfach. Die Länge in x- und y-Richtung lässt sich zwar leicht festlegen, diese Länge sagen aber noch nicht unbedingt viel über die tatsächliche Länge der Bezièrkurve aus. Verlangt man \zb eine Länge von null für den Schwanz in x-Richtung, so haben die generierten Skelette einen Schwanz der zwar auf gleicher Höhe beginnt und endet, aber trotzdem vorhanden ist und einen kleinen Bogen beschreibt. \todo{Beispielbild}
+ Um die wirkliche Länge des Schwanzes zu messen, müsste man also noch mehr Aufwand in die Umparametrisierung stecken oder doch eine zusätzliche Dimension für die PCA in Kauf nehmen.
+ 
+ 
