@@ -65,6 +65,9 @@ public class ExtremityStartingPoints {
     }
 
     public int getFreeExtremityCountAtPosition(int position) {
+        if (position >= extremityKindsForStartingPoints.size()) {
+            return 0;
+        }
         ExtremityKind[] kinds = getExtremityKindsForStartingPoint(position);
         return 2 - kinds.length;
     }

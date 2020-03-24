@@ -21,17 +21,18 @@ public class Pelvic extends TerminalElement {
 
     private final String kind = "pelvic";
     private SpineOrientedJoint tailJoint;
-    private List<PelvicJoint> legJoints;
+    private PelvicJoint firstJoint;
+    private PelvicJoint secondJoint;
 
     public Pelvic(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
                   float tailJointSpinePosition, ExtremityKind[] extremityKinds) {
         super(transform, boundingBox, parent, ancestor);
         this.tailJoint = new SpineOrientedJoint(this, Pelvic.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
-        this.legJoints = new ArrayList<>(extremityKinds.length);
-        for (ExtremityKind extremityKind : extremityKinds) {
-            if (extremityKind != null) {
-                legJoints.add(PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getLegJointPosition(boundingBox), extremityKind));
-            }
+        if (extremityKinds.length == 1) {
+            this.firstJoint = PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getOnlyLegJointPosition(boundingBox, extremityKinds[0]), extremityKinds[0]);
+        } else if (extremityKinds.length == 2) {
+            this.firstJoint = PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getFirstLegJointPosition(boundingBox, extremityKinds[0]), extremityKinds[0]);
+            this.secondJoint = PelvicJoint.newSpecificPelvicJoint(this, Pelvic.getSecondLegJointPosition(boundingBox, extremityKinds[1]), extremityKinds[1]);
         }
     }
 
@@ -44,7 +45,10 @@ public class Pelvic extends TerminalElement {
     }
 
     public List<PelvicJoint> getLegJoints() {
-        return legJoints;
+        List<PelvicJoint> jointList = new ArrayList<>(2);
+        if (firstJoint != null) jointList.add(firstJoint);
+        if (secondJoint != null) jointList.add(secondJoint);
+        return jointList;
     }
 
     public boolean isMirrored() { return false; }
@@ -69,9 +73,32 @@ public class Pelvic extends TerminalElement {
     }
 
     /**
-     * @return the relative position for the joint between this element and the leg
+     * @return the relative positions for the joints between this element and it's first child
      */
-    private static Point3f getLegJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/4f);
+    private static Point3f getFirstLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
+        return getLegJointPosition(childBoundingBox, extremityKind,1f/4f);
+    }
+
+    /**
+     * @return the relative position for the joint between this element and it's second child
+     */
+    private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
+        return getLegJointPosition(childBoundingBox, extremityKind,3f/4f);
+    }
+
+    /**
+     * Only use this if the shoulder has only one child!
+     * @return the relative position for the joint between this element and it's child
+     */
+    private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
+        return getLegJointPosition(childBoundingBox, extremityKind, 1f/2f);
+    }
+
+    private static Point3f getLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, float relativeXPosition) {
+        float yValue = 0f;
+        if (extremityKind == ExtremityKind.FIN) {
+            yValue = childBoundingBox.getYLength();
+        }
+        return new Point3f(childBoundingBox.getXLength()*relativeXPosition, yValue, childBoundingBox.getZLength()/4f);
     }
 }
