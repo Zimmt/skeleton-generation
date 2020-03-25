@@ -15,10 +15,7 @@ import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Generates
@@ -49,7 +46,7 @@ public class FrontPartRule extends ReplacementRule {
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
         Vector3f chestVertebraScale = new Vector3f(10f, 100f, 120f);
         List<Vertebra> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
-                frontBackInterval, 10, vertebraScale, Optional.of(chestVertebraScale),
+                frontBackInterval, 15, vertebraScale, Optional.of(chestVertebraScale),
                 frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
@@ -58,8 +55,12 @@ public class FrontPartRule extends ReplacementRule {
         generatedParts.addAll(frontBack); // shoulder vertebra is changed, so it has to be set after generating the shoulder girdle
 
         Tuple2f neckInterval = new Point2f(1f, 0f);
+        int neckVertebraCount = 7;
+        if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasWings()) {
+            neckVertebraCount = 10 + (new Random()).nextInt(21);
+        }
         List<Vertebra> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
-                neckInterval, 10, vertebraScale, Optional.empty(), shoulderGirdle.getParent(), shoulderGirdle.getParent().getJoint());
+                neckInterval, neckVertebraCount, vertebraScale, Optional.empty(), shoulderGirdle.getParent(), shoulderGirdle.getParent().getJoint());
 
         if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasSecondShoulder()) {
             ShoulderGirdle secondShoulderGirdle = generateShoulderGirdle(frontPart, neck, neck.size()-3, true); // todo are there always enough vertebrae on neck?

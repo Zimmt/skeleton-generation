@@ -91,6 +91,10 @@ public class ExtremityData {
         return extremityStartingPoints.hasSecondShoulder();
     }
 
+    public boolean hasWings() {
+        return wings > 0;
+    }
+
     /**
      * @param position is counting from the back (so pelvic in a normal animal would be 0)
      */

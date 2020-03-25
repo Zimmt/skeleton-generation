@@ -16,10 +16,7 @@ import javax.vecmath.Point2f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Generates
@@ -70,8 +67,9 @@ public class BackPartRule extends ReplacementRule {
         }
 
         Tuple2f tailInterval = new Point2f(pelvic.getTailJoint().getSpinePosition(), 1f);
+        int tailVertebraCount = 5 + (new Random()).nextInt(16);
         List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, 15, vertebraScale, Optional.empty(), pelvic, pelvic.getTailJoint());
+                tailInterval, tailVertebraCount, vertebraScale, Optional.empty(), pelvic, pelvic.getTailJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;

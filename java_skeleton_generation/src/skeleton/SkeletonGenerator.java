@@ -14,6 +14,7 @@ import util.BoundingBox;
 import util.TransformationMatrix;
 import util.pca.PcaHandler;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
@@ -242,6 +243,8 @@ public class SkeletonGenerator {
      * Child vertebrae are added to their parents.
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
+     * @param boundingBoxScale y- and z-scale is used, x-scale is replaced by the maximum space available
+     * @param chestBoundingBoxScale same as for boundingBoxScale
      * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
@@ -290,6 +293,11 @@ public class SkeletonGenerator {
             } else {
                 childBox = boundingBox.cloneBox();
             }
+            Point2f startPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(spinePosition);
+            Point2f endPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(childSpineEndPosition);
+            childBox.setXLength((float) Math.sqrt(
+                    Math.pow(startPosition.x - endPosition.x, 2) +
+                    Math.pow(startPosition.y - endPosition.y, 2)));
 
             Joint joint = parent == null ? firstParentJoint : parent.getJoint();
             TransformationMatrix transform = joint.calculateChildTransform(childBox);
