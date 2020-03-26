@@ -13,7 +13,11 @@ import java.util.List;
 
 public class ObjGenerator {
 
-    public ObjGenerator() {}
+    private BoneLibrary boneLibrary;
+
+    public ObjGenerator() {
+        this.boneLibrary = new BoneLibrary();
+    }
 
     public void generateObjFrom(SkeletonGenerator skeleton, String fileName) throws IOException {
         if (!skeleton.isFinished()) {
@@ -22,20 +26,12 @@ public class ObjGenerator {
         }
 
         Obj obj = Objs.create();
-
         addSpineVertices(obj, skeleton);
-
-        Obj cube = ObjReader.read((new FileInputStream(new File("./cube.obj"))));
-        Obj vertebra = ObjReader.read((new FileInputStream(new File("./vertebra_1x1.obj"))));
 
         List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
         for (TerminalElement element : skeletonParts) {
             obj.setActiveGroupNames(Collections.singletonList(element.getKind() + element.getId()));
-            if (!(element.getKind().equals("vertebra"))) {
-                create3DRepresentation(obj, element, cube);
-            } else {
-                create3DRepresentation(obj, element, vertebra);
-            }
+            create3DRepresentation(obj, element);
         }
 
         String outputPath = fileName + ".obj";
@@ -43,13 +39,14 @@ public class ObjGenerator {
         ObjWriter.write(obj, objOutputStream);
     }
 
-    private void create3DRepresentation(Obj obj, TerminalElement element, Obj elementObj) throws IOException {
+    private void create3DRepresentation(Obj obj, TerminalElement element) {
         TransformationMatrix worldTransform = element.calculateWorldTransform();
         BoundingBox worldBoundingBox = element.getBoundingBox().cloneBox();
         worldBoundingBox.transform(element.calculateWorldTransform());
 
         int zero = obj.getNumVertices();
 
+        Obj elementObj = boneLibrary.getBoneObj(element.getKind());
         float[] vertexData = ObjData.getVerticesArray(elementObj); // three consecutive entries are the x,y,z values of one vertex
         for (int i = 0; i < vertexData.length; i += 3) {
             Point3f newPosition = new Point3f(
@@ -68,39 +65,6 @@ public class ObjGenerator {
             }
             obj.addFace(ObjFaces.create(newVertexIndices, null, null));
         }
-    }
-
-    private void createBoundingBoxRepresentation(Obj obj, TerminalElement element) {
-        Point3f worldPosition = element.getWorldPosition();
-        BoundingBox worldBoundingBox = element.getBoundingBox().cloneBox();
-        worldBoundingBox.transform(element.calculateWorldTransform());
-
-        Point3f xCorner = new Point3f(worldPosition); xCorner.add(worldBoundingBox.getXVector());
-        Point3f yCorner = new Point3f(worldPosition); yCorner.add(worldBoundingBox.getYVector());
-        Point3f zCorner = new Point3f(worldPosition); zCorner.add(worldBoundingBox.getZVector());
-        Point3f xyCorner = new Point3f(xCorner); xyCorner.add(worldBoundingBox.getYVector());
-        Point3f xzCorner = new Point3f(xCorner); xzCorner.add(worldBoundingBox.getZVector());
-        Point3f yzCorner = new Point3f(yCorner); yzCorner.add(worldBoundingBox.getZVector());
-        Point3f xyzCorner = new Point3f(xyCorner); xyzCorner.add(worldBoundingBox.getZVector());
-
-        int zero = obj.getNumVertices();
-
-        // 0. origin, 1. x, 2. y, 3. z, 4. xy, 5. xz, 6. yz, 7. xyz
-        obj.addVertex(worldPosition.x, worldPosition.y, worldPosition.z);
-        obj.addVertex(xCorner.x, xCorner.y, xCorner.z);
-        obj.addVertex(yCorner.x, yCorner.y, yCorner.z);
-        obj.addVertex(zCorner.x, zCorner.y, zCorner.z);
-        obj.addVertex(xyCorner.x, xyCorner.y, xyCorner.z);
-        obj.addVertex(xzCorner.x, xzCorner.y, xzCorner.z);
-        obj.addVertex(yzCorner.x, yzCorner.y, yzCorner.z);
-        obj.addVertex(xyzCorner.x, xyzCorner.y, xyzCorner.z);
-
-        obj.addFace(zero+0, zero+1, zero+5, zero+3); // front
-        obj.addFace(zero+2, zero+4, zero+7, zero+6); // back
-        obj.addFace(zero+0, zero+1, zero+4, zero+2); // bottom
-        obj.addFace(zero+3, zero+5, zero+7, zero+6); // top
-        obj.addFace(zero+0, zero+2, zero+6, zero+3); // left
-        obj.addFace(zero+1, zero+4, zero+7, zero+5); // right
     }
 
     private void addSpineVertices(Obj obj, SkeletonGenerator skeleton) {
