@@ -14,17 +14,19 @@ import java.util.Optional;
  */
 public class ShoulderVertebra extends Vertebra {
 
-    private final String kind = "shoulder vertebra";
+    private String kind;
     DummyJoint shoulderJoint;
 
     public ShoulderVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
                             boolean positiveXDir, SpinePart spinePart, float jointSpinePosition, Point3f shoulderJointPosition) {
         super(transform, boundingBox, parent, ancestor, positiveXDir, spinePart, jointSpinePosition);
+        this.kind = super.getKind();
         this.shoulderJoint = new DummyJoint(this, shoulderJointPosition);
     }
 
     public ShoulderVertebra(Vertebra vertebra) {
         super(vertebra.getTransform(), vertebra.getBoundingBox(), vertebra.getParent(), vertebra.getAncestor(), vertebra.getJoint());
+        this.kind = vertebra.getKind();
         this.shoulderJoint = new DummyJoint(this, ShoulderVertebra.getShoulderJointPosition(vertebra.getBoundingBox()));
     }
 
