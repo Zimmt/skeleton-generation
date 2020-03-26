@@ -1,10 +1,7 @@
 package skeleton.elements.terminal;
 
-import skeleton.SpinePart;
 import skeleton.elements.joints.DummyJoint;
-import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
-import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import java.util.Optional;
@@ -16,13 +13,6 @@ public class ShoulderVertebra extends Vertebra {
 
     private String kind;
     DummyJoint shoulderJoint;
-
-    public ShoulderVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
-                            boolean positiveXDir, SpinePart spinePart, float jointSpinePosition, Point3f shoulderJointPosition) {
-        super(transform, boundingBox, parent, ancestor, positiveXDir, spinePart, jointSpinePosition);
-        this.kind = super.getKind();
-        this.shoulderJoint = new DummyJoint(this, shoulderJointPosition);
-    }
 
     public ShoulderVertebra(Vertebra vertebra) {
         super(vertebra.getTransform(), vertebra.getBoundingBox(), vertebra.getParent(), vertebra.getAncestor(), vertebra.getJoint());
