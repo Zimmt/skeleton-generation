@@ -21,7 +21,7 @@ public class ShoulderGirdle extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() {
+    public boolean canBeMirrored() {
         return true;
     }
 

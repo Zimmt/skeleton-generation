@@ -12,6 +12,7 @@ public abstract class TerminalElement extends SkeletonPart {
 
     private TransformationMatrix transform; // position and rotation in relation to the coordinate system of parent (parent origin is origin for this transform)
     private BoundingBox boundingBox;
+    boolean isMirroredVersion = false;
 
     public TerminalElement(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor) {
         super(parent, ancestor);
@@ -56,7 +57,7 @@ public abstract class TerminalElement extends SkeletonPart {
     protected TransformationMatrix calculateMirroredTransform(TerminalElement parent) {
         TransformationMatrix result;
 
-        if (parent.isMirrored()) {
+        if (parent.canBeMirrored()) {
             TransformationMatrix xp = parent.calculateLeftToRightTransform();
             TransformationMatrix xc = calculateLeftToRightTransform();
 
@@ -78,7 +79,7 @@ public abstract class TerminalElement extends SkeletonPart {
 
     /**
      * @return a transform that transforms the left/right handed coordinate system of this element into a right/left handed one
-     * by moving the origin along the z-axis and then flipping the z-axis
+     * by moving the origin along the z-axis and then flipping the z-axis (to make sure that the origin is in the same place again)
      */
     public TransformationMatrix calculateLeftToRightTransform() {
         TransformationMatrix reflection = TransformationMatrix.getReflectionTransformZ();
@@ -89,5 +90,9 @@ public abstract class TerminalElement extends SkeletonPart {
 
     public void setTransform(TransformationMatrix transform) {
         this.transform = transform;
+    }
+
+    public boolean isMirroredVersion() {
+        return isMirroredVersion;
     }
 }

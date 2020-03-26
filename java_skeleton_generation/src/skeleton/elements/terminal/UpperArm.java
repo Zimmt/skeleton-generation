@@ -12,12 +12,17 @@ import java.util.Optional;
 
 public class UpperArm extends TerminalElement {
 
-    private final String kind = "upper arm";
+    private final String kind = "upper_arm";
     ElbowJoint joint;
 
-    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
+    public UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = ElbowJoint.newSpecificElbowJoint(this, UpperArm.getJointPosition(boundingBox, mirrored), extremityKind);
+        this.joint = ElbowJoint.newSpecificElbowJoint(this, UpperArm.getJointPosition(boundingBox), extremityKind);
+    }
+
+    private UpperArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean isMirroredVersion) {
+        super(transform, boundingBox, parent, ancestor);
+        super.isMirroredVersion = isMirroredVersion;
     }
 
     public String getKind() {
@@ -28,17 +33,16 @@ public class UpperArm extends TerminalElement {
         return joint;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public UpperArm calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+        if (parent.canBeMirrored() && mirroredParent.isEmpty()) {
             System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new UpperArm(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(),
-                true, joint.getExtremityKind());
+                mirroredParent.orElse(parent), this.getAncestor(),true);
     }
 
     /**
@@ -51,7 +55,7 @@ public class UpperArm extends TerminalElement {
     /**
      * @return the relative position for the joint between this element and it's child
      */
-    public static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
+    public static Point3f getJointPosition(BoundingBox boundingBox) {
         return new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);
     }
 }

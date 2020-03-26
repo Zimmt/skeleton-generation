@@ -15,7 +15,7 @@ public class Arm extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public Shoulder getParent() {
         if (super.getParent() instanceof Shoulder) {

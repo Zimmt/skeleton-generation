@@ -103,7 +103,7 @@ public class ArmRule extends ReplacementRule {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = shoulderJoint.calculateChildTransform(boundingBox);
 
-        UpperArm upperArm = new UpperArm(transform, boundingBox, shoulder, arm, false, extremityKind);
+        UpperArm upperArm = new UpperArm(transform, boundingBox, shoulder, arm, extremityKind);
         shoulder.replaceChild(arm, upperArm);
         return upperArm;
     }
@@ -112,7 +112,7 @@ public class ArmRule extends ReplacementRule {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = upperArm.getJoint().calculateChildTransform(boundingBox);
 
-        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, false, extremityKind);
+        LowerArm lowerArm = new LowerArm(transform, boundingBox, upperArm, arm, extremityKind);
         upperArm.addChild(lowerArm);
         return lowerArm;
     }

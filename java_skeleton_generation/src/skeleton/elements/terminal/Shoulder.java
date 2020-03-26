@@ -13,7 +13,6 @@ import java.util.*;
 public class Shoulder extends TerminalElement {
 
     private final String kind = "shoulder";
-    private ExtremityKind[] extremityKinds;
     private ShoulderJoint firstJoint;
     private ShoulderJoint secondJoint;
     private boolean secondShoulder;
@@ -21,7 +20,6 @@ public class Shoulder extends TerminalElement {
     public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
                     ExtremityKind[] extremityKinds, boolean secondShoulder) {
         super(transform, boundingBox, parent, ancestor);
-        this.extremityKinds = extremityKinds;
         if (extremityKinds.length == 1) {
             this.firstJoint = ShoulderJoint.newSpecificShoulderJoint(this,
                     Shoulder.getOnlyJointPosition(boundingBox, extremityKinds[0], secondShoulder), extremityKinds[0], secondShoulder);
@@ -31,6 +29,13 @@ public class Shoulder extends TerminalElement {
             this.secondJoint = ShoulderJoint.newSpecificShoulderJoint(this,
                     Shoulder.getSecondJointPosition(boundingBox, extremityKinds[1], secondShoulder), extremityKinds[1], secondShoulder);
         }
+        this.secondShoulder = secondShoulder;
+    }
+
+    private Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
+                     boolean secondShoulder, boolean isMirroredVersion) {
+        super(transform, boundingBox, parent, ancestor);
+        super.isMirroredVersion = isMirroredVersion;
         this.secondShoulder = secondShoulder;
     }
 
@@ -45,16 +50,16 @@ public class Shoulder extends TerminalElement {
         return jointList;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public Shoulder calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+        if (parent.canBeMirrored() && mirroredParent.isEmpty()) {
             System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new Shoulder(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(), extremityKinds, secondShoulder);
+                mirroredParent.orElse(parent), this.getAncestor(), secondShoulder, true);
     }
 
     /**

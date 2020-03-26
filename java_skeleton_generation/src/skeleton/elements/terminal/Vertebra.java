@@ -37,7 +37,7 @@ public class Vertebra extends TerminalElement {
         return joint;
     }
 
-    public boolean isMirrored() { return false; }
+    public boolean canBeMirrored() { return false; }
 
     public Vertebra calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
         System.out.println("Tried to mirror an element that should not be mirrored!");

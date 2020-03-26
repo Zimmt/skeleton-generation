@@ -44,7 +44,7 @@ public abstract class SkeletonPart {
 
     public abstract String getKind();
     public abstract boolean isTerminal();
-    public abstract boolean isMirrored();
+    public abstract boolean canBeMirrored();
 
     public int getId() {
         return id;

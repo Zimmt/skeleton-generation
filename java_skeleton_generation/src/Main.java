@@ -38,6 +38,7 @@ public class Main {
     }
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
+        boolean allCubes = false;
         Integer userInputFlooredLegs = null;
         Integer userInputWings = null;
         Integer userInputArms = null;
@@ -53,7 +54,7 @@ public class Main {
                 userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
         PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
 
-        int skeletonCount = 10;
+        int skeletonCount = 1;
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println("- " + i + " --------------------------------------------------------------");
             SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
@@ -66,7 +67,7 @@ public class Main {
             skeletonGenerator.calculateMirroredElements();
 
             ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i);
+            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes);
         }
     }
 }

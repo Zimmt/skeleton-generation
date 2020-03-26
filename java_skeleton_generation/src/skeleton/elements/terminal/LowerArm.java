@@ -12,15 +12,17 @@ import java.util.Optional;
 
 public class LowerArm extends TerminalElement {
 
-    private final String kind = "lower arm";
+    private final String kind = "lower_arm";
     private WristJoint joint;
 
-    /**
-     * @param mirrored if this is the mirrored instance of this element
-     */
-    public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
+    public LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = WristJoint.newSpecificWristJoint(this, LowerArm.getJointPosition(boundingBox, mirrored), extremityKind);
+        this.joint = WristJoint.newSpecificWristJoint(this, LowerArm.getJointPosition(boundingBox), extremityKind);
+    }
+
+    private LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean isMirroredVersion) {
+        super(transform, boundingBox, parent, ancestor);
+        super.isMirroredVersion = isMirroredVersion;
     }
 
     public String getKind() {
@@ -31,17 +33,16 @@ public class LowerArm extends TerminalElement {
         return joint;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public LowerArm calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+        if (parent.canBeMirrored() && mirroredParent.isEmpty()) {
             System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new LowerArm(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(),
-                true, joint.getExtremityKind());
+                mirroredParent.orElse(parent), this.getAncestor(), true);
     }
 
     /**
@@ -54,7 +55,7 @@ public class LowerArm extends TerminalElement {
     /**
      * @return the relative position for the joint between this element and it's child
      */
-    private static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
+    private static Point3f getJointPosition(BoundingBox boundingBox) {
         return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
     }
 }

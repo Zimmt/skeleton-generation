@@ -91,7 +91,7 @@ public class LegRule extends ReplacementRule {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = pelvicJoint.calculateChildTransform(boundingBox);
 
-        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, false, extremityKind);
+        Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, extremityKind);
         leg.getParent().replaceChild(leg, thigh);
         return thigh;
     }
@@ -100,7 +100,7 @@ public class LegRule extends ReplacementRule {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = thigh.getJoint().calculateChildTransform(boundingBox);
 
-        Shin shin = new Shin(transform, boundingBox, thigh, leg, false, extremityKind);
+        Shin shin = new Shin(transform, boundingBox, thigh, leg, extremityKind);
         thigh.addChild(shin);
         return shin;
     }

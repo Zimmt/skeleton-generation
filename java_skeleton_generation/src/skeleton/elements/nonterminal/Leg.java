@@ -15,7 +15,7 @@ public class Leg extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public Pelvic getParent() {
         if (super.getParent() instanceof Pelvic) {

@@ -9,7 +9,7 @@ import javax.vecmath.Vector3f;
 
 public class RibVertebra extends Vertebra {
 
-    private final String kind = "rib vertebra";
+    private final String kind = "rib_vertebra";
 
     public RibVertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
                        boolean positiveXDir, SpinePart spinePart, float jointSpinePosition) {

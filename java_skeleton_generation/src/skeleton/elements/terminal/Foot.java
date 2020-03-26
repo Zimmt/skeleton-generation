@@ -15,20 +15,25 @@ public class Foot extends TerminalElement {
         super(transform, boundingBox, parent, ancestor);
     }
 
+    private Foot(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean isMirroredVersion) {
+        super(transform, boundingBox, parent, ancestor);
+        super.isMirroredVersion = isMirroredVersion;
+    }
+
     public String getKind() {
         return kind;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public Foot calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+        if (parent.canBeMirrored() && mirroredParent.isEmpty()) {
             System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new Foot(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor());
+                mirroredParent.orElse(parent), this.getAncestor(), true);
     }
 
     /**

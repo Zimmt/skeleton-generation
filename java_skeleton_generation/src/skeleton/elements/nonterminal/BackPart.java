@@ -15,7 +15,7 @@ public class BackPart extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() { return false; }
+    public boolean canBeMirrored() { return false; }
 
     public RootVertebra getParent() {
         if (super.getParent() instanceof RootVertebra) {

@@ -15,5 +15,5 @@ public class WholeBody extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() { return false; }
+    public boolean canBeMirrored() { return false; }
 }

@@ -18,9 +18,14 @@ public class Shin extends TerminalElement {
     private final String kind = "shin";
     private AnkleJoint joint;
 
-    public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean mirrored, ExtremityKind extremityKind) {
+    public Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind extremityKind) {
         super(transform, boundingBox, parent, ancestor);
-        this.joint = AnkleJoint.newSpecificAnkleJoint(this, Shin.getJointPosition(boundingBox, mirrored), extremityKind);
+        this.joint = AnkleJoint.newSpecificAnkleJoint(this, Shin.getJointPosition(boundingBox), extremityKind);
+    }
+
+    private Shin(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean isMirroredVersion) {
+        super(transform, boundingBox, parent, ancestor);
+        super.isMirroredVersion = isMirroredVersion;
     }
 
     public String getKind() {
@@ -31,17 +36,16 @@ public class Shin extends TerminalElement {
         return joint;
     }
 
-    public boolean isMirrored() { return true; }
+    public boolean canBeMirrored() { return true; }
 
     public Shin calculateMirroredElement(TerminalElement parent, Optional<TerminalElement> mirroredParent) {
-        if (parent.isMirrored() && mirroredParent.isEmpty()) {
+        if (parent.canBeMirrored() && mirroredParent.isEmpty()) {
             System.err.println("Cannot mirror child when mirrored parent is not given!");
         }
         return new Shin(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(),
-                true, joint.getExtremityKind());
+                mirroredParent.orElse(parent), this.getAncestor(), true);
     }
 
     /**
@@ -54,7 +58,7 @@ public class Shin extends TerminalElement {
     /**
      * @return the relative position for the joint between this element and it's child
      */
-    private static Point3f getJointPosition(BoundingBox boundingBox, boolean mirrored) {
+    private static Point3f getJointPosition(BoundingBox boundingBox) {
         return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
     }
 }

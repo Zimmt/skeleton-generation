@@ -15,7 +15,7 @@ public class ChestAndFront extends NonTerminalElement {
         return kind;
     }
 
-    public boolean isMirrored() { return false; }
+    public boolean canBeMirrored() { return false; }
 
     public Vertebra getParent() {
         if (super.getParent() instanceof Vertebra) {

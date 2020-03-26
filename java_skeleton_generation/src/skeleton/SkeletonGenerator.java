@@ -134,7 +134,7 @@ public class SkeletonGenerator {
     private String recursiveToString(String depth, SkeletonPart currentElement) {
 
         StringBuilder skeleton = new StringBuilder("\u001B[32m").append(depth);
-        if (currentElement.isMirrored()) {
+        if (currentElement.canBeMirrored()) {
             skeleton.append("2x ");
         }
         if (!currentElement.isTerminal()) {
@@ -184,7 +184,7 @@ public class SkeletonGenerator {
         }
 
         TerminalElement root = getTerminalRootElement();
-        if (root.isMirrored()) {
+        if (root.canBeMirrored()) {
             System.err.println("A root element that has to be mirrored is not allowed!");
         }
 
@@ -210,7 +210,7 @@ public class SkeletonGenerator {
         }
 
         Optional<TerminalElement> mirroredElement = Optional.empty();
-        if (currentElement.isMirrored()) {
+        if (currentElement.canBeMirrored()) {
             mirroredElement = Optional.of(currentElement.calculateMirroredElement(parent, mirroredParent));
             if (!mirroredElement.get().calculateWorldTransform().getHandedness()) {
                 System.err.println("Generated element with left handed coordinate system!");
