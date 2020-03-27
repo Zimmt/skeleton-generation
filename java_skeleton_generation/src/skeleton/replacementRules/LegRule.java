@@ -3,7 +3,7 @@ package skeleton.replacementRules;
 import skeleton.ExtremityData;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.leg.PelvicJoint;
+import skeleton.elements.joints.leg.PelvisJoint;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Foot;
 import skeleton.elements.terminal.Shin;
@@ -42,7 +42,7 @@ public class LegRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
         ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
 
-        for (PelvicJoint pelvicJoint : leg.getParent().getLegJoints()) {
+        for (PelvisJoint pelvicJoint : leg.getParent().getLegJoints()) {
             ExtremityKind extremityKind = pelvicJoint.getExtremityKind();
 
             Vector3f thighScale = new Vector3f(
@@ -87,7 +87,7 @@ public class LegRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Thigh generateThigh(Vector3f scale, Leg leg, PelvicJoint pelvicJoint, ExtremityKind extremityKind) {
+    private Thigh generateThigh(Vector3f scale, Leg leg, PelvisJoint pelvicJoint, ExtremityKind extremityKind) {
         BoundingBox boundingBox = new BoundingBox(scale);
         TransformationMatrix transform = pelvicJoint.calculateChildTransform(boundingBox);
 

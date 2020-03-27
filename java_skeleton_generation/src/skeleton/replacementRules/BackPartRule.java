@@ -5,7 +5,7 @@ import skeleton.SpinePart;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
-import skeleton.elements.terminal.Pelvic;
+import skeleton.elements.terminal.Pelvis;
 import skeleton.elements.terminal.RootVertebra;
 import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
@@ -55,37 +55,37 @@ public class BackPartRule extends ReplacementRule {
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
-        Pelvic pelvic = generatePelvic(backPart, backBack.get(backBack.size()-1), pelvicScale, pelvicIntervalAndLength);
-        generatedParts.add(pelvic);
+        Pelvis pelvis = generatePelvic(backPart, backBack.get(backBack.size()-1), pelvicScale, pelvicIntervalAndLength);
+        generatedParts.add(pelvis);
 
-        if (!pelvic.getLegJoints().isEmpty()) {
-            Leg leg = new Leg(pelvic, backPart);
-            pelvic.addChild(leg);
+        if (!pelvis.getLegJoints().isEmpty()) {
+            Leg leg = new Leg(pelvis, backPart);
+            pelvis.addChild(leg);
             generatedParts.add(leg);
         } else {
             System.out.println("No legs generated");
         }
 
-        Tuple2f tailInterval = new Point2f(pelvic.getTailJoint().getSpinePosition(), 1f);
+        Tuple2f tailInterval = new Point2f(pelvis.getTailJoint().getSpinePosition(), 1f);
         int tailVertebraCount = 5 + (new Random()).nextInt(16);
         List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, tailVertebraCount, vertebraScale, Optional.empty(), pelvic, pelvic.getTailJoint());
+                tailInterval, tailVertebraCount, vertebraScale, Optional.empty(), pelvis, pelvis.getTailJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
     }
 
-    private Pelvic generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
+    private Pelvis generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
         BoundingBox boundingBox = new BoundingBox(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
         parent.getJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
 
         TransformationMatrix transform = parent.getJoint().calculateChildTransform(boundingBox);
-        transform.translate(Pelvic.getLocalTranslationFromJoint(boundingBox));
+        transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 
-        Pelvic pelvic = new Pelvic(transform, boundingBox, parent, backPart, intervalAndLength.get(1),
+        Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart, intervalAndLength.get(1),
                 backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0));
-        parent.addChild(pelvic);
-        return pelvic;
+        parent.addChild(pelvis);
+        return pelvis;
     }
 
     /**

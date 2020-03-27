@@ -12,7 +12,7 @@ public class KneeLegJoint extends KneeJoint {
 
     public KneeLegJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         super(parent, position, min, max, extremityKind);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
+        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
             System.err.println("Invalid knee leg joint kind");
         }
         setCurrentAngle(max);

@@ -1,0 +1,18 @@
+3d-Modelle Quellen
+
+Wirbel: https://sketchfab.com/3d-models/vertebra-collection-of-thunthu-a343d51c7ee0497ab6b1bb93921d9b8d
+Rippe: https://sketchfab.com/3d-models/rib-right-2-labeled-f10f4b90bbba4ab8806b3c19883643e1
+
+Hüfte: https://sketchfab.com/3d-models/pelvis-53240ae515b644d989f0330a9280e5ac
+Oberschenkel: https://sketchfab.com/3d-models/human-femur-bone-0647ff9a00924f40a06e08361cea176c
+Unterschenkel (beide Teile): https://sketchfab.com/3d-models/tibia-and-fibula-58f24c2322814c17a614e77e18cf73ac
+Fuß
+
+Schulterblatt: https://sketchfab.com/3d-models/scapula-right-labeled-d373e25285d04312b5bb9a659a8ecb7d
+Oberarm: https://sketchfab.com/3d-models/humerus-37755d8efcc54feeaef37361169aa6e9
+Unterarm (beide Teile): https://sketchfab.com/3d-models/ulna-radius-of-a-fox-vcu-3d-1516-5b1fbad8a4714458b736e15249105709
+Hand
+
+Köpfe
+- Kardinal: https://sketchfab.com/3d-models/female-cardinal-skull-vcu-3d-1694-64aaa97ae5b04d538acd56d4b7e5f5d1
+- Okapi: https://sketchfab.com/3d-models/pig-skull-9dbd089c96184ee383c4b770cb98aaef
