@@ -7,6 +7,7 @@ import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvis;
 import skeleton.elements.terminal.RootVertebra;
+import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
 import util.CubicBezierCurve;
@@ -48,14 +49,18 @@ public class BackPartRule extends ReplacementRule {
 
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), pelvicIntervalAndLength.get(0));
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
-        Vector3f chestVertebraScale = new Vector3f(10f, 100f, 120f);
-        List<Vertebra> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 10, vertebraScale, Optional.of(chestVertebraScale),
-                rootVertebra, rootVertebra.getBackPartJoint());
+        List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
+                backBackInterval, 10, vertebraScale, rootVertebra, rootVertebra.getBackPartJoint());
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
-        Pelvis pelvis = generatePelvic(backPart, backBack.get(backBack.size()-1), pelvicScale, pelvicIntervalAndLength);
+        Vertebra pelvisParent; // last element of backBack could be rib
+        if (backBack.get(backBack.size()-1) instanceof  Vertebra) {
+            pelvisParent = (Vertebra) backBack.get(backBack.size()-1);
+        } else {
+            pelvisParent = (Vertebra) backBack.get(backBack.size()-2);
+        }
+        Pelvis pelvis = generatePelvic(backPart, pelvisParent, pelvicScale, pelvicIntervalAndLength);
         generatedParts.add(pelvis);
 
         if (!pelvis.getLegJoints().isEmpty()) {
@@ -68,8 +73,8 @@ public class BackPartRule extends ReplacementRule {
 
         Tuple2f tailInterval = new Point2f(pelvis.getTailJoint().getSpinePosition(), 1f);
         int tailVertebraCount = 5 + (new Random()).nextInt(16);
-        List<Vertebra> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, tailVertebraCount, vertebraScale, Optional.empty(), pelvis, pelvis.getTailJoint());
+        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
+                tailInterval, tailVertebraCount, vertebraScale, pelvis, pelvis.getTailJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
@@ -77,9 +82,9 @@ public class BackPartRule extends ReplacementRule {
 
     private Pelvis generatePelvic(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
         BoundingBox boundingBox = new BoundingBox(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
-        parent.getJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
+        parent.getSpineJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
 
-        TransformationMatrix transform = parent.getJoint().calculateChildTransform(boundingBox);
+        TransformationMatrix transform = parent.getSpineJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 
         Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart, intervalAndLength.get(1),

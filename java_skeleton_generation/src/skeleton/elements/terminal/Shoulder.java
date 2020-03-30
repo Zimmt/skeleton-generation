@@ -66,7 +66,7 @@ public class Shoulder extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-0.4f * boundingBox.getXLength(), 0f, 0f);
+        return new Vector3f(-0.3f * boundingBox.getXLength(), 0f, -0.7f * boundingBox.getZLength());
     }
 
     /**

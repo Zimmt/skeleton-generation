@@ -4,7 +4,9 @@ import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.nonterminal.ShoulderGirdle;
+import skeleton.elements.terminal.Rib;
 import skeleton.elements.terminal.Shoulder;
+import skeleton.elements.terminal.ShoulderVertebra;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -35,7 +37,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         ShoulderGirdle shoulderGirdle = (ShoulderGirdle) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(50f, 30f, 50f));
+        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(50f, 20f, 50f));
         generatedParts.add(shoulder);
 
         if (!shoulder.getJoints().isEmpty()) {
@@ -51,7 +53,12 @@ public class ShoulderGirdleRule extends ReplacementRule {
 
     private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f scale) {
         BoundingBox boundingBox = new BoundingBox(scale);
-        TransformationMatrix transform = shoulderGirdle.getParent().getShoulderJoint().calculateChildTransform(boundingBox);
+        TransformationMatrix transform;
+        if (shoulderGirdle.getParent() instanceof ShoulderVertebra) {
+            transform = ((ShoulderVertebra) shoulderGirdle.getParent()).getShoulderJoint().calculateChildTransform(boundingBox);
+        } else {
+            transform = ((Rib) shoulderGirdle.getParent()).getShoulderJoint().calculateChildTransform(boundingBox);
+        }
         transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
         int startingPosition = shoulderGirdle.isSecondShoulderGirdle() ? 2 : 1;
         ExtremityKind[] extremityKinds = shoulderGirdle.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(startingPosition);

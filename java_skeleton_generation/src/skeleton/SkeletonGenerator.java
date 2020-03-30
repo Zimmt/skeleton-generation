@@ -5,7 +5,7 @@ import skeleton.elements.joints.Joint;
 import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.nonterminal.WholeBody;
-import skeleton.elements.terminal.RibVertebra;
+import skeleton.elements.terminal.Rib;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
@@ -244,22 +244,19 @@ public class SkeletonGenerator {
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
      * @param boundingBoxScale y- and z-scale is used, x-scale is replaced by the maximum space available
-     * @param chestBoundingBoxScale same as for boundingBoxScale
      * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
-    public List<Vertebra> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
-                                                      Vector3f boundingBoxScale, Optional<Vector3f> chestBoundingBoxScale,
-                                                      TerminalElement firstParent, Joint firstParentJoint) {
+    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
+                                                      Vector3f boundingBoxScale, TerminalElement firstParent, Joint firstParentJoint) {
 
-        ArrayList<Vertebra> generatedParts = new ArrayList<>();
+        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
             System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
             return generatedParts;
         }
 
         BoundingBox boundingBox = new BoundingBox(boundingBoxScale);
-        BoundingBox chestBoundingBox = new BoundingBox(chestBoundingBoxScale.orElse(boundingBoxScale));
 
         float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;
@@ -277,48 +274,53 @@ public class SkeletonGenerator {
                     ((SpineOrientedJoint) firstParentJoint).setChildSpineEndPosition(childSpineEndPosition, spinePart);
                 }
             } else {
-                spinePosition = parent.getJoint().getSpinePosition();
+                spinePosition = parent.getSpineJoint().getSpinePosition();
                 if (i == vertebraCount-1) {
                     childSpineEndPosition = interval.y;
                 } else {
                     childSpineEndPosition = spinePosition + oneIntervalStep;
                 }
-                parent.getJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
+                parent.getSpineJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
             }
 
-            boolean rib = spinePart == SpinePart.BACK && getSkeletonMetaData().getSpine().isInChestInterval(spinePosition);
-            BoundingBox childBox;
-            if (rib) {
-                childBox = chestBoundingBox.cloneBox();
-            } else {
-                childBox = boundingBox.cloneBox();
-            }
+            BoundingBox childBox = boundingBox.cloneBox();
             Point2f startPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(spinePosition);
             Point2f endPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(childSpineEndPosition);
             childBox.setXLength((float) Math.sqrt(
                     Math.pow(startPosition.x - endPosition.x, 2) +
                     Math.pow(startPosition.y - endPosition.y, 2)));
 
-            Joint joint = parent == null ? firstParentJoint : parent.getJoint();
+            Joint joint = parent == null ? firstParentJoint : parent.getSpineJoint();
             TransformationMatrix transform = joint.calculateChildTransform(childBox);
-            if (rib) {
-                transform.translate(RibVertebra.getLocalTranslationFromJoint(childBox, boundingBox));
-            } else {
-                transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
-            }
+            transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
 
             Vertebra child;
             TerminalElement parentElement = parent == null ? firstParent : parent;
-            if (rib) {
-                child = new RibVertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
-            } else {
-                child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
-            }
+            child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
             parentElement.addChild(child);
             generatedParts.add(child);
+
+            boolean rib = spinePart == SpinePart.BACK && getSkeletonMetaData().getSpine().isInChestInterval(spinePosition);
+            if (rib) {
+                generatedParts.add(generateRibForVertebra(ancestor, child));
+            }
+
             parent = child;
         }
 
         return generatedParts;
+    }
+
+    private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra) {
+        BoundingBox boundingBox = new BoundingBox(vertebra.getBoundingBox());
+        boundingBox.scale(new Vector3f(1f, 10f, 4f));
+
+        TransformationMatrix transform = vertebra.getRibJoint().calculateChildTransform(boundingBox);
+        transform.translate(Rib.getLocalTranslationFromJoint(boundingBox));
+
+        Rib rib = new Rib(transform, boundingBox, vertebra, ancestor);
+        vertebra.addChild(rib);
+
+        return rib;
     }
 }

@@ -23,6 +23,12 @@ public class BoundingBox {
         this.zCorner = new Vector3f(0f, 0f, scale.z);
     }
 
+    public BoundingBox(BoundingBox boundingBox) {
+        this.xCorner = new Vector3f(boundingBox.xCorner);
+        this.yCorner = new Vector3f(boundingBox.yCorner);
+        this.zCorner = new Vector3f(boundingBox.zCorner);
+    }
+
     public static BoundingBox defaultBox() {
         return new BoundingBox(
                 new Vector3f(1f, 0f, 0f),

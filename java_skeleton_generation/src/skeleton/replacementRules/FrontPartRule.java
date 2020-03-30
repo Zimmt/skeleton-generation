@@ -15,7 +15,10 @@ import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Generates
@@ -44,10 +47,8 @@ public class FrontPartRule extends ReplacementRule {
 
         Tuple2f frontBackInterval = new Point2f(frontPart.getParent().getFrontPartJoint().getSpinePosition(), 0f);
         Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
-        Vector3f chestVertebraScale = new Vector3f(10f, 100f, 120f);
-        List<Vertebra> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
-                frontBackInterval, 15, vertebraScale, Optional.of(chestVertebraScale),
-                frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
+        List<TerminalElement> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
+                frontBackInterval, 15, vertebraScale, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
         ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, frontBack, frontBack.size()-1, false);
@@ -59,8 +60,9 @@ public class FrontPartRule extends ReplacementRule {
         if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasWings()) {
             neckVertebraCount = 10 + (new Random()).nextInt(21);
         }
-        List<Vertebra> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
-                neckInterval, neckVertebraCount, vertebraScale, Optional.empty(), shoulderGirdle.getParent(), shoulderGirdle.getParent().getJoint());
+        Vertebra neckParent = getNeckParent(frontBack);
+        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
+                neckInterval, neckVertebraCount, vertebraScale, neckParent, neckParent.getSpineJoint());
 
         if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasSecondShoulder()) {
             ShoulderGirdle secondShoulderGirdle = generateShoulderGirdle(frontPart, neck, neck.size()-3, true); // todo are there always enough vertebrae on neck?
@@ -74,15 +76,32 @@ public class FrontPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<Vertebra> vertebrae, int shoulderVertebraPosition, boolean isSecondShoulderGirdle) {
-        Vertebra toBeShoulderVertebra = vertebrae.get(shoulderVertebraPosition);
-        ShoulderVertebra shoulderVertebra = new ShoulderVertebra(toBeShoulderVertebra);
-        toBeShoulderVertebra.getParent().replaceChild(toBeShoulderVertebra, shoulderVertebra);
-        vertebrae.set(shoulderVertebraPosition, shoulderVertebra);
+    /**
+     * @param vertebrae contain vertebrae but also can contain ribs
+     */
+    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<TerminalElement> vertebrae, int shoulderVertebraIndex, boolean isSecondShoulderGirdle) {
+        TerminalElement parent = vertebrae.get(shoulderVertebraIndex);
 
-        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(shoulderVertebra, frontPart, isSecondShoulderGirdle);
-        shoulderVertebra.addChild(shoulderGirdle);
+        if (vertebrae.get(shoulderVertebraIndex) instanceof Vertebra) { // vertebra has no rib, vertebra needs to be shoulder vertebra
+            Vertebra toBeShoulderVertebra = (Vertebra) vertebrae.get(shoulderVertebraIndex);
+            ShoulderVertebra shoulderVertebra = new ShoulderVertebra(toBeShoulderVertebra);
+            toBeShoulderVertebra.getParent().replaceChild(toBeShoulderVertebra, shoulderVertebra);
+            vertebrae.set(shoulderVertebraIndex, shoulderVertebra);
+
+            parent = shoulderVertebra;
+        }
+
+        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(parent, frontPart, isSecondShoulderGirdle);
+        parent.addChild(shoulderGirdle);
         return shoulderGirdle;
+    }
+
+    private Vertebra getNeckParent(List<TerminalElement> frontBackVertebrae) {
+        if (frontBackVertebrae.get(frontBackVertebrae.size()-1) instanceof Vertebra) {
+            return (Vertebra) frontBackVertebrae.get(frontBackVertebrae.size()-1);
+        } else {
+            return (Vertebra) frontBackVertebrae.get(frontBackVertebrae.size()-2);
+        }
     }
 
     private Head generateHead(FrontPart frontPart, Vector3f boundingBoxScale, TerminalElement parent) {

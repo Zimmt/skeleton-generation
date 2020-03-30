@@ -15,7 +15,7 @@ public class ShoulderVertebra extends Vertebra {
     DummyJoint shoulderJoint;
 
     public ShoulderVertebra(Vertebra vertebra) {
-        super(vertebra.getTransform(), vertebra.getBoundingBox(), vertebra.getParent(), vertebra.getAncestor(), vertebra.getJoint());
+        super(vertebra.getTransform(), vertebra.getBoundingBox(), vertebra.getParent(), vertebra.getAncestor(), vertebra.getSpineJoint());
         this.kind = vertebra.getKind();
         this.shoulderJoint = new DummyJoint(this, ShoulderVertebra.getShoulderJointPosition(vertebra.getBoundingBox()));
     }
