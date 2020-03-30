@@ -66,7 +66,7 @@ public class Shoulder extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength()*3/4f, -boundingBox.getZLength());
+        return new Vector3f(-0.4f * boundingBox.getXLength(), 0f, 0f);
     }
 
     /**
@@ -92,10 +92,6 @@ public class Shoulder extends TerminalElement {
     }
 
     private static Point3f getJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder, float relativeXPosition) {
-        float yValue = 0f;
-        if (extremityKind == ExtremityKind.WING || (secondShoulder && extremityKind == ExtremityKind.FIN)) {
-            yValue = childBoundingBox.getYLength();
-        }
-        return new Point3f(childBoundingBox.getXLength()*relativeXPosition, yValue, childBoundingBox.getZLength()/2f);
+        return new Point3f(0.2f * childBoundingBox.getXLength(), 0.4f * childBoundingBox.getYLength(), 0.8f * childBoundingBox.getZLength());
     }
 }

@@ -39,7 +39,7 @@ public class Main {
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         boolean allCubes = false;
-        Integer userInputFlooredLegs = null;
+        Integer userInputFlooredLegs = 2;
         Integer userInputWings = null;
         Integer userInputArms = null;
         Integer userInputFins = null;

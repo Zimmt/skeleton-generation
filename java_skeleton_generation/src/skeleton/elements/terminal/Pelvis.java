@@ -62,14 +62,14 @@ public class Pelvis extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(0f, -boundingBox.getYLength()/2f, -boundingBox.getZLength()/2f);
+        return new Vector3f(0f, - 0.6f * boundingBox.getYLength(), -boundingBox.getZLength()/2f);
     }
 
     /**
      * @return the relative position for the joint between this element and the tail
      */
     private static Point3f getTailJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength(), boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
+        return new Point3f(boundingBox.getXLength(), 0.7f * boundingBox.getYLength(), boundingBox.getZLength()/2f);
     }
 
     /**
@@ -95,10 +95,6 @@ public class Pelvis extends TerminalElement {
     }
 
     private static Point3f getLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, float relativeXPosition) {
-        float yValue = 0f;
-        if (extremityKind == ExtremityKind.FIN) {
-            yValue = childBoundingBox.getYLength();
-        }
-        return new Point3f(childBoundingBox.getXLength()*relativeXPosition, yValue, childBoundingBox.getZLength()/4f);
+        return new Point3f(0.4f * childBoundingBox.getXLength(), 0.1f * childBoundingBox.getYLength(), 0.2f * childBoundingBox.getZLength());
     }
 }

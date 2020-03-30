@@ -49,13 +49,13 @@ public class UpperArm extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
+        return new Vector3f(-0.6f * boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
     }
 
     /**
      * @return the relative position for the joint between this element and it's child
      */
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f,0f, boundingBox.getZLength()/2f);
+        return new Point3f(boundingBox.getXLength()/2f,0f, 0.3f * boundingBox.getZLength());
     }
 }
