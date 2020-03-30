@@ -92,6 +92,6 @@ public class Shoulder extends TerminalElement {
     }
 
     private static Point3f getJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, boolean secondShoulder, float relativeXPosition) {
-        return new Point3f(0.2f * childBoundingBox.getXLength(), 0.4f * childBoundingBox.getYLength(), 0.8f * childBoundingBox.getZLength());
+        return new Point3f(0.2f * childBoundingBox.getXLength(), 0.4f * childBoundingBox.getYLength(), 0.2f * childBoundingBox.getZLength());
     }
 }
