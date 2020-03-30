@@ -39,6 +39,6 @@ public class ShoulderVertebra extends Vertebra {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getShoulderJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength(), 0f);
+        return new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength(), -3f * boundingBox.getZLength()); // todo what distance in z dir?
     }
 }
