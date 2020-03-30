@@ -68,6 +68,6 @@ public class Vertebra extends TerminalElement {
     }
 
     public static Point3f getRibJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength(), 0f);
+        return new Point3f(boundingBox.getXLength()/2f, 0.6f * boundingBox.getYLength(), 0.1f * boundingBox.getZLength());
     }
 }

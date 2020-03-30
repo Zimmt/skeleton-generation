@@ -51,10 +51,10 @@ public class Rib extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-0.2f * boundingBox.getXLength(), -0.8f * boundingBox.getYLength(), -0.9f * boundingBox.getZLength());
+        return new Vector3f(-0.2f * boundingBox.getXLength(), -0.9f * boundingBox.getYLength(), -boundingBox.getZLength());
     }
 
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(0.3f * boundingBox.getXLength(), boundingBox.getYLength(), 0.3f * boundingBox.getZLength());
+        return new Point3f(0.1f * boundingBox.getXLength(), boundingBox.getYLength(), 0.3f * boundingBox.getZLength());
     }
 }
