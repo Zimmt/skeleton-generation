@@ -56,6 +56,6 @@ public class LowerArm extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(0.2f * boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+        return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
     }
 }

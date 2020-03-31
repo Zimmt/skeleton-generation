@@ -21,7 +21,15 @@ public class Foot extends TerminalElement {
     }
 
     public String getKind() {
-        return kind;
+        Vector3f localY = new Vector3f(0f, 1f, 0f);
+        calculateWorldTransform().applyOnVector(localY);
+        localY.z = 0f;
+        float angle = localY.angle(new Vector3f(1f, 0f, 0f));
+        if (angle < Math.toRadians(45)) {
+            return "hand";
+        } else {
+            return "hoof";
+        }
     }
 
     public boolean canBeMirrored() { return true; }

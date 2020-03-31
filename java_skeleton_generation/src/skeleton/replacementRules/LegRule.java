@@ -60,9 +60,9 @@ public class LegRule extends ReplacementRule {
             generatedParts.add(shin);
 
             Vector3f footScale = new Vector3f(
-                    0.8f * shin.getBoundingBox().getXLength(),
+                    shin.getBoundingBox().getXLength(),
                     extremityData.getLengthFoot(),
-                    2f * shin.getBoundingBox().getZLength());
+                    shin.getBoundingBox().getZLength());
             Foot foot = generateFoot(footScale, leg, shin);
             generatedParts.add(foot);
 

@@ -60,9 +60,9 @@ public class ArmRule extends ReplacementRule {
             generatedParts.add(lowerArm);
 
             Vector3f handScale = new Vector3f(
-                    0.8f * lowerArm.getBoundingBox().getXLength(),
+                    lowerArm.getBoundingBox().getXLength(),
                     extremityData.getLengthHand(),
-                    2f * lowerArm.getBoundingBox().getZLength());
+                    lowerArm.getBoundingBox().getZLength());
             Hand hand = generateHand(handScale, arm, lowerArm);
             generatedParts.add(hand);
 
