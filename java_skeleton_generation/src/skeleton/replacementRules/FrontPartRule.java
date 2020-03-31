@@ -1,13 +1,11 @@
 package skeleton.replacementRules;
 
 import skeleton.SpinePart;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.ShoulderGirdle;
-import skeleton.elements.terminal.Head;
-import skeleton.elements.terminal.ShoulderVertebra;
-import skeleton.elements.terminal.TerminalElement;
-import skeleton.elements.terminal.Vertebra;
+import skeleton.elements.terminal.*;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -51,8 +49,8 @@ public class FrontPartRule extends ReplacementRule {
                 frontBackInterval, 15, vertebraScale, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
-        ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, frontBack, frontBack.size()-1, false);
-        generatedParts.add(shoulderGirdle);
+        List<ShoulderGirdle> shoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, frontBack, frontBack.size()-1, false);
+        generatedParts.addAll(shoulderGirdles);
         generatedParts.addAll(frontBack); // shoulder vertebra is changed, so it has to be set after generating the shoulder girdle
 
         Tuple2f neckInterval = new Point2f(1f, 0f);
@@ -64,9 +62,9 @@ public class FrontPartRule extends ReplacementRule {
         List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
                 neckInterval, neckVertebraCount, vertebraScale, neckParent, neckParent.getSpineJoint());
 
-        if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasSecondShoulder()) {
-            ShoulderGirdle secondShoulderGirdle = generateShoulderGirdle(frontPart, neck, neck.size()-3, true); // todo are there always enough vertebrae on neck?
-            generatedParts.add(secondShoulderGirdle);
+        if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasShoulderOnNeck()) {
+            List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, neck, neck.size()-3, true);
+            generatedParts.addAll(secondShoulderGirdles);
         }
         generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
 
@@ -76,13 +74,38 @@ public class FrontPartRule extends ReplacementRule {
         return generatedParts;
     }
 
+    private List<ShoulderGirdle> generateShoulderGirdlesOnOnePosition(FrontPart frontPart, List<TerminalElement> vertebrae, int firstVertebraIndex, boolean onNeck) {
+        List<ShoulderGirdle> shoulderGirdles = new ArrayList<>(2);
+        ExtremityKind[] extremityKinds = frontPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(1);
+        if (extremityKinds.length > 0) {
+            shoulderGirdles.add(generateShoulderGirdle(frontPart, vertebrae, firstVertebraIndex, extremityKinds[0], onNeck));
+        }
+        if (extremityKinds.length > 1) { // find third vertebra or rib of third vertebra
+            int foundVertebrae = 0;
+            int i = firstVertebraIndex-1;
+            for (; i >= 0 && foundVertebrae < 3; i--) {
+                if (vertebrae.get(i) instanceof Vertebra) {
+                    foundVertebrae++;
+                }
+            }
+            if (vertebrae.get(i+1) instanceof Rib) {
+                i++;
+            }
+            ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, vertebrae, i, extremityKinds[1], onNeck);
+            if (shoulderGirdle != null) {
+                shoulderGirdles.add(shoulderGirdle);
+            }
+        }
+        return shoulderGirdles;
+    }
+
     /**
      * @param vertebrae contain vertebrae but also can contain ribs
      */
-    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<TerminalElement> vertebrae, int shoulderVertebraIndex, boolean isSecondShoulderGirdle) {
+    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<TerminalElement> vertebrae, int shoulderVertebraIndex, ExtremityKind extremityKind, boolean onNeck) {
         TerminalElement parent = vertebrae.get(shoulderVertebraIndex);
 
-        if (vertebrae.get(shoulderVertebraIndex) instanceof Vertebra) { // vertebra has no rib, vertebra needs to be shoulder vertebra
+        if (parent instanceof Vertebra) { // vertebra has no rib, vertebra needs to be shoulder vertebra
             Vertebra toBeShoulderVertebra = (Vertebra) vertebrae.get(shoulderVertebraIndex);
             ShoulderVertebra shoulderVertebra = new ShoulderVertebra(toBeShoulderVertebra);
             toBeShoulderVertebra.getParent().replaceChild(toBeShoulderVertebra, shoulderVertebra);
@@ -91,7 +114,7 @@ public class FrontPartRule extends ReplacementRule {
             parent = shoulderVertebra;
         }
 
-        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(parent, frontPart, isSecondShoulderGirdle);
+        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(parent, frontPart, extremityKind, onNeck);
         parent.addChild(shoulderGirdle);
         return shoulderGirdle;
     }

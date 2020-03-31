@@ -42,56 +42,55 @@ public class ArmRule extends ReplacementRule {
         ExtremityData extremityData = arm.getGenerator().getSkeletonMetaData().getExtremities();
         Shoulder shoulder = arm.getParent();
 
-        for (ShoulderJoint shoulderJoint : shoulder.getJoints()) {
-            ExtremityKind extremityKind = shoulderJoint.getExtremityKind();
+        ExtremityKind extremityKind = shoulder.getJoint().getExtremityKind();
 
-            Vector3f upperArmScale = new Vector3f(
-                    0.4f * shoulder.getBoundingBox().getXLength(),
-                    extremityData.getLengthUpperArm(),
-                    0.3f * shoulder.getBoundingBox().getZLength());
-            UpperArm upperArm = generateUpperArm(upperArmScale, arm, shoulderJoint, extremityKind);
-            generatedParts.add(upperArm);
+        Vector3f upperArmScale = new Vector3f(
+                0.4f * shoulder.getBoundingBox().getXLength(),
+                extremityData.getLengthUpperArm(),
+                0.3f * shoulder.getBoundingBox().getZLength());
+        UpperArm upperArm = generateUpperArm(upperArmScale, arm, shoulder.getJoint(), extremityKind);
+        generatedParts.add(upperArm);
 
-            Vector3f lowerArmScale = new Vector3f(
-                    0.8f * upperArm.getBoundingBox().getXLength(),
-                    extremityData.getLengthLowerArm(),
-                    0.8f * upperArm.getBoundingBox().getZLength());
-            LowerArm lowerArm = generateLowerArm(lowerArmScale, arm, upperArm, extremityKind);
-            generatedParts.add(lowerArm);
+        Vector3f lowerArmScale = new Vector3f(
+                0.8f * upperArm.getBoundingBox().getXLength(),
+                extremityData.getLengthLowerArm(),
+                0.8f * upperArm.getBoundingBox().getZLength());
+        LowerArm lowerArm = generateLowerArm(lowerArmScale, arm, upperArm, extremityKind);
+        generatedParts.add(lowerArm);
 
-            Vector3f handScale = new Vector3f(
-                    lowerArm.getBoundingBox().getXLength(),
-                    extremityData.getLengthHand(),
-                    lowerArm.getBoundingBox().getZLength());
-            Hand hand = generateHand(handScale, arm, lowerArm);
-            generatedParts.add(hand);
+        Vector3f handScale = new Vector3f(
+                lowerArm.getBoundingBox().getXLength(),
+                extremityData.getLengthHand(),
+                lowerArm.getBoundingBox().getZLength());
+        Hand hand = generateHand(handScale, arm, lowerArm);
+        generatedParts.add(hand);
 
-            ExtremityPositioning extremityPositioning = new ExtremityPositioning(
-                    shoulderJoint, upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
+        ExtremityPositioning extremityPositioning = new ExtremityPositioning(
+                shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
 
-            switch (extremityKind) {
-                case LEG:
-                    boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-                    System.out.print("floored wrist: " + flooredWrist + "... ");
+        switch (extremityKind) {
+            case LEG:
+                boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
+                System.out.print("floored wrist: " + flooredWrist + "... ");
 
-                    // other extremities do the same
-                    upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
+                // other extremities do the same
+                upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
 
-                    extremityPositioning.findFlooredPosition(flooredWrist);
-                    break;
-                case ARM:
-                    extremityPositioning.findArmPosition();
-                    break;
-                case WING:
-                    extremityPositioning.findWingPosition();
-                    break;
-                case FIN:
-                    extremityPositioning.findFloatingPosition();
-                    break;
-                default:
-                    System.err.println("Unknown shoulder joint type");
-            }
+                extremityPositioning.findFlooredPosition(flooredWrist);
+                break;
+            case ARM:
+                extremityPositioning.findArmPosition();
+                break;
+            case WING:
+                extremityPositioning.findWingPosition();
+                break;
+            case FIN:
+                extremityPositioning.findFloatingPosition();
+                break;
+            default:
+                System.err.println("Unknown shoulder joint type");
         }
+
 
         System.out.println("...finished.");
 

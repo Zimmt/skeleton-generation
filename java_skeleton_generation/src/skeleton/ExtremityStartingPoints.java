@@ -25,7 +25,7 @@ public class ExtremityStartingPoints {
         }
     }
 
-    public boolean hasSecondShoulder() {
+    public boolean hasShoulderOnNeck() {
         return extremityKindsForStartingPoints.size() > 2;
     }
 

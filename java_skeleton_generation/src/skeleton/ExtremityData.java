@@ -87,8 +87,8 @@ public class ExtremityData {
         this.flooredAnkleWristProbability = probability ? 1f : 0f;
     }
 
-    public boolean hasSecondShoulder() {
-        return extremityStartingPoints.hasSecondShoulder();
+    public boolean hasShoulderOnNeck() {
+        return extremityStartingPoints.hasShoulderOnNeck();
     }
 
     public boolean hasWings() {
