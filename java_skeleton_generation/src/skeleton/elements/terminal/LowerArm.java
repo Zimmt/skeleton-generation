@@ -20,8 +20,9 @@ public class LowerArm extends TerminalElement {
         this.joint = WristJoint.newSpecificWristJoint(this, LowerArm.getJointPosition(boundingBox), extremityKind);
     }
 
-    private LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, boolean isMirroredVersion) {
+    private LowerArm(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind extremityKind, boolean isMirroredVersion) {
         super(transform, boundingBox, parent, ancestor);
+        this.joint = WristJoint.newSpecificWristJoint(this, LowerArm.getJointPosition(boundingBox), extremityKind);
         super.isMirroredVersion = isMirroredVersion;
     }
 
@@ -42,7 +43,7 @@ public class LowerArm extends TerminalElement {
         return new LowerArm(
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
-                mirroredParent.orElse(parent), this.getAncestor(), true);
+                mirroredParent.orElse(parent), this.getAncestor(), joint.getExtremityKind(), true);
     }
 
     /**

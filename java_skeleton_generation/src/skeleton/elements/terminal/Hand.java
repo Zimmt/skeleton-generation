@@ -1,5 +1,6 @@
 package skeleton.elements.terminal;
 
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
 import util.TransformationMatrix;
@@ -21,14 +22,19 @@ public class Hand extends TerminalElement {
     }
 
     public String getKind() {
-        Vector3f localY = new Vector3f(0f, 1f, 0f);
-        calculateWorldTransform().applyOnVector(localY);
-        localY.z = 0f;
-        float angle = localY.angle(new Vector3f(1f, 0f, 0f));
-        if (angle < Math.toRadians(45)) {
-            return kind;
+        if (getParent().getJoint().getExtremityKind() == ExtremityKind.WING) {
+            return "wing_hand";
         } else {
-            return "hoof";
+            Vector3f localY = new Vector3f(0f, 1f, 0f);
+            calculateWorldTransform().applyOnVector(localY);
+            localY.z = 0f;
+            float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
+            float angle2 = localY.angle(new Vector3f(-1f, 0f, 0f));
+            if (angle1 < Math.toRadians(45) || angle2 < Math.toRadians(45)) {
+                return kind;
+            } else {
+                return "hoof";
+            }
         }
     }
 
@@ -42,6 +48,16 @@ public class Hand extends TerminalElement {
                 calculateMirroredTransform(parent),
                 this.getBoundingBox().cloneBox(), // coordinate system is reflected so box must not be reflected!
                 mirroredParent.orElse(parent), this.getAncestor(), true);
+    }
+
+    @Override
+    public LowerArm getParent() {
+        if (!(super.getParent() instanceof  LowerArm)) {
+            System.err.println("Parent of hand is not lower arm?!");
+            return null;
+        } else {
+            return (LowerArm) super.getParent();
+        }
     }
 
     /**

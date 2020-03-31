@@ -19,3 +19,5 @@ Köpfe
 - Okapi: https://sketchfab.com/3d-models/pig-skull-9dbd089c96184ee383c4b770cb98aaef
 
 Pferd komplett: https://sketchfab.com/3d-models/horse-skeleton-eaca504567604e879b8ab2cf2763025e
+Pelikan komplett: https://sketchfab.com/3d-models/imnh-r-1901-white-pelican-1f4eb18df7e446749e402acd1544c787 (noDerivs)
+

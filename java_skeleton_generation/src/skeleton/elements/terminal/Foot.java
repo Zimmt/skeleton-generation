@@ -24,8 +24,9 @@ public class Foot extends TerminalElement {
         Vector3f localY = new Vector3f(0f, 1f, 0f);
         calculateWorldTransform().applyOnVector(localY);
         localY.z = 0f;
-        float angle = localY.angle(new Vector3f(1f, 0f, 0f));
-        if (angle < Math.toRadians(45)) {
+        float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
+        float angle2 = localY.angle(new Vector3f(-1f, 0f, 0f));
+        if (angle1 < Math.toRadians(45) || angle2 < Math.toRadians(45)) {
             return "hand";
         } else {
             return "hoof";

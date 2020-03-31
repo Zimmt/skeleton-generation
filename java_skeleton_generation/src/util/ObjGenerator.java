@@ -7,7 +7,9 @@ import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
