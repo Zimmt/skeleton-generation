@@ -29,15 +29,19 @@ public class Pelvis extends TerminalElement {
         super(transform, boundingBox, parent, ancestor);
         this.tailJoint = new SpineOrientedJoint(this, Pelvis.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
         if (extremityKinds.length == 1) {
-            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getOnlyLegJointPosition(boundingBox, extremityKinds[0]), extremityKinds[0]);
+            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getOnlyLegJointPosition(boundingBox), extremityKinds[0]);
         } else if (extremityKinds.length == 2) {
-            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getFirstLegJointPosition(boundingBox, extremityKinds[0]), extremityKinds[0]);
-            this.secondJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getSecondLegJointPosition(boundingBox, extremityKinds[1]), extremityKinds[1]);
+            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getFirstLegJointPosition(boundingBox), extremityKinds[0]);
+            this.secondJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getSecondLegJointPosition(boundingBox), extremityKinds[1]);
         }
     }
 
     public String getKind() {
-        return kind;
+        if (secondJoint != null) {
+            return kind + "_double_joint";
+        } else {
+            return kind;
+        }
     }
 
     public SpineOrientedJoint getTailJoint() {
@@ -75,26 +79,26 @@ public class Pelvis extends TerminalElement {
     /**
      * @return the relative positions for the joints between this element and it's first child
      */
-    private static Point3f getFirstLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
-        return getLegJointPosition(childBoundingBox, extremityKind,1f/4f);
+    private static Point3f getFirstLegJointPosition(BoundingBox childBoundingBox) {
+        return getLegJointPosition(childBoundingBox, 0.3f);
     }
 
     /**
      * @return the relative position for the joint between this element and it's second child
      */
-    private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
-        return getLegJointPosition(childBoundingBox, extremityKind,3f/4f);
+    private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox) {
+        return getLegJointPosition(childBoundingBox, 0.7f);
     }
 
     /**
      * Only use this if the shoulder has only one child!
      * @return the relative position for the joint between this element and it's child
      */
-    private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind) {
-        return getLegJointPosition(childBoundingBox, extremityKind, 1f/2f);
+    private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox) {
+        return getLegJointPosition(childBoundingBox, 0.4f);
     }
 
-    private static Point3f getLegJointPosition(BoundingBox childBoundingBox, ExtremityKind extremityKind, float relativeXPosition) {
-        return new Point3f(0.4f * childBoundingBox.getXLength(), 0.1f * childBoundingBox.getYLength(), 0.2f * childBoundingBox.getZLength());
+    private static Point3f getLegJointPosition(BoundingBox childBoundingBox, float relativeXPos) {
+        return new Point3f(relativeXPos * childBoundingBox.getXLength(), 0.1f * childBoundingBox.getYLength(), 0.2f * childBoundingBox.getZLength());
     }
 }
