@@ -13,12 +13,11 @@ public class UserInput {
     private Double neckYLength;
     private Double tailXLength;
 
-    private Double pcaLegCondition = null;
-    private Double pcaWingCondtion = null;
+    private String head;
 
     private Random random = new Random();
 
-    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder, Double neckYLength, Double tailXLength) {
+    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
         if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
             System.err.println("Invalid user input for legs");
         }
@@ -51,6 +50,7 @@ public class UserInput {
         this.secondShoulder = secondShoulder;
         this.tailXLength = tailXLength;
         this.neckYLength = neckYLength;
+        this.head = head;
     }
 
     public boolean hasSecondShoulder() {
@@ -80,7 +80,7 @@ public class UserInput {
                 legCondition -= 1.0;
             }
         }
-        pcaLegCondition = legCondition;
+        Double pcaLegCondition = legCondition;
         System.out.println("PCA leg condition: " + pcaLegCondition);
         return legCondition;
     }
@@ -95,7 +95,7 @@ public class UserInput {
             double variance = random.nextDouble() - 0.5;
             wingCondition = Math.min(1.0, wings.doubleValue()) + variance;
         }
-        pcaWingCondtion = wingCondition;
+        Double pcaWingCondtion = wingCondition;
         System.out.println("PCA wing condition: " + pcaWingCondtion);
         return wingCondition;
     }
@@ -141,5 +141,9 @@ public class UserInput {
 
     public Double getTailXLength() {
         return tailXLength;
+    }
+
+    public String getHead() {
+        return head;
     }
 }

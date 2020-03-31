@@ -18,7 +18,7 @@ public class Head extends TerminalElement {
     }
 
     public String getKind() {
-        return kind;
+        return getGenerator().getSkeletonMetaData().getHeadKind();
     }
 
     public boolean canBeMirrored() { return false; }

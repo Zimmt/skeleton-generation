@@ -70,7 +70,7 @@ public class FrontPartRule extends ReplacementRule {
         }
         generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
 
-        Head head = generateHead(frontPart, new Vector3f(50f, 25f, 30f), neck.get(neck.size() - 1));
+        Head head = generateHead(frontPart, new Vector3f(100f, 40f, 60f), neck.get(neck.size() - 1));
         generatedParts.add(head);
 
         return generatedParts;

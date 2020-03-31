@@ -39,15 +39,16 @@ public class Main {
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         boolean allCubes = false;
-        Integer userInputFlooredLegs = 2;
+        Integer userInputFlooredLegs = null;
         Integer userInputWings = null;
         Integer userInputArms = null;
         Integer userInputFins = null;
         Boolean userInputSecondShoulder = null;
         Double userInputNeckYLength = null;
         Double userInputTailXLength = null;
+        String userInputHead = "horse_skull";
         UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins,
-                userInputSecondShoulder, userInputNeckYLength, userInputTailXLength);
+                userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
 
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),

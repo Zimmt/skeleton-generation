@@ -14,6 +14,7 @@ public class SkeletonMetaData {
     private SpineData spine;
     private ExtremityData extremities;
     private double weight;
+    private String headKind;
 
 
     public SkeletonMetaData(PcaDataPoint p, UserInput userInput) {
@@ -26,6 +27,7 @@ public class SkeletonMetaData {
                 p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
                 p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine, userInput);
         this.weight = p.getWeight();
+        this.headKind = userInput.getHead();
     }
 
     public SpineData getSpine() {
@@ -38,6 +40,10 @@ public class SkeletonMetaData {
 
     public double getWeight() {
         return weight;
+    }
+
+    public String getHeadKind() {
+        return headKind;
     }
 
     private SpineData preprocessSpine(List<Point2d> spinePoints) {

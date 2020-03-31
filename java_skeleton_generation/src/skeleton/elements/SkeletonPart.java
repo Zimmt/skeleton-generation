@@ -42,6 +42,10 @@ public abstract class SkeletonPart {
         this.id = this.generator.getNextBoneId();
     }
 
+    /**
+     * in non-terminal elements 'kind' is used to determine which replacement rule is applicable
+     * in terminal elements 'kind' is used to determine with which 3d model the bounding box will be replaced
+     */
     public abstract String getKind();
     public abstract boolean isTerminal();
     public abstract boolean canBeMirrored();
