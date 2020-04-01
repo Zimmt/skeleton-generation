@@ -313,7 +313,7 @@ public class SkeletonGenerator {
 
     private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra) {
         BoundingBox boundingBox = new BoundingBox(vertebra.getBoundingBox());
-        boundingBox.scale(new Vector3f(10f, 10f, 8f));
+        boundingBox.scale(new Vector3f(1f, 10f, 8f));
 
         TransformationMatrix transform = vertebra.getRibJoint().calculateChildTransform(boundingBox);
         transform.translate(Rib.getLocalTranslationFromJoint(boundingBox));
