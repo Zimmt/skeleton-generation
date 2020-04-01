@@ -110,6 +110,7 @@ public class ExtremityData {
         calculateAndSetLegsAndFloorHeight(spine);
         calculateAndSetWings();
         calculateAndSetArmsAndFins();
+        extremityStartingPoints.distributeExtremities();
     }
 
     private void setUserSetExtremities() {

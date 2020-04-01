@@ -48,6 +48,57 @@ public class ExtremityStartingPoints {
         }
     }
 
+    /**
+     * If there is an extremity girdle with no legs and one with more than one, the leg is moved.
+     * There should be no empty shoulder if there are enough extremities.
+     */
+    public void distributeExtremities() {
+        if (!(getFreeExtremityCountAtPosition(0) == 0 && getFreeExtremityCountAtPosition(1) == 0)) {
+            distributeLegs(); // otherwise there is no space to distribute
+        }
+        if (hasShoulderOnNeck() && !(getExtremityKindsForStartingPoint(2).length > 0 && getExtremityKindsForStartingPoint(1).length > 0)) {
+            if (getExtremityKindsForStartingPoint(2).length == 0 && getExtremityKindsForStartingPoint(1).length == 0) {
+                System.err.println("There is a shoulder on neck, but no extremities to put on either of the shoulders.");
+                return;
+            }
+            distributeShoulderExtremities();
+        }
+    }
+
+    /**
+     * If there is an extremity girdle with no legs and one with more than one, the leg is moved.
+     * (only for extremity girdles on back)
+     */
+    private void distributeLegs() {
+        int legCountPelvis = (int) Arrays.stream(getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.LEG).count();
+        int legCountShoulder = (int) Arrays.stream(getExtremityKindsForStartingPoint(1)).filter((e -> e == ExtremityKind.LEG)).count();
+        if (legCountPelvis > 1 && legCountShoulder == 0) {
+            removeKindAtPosition(ExtremityKind.LEG, 0);
+            setKindAtPosition(ExtremityKind.LEG, 1);
+        } else if (legCountPelvis == 0 && legCountShoulder > 1) {
+            removeKindAtPosition(ExtremityKind.LEG, 1);
+            setKindAtPosition(ExtremityKind.LEG, 0);
+        }
+    }
+
+    /**
+     * Move a random extremity from the shoulder with extremities to the one with none.
+     * If the shoulder with extremities has only one extremity and would be left empty then, nothing is done.
+     */
+    private void distributeShoulderExtremities() {
+        int moveFrom = getExtremityKindsForStartingPoint(2).length == 0 ? 1 : 2;
+        int moveTo = moveFrom == 1 ? 2 : 1;
+        if (getExtremityKindsForStartingPoint(moveFrom).length < 2) {
+            return; // if an extremity would be moved from here there would be none left
+        }
+
+        ExtremityKind[] kinds = getExtremityKindsForStartingPoint(moveFrom);
+        int i = random.nextInt(kinds.length);
+        ExtremityKind movedKind = kinds[i];
+        kinds[i] = null;
+        setKindAtPosition(movedKind, moveTo);
+    }
+
     public void setWings(int wingCount) {
         setKindAtPositions(ExtremityKind.WING, wingCount, possibleWingPositions);
     }
@@ -95,6 +146,16 @@ public class ExtremityStartingPoints {
             extremityKindsForStartingPoints.get(position)[1] = kind;
         } else {
             System.err.println("Cannot set kind in specified position!");
+        }
+    }
+
+    private void removeKindAtPosition(ExtremityKind kind, int position) {
+        if (extremityKindsForStartingPoints.get(position)[0] == kind) {
+            extremityKindsForStartingPoints.get(position)[0] = null;
+        } else if (extremityKindsForStartingPoints.get(position)[1] == kind) {
+            extremityKindsForStartingPoints.get(position)[1] = null;
+        } else {
+            System.err.println("Cannot remove kind in specified position!");
         }
     }
 
