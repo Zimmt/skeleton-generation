@@ -35,8 +35,9 @@ public abstract class ShoulderJoint extends XZAngleBasedJoint {
     public static ShoulderJoint newSpecificShoulderJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind, boolean secondShoulder) {
         switch (extremityKind) {
             case LEG:
+                return new ShoulderLegJoint(parent, position, secondShoulder);
             case ARM:
-                return new ShoulderArmJoint(parent, position, extremityKind, secondShoulder);
+                return new ShoulderArmJoint(parent, position, secondShoulder);
             case FIN:
                 return new ShoulderFinJoint(parent, position, secondShoulder);
             case WING:

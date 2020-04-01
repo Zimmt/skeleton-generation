@@ -10,15 +10,12 @@ public class WristArmJoint extends WristJoint {
     private static float min = (float) -Math.toRadians(170);
     private static float max = 0f;
 
-    public WristArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
-        super(parent, position, min, max, extremityKind);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
-            System.err.println("Invalid elbow arm joint kind");
-        }
+    public WristArmJoint(TerminalElement parent, Point3f position) {
+        super(parent, position, min, max, ExtremityKind.LEG);
         setCurrentAngle(min);
     }
 
     public WristArmJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new WristArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind());
+        return new WristArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
     }
 }

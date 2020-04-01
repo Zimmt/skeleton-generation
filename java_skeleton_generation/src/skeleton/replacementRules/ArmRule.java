@@ -68,28 +68,15 @@ public class ArmRule extends ReplacementRule {
         ExtremityPositioning extremityPositioning = new ExtremityPositioning(
                 shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
 
-        switch (extremityKind) {
-            case LEG:
-                boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-                System.out.print("floored wrist: " + flooredWrist + "... ");
+        if (extremityKind == ExtremityKind.LEG) {
+            boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
+            System.out.print("floored wrist: " + flooredWrist + "... ");
 
-                // other extremities do the same
-                upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
+            // other extremities do the same
+            upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
 
-                extremityPositioning.findFlooredPosition(flooredWrist);
-                break;
-            case ARM:
-                extremityPositioning.findArmPosition();
-                break;
-            case WING:
-                extremityPositioning.findWingPosition();
-                break;
-            case FIN:
-                extremityPositioning.findFloatingPosition();
-                break;
-            default:
-                System.err.println("Unknown shoulder joint type");
-        }
+            extremityPositioning.findFlooredPosition(flooredWrist);
+        } // else nothing needs to be done, position is determined by joints
 
 
         System.out.println("...finished.");

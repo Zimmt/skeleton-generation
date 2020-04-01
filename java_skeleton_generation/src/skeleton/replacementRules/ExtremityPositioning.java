@@ -36,68 +36,6 @@ public class ExtremityPositioning {
     }
 
     /**
-     * sets the following angles:
-     * - first joint: first angle 90°, second angle: like world x-axis
-     * - second joint: 0°
-     * - third joint: 0°
-     */
-    public void findFloatingPosition() {
-        firstJoint.setCurrentFirstAngle(0);
-
-        Vector3f localY = new Vector3f(0f, -1f, 0f);
-        firstBone.getParent().calculateWorldTransform().applyOnVector(localY);
-        Vector3f worldX = new Vector3f(1f, 0f, 0f);
-        float secondAngle = worldX.angle(localY); // turn direction is always positive
-
-        firstJoint.setCurrentSecondAngle(secondAngle);
-        firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
-
-        secondJoint.setCurrentAngle(0f);
-        secondBone.setTransform(secondJoint.calculateChildTransform(secondBone.getBoundingBox()));
-
-        thirdJoint.setCurrentAngle(0f);
-        thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
-    }
-
-    /**
-     * sets the following angles:
-     * - first joint: first angle 0°, second angle: like world y-axis
-     * - second joint: -90°
-     * - third joint: 0°
-     */
-    public void findArmPosition() {
-        firstJoint.setCurrentFirstAngle(0f);
-
-        Vector3f localY = new Vector3f(0f, -1f, 0f);
-        firstBone.getParent().calculateWorldTransform().applyOnVector(localY);
-        Vector3f worldY = new Vector3f(0f, -1f, 0f);
-        float secondAngle = worldY.angle(localY); // turn direction is (most probably) always positive (and if not the angle is small)
-
-        firstJoint.setCurrentSecondAngle(secondAngle);
-        firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
-
-        secondJoint.setCurrentAngle((float) -Math.toRadians(90));
-        secondBone.setTransform(secondJoint.calculateChildTransform(secondBone.getBoundingBox()));
-
-        thirdJoint.setCurrentAngle(0f);
-        thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
-    }
-
-    /**
-     * sets random angles
-     */
-    public void findWingPosition() {
-        firstJoint.setRandomAngles();
-        firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
-
-        secondJoint.setRandomAngle();
-        secondBone.setTransform(secondJoint.calculateChildTransform(secondBone.getBoundingBox()));
-
-        thirdJoint.setRandomAngle();
-        thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
-    }
-
-    /**
      * Adapts angles of joints until a position is reached where the floor is touched
      * ! initial position is determined by the inital angles set by joints
      * @param flooredSecondBone if end of second bone should touch the floor (otherwise the third bone will be used)

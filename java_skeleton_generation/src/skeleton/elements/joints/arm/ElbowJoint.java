@@ -31,8 +31,9 @@ public abstract class ElbowJoint extends OneAngleBasedJoint {
     public static ElbowJoint newSpecificElbowJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:
+                return new ElbowLegJoint(parent, position);
             case ARM:
-                return new ElbowArmJoint(parent, position, extremityKind);
+                return new ElbowArmJoint(parent, position);
             case FIN:
                 return new ElbowFinJoint(parent, position);
             case WING:

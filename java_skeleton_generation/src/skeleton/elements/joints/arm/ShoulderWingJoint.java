@@ -14,8 +14,7 @@ public class ShoulderWingJoint extends ShoulderJoint {
 
     public ShoulderWingJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
         super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, ExtremityKind.WING, secondShoulder);
-        setCurrentFirstAngle(minFrontAngle);
-        setCurrentSecondAngle(minSideAngle);
+        setRandomAngles();
     }
 
     public ShoulderWingJoint calculateMirroredJoint(TerminalElement mirroredParent) {

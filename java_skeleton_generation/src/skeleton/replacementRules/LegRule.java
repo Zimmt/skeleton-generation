@@ -77,9 +77,7 @@ public class LegRule extends ReplacementRule {
                 thigh.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle);
 
                 extremityPositioning.findFlooredPosition(flooredAnkle);
-            } else {
-                extremityPositioning.findFloatingPosition();
-            }
+            } // else it is a fin nothing needs to be done as position is determined by joints
         }
 
         System.out.println("...finished.");

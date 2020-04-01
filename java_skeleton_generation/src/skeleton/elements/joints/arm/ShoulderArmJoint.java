@@ -4,24 +4,31 @@ import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 public class ShoulderArmJoint extends ShoulderJoint {
+    private static float frontAngle = 0f;
+    // side angle is determined by orientation to world x axis, so range is not important
+    private static float minSideAngle = 0f;
+    private static float maxSideAngle = (float) Math.toRadians(360);
 
-    private static float minFrontAngle = 0f;
-    private static float maxFrontAngle = (float) Math.toRadians(45);
-    private static float minSideAngle = (float) -Math.toRadians(45); // needed for arms
-    private static float maxSideAngle = (float) Math.toRadians(170);
+    public ShoulderArmJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
+        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.ARM, secondShoulder);
 
-    public ShoulderArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind, boolean secondShoulder) {
-        super(parent, position, minFrontAngle, maxFrontAngle, minSideAngle, maxSideAngle, extremityKind, secondShoulder);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
-            System.err.println("Invalid shoulder arm joint kind");
-        }
-        setCurrentFirstAngle(minFrontAngle);
-        setCurrentSecondAngle(maxSideAngle);
+        setCurrentFirstAngle(frontAngle);
+        Vector3f localY = new Vector3f(0f, -1f, 0f);
+        parent.calculateWorldTransform().applyOnVector(localY);
+        Vector3f worldY = new Vector3f(0f, -1f, 0f);
+        float sideAngle = worldY.angle(localY); // turn direction is (most probably) always positive (and if not the angle is small)
+        setCurrentSecondAngle(sideAngle);
     }
 
-    public ShoulderArmJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ShoulderArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind(), secondShoulder);
+    @Override
+    public boolean movementPossible(boolean nearerToFloor, boolean second) {
+        return false;
+    }
+
+    public ShoulderFinJoint calculateMirroredJoint(TerminalElement mirroredParent) {
+        return new ShoulderFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), secondShoulder);
     }
 }

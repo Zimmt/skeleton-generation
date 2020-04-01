@@ -12,7 +12,7 @@ public class WristWingJoint extends WristJoint {
 
     public WristWingJoint(TerminalElement parent, Point3f position) {
         super(parent, position, min, max, ExtremityKind.WING);
-        setCurrentAngle(min);
+        setRandomAngle();
     }
 
     public WristWingJoint calculateMirroredJoint(TerminalElement mirroredParent) {

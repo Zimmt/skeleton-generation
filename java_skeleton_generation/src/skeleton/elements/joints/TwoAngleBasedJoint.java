@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class TwoAngleBasedJoint extends Joint {
+    private static float eps = 0.01f;
 
     float minFirstAngle;
     float maxFirstAngle;
@@ -23,7 +24,6 @@ public abstract class TwoAngleBasedJoint extends Joint {
 
     public TwoAngleBasedJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle) {
         super(parent, position);
-        float eps = 0.01f;
         if (minFirstAngle > maxFirstAngle || minSecondAngle > maxSecondAngle) {
             System.err.println("Invalid angle");
         }
@@ -110,7 +110,6 @@ public abstract class TwoAngleBasedJoint extends Joint {
         }
         float sign;
         if (turnDirections == null || turnDirections.get(1) == null) {
-            float eps = 0.1f;
             if (Math.abs(currentSecondAngle-minSecondAngle) < eps) {
                 sign = 1f;
             } else if (Math.abs(currentSecondAngle-maxSecondAngle) < eps) {
@@ -141,7 +140,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
     }
 
     public void setCurrentFirstAngle(float currentFirstAngle) {
-        if (currentFirstAngle < minFirstAngle || currentFirstAngle > maxFirstAngle) {
+        if (currentFirstAngle < minFirstAngle-eps || currentFirstAngle > maxFirstAngle+eps) {
             System.err.println("Invalid first angle to set");
         } else {
             this.lastFirstAngle = this.currentFirstAngle;
@@ -150,7 +149,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
     }
 
     public void setCurrentSecondAngle(float currentSecondAngle) {
-        if (currentSecondAngle < minSecondAngle || currentSecondAngle > maxSecondAngle) {
+        if (currentSecondAngle < minSecondAngle-eps || currentSecondAngle > maxSecondAngle+eps) {
             System.err.println("Invalid second angle to set");
         } else {
             this.lastSecondAngle = this.currentSecondAngle;

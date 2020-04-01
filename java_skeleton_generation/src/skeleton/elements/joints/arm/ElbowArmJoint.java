@@ -6,19 +6,19 @@ import skeleton.elements.terminal.TerminalElement;
 import javax.vecmath.Point3f;
 
 public class ElbowArmJoint extends ElbowJoint {
+    private static float angle = (float) -Math.toRadians(90);
 
-    private static float min = (float) -Math.toRadians(170);
-    private static float max =  0f;
-
-    public ElbowArmJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
-        super(parent, position, min, max, extremityKind);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
-            System.err.println("Invalid elbow arm joint kind");
-        }
-        setCurrentAngle(min);
+    public ElbowArmJoint(TerminalElement parent, Point3f position) {
+        super(parent, position, angle, angle, ExtremityKind.ARM);
+        setCurrentAngle(angle);
     }
 
-    public ElbowArmJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ElbowArmJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind());
+    @Override
+    public boolean movementPossible(boolean nearerToFloor) {
+        return false;
+    }
+
+    public ElbowFinJoint calculateMirroredJoint(TerminalElement mirroredParent) {
+        return new ElbowFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
     }
 }

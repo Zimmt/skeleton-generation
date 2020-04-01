@@ -12,7 +12,7 @@ public class ElbowWingJoint extends ElbowJoint {
 
     public ElbowWingJoint(TerminalElement parent, Point3f position) {
         super(parent, position, min, max, ExtremityKind.WING);
-        setCurrentAngle(max);
+        setRandomAngle();
     }
 
     public ElbowWingJoint calculateMirroredJoint(TerminalElement mirroredParent) {

@@ -4,17 +4,24 @@ import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 public class ShoulderFinJoint extends ShoulderJoint {
 
     private static float frontAngle = 0f;
-    private static float minSideAngle = (float) Math.toRadians(45);
-    private static float maxSideAngle = (float) Math.toRadians(225);
+    // side angle is determined by orientation to world x axis, so range is not important
+    private static float minSideAngle = 0f;
+    private static float maxSideAngle = (float) Math.toRadians(360);
 
     public ShoulderFinJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
         super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.FIN, secondShoulder);
+
         setCurrentFirstAngle(frontAngle);
-        setCurrentSecondAngle(minSideAngle);
+        Vector3f localY = new Vector3f(0f, -1f, 0f);
+        parent.calculateWorldTransform().applyOnVector(localY);
+        Vector3f worldX = new Vector3f(1f, 0f, 0f);
+        float sideAngle = worldX.angle(localY); // turn direction is always positive
+        setCurrentSecondAngle(sideAngle);
     }
 
     @Override
