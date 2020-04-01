@@ -122,7 +122,7 @@ public class BackPartRule extends ReplacementRule {
      * @return bezier curve parameter for start point on back spine, parameter for end point on tail spine, width
      */
     private List<Float> findPelvisIntervalAndLength(SpineData spineData, float wantedWidth, float slopeEps) {
-        List<Float> interval = new ArrayList<>(2);
+        List<Float> interval = new ArrayList<>(3);
 
         // find possible space for pelvic
         CubicBezierCurve back = spineData.getBack();
@@ -141,7 +141,6 @@ public class BackPartRule extends ReplacementRule {
         }
         interval.add(tailIntervals.get(1));
 
-
         // find actual bounds for pelvic
         // lengths can be calculated like that because curve is nearly a line in the interval
         Point2f backPoint = back.apply(interval.get(0));
@@ -151,8 +150,6 @@ public class BackPartRule extends ReplacementRule {
         Point2f tailPoint = tail.apply(interval.get(1));
         tailPoint.sub(tail.apply(0f));
         float maxTailLength = new Vector2f(tailPoint).length();
-
-        interval.add(maxBackLength + maxTailLength);
 
         if (maxBackLength + maxTailLength > wantedWidth) {
             interval.set(2, wantedWidth);  // wanted width can be achieved
@@ -175,8 +172,12 @@ public class BackPartRule extends ReplacementRule {
             // new parameter = 1 - (wanted length / k); k = length / (1 - old parameter)
             interval.set(0, 1f - (wantedBackLength * (1-interval.get(0)) / maxBackLength));
             interval.set(1, wantedTailLength * interval.get(1) / maxTailLength);
-            interval.set(2, wantedWidth);
         }
+        // these calculations are not really precise, so calculate real width of pelvis
+        Point2f realDistance = tail.apply(interval.get(1));
+        realDistance.sub(back.apply(interval.get(0)));
+        float realWidth = (float) Math.sqrt(realDistance.x * realDistance.x + realDistance.y * realDistance.y);
+        interval.set(2, realWidth);
         return interval;
     }
 }
