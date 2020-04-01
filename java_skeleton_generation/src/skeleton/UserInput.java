@@ -7,9 +7,10 @@ public class UserInput {
     private Integer wings;
     private Integer arms;
     private Integer fins;
+    private boolean allowTwoExtremitiesPerGirdle;
     private int totalExtremityCount;
 
-    private Boolean secondShoulder;
+    private boolean secondShoulder; // if there is a second shoulder or not is determined here (even if there is no user input on this)
     private Double neckYLength;
     private Double tailXLength;
 
@@ -17,50 +18,27 @@ public class UserInput {
 
     private Random random = new Random();
 
-    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
-        if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4)) {
-            System.err.println("Invalid user input for legs");
-        }
-        if (wings != null && (wings < 0 || wings > 4)) {
-            System.err.println("Invalid user input for wings");
-        }
-        if (arms != null && (arms < 0 || arms > 4)) {
-            System.err.println("Invalid user input for arms");
-        }
-        if (fins != null && (fins < 0 || fins > 6)) {
-            System.err.println("Invalid user input for fins");
-        }
-        if (secondShoulder != null && !secondShoulder && ((wings != null && wings > 2) || (arms != null && arms > 2) || (fins != null && fins > 4))) {
-            System.err.println("Too many extremities, need second shoulder!");
-        }
-
+    public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, boolean allowTwoExtremitiesPerGirdle,
+                     Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
         this.flooredLegs = flooredLegs;
         this.wings = wings;
         this.arms = arms;
         this.fins = fins;
+        this.allowTwoExtremitiesPerGirdle = allowTwoExtremitiesPerGirdle;
+        this.tailXLength = tailXLength;
+        this.neckYLength = neckYLength;
+        this.head = head;
         this.totalExtremityCount = 0;
         if (flooredLegs != null) totalExtremityCount += flooredLegs;
         if (wings != null) totalExtremityCount += wings;
         if (arms != null) totalExtremityCount += arms;
         if (fins != null) totalExtremityCount += fins;
-        if (totalExtremityCount > 6) {
-            System.err.println("Too many extremities found!");
-        }
-
-        this.secondShoulder = secondShoulder;
-        this.tailXLength = tailXLength;
-        this.neckYLength = neckYLength;
-        this.head = head;
+        setSecondShoulder(secondShoulder);
+        checkValidityOfValues();
     }
 
     public boolean hasSecondShoulder() {
-        if (secondShoulder != null) {
-            return secondShoulder;
-        } else if ((wings != null && wings > 2) || (arms != null && arms > 2) || (wings != null && arms != null && wings + arms > 2)) {
-            return true;
-        } else {
-            return totalExtremityCount > 4;
-        }
+        return secondShoulder;
     }
 
     /**
@@ -132,6 +110,10 @@ public class UserInput {
         return fins != null;
     }
 
+    public boolean twoExtremitiesPerGirdleAllowed() {
+        return allowTwoExtremitiesPerGirdle;
+    }
+
     public Double getNeckYLength() {
         if (neckYLength == null && hasSecondShoulder()) {
             return 200.0 + random.nextDouble() * 100;
@@ -145,5 +127,45 @@ public class UserInput {
 
     public String getHead() {
         return head;
+    }
+
+    /**
+     * extremities and total extremity count have to be set before this is called
+     */
+    private void setSecondShoulder(Boolean userInputSecondShoulder) {
+        if (userInputSecondShoulder != null) {
+            secondShoulder = userInputSecondShoulder;
+        } else if ((wings != null && (wings > 2 || !allowTwoExtremitiesPerGirdle && wings > 1)) ||
+                (arms != null && (arms > 2 || !allowTwoExtremitiesPerGirdle && arms > 1)) ||
+                (wings != null && arms != null && (wings + arms > 2 || !allowTwoExtremitiesPerGirdle && wings + arms > 1))) {
+            secondShoulder = true;
+        } else {
+            secondShoulder = totalExtremityCount > 4 || (!allowTwoExtremitiesPerGirdle && totalExtremityCount > 2);
+        }
+    }
+
+    private void checkValidityOfValues() {
+        if (totalExtremityCount > 6 || (!secondShoulder && totalExtremityCount > 4) ||
+                (!allowTwoExtremitiesPerGirdle && totalExtremityCount > 3) ||
+                (!secondShoulder && !allowTwoExtremitiesPerGirdle && totalExtremityCount > 2)) {
+            System.err.println("Too many extremities found!");
+        }
+        if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4 || (!allowTwoExtremitiesPerGirdle && flooredLegs > 2))) {
+            System.err.println("Invalid user input for legs");
+        }
+        if (wings != null && (wings < 0 || wings > 4 ||
+                ((!allowTwoExtremitiesPerGirdle || !secondShoulder) && wings > 2) ||
+                (!allowTwoExtremitiesPerGirdle && !secondShoulder && wings > 1))) {
+            System.err.println("Invalid user input for wings");
+        }
+        if (arms != null && (arms < 0 || arms > 4 ||
+                ((!allowTwoExtremitiesPerGirdle || !secondShoulder) && arms > 2) ||
+                (!allowTwoExtremitiesPerGirdle && !secondShoulder && arms > 1))) {
+            System.err.println("Invalid user input for arms");
+        }
+        if (fins != null && (fins < 0 || fins > 6 || (!secondShoulder && fins > 4) || (!allowTwoExtremitiesPerGirdle && fins > 3) ||
+                (!secondShoulder && !allowTwoExtremitiesPerGirdle && fins > 2))) {
+            System.err.println("Invalid user input for fins");
+        }
     }
 }

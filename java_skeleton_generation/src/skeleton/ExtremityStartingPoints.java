@@ -15,13 +15,17 @@ public class ExtremityStartingPoints {
     // the first entry concerns the extremity starting point that is nearest to the tail
     private List<ExtremityKind[]> extremityKindsForStartingPoints;
 
+    private boolean twoExtremitiesPerGirdleAllowed;
+
     private Random random = new Random();
 
-    public ExtremityStartingPoints(boolean hasSecondShoulder) {
+    public ExtremityStartingPoints(boolean hasSecondShoulder, boolean twoExtremitiesPerGirdleAllowed) {
+        this.twoExtremitiesPerGirdleAllowed = twoExtremitiesPerGirdleAllowed;
+        int countPerPoint = twoExtremitiesPerGirdleAllowed ? 2 : 1;
         if (hasSecondShoulder) {
-            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[2], new ExtremityKind[2], new ExtremityKind[2]);
+            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]);
         } else {
-            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[2], new ExtremityKind[2]);
+            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]);
         }
     }
 
@@ -37,12 +41,11 @@ public class ExtremityStartingPoints {
         if (startingPoint >= extremityKindsForStartingPoints.size()) {
             return new ExtremityKind[0];
         } else {
-            List<ExtremityKind> extremityKinds = new ArrayList<>(2);
-            if (extremityKindsForStartingPoints.get(startingPoint)[0] != null) {
-                extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[0]);
-            }
-            if (extremityKindsForStartingPoints.get(startingPoint)[1] != null) {
-                extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[1]);
+            List<ExtremityKind> extremityKinds = new ArrayList<>(extremityKindsForStartingPoints.get(startingPoint).length);
+            for (int i = 0; i < extremityKindsForStartingPoints.get(startingPoint).length; i++) {
+                if (extremityKindsForStartingPoints.get(startingPoint)[i] != null) {
+                    extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[i]);
+                }
             }
             return extremityKinds.toArray(ExtremityKind[]::new);
         }
@@ -53,6 +56,9 @@ public class ExtremityStartingPoints {
      * There should be no empty shoulder if there are enough extremities.
      */
     public void distributeExtremities() {
+        if (!twoExtremitiesPerGirdleAllowed) {
+            return; // this makes no sense if there is max one extremity per point
+        }
         if (!(getFreeExtremityCountAtPosition(0) == 0 && getFreeExtremityCountAtPosition(1) == 0)) {
             distributeLegs(); // otherwise there is no space to distribute
         }
@@ -120,7 +126,7 @@ public class ExtremityStartingPoints {
             return 0;
         }
         ExtremityKind[] kinds = getExtremityKindsForStartingPoint(position);
-        return 2 - kinds.length;
+        return extremityKindsForStartingPoints.get(position).length - kinds.length;
     }
 
     public int getFreeWingCount() {
@@ -150,12 +156,11 @@ public class ExtremityStartingPoints {
     }
 
     private void removeKindAtPosition(ExtremityKind kind, int position) {
-        if (extremityKindsForStartingPoints.get(position)[0] == kind) {
-            extremityKindsForStartingPoints.get(position)[0] = null;
-        } else if (extremityKindsForStartingPoints.get(position)[1] == kind) {
-            extremityKindsForStartingPoints.get(position)[1] = null;
-        } else {
-            System.err.println("Cannot remove kind in specified position!");
+        for (int i = 0; i < extremityKindsForStartingPoints.get(position).length; i++) {
+            if (extremityKindsForStartingPoints.get(position)[i] == kind) {
+                extremityKindsForStartingPoints.get(position)[i] = null;
+                break;
+            }
         }
     }
 
@@ -163,9 +168,9 @@ public class ExtremityStartingPoints {
         int toSet = count;
         while (toSet > 0) {
             List<Integer> possiblePositions = new ArrayList<>(positions.length);
-            for (int i = 0; i < positions.length; i++) {
-                if (getFreeExtremityCountAtPosition(positions[i]) > 0) {
-                    possiblePositions.add(positions[i]);
+            for (int pos : positions) {
+                if (getFreeExtremityCountAtPosition(pos) > 0) {
+                    possiblePositions.add(pos);
                 }
             }
             if (possiblePositions.isEmpty()) {
@@ -181,8 +186,8 @@ public class ExtremityStartingPoints {
 
     private int getFreeCount(int[] possiblePositions) {
         int count = 0;
-        for (int i = 0; i < possiblePositions.length; i++) {
-            count += getFreeExtremityCountAtPosition(possiblePositions[i]);
+        for (int pos : possiblePositions) {
+            count += getFreeExtremityCountAtPosition(pos);
         }
         return count;
     }

@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class ExtremityData {
-    private static int maxExtremityCount = 6;
-
     // PCA data
     private float wingProbability; // [0, 1]
     private float flooredLegProbability; // #legs/2, [0,2]
@@ -47,7 +45,7 @@ public class ExtremityData {
         this.lengthLowerLeg = (float) lengthLowerLeg;
         this.lengthFoot = (float) lengthFoot;
         this.userInput = userInput;
-        this.extremityStartingPoints = new ExtremityStartingPoints(userInput.hasSecondShoulder());
+        this.extremityStartingPoints = new ExtremityStartingPoints(userInput.hasSecondShoulder(), userInput.twoExtremitiesPerGirdleAllowed());
         calculateDerivedValues(spine);
     }
 
