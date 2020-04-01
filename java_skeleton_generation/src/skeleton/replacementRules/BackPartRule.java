@@ -152,7 +152,6 @@ public class BackPartRule extends ReplacementRule {
         float maxTailLength = new Vector2f(tailPoint).length();
 
         if (maxBackLength + maxTailLength > wantedWidth) {
-            interval.set(2, wantedWidth);  // wanted width can be achieved
             float wantedBackLength = wantedWidth/2f;
             float wantedTailLength = wantedWidth/2f;
             if (maxBackLength < wantedBackLength) {
@@ -177,7 +176,7 @@ public class BackPartRule extends ReplacementRule {
         Point2f realDistance = tail.apply(interval.get(1));
         realDistance.sub(back.apply(interval.get(0)));
         float realWidth = (float) Math.sqrt(realDistance.x * realDistance.x + realDistance.y * realDistance.y);
-        interval.set(2, realWidth);
+        interval.add(realWidth);
         return interval;
     }
 }

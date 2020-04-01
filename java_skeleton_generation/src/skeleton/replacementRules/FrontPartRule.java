@@ -49,7 +49,7 @@ public class FrontPartRule extends ReplacementRule {
                 frontBackInterval, 15, vertebraScale, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
-        List<ShoulderGirdle> shoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, frontBack, frontBack.size()-1, false);
+        List<ShoulderGirdle> shoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 1, frontBack, frontBack.size()-1, false);
         generatedParts.addAll(shoulderGirdles);
         generatedParts.addAll(frontBack); // shoulder vertebra is changed, so it has to be set after generating the shoulder girdle
 
@@ -63,7 +63,7 @@ public class FrontPartRule extends ReplacementRule {
                 neckInterval, neckVertebraCount, vertebraScale, neckParent, neckParent.getSpineJoint());
 
         if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasShoulderOnNeck()) {
-            List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, neck, neck.size()-3, true);
+            List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 2, neck, neck.size()-3, true);
             generatedParts.addAll(secondShoulderGirdles);
         }
         generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
@@ -74,9 +74,9 @@ public class FrontPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private List<ShoulderGirdle> generateShoulderGirdlesOnOnePosition(FrontPart frontPart, List<TerminalElement> vertebrae, int firstVertebraIndex, boolean onNeck) {
+    private List<ShoulderGirdle> generateShoulderGirdlesOnOnePosition(FrontPart frontPart, int position, List<TerminalElement> vertebrae, int firstVertebraIndex, boolean onNeck) {
         List<ShoulderGirdle> shoulderGirdles = new ArrayList<>(2);
-        ExtremityKind[] extremityKinds = frontPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(1);
+        ExtremityKind[] extremityKinds = frontPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(position);
         if (extremityKinds.length > 0) {
             shoulderGirdles.add(generateShoulderGirdle(frontPart, vertebrae, firstVertebraIndex, extremityKinds[0], onNeck));
         }
@@ -92,9 +92,7 @@ public class FrontPartRule extends ReplacementRule {
                 i++;
             }
             ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, vertebrae, i, extremityKinds[1], onNeck);
-            if (shoulderGirdle != null) {
-                shoulderGirdles.add(shoulderGirdle);
-            }
+            shoulderGirdles.add(shoulderGirdle);
         }
         return shoulderGirdles;
     }
