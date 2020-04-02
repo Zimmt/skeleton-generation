@@ -70,7 +70,7 @@ public class ExtremityPositioning {
         int step = 0;
         int maxSteps = 50;
         float initialAngleStepSize = (float) Math.toRadians(30);
-        float firstJointXAngleProbability = 0.5f;
+        float firstJointXAngleProbability = 0f;
         float firstJointZAngleProbability = 1f;
         float secondJointAngleProbability = 1f;
         float thirdJointAngleProbability = 1f;
@@ -202,9 +202,9 @@ public class ExtremityPositioning {
         bone.calculateWorldTransform().applyOnVector(lokalYAxis);
 
         if (boneNumber == 1 && firstBone instanceof UpperArm) {
-            return lokalYAxis.x < 0;
+            return lokalYAxis.x <= 0;
         } else {
-            return lokalYAxis.x > 0;
+            return lokalYAxis.x >= 0;
         }
     }
 
@@ -213,7 +213,7 @@ public class ExtremityPositioning {
     }
 
     private void fixOverturnedBones() {
-        float eps = (float) Math.toRadians(2.0);
+        float eps = (float) Math.toRadians(5.0);
         Vector3f localYAxis = new Vector3f(0f, -1f, 0f);
         Vector3f globalYAxis = new Vector3f(0f, 1f, 0f);
 

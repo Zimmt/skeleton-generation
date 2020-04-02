@@ -28,6 +28,10 @@ public abstract class PelvisJoint extends XZAngleBasedJoint {
         return transform;
     }
 
+    protected boolean getTurnDirectionNearerToFloorForPositiveVerticalPosition() {
+        return true;
+    }
+
     public static PelvisJoint newSpecificPelvicJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
         switch (extremityKind) {
             case LEG:

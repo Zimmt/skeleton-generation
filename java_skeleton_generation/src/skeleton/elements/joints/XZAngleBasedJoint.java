@@ -48,7 +48,12 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
         } else {
             turnDirections.add(testVectorChild.y > 0 ? true : null);
         }
-        turnDirections.add(Math.abs(testVectorChild.x) > eps ? testVectorChild.x < 0 : null);
+
+        if (Math.abs(testVectorChild.x) > eps) {
+            turnDirections.add(testVectorChild.x < 0);
+        } else {
+            turnDirections.add(getTurnDirectionNearerToFloorForPositiveVerticalPosition());
+        }
 
         if (turnDirections.get(0) == null && turnDirections.get(1) == null) {
             return null;
@@ -56,4 +61,6 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
 
         return turnDirections;
     }
+
+    protected abstract boolean getTurnDirectionNearerToFloorForPositiveVerticalPosition();
 }

@@ -32,6 +32,10 @@ public abstract class ShoulderJoint extends XZAngleBasedJoint {
         return transform;
     }
 
+    protected boolean getTurnDirectionNearerToFloorForPositiveVerticalPosition() {
+        return false;
+    }
+
     public static ShoulderJoint newSpecificShoulderJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind, boolean secondShoulder) {
         switch (extremityKind) {
             case LEG:
