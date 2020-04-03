@@ -39,6 +39,7 @@ public class Main {
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         boolean allCubes = false;
+        boolean lowResolution = true;
         boolean allowTwoExtremitiesPerGirdle = true;
         Integer userInputFlooredLegs = null;
         Integer userInputWings = null;
@@ -69,7 +70,7 @@ public class Main {
             skeletonGenerator.calculateMirroredElements();
 
             ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes);
+            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowResolution);
         }
     }
 }

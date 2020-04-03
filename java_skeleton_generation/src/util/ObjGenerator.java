@@ -21,7 +21,7 @@ public class ObjGenerator {
         this.boneLibrary = new BoneLibrary();
     }
 
-    public void generateObjFrom(SkeletonGenerator skeleton, String fileName, boolean allCubes) throws IOException {
+    public void generateObjFrom(SkeletonGenerator skeleton, String fileName, boolean allCubes, boolean lowRes) throws IOException {
         if (!skeleton.isFinished()) {
             System.err.println("Cannot generate .obj from unfinished skeleton!");
             return;
@@ -33,7 +33,7 @@ public class ObjGenerator {
         List<TerminalElement> skeletonParts = skeleton.getTerminalParts();
         for (TerminalElement element : skeletonParts) {
             obj.setActiveGroupNames(Collections.singletonList(element.getKind() + element.getId()));
-            create3DRepresentation(obj, element, allCubes);
+            create3DRepresentation(obj, element, allCubes, lowRes);
         }
 
         String outputPath = fileName + ".obj";
@@ -41,7 +41,7 @@ public class ObjGenerator {
         ObjWriter.write(obj, objOutputStream);
     }
 
-    private void create3DRepresentation(Obj obj, TerminalElement element, boolean allCubes) {
+    private void create3DRepresentation(Obj obj, TerminalElement element, boolean allCubes, boolean lowRes) {
         TransformationMatrix worldTransform = element.calculateWorldTransform();
         BoundingBox worldBoundingBox = element.getBoundingBox().cloneBox();
         worldBoundingBox.transform(element.calculateWorldTransform());
@@ -50,7 +50,7 @@ public class ObjGenerator {
 
         Obj elementObj = boneLibrary.getDefaultObj();
         if (!allCubes) {
-            elementObj = boneLibrary.getBoneObj(element.getKind(), element.isMirroredVersion());
+            elementObj = boneLibrary.getBoneObj(element.getKind(), element.isMirroredVersion(), lowRes);
         }
         float[] vertexData = ObjData.getVerticesArray(elementObj); // three consecutive entries are the x,y,z values of one vertex
         for (int i = 0; i < vertexData.length; i += 3) {
