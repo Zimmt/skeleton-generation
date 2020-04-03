@@ -11,7 +11,10 @@ import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 /**
- * Schienbein
+ * scaling:
+ * x: same as thigh x
+ * y: determined by PCA data
+ * z: same as x
  */
 public class Shin extends TerminalElement {
 
@@ -59,6 +62,6 @@ public class Shin extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, 0f, boundingBox.getZLength()/2f);
+        return new Point3f(boundingBox.getXLength()/2f, 0f, 0.3f * boundingBox.getZLength());
     }
 }

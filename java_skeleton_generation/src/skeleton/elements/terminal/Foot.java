@@ -7,6 +7,12 @@ import util.TransformationMatrix;
 import javax.vecmath.Vector3f;
 import java.util.Optional;
 
+/**
+ * scaling:
+ * x: same as shin x
+ * y: determined by PCA data
+ * z: same as x
+ */
 public class Foot extends TerminalElement {
 
     private final String kind = "foot";
@@ -21,7 +27,7 @@ public class Foot extends TerminalElement {
     }
 
     public String getKind() {
-        Vector3f localY = new Vector3f(0f, 1f, 0f);
+        /*Vector3f localY = new Vector3f(0f, 1f, 0f);
         calculateWorldTransform().applyOnVector(localY);
         localY.z = 0f;
         float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
@@ -30,7 +36,8 @@ public class Foot extends TerminalElement {
             return "hand";
         } else {
             return "hoof";
-        }
+        }*/
+        return "hoof";
     }
 
     public boolean canBeMirrored() { return true; }

@@ -62,6 +62,6 @@ public class Thigh extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, 0f, 0.8f * boundingBox.getZLength());
+        return new Point3f(boundingBox.getXLength()/2f, 0f, 0.2f * boundingBox.getZLength());
     }
 }
