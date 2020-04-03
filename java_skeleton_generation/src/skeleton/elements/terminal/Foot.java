@@ -27,7 +27,7 @@ public class Foot extends TerminalElement {
     }
 
     public String getKind() {
-        /*Vector3f localY = new Vector3f(0f, 1f, 0f);
+        Vector3f localY = new Vector3f(0f, 1f, 0f);
         calculateWorldTransform().applyOnVector(localY);
         localY.z = 0f;
         float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
@@ -36,8 +36,7 @@ public class Foot extends TerminalElement {
             return "hand";
         } else {
             return "hoof";
-        }*/
-        return "hoof";
+        }
     }
 
     public boolean canBeMirrored() { return true; }

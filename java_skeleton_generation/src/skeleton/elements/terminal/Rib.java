@@ -9,7 +9,14 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.Optional;
 
+/**
+ * scaling:
+ * x: same as vertebra x
+ * z: same as x
+ */
 public class Rib extends TerminalElement {
+
+    public static float yScale = 100f;
 
     private final String kind = "rib";
     private DummyJoint shoulderJoint;
@@ -51,10 +58,10 @@ public class Rib extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-0.5f * boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength());
+        return new Vector3f(-0.5f * boundingBox.getXLength(), -0.9f * boundingBox.getYLength(), -boundingBox.getZLength());
     }
 
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(0.1f * boundingBox.getXLength(), boundingBox.getYLength(), 0.5f * boundingBox.getZLength());
+        return new Point3f(2.5f * boundingBox.getXLength(), 0.8f * boundingBox.getYLength(), -3.5f * boundingBox.getZLength());
     }
 }

@@ -2,12 +2,10 @@
 noDerivs: Lizenz, bei der man die Quelle nicht verändern darf
 
 Wirbel: https://sketchfab.com/3d-models/vertebra-collection-of-thunthu-a343d51c7ee0497ab6b1bb93921d9b8d
-> Rippe: https://sketchfab.com/3d-models/rib-right-2-labeled-f10f4b90bbba4ab8806b3c19883643e1 (noDerivs)
 
 Oberschenkel: https://sketchfab.com/3d-models/human-femur-bone-0647ff9a00924f40a06e08361cea176c
 Unterschenkel (beide Teile): https://sketchfab.com/3d-models/tibia-and-fibula-58f24c2322814c17a614e77e18cf73ac
 Fuß: https://sketchfab.com/3d-models/foot-4c79b247004348548fe05587feac7f83
-
 Hand: https://sketchfab.com/3d-models/hand-efd1df50e4a2457d91045a1727db7679
 
 Köpfe

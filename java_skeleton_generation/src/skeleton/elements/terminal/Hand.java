@@ -31,7 +31,7 @@ public class Hand extends TerminalElement {
         if (getParent().getJoint().getExtremityKind() == ExtremityKind.WING) {
             return "wing_hand";
         } else {
-            /*Vector3f localY = new Vector3f(0f, 1f, 0f);
+            Vector3f localY = new Vector3f(0f, 1f, 0f);
             calculateWorldTransform().applyOnVector(localY);
             localY.z = 0f;
             float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
@@ -40,8 +40,7 @@ public class Hand extends TerminalElement {
                 return kind;
             } else {
                 return "hoof";
-            }*/
-            return "hoof";
+            }
         }
     }
 
