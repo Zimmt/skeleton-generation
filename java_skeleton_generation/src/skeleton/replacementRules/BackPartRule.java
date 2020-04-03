@@ -1,10 +1,8 @@
 package skeleton.replacementRules;
 
-import skeleton.SpineData;
 import skeleton.SpinePart;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.Joint;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
 import skeleton.elements.terminal.Pelvis;
@@ -12,12 +10,10 @@ import skeleton.elements.terminal.RootVertebra;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import util.BoundingBox;
-import util.CubicBezierCurve;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Tuple2f;
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,37 +45,35 @@ public class BackPartRule extends ReplacementRule {
         RootVertebra rootVertebra = backPart.getParent();
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        ExtremityKind[] pelvisExtremityKinds = backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0);
-        boolean generatePelvis = pelvisExtremityKinds.length > 0;
-        Vector3f pelvisScale = new Vector3f(100f, 30f, 150f);
-        List<Float> pelvisIntervalAndLength;
-        if (generatePelvis) {
-            pelvisIntervalAndLength = findPelvisIntervalAndLength(backPart.getGenerator().getSkeletonMetaData().getSpine(), pelvisScale.x, 0.1f);
-        } else {
-            pelvisIntervalAndLength = Arrays.asList(1f, 0f);
-        }
-
-        Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), pelvisIntervalAndLength.get(0));
-        Vector3f vertebraScale = new Vector3f(10f, 10f, 10f);
+        Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), 1f);
         List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 10, vertebraScale, rootVertebra, rootVertebra.getBackPartJoint());
+                backBackInterval, 13, rootVertebra, rootVertebra.getBackPartJoint()); // +3 vertebrae for pelvis
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
-        Vertebra pelvisOrTailParent; // last element of backBack could be rib
-        if (backBack.get(backBack.size()-1) instanceof  Vertebra) {
-            pelvisOrTailParent = (Vertebra) backBack.get(backBack.size()-1);
-        } else {
-            pelvisOrTailParent = (Vertebra) backBack.get(backBack.size()-2);
+        Vertebra pelvisParent = null;
+        Vertebra tailParent = null;
+        int foundVertebraCount = 0;
+        for (int i = backBack.size()-1; i >= 0 && foundVertebraCount < 3; i--) {
+            if (backBack.get(i) instanceof  Vertebra) {
+                foundVertebraCount++;
+                if (tailParent == null) {
+                    tailParent = (Vertebra) backBack.get(i);
+                } else if (foundVertebraCount == 3) {
+                    pelvisParent = (Vertebra) backBack.get(i);
+                }
+            }
+        }
+        if (tailParent == null || pelvisParent == null) {
+            System.err.println("Did not find enough vertebrae on back back!");
+            return generatedParts;
         }
 
-        TerminalElement tailParent;
-        Joint tailJoint;
-        if (generatePelvis) {
-            Pelvis pelvis = generatePelvis(backPart, pelvisOrTailParent, pelvisScale, pelvisIntervalAndLength);
+        ExtremityKind[] pelvisExtremityKinds = backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0);
+        if (pelvisExtremityKinds.length > 0) {
+            float pelvisZScale = 150f; // todo ribzScale + random
+            Pelvis pelvis = generatePelvis(backPart, pelvisParent, Pelvis.yScale, pelvisZScale);
             generatedParts.add(pelvis);
-            tailParent = pelvis;
-            tailJoint = pelvis.getTailJoint();
 
             if (!pelvis.getLegJoints().isEmpty()) {
                 Leg leg = new Leg(pelvis, backPart);
@@ -88,95 +82,25 @@ public class BackPartRule extends ReplacementRule {
             } else {
                 System.out.println("No legs generated");
             }
-        } else {
-            tailParent = pelvisOrTailParent;
-            tailJoint = pelvisOrTailParent.getSpineJoint();
         }
 
-        Tuple2f tailInterval = new Point2f(pelvisIntervalAndLength.get(1), 1f);
+        Tuple2f tailInterval = new Point2f(0f, 1f);
         int tailVertebraCount = 5 + (new Random()).nextInt(16);
         List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
-                tailInterval, tailVertebraCount, vertebraScale, tailParent, tailJoint);
+                tailInterval, tailVertebraCount, tailParent, tailParent.getSpineJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
     }
 
-    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, Vector3f scales, List<Float> intervalAndLength) {
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(intervalAndLength.get(2), scales.y, scales.z));
-        parent.getSpineJoint().setChildSpineEndPosition(intervalAndLength.get(1), SpinePart.TAIL);
-
-        TransformationMatrix transform = parent.getSpineJoint().calculateChildTransform(boundingBox);
+    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, float yScale, float zScale) {
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(parent.getBoundingBox().getXLength(), yScale, zScale));
+        TransformationMatrix transform = parent.getPelvisJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 
-        Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart, intervalAndLength.get(1),
+        Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart,
                 backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0));
         parent.addChild(pelvis);
         return pelvis;
-    }
-
-    /**
-     * Calculates the maximum spine interval with slope in range of +/- slopeEps.
-     * Then positions the returned interval as near as possible to the contact point of back and tail.
-     * Changes width of pelvic only if the calculated interval is smaller.
-     * @return bezier curve parameter for start point on back spine, parameter for end point on tail spine, width
-     */
-    private List<Float> findPelvisIntervalAndLength(SpineData spineData, float wantedWidth, float slopeEps) {
-        List<Float> interval = new ArrayList<>(3);
-
-        // find possible space for pelvic
-        CubicBezierCurve back = spineData.getBack();
-        float slope = back.getGradient(1f);
-        List<Float> backIntervals = back.getIntervalsByGradientEpsilon(slope, slopeEps);
-        if (backIntervals.get(backIntervals.size()-1) != 1f) {
-            System.err.println("back intervals are wrong!");
-        }
-        interval.add(backIntervals.get(backIntervals.size()-2));
-
-        CubicBezierCurve tail = spineData.getTail();
-        float tailSlope = tail.getGradient(0f);
-        List<Float> tailIntervals = tail.getIntervalsByGradientEpsilon(tailSlope, slopeEps);
-        if (tailIntervals.get(0) != 0f) {
-            System.err.println("tail intervals are wrong!");
-        }
-        interval.add(tailIntervals.get(1));
-
-        // find actual bounds for pelvic
-        // lengths can be calculated like that because curve is nearly a line in the interval
-        Point2f backPoint = back.apply(interval.get(0));
-        backPoint.sub(back.apply(1f));
-        float maxBackLength = new Vector2f(backPoint).length();
-
-        Point2f tailPoint = tail.apply(interval.get(1));
-        tailPoint.sub(tail.apply(0f));
-        float maxTailLength = new Vector2f(tailPoint).length();
-
-        if (maxBackLength + maxTailLength > wantedWidth) {
-            float wantedBackLength = wantedWidth/2f;
-            float wantedTailLength = wantedWidth/2f;
-            if (maxBackLength < wantedBackLength) {
-                float diff = wantedBackLength - maxBackLength;
-                wantedBackLength -= diff;
-                wantedTailLength += diff;
-            } else if (maxTailLength < wantedTailLength) {
-                float diff = wantedTailLength - maxTailLength;
-                wantedBackLength += diff;
-                wantedTailLength -= diff;
-            } // no other case as the length of the interval has enough space for whole length (else initial interval is returned)
-
-            // length = k * associated bezier curve parameter (as curve is nearly straight)
-            // use k to get bezier curve parameter for new wanted length
-            // new parameter = wanted length / k; k = length / old parameter
-            // or in inverted direction:
-            // new parameter = 1 - (wanted length / k); k = length / (1 - old parameter)
-            interval.set(0, 1f - (wantedBackLength * (1-interval.get(0)) / maxBackLength));
-            interval.set(1, wantedTailLength * interval.get(1) / maxTailLength);
-        }
-        // these calculations are not really precise, so calculate real width of pelvis
-        Point2f realDistance = tail.apply(interval.get(1));
-        realDistance.sub(back.apply(interval.get(0)));
-        float realWidth = (float) Math.sqrt(realDistance.x * realDistance.x + realDistance.y * realDistance.y);
-        interval.add(realWidth);
-        return interval;
     }
 }

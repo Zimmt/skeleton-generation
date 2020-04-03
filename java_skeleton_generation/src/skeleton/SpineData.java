@@ -10,6 +10,9 @@ import java.util.Random;
 
 public class SpineData {
 
+    public static float vertebraYScale = 10f;
+    public static float vertebraZScale = 10f;
+
     private CubicBezierCurve neck;
     private CubicBezierCurve back;
     private CubicBezierCurve tail;

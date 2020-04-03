@@ -1,8 +1,6 @@
 package skeleton.elements.terminal;
 
-import skeleton.SpinePart;
 import skeleton.elements.ExtremityKind;
-import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.joints.leg.PelvisJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import util.BoundingBox;
@@ -15,19 +13,20 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Hüfte
+ * scaling:
+ * x: same as vertebra x
+ * z: distance between leg joints
  */
 public class Pelvis extends TerminalElement {
 
+    public static float yScale = 50f;
+
     private final String kind = "pelvis";
-    private SpineOrientedJoint tailJoint;
     private PelvisJoint firstJoint;
     private PelvisJoint secondJoint;
 
-    public Pelvis(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
-                  float tailJointSpinePosition, ExtremityKind[] extremityKinds) {
+    public Pelvis(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind[] extremityKinds) {
         super(transform, boundingBox, parent, ancestor);
-        this.tailJoint = new SpineOrientedJoint(this, Pelvis.getTailJointPosition(boundingBox), SpinePart.TAIL, tailJointSpinePosition, parent.getGenerator());
         if (extremityKinds.length == 1) {
             this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getOnlyLegJointPosition(boundingBox), extremityKinds[0]);
         } else if (extremityKinds.length == 2) {
@@ -42,10 +41,6 @@ public class Pelvis extends TerminalElement {
         } else {
             return kind;
         }
-    }
-
-    public SpineOrientedJoint getTailJoint() {
-        return tailJoint;
     }
 
     public List<PelvisJoint> getLegJoints() {
@@ -66,28 +61,21 @@ public class Pelvis extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(0f, - 0.6f * boundingBox.getYLength(), -boundingBox.getZLength()/2f);
-    }
-
-    /**
-     * @return the relative position for the joint between this element and the tail
-     */
-    private static Point3f getTailJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength(), 0.7f * boundingBox.getYLength(), boundingBox.getZLength()/2f);
+        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
     }
 
     /**
      * @return the relative positions for the joints between this element and it's first child
      */
     private static Point3f getFirstLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 0.3f);
+        return getOnlyLegJointPosition(childBoundingBox);
     }
 
     /**
      * @return the relative position for the joint between this element and it's second child
      */
     private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 0.7f);
+        return getLegJointPosition(childBoundingBox, 5.7f);
     }
 
     /**
@@ -95,10 +83,10 @@ public class Pelvis extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 0.4f);
+        return getLegJointPosition(childBoundingBox, 3.5f);
     }
 
     private static Point3f getLegJointPosition(BoundingBox childBoundingBox, float relativeXPos) {
-        return new Point3f(relativeXPos * childBoundingBox.getXLength(), 0.1f * childBoundingBox.getYLength(), 0.2f * childBoundingBox.getZLength());
+        return new Point3f(relativeXPos * childBoundingBox.getXLength(), 0f, 0f);
     }
 }

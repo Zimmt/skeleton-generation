@@ -241,14 +241,14 @@ public class SkeletonGenerator {
      * The vertebra are generated from the left side of the interval to the right.
      * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
      * Child vertebrae are added to their parents.
+     * For scale SpineData values for y and z are used, x is the maximum space available.
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
-     * @param boundingBoxScale y- and z-scale is used, x-scale is replaced by the maximum space available
      * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
     public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
-                                                      Vector3f boundingBoxScale, TerminalElement firstParent, Joint firstParentJoint) {
+                                                             TerminalElement firstParent, Joint firstParentJoint) {
 
         ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
@@ -256,7 +256,7 @@ public class SkeletonGenerator {
             return generatedParts;
         }
 
-        BoundingBox boundingBox = new BoundingBox(boundingBoxScale);
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(1f, SpineData.vertebraYScale, SpineData.vertebraZScale)); // x scale is replaced anyway
 
         float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;

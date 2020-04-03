@@ -12,25 +12,30 @@ import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 /**
- * Wirbel
+ * scaling:
+ * x: is determined by distance on bezier curve (in skeleton generator:generateVertebraeInInterval)
+ * y and z: static member in SpineData
  */
 public class Vertebra extends TerminalElement {
 
     private final String kind = "vertebra";
     SpineOrientedJoint spineJoint;
     DummyJoint ribJoint;
+    DummyJoint pelvisJoint;
 
     public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
                     boolean positiveXDir, SpinePart spinePart, float jointSpinePosition) {
         super(transform, boundingBox, parent, ancestor);
         this.spineJoint = new SpineOrientedJoint(this, Vertebra.getSpineJointPosition(boundingBox, positiveXDir), spinePart, jointSpinePosition, parent.getGenerator());
         this.ribJoint = new DummyJoint(this, Vertebra.getRibJointPosition(boundingBox));
+        this.pelvisJoint = new DummyJoint(this, Vertebra.getPelvisJointPosition(boundingBox));
     }
 
     public Vertebra(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, SpineOrientedJoint spineJoint) {
         super(transform, boundingBox, parent, ancestor);
         this.spineJoint = new SpineOrientedJoint(this, spineJoint.getPosition(), spineJoint.getSpinePart(), spineJoint.getSpinePosition(), parent.getGenerator());
         this.ribJoint = new DummyJoint(this, Vertebra.getRibJointPosition(boundingBox));
+        this.pelvisJoint = new DummyJoint(this, Vertebra.getPelvisJointPosition(boundingBox));
     }
 
     public String getKind() {
@@ -43,6 +48,10 @@ public class Vertebra extends TerminalElement {
 
     public DummyJoint getRibJoint() {
         return ribJoint;
+    }
+
+    public DummyJoint getPelvisJoint() {
+        return pelvisJoint;
     }
 
     public boolean canBeMirrored() { return false; }
@@ -69,5 +78,9 @@ public class Vertebra extends TerminalElement {
 
     public static Point3f getRibJointPosition(BoundingBox boundingBox) {
         return new Point3f(boundingBox.getXLength()/2f, 0.6f * boundingBox.getYLength(), 0.1f * boundingBox.getZLength());
+    }
+
+    public static Point3f getPelvisJointPosition(BoundingBox boundingBox) {
+        return new Point3f(boundingBox.getXLength()/2f, boundingBox.getYLength()/2f, boundingBox.getZLength()/2f);
     }
 }

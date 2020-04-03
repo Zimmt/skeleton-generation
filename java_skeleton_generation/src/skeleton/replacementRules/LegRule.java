@@ -45,11 +45,7 @@ public class LegRule extends ReplacementRule {
         for (PelvisJoint pelvicJoint : leg.getParent().getLegJoints()) {
             ExtremityKind extremityKind = pelvicJoint.getExtremityKind();
 
-            Vector3f thighScale = new Vector3f(
-                    0.4f * leg.getParent().getBoundingBox().getXLength(),
-                    extremityData.getLengthUpperLeg(),
-                    0.2f * leg.getParent().getBoundingBox().getZLength());
-            Thigh thigh = generateThigh(thighScale, leg, pelvicJoint, extremityKind);
+            Thigh thigh = generateThigh(leg, pelvicJoint, extremityKind);
             generatedParts.add(thigh);
 
             Vector3f shinScale = new Vector3f(
@@ -85,9 +81,13 @@ public class LegRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Thigh generateThigh(Vector3f scale, Leg leg, PelvisJoint pelvicJoint, ExtremityKind extremityKind) {
-        BoundingBox boundingBox = new BoundingBox(scale);
-        TransformationMatrix transform = pelvicJoint.calculateChildTransform(boundingBox);
+    private Thigh generateThigh(Leg leg, PelvisJoint pelvisJoint, ExtremityKind extremityKind) {
+        float xzScale = leg.getParent().getBoundingBox().getXLength();
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(
+                xzScale,
+                leg.getGenerator().getSkeletonMetaData().getExtremities().getLengthUpperLeg(),
+                xzScale));
+        TransformationMatrix transform = pelvisJoint.calculateChildTransform(boundingBox);
 
         Thigh thigh = new Thigh(transform, boundingBox, leg.getParent(), leg, extremityKind);
         leg.getParent().replaceChild(leg, thigh);
