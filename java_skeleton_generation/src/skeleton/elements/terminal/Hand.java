@@ -8,6 +8,12 @@ import util.TransformationMatrix;
 import javax.vecmath.Vector3f;
 import java.util.Optional;
 
+/**
+ * scaling:
+ * x: 0.7 * lower arm x
+ * y: determined by PCA data
+ * z: same as x
+ */
 public class Hand extends TerminalElement {
 
     private final String kind = "hand";
@@ -25,7 +31,7 @@ public class Hand extends TerminalElement {
         if (getParent().getJoint().getExtremityKind() == ExtremityKind.WING) {
             return "wing_hand";
         } else {
-            Vector3f localY = new Vector3f(0f, 1f, 0f);
+            /*Vector3f localY = new Vector3f(0f, 1f, 0f);
             calculateWorldTransform().applyOnVector(localY);
             localY.z = 0f;
             float angle1 = localY.angle(new Vector3f(1f, 0f, 0f));
@@ -34,7 +40,8 @@ public class Hand extends TerminalElement {
                 return kind;
             } else {
                 return "hoof";
-            }
+            }*/
+            return "hoof";
         }
     }
 
@@ -61,6 +68,7 @@ public class Hand extends TerminalElement {
     }
 
     /**
+     * same as foot
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {

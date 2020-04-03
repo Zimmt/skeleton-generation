@@ -53,6 +53,7 @@ public class Foot extends TerminalElement {
     }
 
     /**
+     * same as hand
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {

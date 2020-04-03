@@ -8,9 +8,6 @@ Oberschenkel: https://sketchfab.com/3d-models/human-femur-bone-0647ff9a00924f40a
 Unterschenkel (beide Teile): https://sketchfab.com/3d-models/tibia-and-fibula-58f24c2322814c17a614e77e18cf73ac
 Fuß: https://sketchfab.com/3d-models/foot-4c79b247004348548fe05587feac7f83
 
-> Schulterblatt: https://sketchfab.com/3d-models/scapula-right-labeled-d373e25285d04312b5bb9a659a8ecb7d (noDerivs)
-> Oberarm: https://sketchfab.com/3d-models/humerus-37755d8efcc54feeaef37361169aa6e9 (noDerivs)
-> Unterarm (beide Teile): https://sketchfab.com/3d-models/ulna-radius-of-a-fox-vcu-3d-1516-5b1fbad8a4714458b736e15249105709 (noDerivs)
 Hand: https://sketchfab.com/3d-models/hand-efd1df50e4a2457d91045a1727db7679
 
 Köpfe

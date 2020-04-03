@@ -55,6 +55,6 @@ public class Rib extends TerminalElement {
     }
 
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(0.1f * boundingBox.getXLength(), boundingBox.getYLength(), 0.3f * boundingBox.getZLength());
+        return new Point3f(0.1f * boundingBox.getXLength(), boundingBox.getYLength(), 0.5f * boundingBox.getZLength());
     }
 }

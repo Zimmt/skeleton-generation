@@ -10,6 +10,12 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.Optional;
 
+/**
+ * scaling:
+ * x: 0.2 * shoulder x
+ * y: determined by PCA data
+ * z: same as x
+ */
 public class UpperArm extends TerminalElement {
 
     private final String kind = "upper_arm";
@@ -49,13 +55,13 @@ public class UpperArm extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-0.6f * boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
+        return new Vector3f(-boundingBox.getXLength()/2f, -boundingBox.getYLength(), -boundingBox.getZLength()/2f);
     }
 
     /**
      * @return the relative position for the joint between this element and it's child
      */
     public static Point3f getJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f,0f, 0.3f * boundingBox.getZLength());
+        return new Point3f(2f * boundingBox.getXLength(),0f, 0.5f * boundingBox.getZLength());
     }
 }
