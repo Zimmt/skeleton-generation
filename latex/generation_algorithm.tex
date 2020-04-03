@@ -52,8 +52,11 @@ Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermögli
 
 Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt. Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen: \\
 Das Modell ist korrekt an den Achsen ausgerichtet und so verzerrt, dass es einen Würfel mit 1(m) Kantenlänge in jeder Richtung möglichst gut ausfüllt.
-Es ist auch möglich kleine Fortsätze (wie \zb diejenigen von Wirbeln) über den Würfel hinaus stehen zu lassen. Das macht unter Umständen die Positionierung einfacher.
-Bei der Hüfte wurde das Modell beispielsweise so ausgerichtet, dass Anfangs- und Endpunkt der durchgehenden Wirbelsäule jeweils auf dem Rand des Würfels liegen. Das vereinfacht die Positionierung anschließender Wirbel erheblich.
+Es ist auch möglich kleine Fortsätze (wie \zb diejenigen von Wirbeln) über den Würfel hinaus stehen zu lassen. Das macht unter Umständen die Positionierung einfacher. Auch die Skalierung der Gelenkfläche auf die gesamte Kantenlänge des Würfels ist praktisch, da dann einfach festzustellen ist wie groß der Kindknochen skaliert werden muss, damit die beiden am Gelenk zusammenpassen. Aufpassen muss man allerdings, dass die Knochen nicht komisch verzerrt werden. Es ist \zb bei Beinknochen hilfreich, wenn die x- und die z-Richtung gleich skaliert werden, um die Originalverhältnisse zu bekommen. \todo{ausformulieren, Beispiele}
+
+% Beispiel Hüfte
+Bei der Hüfte wurde das Modell beispielsweise so ausgerichtet, dass Anfangs- und Endpunkt der durchgehenden Wirbelsäule jeweils auf dem Rand des Würfels liegen. Das vereinfacht die Positionierung anschließender Wirbel erheblich. \\
+Da es bei der menschliche Hüfte aber Probeleme mit den Lizenzrechten gab, wurde dann eine frei verfügbare Hüfte eines Pferdes verwendet. Hier ist die Wirbelsäule allerdings nicht mit der Hüfte verwachsen, was die Positionierung der Hüfte und auch der Wirbel einfacher macht.
 
 Liegen die Modelle in diesem Format vor, können sie einfach eingelesen werden und anhand der Skalierung der Bounding Box skaliert werden.
 Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren.
