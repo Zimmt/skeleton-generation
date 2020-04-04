@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public class Rib extends TerminalElement {
 
-    public static float yScale = 100f;
+    public static float yScale = 100f; // todo dependant on 'rib function'
 
     private final String kind = "rib";
     private DummyJoint shoulderJoint;

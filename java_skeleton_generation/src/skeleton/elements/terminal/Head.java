@@ -9,6 +9,10 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.Optional;
 
+/**
+ * scaling: free
+ * heads in different distortions shall be possible
+ */
 public class Head extends TerminalElement {
 
     private final String kind = "head";

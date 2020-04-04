@@ -10,6 +10,10 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import java.util.*;
 
+/**
+ * scaling: free
+ * not clear which dependencies are reasonable
+ */
 public class Shoulder extends TerminalElement {
 
     private final String kind = "shoulder";

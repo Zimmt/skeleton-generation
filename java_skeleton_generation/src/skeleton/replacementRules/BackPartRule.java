@@ -71,8 +71,8 @@ public class BackPartRule extends ReplacementRule {
 
         ExtremityKind[] pelvisExtremityKinds = backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0);
         if (pelvisExtremityKinds.length > 0) {
-            float pelvisZScale = 150f; // todo ribzScale + random
-            Pelvis pelvis = generatePelvis(backPart, pelvisParent, Pelvis.yScale, pelvisZScale);
+            float pelvisZScale = 100f; // todo ribzScale + random
+            Pelvis pelvis = generatePelvis(backPart, pelvisParent, pelvisZScale);
             generatedParts.add(pelvis);
 
             if (!pelvis.getLegJoints().isEmpty()) {
@@ -93,8 +93,9 @@ public class BackPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, float yScale, float zScale) {
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(parent.getBoundingBox().getXLength(), yScale, zScale));
+    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, float zScale) {
+        float xyScale = parent.getBoundingBox().getXLength();
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(xyScale, xyScale, zScale));
         TransformationMatrix transform = parent.getPelvisJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 

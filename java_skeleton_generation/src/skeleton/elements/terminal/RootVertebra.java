@@ -11,7 +11,7 @@ import javax.vecmath.Vector3f;
 import java.util.Optional;
 
 /**
- * Wirbel
+ * scaling: all zero
  */
 public class RootVertebra extends TerminalElement {
 

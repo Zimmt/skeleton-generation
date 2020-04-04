@@ -256,7 +256,7 @@ public class SkeletonGenerator {
             return generatedParts;
         }
 
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(1f, SpineData.vertebraYScale, SpineData.vertebraZScale)); // x scale is replaced anyway
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(1f, SpineData.vertebraYZScale, SpineData.vertebraYZScale)); // x scale is replaced anyway
 
         float totalIntervalLength = Math.abs(interval.y - interval.x);
         float sign = interval.y > interval.x ? 1f : -1f;

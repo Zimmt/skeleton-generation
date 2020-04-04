@@ -14,7 +14,8 @@ import java.util.Optional;
 /**
  * scaling:
  * x: is determined by distance on bezier curve (in skeleton generator:generateVertebraeInInterval)
- * y and z: static member in SpineData
+ * y: static member in SpineData
+ * z: same as y
  */
 public class Vertebra extends TerminalElement {
 
@@ -77,7 +78,7 @@ public class Vertebra extends TerminalElement {
     }
 
     public static Point3f getRibJointPosition(BoundingBox boundingBox) {
-        return new Point3f(boundingBox.getXLength()/2f, 0.6f * boundingBox.getYLength(), 0.1f * boundingBox.getZLength());
+        return new Point3f(boundingBox.getXLength()/2f, 0.6f * boundingBox.getYLength(), 0f);
     }
 
     public static Point3f getPelvisJointPosition(BoundingBox boundingBox) {

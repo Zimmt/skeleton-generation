@@ -15,11 +15,10 @@ import java.util.Optional;
 /**
  * scaling:
  * x: same as vertebra x
+ * y: same as x
  * z: distance between leg joints
  */
 public class Pelvis extends TerminalElement {
-
-    public static float yScale = 50f;
 
     private final String kind = "pelvis";
     private PelvisJoint firstJoint;
@@ -75,7 +74,7 @@ public class Pelvis extends TerminalElement {
      * @return the relative position for the joint between this element and it's second child
      */
     private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 5.7f);
+        return getLegJointPosition(childBoundingBox, 4.5f);
     }
 
     /**
@@ -83,7 +82,7 @@ public class Pelvis extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 3.5f);
+        return getLegJointPosition(childBoundingBox, 3f);
     }
 
     private static Point3f getLegJointPosition(BoundingBox childBoundingBox, float relativeXPos) {
