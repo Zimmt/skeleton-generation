@@ -50,20 +50,27 @@ Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermögli
 %--------------------------------
 \section{Knochenmodelle einfügen}
 
-Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt. Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen: \\
-Das Modell ist korrekt an den Achsen ausgerichtet und so verzerrt, dass es einen Würfel mit 1(m) Kantenlänge in jeder Richtung möglichst gut ausfüllt.
-Es ist auch möglich kleine Fortsätze (wie \zb diejenigen von Wirbeln) über den Würfel hinaus stehen zu lassen. Das macht unter Umständen die Positionierung einfacher. Auch die Skalierung der Gelenkfläche auf die gesamte Kantenlänge des Würfels ist praktisch, da dann einfach festzustellen ist wie groß der Kindknochen skaliert werden muss, damit die beiden am Gelenk zusammenpassen. Aufpassen muss man allerdings, dass die Knochen nicht komisch verzerrt werden. Es ist \zb bei Beinknochen hilfreich, wenn die x- und die z-Richtung gleich skaliert werden, um die Originalverhältnisse zu bekommen. \todo{ausformulieren, Beispiele}
+Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt. Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen:
 
-% Beispiel Hüfte
-Bei der Hüfte wurde das Modell beispielsweise so ausgerichtet, dass Anfangs- und Endpunkt der durchgehenden Wirbelsäule jeweils auf dem Rand des Würfels liegen. Das vereinfacht die Positionierung anschließender Wirbel erheblich. \\
-Da es bei der menschliche Hüfte aber Probeleme mit den Lizenzrechten gab, wurde dann eine frei verfügbare Hüfte eines Pferdes verwendet. Hier ist die Wirbelsäule allerdings nicht mit der Hüfte verwachsen, was die Positionierung der Hüfte und auch der Wirbel einfacher macht.
+Das Modell ist korrekt an den Achsen ausgerichtet und so verzerrt, dass es einen Würfel mit 1(m) Kantenlänge in jeder Richtung möglichst gut ausfüllt.
+
+Lässt man es hierbei bewenden, so ist es relativ schwierig herauszufinden wie man die einzelnen Knochen skalieren muss, dass sie an den Gelenken gut zusammenpassen. Außerdem ist es aufwändig herauszufinden wo die Gelenke an den Knochen ansetzen.
+
+Setzt man sich dagegen etwas über den Gedanken der "`Bounding Box"' hinweg, so kann die Positionierung und Skalierung einfacher werden. Hier wurden, je nach Knochen, einige der folgenden Punkte umgesetzt. \todo{Beispielbilder}
+\begin{itemize}
+ \item Kleine Fortsätze, die nicht wirklich zur (optischen) Größe des Knochens beitragen, \zb die Fortsätze der Wirbel, ragen aus der Bounding Box heraus.
+ 
+ \item Kantenlängen, die von "`außen"' vorgegeben werden, sind genau auf die Kantenlänge der Box skaliert (also 1). So beispielsweise die x-Länge der Wirbel, die auf der Wirbelsäule genau aneinender stoßen sollen. Dies können aber auch Längen sein, nur einen Teil des Knochens betreffen. Der Beinabstand an der Hüfte ist \zb kleiner als die komplette Breite der Hüfte. Es ist aber einfacher den Beinabstand anzugeben, als die Hüftbreite. Auch die Skalierung der Hüfte in x-Richtung ist zunächst nicht klar, aber wenn die Breite der zugehörigen Wirbel gegeben ist, ist auch klar, wie breit die Hüfte sein soll. Deshalb ist die Hüfte in x-Richtung so skaliert, dass der Teil, an dem der Wirbel ansetzt, schon die komplette Kantenlänge des Würfels ausfüllt. Bei Gelenken, die von der Breite her zusammenpassen sollen, ist dies auch sehr hilfreich. Aber das führt natürlich auch dazu, dass die "`Bounding Box"' nicht mehr viel mit der resultierenden Größe des Knochens zu tun haben muss.
+ 
+ \item Kantenlängen, die nicht vorgegeben werden, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die x- und y-Skalierung eines Knochens vorgegeben, und die Skalierung in z-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll, das 3D-Modell schon so zu speichern, dass die z-Richtung von einer der anderen Richtungen abhängt. Tut man dies nicht, so führt das relativ leicht dazu, dass die Knochen grundlos verzerrt werden.
+\end{itemize}
 
 Liegen die Modelle in diesem Format vor, können sie einfach eingelesen werden und anhand der Skalierung der Bounding Box skaliert werden.
-Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren.
+Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren. Das führt \zb bei dem verwendeten Unterarmknochen des Pferdes dazu, dass er etwas überdimensionierte Fortsätze am Ellenbogen bekommen, wenn man ihn großskaliert. Das liegt daran, dass dieser Knochen beim Pferd eigentlich relativ kurz ist.
 
 % Ausrichtung der Knochen
-Eine Schwierigkeit daran Modelle in der oben genannten Form herzustellen ist, dass nicht unbedingt sofort klar ist, wie die Knochen ausgerichtet werden müssen. Die Hüfte muss \zb so ausgerichtet werden, dass der Anfangs- und Endpunkt der durchgehenden Wirbelsäule auf gleicher Höhe liegen, damit nachfolgende Wirbel auch richtig anschließen. (Das funktioniert natürlich nur, weil die Wirbelsäule an der Stelle der Hüfte quasi gerade ist.)
-Auch die Positionierung der Rippen und des Oberarms in Kombination mit dem Unterarm ist anspruchsvoll. \todo{Beschreiben wenn zufrieden mit Positionierung}
+Eine Schwierigkeit daran Modelle in der oben genannten Form herzustellen ist, dass nicht unbedingt sofort klar ist, wie die Knochen ausgerichtet werden müssen. Die Hüfte muss \zb so ausgerichtet werden, dass der Anfangs- und Endpunkt der durchgehenden Wirbelsäule auf gleicher Höhe liegen, damit nachfolgende Wirbel auch richtig anschließen. (Das funktioniert natürlich nur, weil die Wirbelsäule an der Stelle der Hüfte quasi gerade ist.) \todo{wg Lizenz Pferdehüfte verwendet, die nicht mit Wirbelsäule verwachsen ist}
+Auch die Positionierung der Rippen und des Oberarms in Kombination mit dem Unterarm ist anspruchsvoll. Dabei hilft es 3D-Modelle zu haben, in denen die anderen Knochen auch schon vorhanden sind, um sich die Ausrichtung abzuschauen. Außerdem können Bilder von Skeletten zu Rate gezogen werden. Und zuletzt muss man die genaue Positionierung einfach testen.
 
 % Gelenke korrekt ausrichten
 Zusätzlich muss beachtet werden wie die Knochen aneinander anschließen \bzw wie sie für die entsprechenden Gelenke korrekt positioniert sind. Das erfordert etwas "`finetuning"'. Für jeden Knochen sind dafür in Abhängigkeit zur Bounding Box zwei Offsets gespeichert: das Offset zu dem Gelenk, das ihn mit seinem Elternknochen verbindet und das Offset zu dem Gelenk, das ihn mit seinem Kindknochen verbindet (oder mehrere, falls vorhanden). Dies sorgt dafür, dass die Positionierung der Knochen stimmt, egal wie groß sie sind. Ist ein Knochen sehr groß und ein anschließender sehr klein (oder anders herum), so kommt es natürlich trotzdem vor, dass die Gelenke nicht wirklich ineinander passen. Für solche Situationen bräuchte man verschiedene 3D-Modelle, die je nach Gegebenheit eingesetzt werden.
