@@ -74,7 +74,7 @@ public class Pelvis extends TerminalElement {
      * @return the relative position for the joint between this element and it's second child
      */
     private static Point3f getSecondLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 4.5f);
+        return getLegJointPosition(childBoundingBox, 4f);
     }
 
     /**
@@ -82,10 +82,10 @@ public class Pelvis extends TerminalElement {
      * @return the relative position for the joint between this element and it's child
      */
     private static Point3f getOnlyLegJointPosition(BoundingBox childBoundingBox) {
-        return getLegJointPosition(childBoundingBox, 3f);
+        return getLegJointPosition(childBoundingBox, 2.5f);
     }
 
     private static Point3f getLegJointPosition(BoundingBox childBoundingBox, float relativeXPos) {
-        return new Point3f(relativeXPos * childBoundingBox.getXLength(), 0f, 0f);
+        return new Point3f(relativeXPos * childBoundingBox.getXLength(), -0.2f * childBoundingBox.getYLength(), 0f);
     }
 }

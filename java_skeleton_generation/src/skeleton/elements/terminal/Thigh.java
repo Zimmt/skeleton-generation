@@ -55,7 +55,7 @@ public class Thigh extends TerminalElement {
      * @return the translation to move the joint between this element and its parent from this origin somewhere else.
      */
     public static Vector3f getLocalTranslationFromJoint(BoundingBox boundingBox) {
-        return new Vector3f(-0.5f * boundingBox.getXLength(), -boundingBox.getYLength(), -boundingBox.getZLength());
+        return new Vector3f(-0.5f * boundingBox.getXLength(), -0.95f * boundingBox.getYLength(), -boundingBox.getZLength());
     }
 
     /**
