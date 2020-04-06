@@ -6,6 +6,7 @@ import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.nonterminal.WholeBody;
 import skeleton.elements.terminal.Rib;
+import skeleton.elements.terminal.TailVertebrae;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
@@ -242,6 +243,7 @@ public class SkeletonGenerator {
      * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
      * Child vertebrae are added to their parents.
      * For scale SpineData values for y and z are used, x is the maximum space available.
+     * @param spinePart if spinePart is tail then the last three vertebrae are replaced by one instance of TailVertebrae
      * @param interval has to contain two floats between 0 and 1
      * @param vertebraCount number of vertebra that shall be generated (equally spaced)
      * @param firstParent element that shall be parent of the first vertebra generated
@@ -264,6 +266,7 @@ public class SkeletonGenerator {
 
         Vertebra parent = null;
         for (int i = 0; i < vertebraCount; i++) {
+            boolean tailVertebrae = spinePart == SpinePart.TAIL && i == vertebraCount-3;
 
             float spinePosition;
             float childSpineEndPosition;
@@ -275,7 +278,7 @@ public class SkeletonGenerator {
                 }
             } else {
                 spinePosition = parent.getSpineJoint().getSpinePosition();
-                if (i == vertebraCount-1) {
+                if (i == vertebraCount-1 || tailVertebrae) {
                     childSpineEndPosition = interval.y;
                 } else {
                     childSpineEndPosition = spinePosition + oneIntervalStep;
@@ -296,7 +299,12 @@ public class SkeletonGenerator {
 
             Vertebra child;
             TerminalElement parentElement = parent == null ? firstParent : parent;
-            child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
+            if (tailVertebrae) {
+                child = new TailVertebrae(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
+                i += 2;
+            } else {
+                child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
+            }
             parentElement.addChild(child);
             generatedParts.add(child);
 
