@@ -12,11 +12,10 @@ import java.util.Optional;
 /**
  * scaling:
  * x: same as vertebra x
+ * y: max scale statically stored in SpineData, concrete value determined by chest interval and chest function in SpineData
  * z: same as x
  */
 public class Rib extends TerminalElement {
-
-    public static float yScale = 100f; // todo dependant on 'rib function'
 
     private final String kind = "rib";
     private DummyJoint shoulderJoint;

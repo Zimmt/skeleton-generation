@@ -16,6 +16,7 @@ public class SpineData {
     private CubicBezierCurve back;
     private CubicBezierCurve tail;
 
+    public static float maxRibYScale = 100f;
     private Tuple2f chestIntervalOnBack;
 
     public SpineData(List<Point2d> spinePoints) {
@@ -58,5 +59,18 @@ public class SpineData {
 
     public boolean isInChestInterval(float backSpinePosition) {
         return backSpinePosition <= chestIntervalOnBack.y;
+    }
+
+    /**
+     * ! This function assumes, that the chest interval starts at 0 !
+     * chest function: -[(1.5 * 1/intervalWidth * x - 0.8)^4 - 1] (only in chest interval)
+     * chest function(backSpinePosition) * maxRibYScale = rib y length
+     */
+    public float getRibLength(float backSpinePosition) {
+        if (!isInChestInterval(backSpinePosition)) {
+            return 0;
+        } else {
+            return (float) -(Math.pow(1.8f / chestIntervalOnBack.y * backSpinePosition - 0.9f, 4) - 1f) * maxRibYScale;
+        }
     }
 }

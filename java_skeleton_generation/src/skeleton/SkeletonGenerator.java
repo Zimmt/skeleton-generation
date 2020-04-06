@@ -310,7 +310,8 @@ public class SkeletonGenerator {
 
             boolean rib = spinePart == SpinePart.BACK && getSkeletonMetaData().getSpine().isInChestInterval(spinePosition);
             if (rib) {
-                generatedParts.add(generateRibForVertebra(ancestor, child));
+                float ribLengthEvaluationPos = sign > 0 ? spinePosition : childSpineEndPosition;
+                generatedParts.add(generateRibForVertebra(ancestor, child, getSkeletonMetaData().getSpine().getRibLength(ribLengthEvaluationPos)));
             }
 
             parent = child;
@@ -319,12 +320,10 @@ public class SkeletonGenerator {
         return generatedParts;
     }
 
-    private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra) {
+    private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra, float yScale) {
         float xzScale = vertebra.getBoundingBox().getXLength();
         BoundingBox boundingBox = new BoundingBox(new Vector3f(
-                xzScale,
-                Rib.yScale,
-                xzScale
+                xzScale, yScale, xzScale
         ));
         TransformationMatrix transform = vertebra.getRibJoint().calculateChildTransform(boundingBox);
         transform.translate(Rib.getLocalTranslationFromJoint(boundingBox));
