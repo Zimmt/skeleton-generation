@@ -8,6 +8,8 @@ Unterschenkel (beide Teile): https://sketchfab.com/3d-models/tibia-and-fibula-58
 Fuß: https://sketchfab.com/3d-models/foot-4c79b247004348548fe05587feac7f83
 Hand: https://sketchfab.com/3d-models/hand-efd1df50e4a2457d91045a1727db7679
 
+Carpometacarpus (Teil der Hand des Vogels): https://sketchfab.com/3d-models/uf-5769-r-cmc-c49b9928e89f4abdaa99423bd4cbb76c
+
 Köpfe
 - Okapi: https://sketchfab.com/3d-models/pig-skull-9dbd089c96184ee383c4b770cb98aaef
 
