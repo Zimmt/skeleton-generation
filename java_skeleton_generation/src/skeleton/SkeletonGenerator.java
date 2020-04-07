@@ -249,8 +249,8 @@ public class SkeletonGenerator {
      * @param firstParent element that shall be parent of the first vertebra generated
      * @return the generated vertebra
      */
-    public List<TerminalElement> generateVertebraeInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
-                                                             TerminalElement firstParent, Joint firstParentJoint) {
+    public List<TerminalElement> generateVertebraeAndRibsInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
+                                                                    TerminalElement firstParent, Joint firstParentJoint) {
 
         ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {

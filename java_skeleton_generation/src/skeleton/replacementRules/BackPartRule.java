@@ -1,5 +1,7 @@
 package skeleton.replacementRules;
 
+import skeleton.SkeletonMetaData;
+import skeleton.SpineData;
 import skeleton.SpinePart;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
@@ -18,18 +20,18 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Generates
  * - non terminal leg
- * - terminal vertebrae between root and pelvic
- * - terminal pelvic
+ * - terminal vertebrae between root and pelvic (+ rib if in chest interval)
+ * - terminal pelvis
  * - terminal vertebrae on tail
  */
 public class BackPartRule extends ReplacementRule {
 
     private final String inputID = "back part";
+    private static float pelvisZScale = 100f;
 
     public String getInputID() {
         return inputID;
@@ -43,11 +45,12 @@ public class BackPartRule extends ReplacementRule {
 
         BackPart backPart = (BackPart) skeletonPart;
         RootVertebra rootVertebra = backPart.getParent();
+        SkeletonMetaData skeletonMetaData = backPart.getGenerator().getSkeletonMetaData();
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), 1f);
-        List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.BACK,
-                backBackInterval, 13, rootVertebra, rootVertebra.getBackPartJoint()); // +3 vertebrae for pelvis
+        List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeAndRibsInInterval(backPart, SpinePart.BACK,
+                backBackInterval, SpineData.backBackVertebraCount, rootVertebra, rootVertebra.getBackPartJoint());
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
 
@@ -69,10 +72,9 @@ public class BackPartRule extends ReplacementRule {
             return generatedParts;
         }
 
-        ExtremityKind[] pelvisExtremityKinds = backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0);
+        ExtremityKind[] pelvisExtremityKinds = skeletonMetaData.getExtremities().getExtremityKindsForStartingPoint(0);
         if (pelvisExtremityKinds.length > 0) {
-            float pelvisZScale = 100f; // todo ribzScale + random
-            Pelvis pelvis = generatePelvis(backPart, pelvisParent, pelvisZScale);
+            Pelvis pelvis = generatePelvis(backPart, pelvisParent);
             generatedParts.add(pelvis);
 
             if (!pelvis.getLegJoints().isEmpty()) {
@@ -85,17 +87,17 @@ public class BackPartRule extends ReplacementRule {
         }
 
         Tuple2f tailInterval = new Point2f(0f, 1f);
-        int tailVertebraCount = 5 + (new Random()).nextInt(16);
-        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeInInterval(backPart, SpinePart.TAIL,
+        int tailVertebraCount = skeletonMetaData.getSpine().getTailVertebraCount();
+        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeAndRibsInInterval(backPart, SpinePart.TAIL,
                 tailInterval, tailVertebraCount, tailParent, tailParent.getSpineJoint());
         generatedParts.addAll(tail);
 
         return generatedParts;
     }
 
-    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, float zScale) {
+    private Pelvis generatePelvis(BackPart backPart, Vertebra parent) {
         float xyScale = parent.getBoundingBox().getXLength();
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(xyScale, xyScale, zScale));
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(xyScale, xyScale, pelvisZScale));
         TransformationMatrix transform = parent.getPelvisJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 

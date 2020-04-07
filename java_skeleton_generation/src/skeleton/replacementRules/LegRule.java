@@ -42,24 +42,20 @@ public class LegRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
         ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
 
-        for (PelvisJoint pelvicJoint : leg.getParent().getLegJoints()) {
-            ExtremityKind extremityKind = pelvicJoint.getExtremityKind();
+        for (PelvisJoint pelvisJoint : leg.getParent().getLegJoints()) {
+            ExtremityKind extremityKind = pelvisJoint.getExtremityKind();
 
-            Thigh thigh = generateThigh(leg, pelvicJoint, extremityKind);
+            Thigh thigh = generateThigh(leg, pelvisJoint, extremityKind);
             generatedParts.add(thigh);
 
             Shin shin = generateShin(leg, thigh, extremityKind);
             generatedParts.add(shin);
 
-            Vector3f footScale = new Vector3f(
-                    shin.getBoundingBox().getXLength(),
-                    extremityData.getLengthFoot(),
-                    shin.getBoundingBox().getZLength());
-            Foot foot = generateFoot(footScale, leg, shin);
+            Foot foot = generateFoot(leg, shin);
             generatedParts.add(foot);
 
             ExtremityPositioning extremityPositioning = new ExtremityPositioning(
-                    pelvicJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
+                    pelvisJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
 
             if (extremityKind == ExtremityKind.LEG) {
                 boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
@@ -103,8 +99,12 @@ public class LegRule extends ReplacementRule {
         return shin;
     }
 
-    private Foot generateFoot(Vector3f scale, Leg leg, Shin shin) {
-        BoundingBox boundingBox = new BoundingBox(scale);
+    private Foot generateFoot(Leg leg, Shin shin) {
+        float xzScale = shin.getBoundingBox().getXLength();
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(
+                xzScale,
+                leg.getGenerator().getSkeletonMetaData().getExtremities().getLengthFoot(),
+                xzScale));
         TransformationMatrix transform = shin.getJoint().calculateChildTransform(boundingBox);
 
         Foot foot = new Foot(transform, boundingBox, shin, leg);

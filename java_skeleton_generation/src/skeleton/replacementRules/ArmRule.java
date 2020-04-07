@@ -61,7 +61,7 @@ public class ArmRule extends ReplacementRule {
             System.out.print("floored wrist: " + flooredWrist + "... ");
 
             // other extremities do the same
-            upperArm.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredWrist);
+            extremityData.setFlooredAnkleWristProbability(flooredWrist);
 
             extremityPositioning.findFlooredPosition(flooredWrist);
         } // else nothing needs to be done, position is determined by joints

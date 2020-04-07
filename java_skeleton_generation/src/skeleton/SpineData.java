@@ -11,13 +11,23 @@ import java.util.Random;
 public class SpineData {
 
     public static float vertebraYZScale = 10f;
+    public static float maxRibYScale = 100f;
+
+    // there are about 15 thoraic vertebrae and 10 vertebrae on the lower back
+    // but as root is in the middle of the back curve I distributed the vertebrae more evenly
+    public static int frontBackVertebraCount = 13;
+    public static int backBackVertebraCount = 12;
+
+    private Integer neckVertebraCount = null;
+    private Integer tailVertebraCount = null;
 
     private CubicBezierCurve neck;
     private CubicBezierCurve back;
     private CubicBezierCurve tail;
 
-    public static float maxRibYScale = 100f;
     private Tuple2f chestIntervalOnBack;
+
+    private Random random = new Random();
 
     public SpineData(List<Point2d> spinePoints) {
         if (spinePoints.size() != 10) {
@@ -72,5 +82,23 @@ public class SpineData {
         } else {
             return (float) -(Math.pow(1.8f / chestIntervalOnBack.y * backSpinePosition - 0.9f, 4) - 1f) * maxRibYScale;
         }
+    }
+
+    public int getNeckVertebraCount(boolean hasWings) {
+        if (neckVertebraCount == null) {
+            if (!hasWings) {
+                neckVertebraCount = 7;
+            } else {
+                neckVertebraCount = 10 + random.nextInt(21);
+            }
+        }
+        return neckVertebraCount;
+    }
+
+    public int getTailVertebraCount() {
+        if (tailVertebraCount == null) {
+            tailVertebraCount = 5 + random.nextInt(16);
+        }
+        return tailVertebraCount;
     }
 }

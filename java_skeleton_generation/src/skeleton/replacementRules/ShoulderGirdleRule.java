@@ -22,6 +22,7 @@ import java.util.List;
 public class ShoulderGirdleRule extends ReplacementRule {
 
     private final String inputID = "shoulder girdle";
+    private static Vector3f shoulderScale = new Vector3f(60f, 50f, 50f);
 
     public String getInputID() {
         return inputID;
@@ -36,7 +37,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         ShoulderGirdle shoulderGirdle = (ShoulderGirdle) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
-        Shoulder shoulder = generateShoulder(shoulderGirdle, new Vector3f(60f, 50f, 50f));
+        Shoulder shoulder = generateShoulder(shoulderGirdle);
         generatedParts.add(shoulder);
 
         Arm arm = new Arm(shoulder, shoulderGirdle);
@@ -46,8 +47,8 @@ public class ShoulderGirdleRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle, Vector3f scale) {
-        BoundingBox boundingBox = new BoundingBox(scale);
+    private Shoulder generateShoulder(ShoulderGirdle shoulderGirdle) {
+        BoundingBox boundingBox = new BoundingBox(shoulderScale);
         TransformationMatrix transform;
         if (shoulderGirdle.getParent() instanceof ShoulderVertebra) {
             transform = ((ShoulderVertebra) shoulderGirdle.getParent()).getShoulderJoint().calculateChildTransform(boundingBox);

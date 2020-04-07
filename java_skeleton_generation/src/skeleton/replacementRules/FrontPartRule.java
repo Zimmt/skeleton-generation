@@ -1,5 +1,7 @@
 package skeleton.replacementRules;
 
+import skeleton.SkeletonMetaData;
+import skeleton.SpineData;
 import skeleton.SpinePart;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
@@ -16,19 +18,19 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Generates
  * - non terminal shoulder girdle
- * - terminal vertebrae between root and shoulder girdle
- * - terminal vertebra that is parent of shoulder girdle
+ * - terminal vertebrae between root and shoulder girdle (+ rib if in chest interval),
+ *      includes vertebra/rib that is parent of shoulder girdle
  * - terminal vertebrae of neck
  * - terminal head
  */
 public class FrontPartRule extends ReplacementRule {
 
     private final String inputID = "front part";
+    private static Vector3f headScale = new Vector3f(100f, 40f, 60f);
 
     public String getInputID() {
         return inputID;
@@ -41,11 +43,12 @@ public class FrontPartRule extends ReplacementRule {
         }
 
         FrontPart frontPart = (FrontPart) skeletonPart;
+        SkeletonMetaData skeletonMetaData = frontPart.getGenerator().getSkeletonMetaData();
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f frontBackInterval = new Point2f(frontPart.getParent().getFrontPartJoint().getSpinePosition(), 0f);
-        List<TerminalElement> frontBack = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.BACK,
-                frontBackInterval, 15, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
+        List<TerminalElement> frontBack = frontPart.getGenerator().generateVertebraeAndRibsInInterval(frontPart, SpinePart.BACK,
+                frontBackInterval, SpineData.frontBackVertebraCount, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
         List<ShoulderGirdle> shoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 1, frontBack, frontBack.size()-1, false);
@@ -53,21 +56,18 @@ public class FrontPartRule extends ReplacementRule {
         generatedParts.addAll(frontBack); // shoulder vertebra is changed, so it has to be set after generating the shoulder girdle
 
         Tuple2f neckInterval = new Point2f(1f, 0f);
-        int neckVertebraCount = 7;
-        if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasWings()) {
-            neckVertebraCount = 10 + (new Random()).nextInt(21);
-        }
+        int neckVertebraCount = skeletonMetaData.getSpine().getNeckVertebraCount(skeletonMetaData.getExtremities().hasWings());
         Vertebra neckParent = getNeckParent(frontBack);
-        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeInInterval(frontPart, SpinePart.NECK,
+        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeAndRibsInInterval(frontPart, SpinePart.NECK,
                 neckInterval, neckVertebraCount, neckParent, neckParent.getSpineJoint());
 
-        if (frontPart.getGenerator().getSkeletonMetaData().getExtremities().hasShoulderOnNeck()) {
+        if (skeletonMetaData.getExtremities().hasShoulderOnNeck()) {
             List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 2, neck, neck.size()-3, true);
             generatedParts.addAll(secondShoulderGirdles);
         }
         generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
 
-        Head head = generateHead(frontPart, new Vector3f(100f, 40f, 60f), neck.get(neck.size() - 1));
+        Head head = generateHead(frontPart, headScale, neck.get(neck.size() - 1));
         generatedParts.add(head);
 
         return generatedParts;
