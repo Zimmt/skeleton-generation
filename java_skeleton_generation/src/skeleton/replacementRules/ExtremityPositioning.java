@@ -57,9 +57,6 @@ public class ExtremityPositioning implements Serializable {
             System.err.println("Cannot find position without bones and joints!");
             return false;
         }
-        if (extremityKind != ExtremityKind.LEG) {
-            return true; // nothing to do as joints are already in valid position
-        }
         if (firstJointAngles != null) { // reconstruct joint angles from data
             firstJoint.setCurrentFirstAngle(firstJointAngles.x);
             firstJoint.setCurrentSecondAngle(firstJointAngles.y);
@@ -72,13 +69,17 @@ public class ExtremityPositioning implements Serializable {
             thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
             return true;
         }
+        boolean success = true;
+        if (extremityKind == ExtremityKind.LEG) {
+            ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
+            boolean flooredSecondBone = random.nextFloat() < extremityData.getFlooredAnkleWristProbability();
+            System.out.print("floored second bone: " + flooredSecondBone + "... ");
+            extremityData.setFlooredAnkleWristProbability(flooredSecondBone); // other extremities do the same
 
-        ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
-        boolean flooredSecondBone = random.nextFloat() < extremityData.getFlooredAnkleWristProbability();
-        System.out.print("floored second bone: " + flooredSecondBone + "... ");
-        extremityData.setFlooredAnkleWristProbability(flooredSecondBone); // other extremities do the same
-
-        return findFlooredPosition(flooredSecondBone);
+            success = findFlooredPosition(flooredSecondBone);
+        }
+        saveJointAngles();
+        return success;
     }
 
     public ExtremityKind getExtremityKind() {
@@ -211,8 +212,6 @@ public class ExtremityPositioning implements Serializable {
             thirdJoint.setCurrentAngle(-angle);
             thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
         }
-
-        saveJointAngles();
 
         float finalDistanceToFloor = Math.abs(endPosition.y-floorHeight);
         boolean successful = finalDistanceToFloor < floorDistanceEps;
