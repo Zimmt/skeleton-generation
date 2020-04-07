@@ -1,14 +1,14 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.arm.ShoulderJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import java.util.*;
+import java.util.Optional;
 
 /**
  * scaling: free
@@ -21,10 +21,10 @@ public class Shoulder extends TerminalElement {
     private boolean onNeck;
 
     public Shoulder(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor,
-                    ExtremityKind extremityKind, boolean onNeck) {
+                    ExtremityPositioning extremityPositioning, boolean onNeck) {
         super(transform, boundingBox, parent, ancestor);
-        if (extremityKind != null) {
-            this.joint = ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox), extremityKind, onNeck);
+        if (extremityPositioning != null) {
+            this.joint = ShoulderJoint.newSpecificShoulderJoint(this, Shoulder.getJointPosition(boundingBox), extremityPositioning, onNeck);
         }
         this.onNeck = onNeck;
     }

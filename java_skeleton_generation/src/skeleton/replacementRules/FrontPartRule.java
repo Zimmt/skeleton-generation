@@ -3,7 +3,6 @@ package skeleton.replacementRules;
 import skeleton.SkeletonMetaData;
 import skeleton.SpineData;
 import skeleton.SpinePart;
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.FrontPart;
 import skeleton.elements.nonterminal.ShoulderGirdle;
@@ -75,11 +74,11 @@ public class FrontPartRule extends ReplacementRule {
 
     private List<ShoulderGirdle> generateShoulderGirdlesOnOnePosition(FrontPart frontPart, int position, List<TerminalElement> vertebrae, int firstVertebraIndex, boolean onNeck) {
         List<ShoulderGirdle> shoulderGirdles = new ArrayList<>(2);
-        ExtremityKind[] extremityKinds = frontPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(position);
-        if (extremityKinds.length > 0) {
-            shoulderGirdles.add(generateShoulderGirdle(frontPart, vertebrae, firstVertebraIndex, extremityKinds[0], onNeck));
+        ExtremityPositioning[] extremityPositionings = frontPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityPositioningsForStartingPoint(position);
+        if (extremityPositionings.length > 0) {
+            shoulderGirdles.add(generateShoulderGirdle(frontPart, vertebrae, firstVertebraIndex, extremityPositionings[0], onNeck));
         }
-        if (extremityKinds.length > 1) { // find third vertebra or rib of third vertebra
+        if (extremityPositionings.length > 1) { // find third vertebra or rib of third vertebra
             int foundVertebrae = 0;
             int i = firstVertebraIndex-1;
             for (; i >= 0 && foundVertebrae < 3; i--) {
@@ -90,7 +89,7 @@ public class FrontPartRule extends ReplacementRule {
             if (vertebrae.get(i+1) instanceof Rib) {
                 i++;
             }
-            ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, vertebrae, i, extremityKinds[1], onNeck);
+            ShoulderGirdle shoulderGirdle = generateShoulderGirdle(frontPart, vertebrae, i, extremityPositionings[1], onNeck);
             shoulderGirdles.add(shoulderGirdle);
         }
         return shoulderGirdles;
@@ -99,7 +98,8 @@ public class FrontPartRule extends ReplacementRule {
     /**
      * @param vertebrae contain vertebrae but also can contain ribs
      */
-    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<TerminalElement> vertebrae, int shoulderVertebraIndex, ExtremityKind extremityKind, boolean onNeck) {
+    private ShoulderGirdle generateShoulderGirdle(FrontPart frontPart, List<TerminalElement> vertebrae, int shoulderVertebraIndex,
+                                                  ExtremityPositioning extremityPositioning, boolean onNeck) {
         TerminalElement parent = vertebrae.get(shoulderVertebraIndex);
 
         if (parent instanceof Vertebra) { // vertebra has no rib, vertebra needs to be shoulder vertebra
@@ -111,7 +111,7 @@ public class FrontPartRule extends ReplacementRule {
             parent = shoulderVertebra;
         }
 
-        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(parent, frontPart, extremityKind, onNeck);
+        ShoulderGirdle shoulderGirdle = new ShoulderGirdle(parent, frontPart, extremityPositioning, onNeck);
         parent.addChild(shoulderGirdle);
         return shoulderGirdle;
     }

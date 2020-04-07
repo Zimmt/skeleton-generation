@@ -2,6 +2,7 @@ package skeleton.elements.joints.leg;
 
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 
 import javax.vecmath.Point3f;
 
@@ -12,9 +13,9 @@ public class PelvisLegJoint extends PelvisJoint {
     private static float minSideAnglePelvic = (float) -Math.toRadians(170);
     private static float maxSideAnglePelvic = 0f;
 
-    public PelvisLegJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
-        super(parent, position, minFrontAnglePelvic, maxFrontAnglePelvic, minSideAnglePelvic, maxSideAnglePelvic, extremityKind);
-        if (extremityKind != ExtremityKind.LEG && extremityKind != ExtremityKind.ARM) {
+    public PelvisLegJoint(TerminalElement parent, Point3f position, ExtremityPositioning extremityPositioning) {
+        super(parent, position, minFrontAnglePelvic, maxFrontAnglePelvic, minSideAnglePelvic, maxSideAnglePelvic, extremityPositioning);
+        if (extremityPositioning.getExtremityKind() != ExtremityKind.LEG) {
             System.err.println("Invalid pelvic leg joint kind");
         }
         setCurrentFirstAngle(minFrontAnglePelvic);
@@ -22,6 +23,6 @@ public class PelvisLegJoint extends PelvisJoint {
     }
 
     public PelvisLegJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new PelvisLegJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityKind());
+        return new PelvisLegJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), getExtremityPositioning());
     }
 }

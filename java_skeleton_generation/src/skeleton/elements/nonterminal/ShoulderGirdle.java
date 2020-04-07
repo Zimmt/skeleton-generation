@@ -1,18 +1,18 @@
 package skeleton.elements.nonterminal;
 
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 
 public class ShoulderGirdle extends NonTerminalElement {
 
     private final String kind = "shoulder girdle";
 
-    private ExtremityKind extremityKind;
+    private ExtremityPositioning extremityPositioning;
     private boolean onNeck;
 
-    public ShoulderGirdle(TerminalElement parent, NonTerminalElement ancestor, ExtremityKind extremityKind, boolean onNeck) {
+    public ShoulderGirdle(TerminalElement parent, NonTerminalElement ancestor, ExtremityPositioning extremityPositioning, boolean onNeck) {
         super(parent, ancestor);
-        this.extremityKind = extremityKind;
+        this.extremityPositioning = extremityPositioning;
         this.onNeck = onNeck;
     }
 
@@ -24,8 +24,8 @@ public class ShoulderGirdle extends NonTerminalElement {
         return kind;
     }
 
-    public ExtremityKind getExtremityKind() {
-        return extremityKind;
+    public ExtremityPositioning getExtremityPositioning() {
+        return extremityPositioning;
     }
 
     public boolean canBeMirrored() {

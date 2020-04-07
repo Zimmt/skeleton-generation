@@ -1,6 +1,7 @@
 package skeleton;
 
 import skeleton.elements.ExtremityKind;
+import skeleton.replacementRules.ExtremityPositioning;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class ExtremityData implements Serializable {
     private float flooredAnkleWristProbability;
     private ExtremityStartingPoints extremityStartingPoints;
 
-    private Random random = new Random();
+    private transient Random random = new Random();
 
     public ExtremityData(double wingProbability, double flooredLegProbability,
                          double lengthUpperArm, double lengthLowerArm, double lengthHand,
@@ -97,8 +98,8 @@ public class ExtremityData implements Serializable {
     /**
      * @param position is counting from the back (so pelvic in a normal animal would be 0)
      */
-    public ExtremityKind[] getExtremityKindsForStartingPoint(int position) {
-        return extremityStartingPoints.getExtremityKindsForStartingPoint(position);
+    public ExtremityPositioning[] getExtremityPositioningsForStartingPoint(int position) {
+        return extremityStartingPoints.getExtremityPositioningsForStartingPoint(position);
     }
 
     /**
@@ -159,8 +160,8 @@ public class ExtremityData implements Serializable {
     private void calculateFloorHeight(SpineData spine) {
         float minFloorHeight = 0f;
         float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
-        int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.LEG).count();
-        int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityKindsForStartingPoint(1)).filter(e -> e == ExtremityKind.LEG).count();
+        int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityPositioningsForStartingPoint(0)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
+        int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityPositioningsForStartingPoint(1)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
 
         if (backLegs > 0) {
             float pelvicHeight = spine.getBack().getControlPoint3().y;

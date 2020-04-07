@@ -1,28 +1,44 @@
 package skeleton.replacementRules;
 
+import skeleton.ExtremityData;
+import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.OneAngleBasedJoint;
 import skeleton.elements.joints.XZAngleBasedJoint;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.UpperArm;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
+import java.io.Serializable;
 import java.util.Random;
 
-public class ExtremityPositioning {
+public class ExtremityPositioning implements Serializable {
 
-    private XZAngleBasedJoint firstJoint; // joint between parent of fist bone and first bone
-    private OneAngleBasedJoint secondJoint; // joint between first and second bone
-    private OneAngleBasedJoint thirdJoint; // joint between second and third bone
+    private ExtremityKind extremityKind;
 
-    private TerminalElement firstBone;
-    private TerminalElement secondBone;
-    private TerminalElement thirdBone;
+    private transient XZAngleBasedJoint firstJoint; // joint between parent of fist bone and first bone
+    private transient OneAngleBasedJoint secondJoint; // joint between first and second bone
+    private transient OneAngleBasedJoint thirdJoint; // joint between second and third bone
 
-    private Random random = new Random();
+    private transient TerminalElement firstBone;
+    private transient TerminalElement secondBone;
+    private transient TerminalElement thirdBone;
 
-    public ExtremityPositioning(XZAngleBasedJoint firstJoint, OneAngleBasedJoint secondJoint, OneAngleBasedJoint thirdJoint,
-                                TerminalElement firstBone, TerminalElement secondBone, TerminalElement thirdBone) {
+    // these angles are only saved here to reconstruct the skeleton from file
+    private Tuple2f firstJointAngles;
+    private float secondJointAngle;
+    private float thirdJointAngle;
+
+    private transient Random random = new Random();
+
+    public ExtremityPositioning(ExtremityKind extremityKind) {
+        this.extremityKind = extremityKind;
+    }
+
+    public void setBonesAndJoints(XZAngleBasedJoint firstJoint, OneAngleBasedJoint secondJoint, OneAngleBasedJoint thirdJoint,
+                                  TerminalElement firstBone, TerminalElement secondBone, TerminalElement thirdBone) {
         this.firstJoint = firstJoint;
         this.secondJoint = secondJoint;
         this.thirdJoint = thirdJoint;
@@ -35,6 +51,40 @@ public class ExtremityPositioning {
         thirdJoint.setChild(thirdBone);
     }
 
+    public boolean findPosition() {
+        if (firstJoint == null || secondJoint == null || thirdJoint == null ||
+                firstBone == null || secondBone == null || thirdBone == null) {
+            System.err.println("Cannot find position without bones and joints!");
+            return false;
+        }
+        if (extremityKind != ExtremityKind.LEG) {
+            return true; // nothing to do as joints are already in valid position
+        }
+        if (firstJointAngles != null) { // reconstruct joint angles from data
+            firstJoint.setCurrentFirstAngle(firstJointAngles.x);
+            firstJoint.setCurrentSecondAngle(firstJointAngles.y);
+            firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
+
+            secondJoint.setCurrentAngle(secondJointAngle);
+            secondBone.setTransform(secondJoint.calculateChildTransform(secondBone.getBoundingBox()));
+
+            thirdJoint.setCurrentAngle(thirdJointAngle);
+            thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
+            return true;
+        }
+
+        ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
+        boolean flooredSecondBone = random.nextFloat() < extremityData.getFlooredAnkleWristProbability();
+        System.out.print("floored second bone: " + flooredSecondBone + "... ");
+        extremityData.setFlooredAnkleWristProbability(flooredSecondBone); // other extremities do the same
+
+        return findFlooredPosition(flooredSecondBone);
+    }
+
+    public ExtremityKind getExtremityKind() {
+        return extremityKind;
+    }
+
     /**
      * Adapts angles of joints until a position is reached where the floor is touched
      * ! initial position is determined by the inital angles set by joints
@@ -43,7 +93,7 @@ public class ExtremityPositioning {
      * - the bones are too short to reach the floor
      * - or the maximum number of steps was exceeded (but angles have already been changed)
      */
-    public boolean findFlooredPosition(boolean flooredSecondBone) {
+    private boolean findFlooredPosition(boolean flooredSecondBone) {
         float floorHeight = firstBone.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
         float floorDistanceEps = 1f;
 
@@ -153,20 +203,29 @@ public class ExtremityPositioning {
             }
         }
 
-        float finalDistanceToFloor = Math.abs(endPosition.y-floorHeight);
-        if (finalDistanceToFloor < floorDistanceEps) {
-            if (flooredSecondBone) { // adjust foot
-                Vector3f localDir = new Vector3f(0f, 1f, 0f);
-                secondBone.calculateWorldTransform().applyOnVector(localDir);
-                float angle = new Vector3f(1f, 0f, 0f).angle(new Vector3f(localDir.x, localDir.y, 0f));
-                thirdJoint.setCurrentAngle(-angle);
-                thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
-            }
-            return true;
-        } else {
-            System.err.println("Could not reach floor. Final distance to floor is: " + finalDistanceToFloor);
-            return false;
+
+        if (flooredSecondBone) { // adjust foot
+            Vector3f localDir = new Vector3f(0f, 1f, 0f);
+            secondBone.calculateWorldTransform().applyOnVector(localDir);
+            float angle = new Vector3f(1f, 0f, 0f).angle(new Vector3f(localDir.x, localDir.y, 0f));
+            thirdJoint.setCurrentAngle(-angle);
+            thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
         }
+
+        saveJointAngles();
+
+        float finalDistanceToFloor = Math.abs(endPosition.y-floorHeight);
+        boolean successful = finalDistanceToFloor < floorDistanceEps;
+        if (!successful) {
+            System.err.println("Could not reach floor. Final distance to floor is: " + finalDistanceToFloor);
+        }
+        return successful;
+    }
+
+    private void saveJointAngles() {
+        firstJointAngles = new Point2f(firstJoint.getCurrentFirstAngle(), firstJoint.getCurrentSecondAngle());
+        secondJointAngle = secondJoint.getCurrentAngle();
+        thirdJointAngle = thirdJoint.getCurrentAngle();
     }
 
     private Point3f firstBoneSetTransformAndCalculateWorldPosition() {

@@ -39,7 +39,7 @@ public class SpineData implements Serializable {
 
     private Tuple2f chestIntervalOnBack;
 
-    private Random random = new Random();
+    private transient Random random = new Random();
 
     public SpineData(List<Point2d> spinePoints) {
         if (spinePoints.size() != 10) {

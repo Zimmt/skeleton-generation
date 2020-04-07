@@ -1,9 +1,13 @@
 package skeleton;
 
 import skeleton.elements.ExtremityKind;
+import skeleton.replacementRules.ExtremityPositioning;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class ExtremityStartingPoints implements Serializable {
 
@@ -12,9 +16,9 @@ public class ExtremityStartingPoints implements Serializable {
     private static int[] possibleArmPositions = new int[] {1, 2};
     private static int[] possibleFinPositions = new int[] {0, 1, 2};
 
-    // a two element array of extremity kinds for each extremity starting point
+    // a two/three element array of extremity positionings for each extremity starting point
     // the first entry concerns the extremity starting point that is nearest to the tail
-    private ArrayList<ExtremityKind[]> extremityKindsForStartingPoints;
+    private ArrayList<ExtremityPositioning[]> extremityKindsForStartingPoints;
 
     private boolean twoExtremitiesPerGirdleAllowed;
 
@@ -24,9 +28,9 @@ public class ExtremityStartingPoints implements Serializable {
         this.twoExtremitiesPerGirdleAllowed = twoExtremitiesPerGirdleAllowed;
         int countPerPoint = twoExtremitiesPerGirdleAllowed ? 2 : 1;
         if (hasSecondShoulder) {
-            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]));
+            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
         } else {
-            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]));
+            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
         }
     }
 
@@ -38,17 +42,17 @@ public class ExtremityStartingPoints implements Serializable {
         return extremityKindsForStartingPoints.size();
     }
 
-    public ExtremityKind[] getExtremityKindsForStartingPoint(int startingPoint) {
+    public ExtremityPositioning[] getExtremityPositioningsForStartingPoint(int startingPoint) {
         if (startingPoint >= extremityKindsForStartingPoints.size()) {
-            return new ExtremityKind[0];
+            return new ExtremityPositioning[0];
         } else {
-            List<ExtremityKind> extremityKinds = new ArrayList<>(extremityKindsForStartingPoints.get(startingPoint).length);
+            List<ExtremityPositioning> extremityPositionings = new ArrayList<>(extremityKindsForStartingPoints.get(startingPoint).length);
             for (int i = 0; i < extremityKindsForStartingPoints.get(startingPoint).length; i++) {
                 if (extremityKindsForStartingPoints.get(startingPoint)[i] != null) {
-                    extremityKinds.add(extremityKindsForStartingPoints.get(startingPoint)[i]);
+                    extremityPositionings.add(extremityKindsForStartingPoints.get(startingPoint)[i]);
                 }
             }
-            return extremityKinds.toArray(ExtremityKind[]::new);
+            return extremityPositionings.toArray(ExtremityPositioning[]::new);
         }
     }
 
@@ -63,8 +67,8 @@ public class ExtremityStartingPoints implements Serializable {
         if (!(getFreeExtremityCountAtPosition(0) == 0 && getFreeExtremityCountAtPosition(1) == 0)) {
             distributeLegs(); // otherwise there is no space to distribute
         }
-        if (hasShoulderOnNeck() && !(getExtremityKindsForStartingPoint(2).length > 0 && getExtremityKindsForStartingPoint(1).length > 0)) {
-            if (getExtremityKindsForStartingPoint(2).length == 0 && getExtremityKindsForStartingPoint(1).length == 0) {
+        if (hasShoulderOnNeck() && !(getExtremityPositioningsForStartingPoint(2).length > 0 && getExtremityPositioningsForStartingPoint(1).length > 0)) {
+            if (getExtremityPositioningsForStartingPoint(2).length == 0 && getExtremityPositioningsForStartingPoint(1).length == 0) {
                 System.err.println("There is a shoulder on neck, but no extremities to put on either of the shoulders.");
                 return;
             }
@@ -77,8 +81,8 @@ public class ExtremityStartingPoints implements Serializable {
      * (only for extremity girdles on back)
      */
     private void distributeLegs() {
-        int legCountPelvis = (int) Arrays.stream(getExtremityKindsForStartingPoint(0)).filter(e -> e == ExtremityKind.LEG).count();
-        int legCountShoulder = (int) Arrays.stream(getExtremityKindsForStartingPoint(1)).filter((e -> e == ExtremityKind.LEG)).count();
+        int legCountPelvis = (int) Arrays.stream(getExtremityPositioningsForStartingPoint(0)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
+        int legCountShoulder = (int) Arrays.stream(getExtremityPositioningsForStartingPoint(1)).filter((e -> e.getExtremityKind() == ExtremityKind.LEG)).count();
         if (legCountPelvis > 1 && legCountShoulder == 0) {
             removeKindAtPosition(ExtremityKind.LEG, 0);
             setKindAtPosition(ExtremityKind.LEG, 1);
@@ -93,17 +97,17 @@ public class ExtremityStartingPoints implements Serializable {
      * If the shoulder with extremities has only one extremity and would be left empty then, nothing is done.
      */
     private void distributeShoulderExtremities() {
-        int moveFrom = getExtremityKindsForStartingPoint(2).length == 0 ? 1 : 2;
+        int moveFrom = getExtremityPositioningsForStartingPoint(2).length == 0 ? 1 : 2;
         int moveTo = moveFrom == 1 ? 2 : 1;
-        if (getExtremityKindsForStartingPoint(moveFrom).length < 2) {
+        if (getExtremityPositioningsForStartingPoint(moveFrom).length < 2) {
             return; // if an extremity would be moved from here there would be none left
         }
 
-        ExtremityKind[] kinds = getExtremityKindsForStartingPoint(moveFrom);
-        int i = random.nextInt(kinds.length);
-        ExtremityKind movedKind = kinds[i];
-        kinds[i] = null;
-        setKindAtPosition(movedKind, moveTo);
+        ExtremityPositioning[] positionings = getExtremityPositioningsForStartingPoint(moveFrom);
+        int i = random.nextInt(positionings.length);
+        ExtremityPositioning movedPositioning = positionings[i];
+        positionings[i] = null;
+        setKindAtPosition(movedPositioning.getExtremityKind(), moveTo);
     }
 
     public void setWings(int wingCount) {
@@ -126,8 +130,8 @@ public class ExtremityStartingPoints implements Serializable {
         if (position >= extremityKindsForStartingPoints.size()) {
             return 0;
         }
-        ExtremityKind[] kinds = getExtremityKindsForStartingPoint(position);
-        return extremityKindsForStartingPoints.get(position).length - kinds.length;
+        ExtremityPositioning[] positionings = getExtremityPositioningsForStartingPoint(position);
+        return extremityKindsForStartingPoints.get(position).length - positionings.length;
     }
 
     public int getFreeWingCount() {
@@ -148,9 +152,9 @@ public class ExtremityStartingPoints implements Serializable {
 
     public void setKindAtPosition(ExtremityKind kind, int position) {
         if (extremityKindsForStartingPoints.get(position)[0] == null) {
-            extremityKindsForStartingPoints.get(position)[0] = kind;
+            extremityKindsForStartingPoints.get(position)[0] = new ExtremityPositioning(kind);
         } else if (extremityKindsForStartingPoints.get(position)[1] == null){
-            extremityKindsForStartingPoints.get(position)[1] = kind;
+            extremityKindsForStartingPoints.get(position)[1] = new ExtremityPositioning(kind);
         } else {
             System.err.println("Cannot set kind in specified position!");
         }
@@ -158,7 +162,7 @@ public class ExtremityStartingPoints implements Serializable {
 
     private void removeKindAtPosition(ExtremityKind kind, int position) {
         for (int i = 0; i < extremityKindsForStartingPoints.get(position).length; i++) {
-            if (extremityKindsForStartingPoints.get(position)[i] == kind) {
+            if (extremityKindsForStartingPoints.get(position)[i].getExtremityKind() == kind) {
                 extremityKindsForStartingPoints.get(position)[i] = null;
                 break;
             }

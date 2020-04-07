@@ -2,6 +2,7 @@ package skeleton.elements.joints.arm;
 
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -13,8 +14,8 @@ public class ShoulderFinJoint extends ShoulderJoint {
     private static float minSideAngle = 0f;
     private static float maxSideAngle = (float) Math.toRadians(360);
 
-    public ShoulderFinJoint(TerminalElement parent, Point3f position, boolean secondShoulder) {
-        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.FIN, secondShoulder);
+    public ShoulderFinJoint(TerminalElement parent, Point3f position, boolean secondShoulder, ExtremityPositioning extremityPositioning) {
+        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, extremityPositioning, secondShoulder);
 
         setCurrentFirstAngle(frontAngle);
         Vector3f localY = new Vector3f(0f, -1f, 0f);
@@ -30,6 +31,6 @@ public class ShoulderFinJoint extends ShoulderJoint {
     }
 
     public ShoulderFinJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new ShoulderFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), secondShoulder);
+        return new ShoulderFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), secondShoulder, new ExtremityPositioning(ExtremityKind.FIN));
     }
 }

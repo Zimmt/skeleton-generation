@@ -3,7 +3,6 @@ package skeleton.replacementRules;
 import skeleton.SkeletonMetaData;
 import skeleton.SpineData;
 import skeleton.SpinePart;
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.nonterminal.BackPart;
 import skeleton.elements.nonterminal.Leg;
@@ -72,9 +71,9 @@ public class BackPartRule extends ReplacementRule {
             return generatedParts;
         }
 
-        ExtremityKind[] pelvisExtremityKinds = skeletonMetaData.getExtremities().getExtremityKindsForStartingPoint(0);
-        if (pelvisExtremityKinds.length > 0) {
-            Pelvis pelvis = generatePelvis(backPart, pelvisParent);
+        ExtremityPositioning[] pelvisExtremityPositionings = skeletonMetaData.getExtremities().getExtremityPositioningsForStartingPoint(0);
+        if (pelvisExtremityPositionings.length > 0) {
+            Pelvis pelvis = generatePelvis(backPart, pelvisParent, pelvisExtremityPositionings);
             generatedParts.add(pelvis);
 
             if (!pelvis.getLegJoints().isEmpty()) {
@@ -95,14 +94,13 @@ public class BackPartRule extends ReplacementRule {
         return generatedParts;
     }
 
-    private Pelvis generatePelvis(BackPart backPart, Vertebra parent) {
+    private Pelvis generatePelvis(BackPart backPart, Vertebra parent, ExtremityPositioning[] extremityPositionings) {
         float xyScale = parent.getBoundingBox().getXLength();
         BoundingBox boundingBox = new BoundingBox(new Vector3f(xyScale, xyScale, pelvisZScale));
         TransformationMatrix transform = parent.getPelvisJoint().calculateChildTransform(boundingBox);
         transform.translate(Pelvis.getLocalTranslationFromJoint(boundingBox));
 
-        Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart,
-                backPart.getGenerator().getSkeletonMetaData().getExtremities().getExtremityKindsForStartingPoint(0));
+        Pelvis pelvis = new Pelvis(transform, boundingBox, parent, backPart, extremityPositionings);
         parent.addChild(pelvis);
         return pelvis;
     }

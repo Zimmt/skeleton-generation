@@ -1,8 +1,7 @@
 package skeleton.replacementRules;
 
-import skeleton.ExtremityData;
-import skeleton.elements.SkeletonPart;
 import skeleton.elements.ExtremityKind;
+import skeleton.elements.SkeletonPart;
 import skeleton.elements.joints.arm.ShoulderJoint;
 import skeleton.elements.nonterminal.Arm;
 import skeleton.elements.terminal.Hand;
@@ -16,7 +15,6 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Generates
@@ -39,33 +37,21 @@ public class ArmRule extends ReplacementRule {
 
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
-        ExtremityData extremityData = arm.getGenerator().getSkeletonMetaData().getExtremities();
         Shoulder shoulder = arm.getParent();
 
-        ExtremityKind extremityKind = shoulder.getJoint().getExtremityKind();
+        ExtremityPositioning extremityPositioning = shoulder.getJoint().getExtremityPositioning();
 
-        UpperArm upperArm = generateUpperArm(arm, shoulder.getJoint(), extremityKind);
+        UpperArm upperArm = generateUpperArm(arm, shoulder.getJoint(), extremityPositioning.getExtremityKind());
         generatedParts.add(upperArm);
 
-        LowerArm lowerArm = generateLowerArm(arm, upperArm, extremityKind);
+        LowerArm lowerArm = generateLowerArm(arm, upperArm, extremityPositioning.getExtremityKind());
         generatedParts.add(lowerArm);
 
         Hand hand = generateHand(arm, lowerArm);
         generatedParts.add(hand);
 
-        ExtremityPositioning extremityPositioning = new ExtremityPositioning(
-                shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
-
-        if (extremityKind == ExtremityKind.LEG) {
-            boolean flooredWrist = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-            System.out.print("floored wrist: " + flooredWrist + "... ");
-
-            // other extremities do the same
-            extremityData.setFlooredAnkleWristProbability(flooredWrist);
-
-            extremityPositioning.findFlooredPosition(flooredWrist);
-        } // else nothing needs to be done, position is determined by joints
-
+        extremityPositioning.setBonesAndJoints(shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
+        extremityPositioning.findPosition();
 
         System.out.println("...finished.");
 

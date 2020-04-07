@@ -1,9 +1,9 @@
 package skeleton.elements.joints.leg;
 
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.XZAngleBasedJoint;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.Thigh;
+import skeleton.replacementRules.ExtremityPositioning;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -11,15 +11,16 @@ import javax.vecmath.Point3f;
 
 public abstract class PelvisJoint extends XZAngleBasedJoint {
 
-    private ExtremityKind extremityKind;
+    private ExtremityPositioning extremityPositioning;
 
-    public PelvisJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle, ExtremityKind extremityKind) {
+    public PelvisJoint(TerminalElement parent, Point3f position, float minFirstAngle, float maxFirstAngle, float minSecondAngle, float maxSecondAngle,
+                       ExtremityPositioning extremityPositioning) {
         super(parent, position, minFirstAngle, maxFirstAngle, minSecondAngle, maxSecondAngle);
-        this.extremityKind = extremityKind;
+        this.extremityPositioning = extremityPositioning;
     }
 
-    public ExtremityKind getExtremityKind() {
-        return extremityKind;
+    public ExtremityPositioning getExtremityPositioning() {
+        return extremityPositioning;
     }
 
     public TransformationMatrix calculateChildTransform(BoundingBox childBoundingBox) {
@@ -32,13 +33,13 @@ public abstract class PelvisJoint extends XZAngleBasedJoint {
         return true;
     }
 
-    public static PelvisJoint newSpecificPelvicJoint(TerminalElement parent, Point3f position, ExtremityKind extremityKind) {
-        switch (extremityKind) {
+    public static PelvisJoint newSpecificPelvisJoint(TerminalElement parent, Point3f position, ExtremityPositioning extremityPositioning) {
+        switch (extremityPositioning.getExtremityKind()) {
             case LEG:
             case ARM:
-                return new PelvisLegJoint(parent, position, extremityKind);
+                return new PelvisLegJoint(parent, position, extremityPositioning);
             case FIN:
-                return new PelvisFinJoint(parent, position);
+                return new PelvisFinJoint(parent, position, extremityPositioning);
             case WING:
                 System.err.println("No wings for pelvic possible");
             default:

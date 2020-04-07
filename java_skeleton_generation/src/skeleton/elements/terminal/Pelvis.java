@@ -1,8 +1,8 @@
 package skeleton.elements.terminal;
 
-import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.leg.PelvisJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 import util.BoundingBox;
 import util.TransformationMatrix;
 
@@ -24,13 +24,13 @@ public class Pelvis extends TerminalElement {
     private PelvisJoint firstJoint;
     private PelvisJoint secondJoint;
 
-    public Pelvis(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityKind[] extremityKinds) {
+    public Pelvis(TransformationMatrix transform, BoundingBox boundingBox, TerminalElement parent, NonTerminalElement ancestor, ExtremityPositioning[] extremityPositionings) {
         super(transform, boundingBox, parent, ancestor);
-        if (extremityKinds.length == 1) {
-            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getOnlyLegJointPosition(boundingBox), extremityKinds[0]);
-        } else if (extremityKinds.length == 2) {
-            this.firstJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getFirstLegJointPosition(boundingBox), extremityKinds[0]);
-            this.secondJoint = PelvisJoint.newSpecificPelvicJoint(this, Pelvis.getSecondLegJointPosition(boundingBox), extremityKinds[1]);
+        if (extremityPositionings.length == 1) {
+            this.firstJoint = PelvisJoint.newSpecificPelvisJoint(this, Pelvis.getOnlyLegJointPosition(boundingBox), extremityPositionings[0]);
+        } else if (extremityPositionings.length == 2) {
+            this.firstJoint = PelvisJoint.newSpecificPelvisJoint(this, Pelvis.getFirstLegJointPosition(boundingBox), extremityPositionings[0]);
+            this.secondJoint = PelvisJoint.newSpecificPelvisJoint(this, Pelvis.getSecondLegJointPosition(boundingBox), extremityPositionings[1]);
         }
     }
 

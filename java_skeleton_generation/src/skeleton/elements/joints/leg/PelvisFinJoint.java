@@ -1,8 +1,8 @@
 package skeleton.elements.joints.leg;
 
 import skeleton.elements.ExtremityKind;
-import skeleton.elements.joints.arm.ShoulderFinJoint;
 import skeleton.elements.terminal.TerminalElement;
+import skeleton.replacementRules.ExtremityPositioning;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -14,8 +14,8 @@ public class PelvisFinJoint extends PelvisJoint {
     private static float minSideAngle = 0f;
     private static float maxSideAngle = (float) Math.toRadians(360);
 
-    public PelvisFinJoint(TerminalElement parent, Point3f position) {
-        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, ExtremityKind.FIN);
+    public PelvisFinJoint(TerminalElement parent, Point3f position, ExtremityPositioning extremityPositioning) {
+        super(parent, position, frontAngle, frontAngle, minSideAngle, maxSideAngle, extremityPositioning);
 
         setCurrentFirstAngle(frontAngle);
         Vector3f localY = new Vector3f(0f, -1f, 0f);
@@ -31,6 +31,6 @@ public class PelvisFinJoint extends PelvisJoint {
     }
 
     public PelvisFinJoint calculateMirroredJoint(TerminalElement mirroredParent) {
-        return new PelvisFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent));
+        return new PelvisFinJoint(mirroredParent, calculateMirroredJointPosition(mirroredParent), new ExtremityPositioning(ExtremityKind.FIN));
     }
 }

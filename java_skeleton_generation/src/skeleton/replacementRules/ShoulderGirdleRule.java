@@ -57,7 +57,7 @@ public class ShoulderGirdleRule extends ReplacementRule {
         }
         transform.translate(Shoulder.getLocalTranslationFromJoint(boundingBox));
 
-        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, shoulderGirdle.getExtremityKind(), shoulderGirdle.isOnNeck());
+        Shoulder shoulder = new Shoulder(transform, boundingBox, shoulderGirdle.getParent(), shoulderGirdle, shoulderGirdle.getExtremityPositioning(), shoulderGirdle.isOnNeck());
         shoulderGirdle.getParent().replaceChild(shoulderGirdle, shoulder);
         return shoulder;
     }

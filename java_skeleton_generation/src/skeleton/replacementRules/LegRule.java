@@ -1,6 +1,5 @@
 package skeleton.replacementRules;
 
-import skeleton.ExtremityData;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.SkeletonPart;
 import skeleton.elements.joints.leg.PelvisJoint;
@@ -15,7 +14,6 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Generates
@@ -40,32 +38,21 @@ public class LegRule extends ReplacementRule {
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
-        ExtremityData extremityData = leg.getGenerator().getSkeletonMetaData().getExtremities();
 
         for (PelvisJoint pelvisJoint : leg.getParent().getLegJoints()) {
-            ExtremityKind extremityKind = pelvisJoint.getExtremityKind();
+            ExtremityPositioning extremityPositioning = pelvisJoint.getExtremityPositioning();
 
-            Thigh thigh = generateThigh(leg, pelvisJoint, extremityKind);
+            Thigh thigh = generateThigh(leg, pelvisJoint, extremityPositioning.getExtremityKind());
             generatedParts.add(thigh);
 
-            Shin shin = generateShin(leg, thigh, extremityKind);
+            Shin shin = generateShin(leg, thigh, extremityPositioning.getExtremityKind());
             generatedParts.add(shin);
 
             Foot foot = generateFoot(leg, shin);
             generatedParts.add(foot);
 
-            ExtremityPositioning extremityPositioning = new ExtremityPositioning(
-                    pelvisJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
-
-            if (extremityKind == ExtremityKind.LEG) {
-                boolean flooredAnkle = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
-                System.out.print("floored ankle: " + flooredAnkle + "... ");
-
-                // other extremities do the same
-                thigh.getGenerator().getSkeletonMetaData().getExtremities().setFlooredAnkleWristProbability(flooredAnkle);
-
-                extremityPositioning.findFlooredPosition(flooredAnkle);
-            } // else it is a fin nothing needs to be done as position is determined by joints
+            extremityPositioning.setBonesAndJoints(pelvisJoint, thigh.getJoint(), shin.getJoint(), thigh, shin, foot);
+            extremityPositioning.findPosition();
         }
 
         System.out.println("...finished.");
