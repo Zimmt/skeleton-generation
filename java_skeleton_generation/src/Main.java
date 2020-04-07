@@ -38,29 +38,42 @@ public class Main {
     }
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
+        boolean readMetaDataFromFile = true;
+        String metaDataFileName = "skeletonMetaData.txt";
+
         boolean allCubes = false;
         boolean lowResolution = true;
-        boolean allowTwoExtremitiesPerGirdle = true;
-        Integer userInputFlooredLegs = null;
-        Integer userInputWings = null;
-        Integer userInputArms = null;
-        Integer userInputFins = null;
-        Boolean userInputSecondShoulder = null;
-        Double userInputNeckYLength = null;
-        Double userInputTailXLength = null;
-        String userInputHead = "horse_skull";
-        UserInput userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, allowTwoExtremitiesPerGirdle,
-                userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
+        UserInput userInput = null;
+        PcaHandler pcaHandler = null;
+        if (!readMetaDataFromFile) {
+            boolean allowTwoExtremitiesPerGirdle = true;
+            Integer userInputFlooredLegs = null;
+            Integer userInputWings = null;
+            Integer userInputArms = null;
+            Integer userInputFins = null;
+            Boolean userInputSecondShoulder = null;
+            Double userInputNeckYLength = null;
+            Double userInputTailXLength = null;
+            String userInputHead = "horse_skull";
+            userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, allowTwoExtremitiesPerGirdle,
+                    userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
 
-        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
-                userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
-        PcaHandler pcaHandler = new PcaHandler(dataPoints, conditions);
+            List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
+            PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
+                    userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
+            pcaHandler = new PcaHandler(dataPoints, conditions);
+        }
+
 
         int skeletonCount = 1;
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println("- " + i + " --------------------------------------------------------------");
-            SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
+            SkeletonGenerator skeletonGenerator;
+            if (readMetaDataFromFile) {
+                skeletonGenerator = new SkeletonGenerator(metaDataFileName);
+            } else {
+                skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
+            }
             while (!skeletonGenerator.isFinished()) {
                 boolean stepDone = skeletonGenerator.doOneStep();
                 if (!stepDone) { // there might be missing rules
@@ -71,6 +84,10 @@ public class Main {
 
             ObjGenerator objGenerator = new ObjGenerator();
             objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowResolution);
+
+            if (!readMetaDataFromFile) {
+                skeletonGenerator.getSkeletonMetaData().saveToFile(metaDataFileName);
+            }
         }
     }
 }

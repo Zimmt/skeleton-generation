@@ -49,7 +49,7 @@ public class BackPartRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f backBackInterval = new Point2f(rootVertebra.getBackPartJoint().getSpinePosition(), 1f);
-        List<TerminalElement> backBack = backPart.getGenerator().generateVertebraeAndRibsInInterval(backPart, SpinePart.BACK,
+        List<TerminalElement> backBack = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(backPart, SpinePart.BACK,
                 backBackInterval, SpineData.backBackVertebraCount, rootVertebra, rootVertebra.getBackPartJoint());
         rootVertebra.removeChild(backPart);
         generatedParts.addAll(backBack);
@@ -88,7 +88,7 @@ public class BackPartRule extends ReplacementRule {
 
         Tuple2f tailInterval = new Point2f(0f, 1f);
         int tailVertebraCount = skeletonMetaData.getSpine().getTailVertebraCount();
-        List<TerminalElement> tail = backPart.getGenerator().generateVertebraeAndRibsInInterval(backPart, SpinePart.TAIL,
+        List<TerminalElement> tail = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(backPart, SpinePart.TAIL,
                 tailInterval, tailVertebraCount, tailParent, tailParent.getSpineJoint());
         generatedParts.addAll(tail);
 

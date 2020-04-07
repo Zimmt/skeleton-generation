@@ -1,14 +1,26 @@
 package skeleton;
 
+import skeleton.elements.joints.Joint;
+import skeleton.elements.joints.SpineOrientedJoint;
+import skeleton.elements.nonterminal.NonTerminalElement;
+import skeleton.elements.terminal.Rib;
+import skeleton.elements.terminal.TailVertebrae;
+import skeleton.elements.terminal.TerminalElement;
+import skeleton.elements.terminal.Vertebra;
+import util.BoundingBox;
 import util.CubicBezierCurve;
+import util.TransformationMatrix;
 
 import javax.vecmath.Point2d;
 import javax.vecmath.Point2f;
 import javax.vecmath.Tuple2f;
+import javax.vecmath.Vector3f;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SpineData {
+public class SpineData implements Serializable {
 
     public static float vertebraYZScale = 10f;
     public static float maxRibYScale = 100f;
@@ -100,5 +112,101 @@ public class SpineData {
             tailVertebraCount = 5 + random.nextInt(16);
         }
         return tailVertebraCount;
+    }
+
+    /**
+     * The vertebra are generated from the left side of the interval to the right.
+     * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
+     * Child vertebrae are added to their parents.
+     * For scale SpineData values for y and z are used, x is the maximum space available.
+     * @param spinePart if spinePart is tail then the last three vertebrae are replaced by one instance of TailVertebrae
+     * @param interval has to contain two floats between 0 and 1
+     * @param vertebraCount number of vertebra that shall be generated (equally spaced)
+     * @param firstParent element that shall be parent of the first vertebra generated
+     * @return the generated vertebra
+     */
+    public List<TerminalElement> generateVertebraeAndRibsInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
+                                                                    TerminalElement firstParent, Joint firstParentJoint) {
+
+        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
+        if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
+            System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
+            return generatedParts;
+        }
+
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(1f, SpineData.vertebraYZScale, SpineData.vertebraYZScale)); // x scale is replaced anyway
+
+        float totalIntervalLength = Math.abs(interval.y - interval.x);
+        float sign = interval.y > interval.x ? 1f : -1f;
+        float oneIntervalStep = sign * totalIntervalLength / (float) vertebraCount;;
+
+        Vertebra parent = null;
+        for (int i = 0; i < vertebraCount; i++) {
+            boolean tailVertebrae = spinePart == SpinePart.TAIL && i == vertebraCount-3;
+
+            float spinePosition;
+            float childSpineEndPosition;
+            if (parent == null) {
+                spinePosition = interval.x;
+                childSpineEndPosition = spinePosition + oneIntervalStep;
+                if (firstParentJoint instanceof SpineOrientedJoint) {
+                    ((SpineOrientedJoint) firstParentJoint).setChildSpineEndPosition(childSpineEndPosition, spinePart);
+                }
+            } else {
+                spinePosition = parent.getSpineJoint().getSpinePosition();
+                if (i == vertebraCount-1 || tailVertebrae) {
+                    childSpineEndPosition = interval.y;
+                } else {
+                    childSpineEndPosition = spinePosition + oneIntervalStep;
+                }
+                parent.getSpineJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
+            }
+
+            BoundingBox childBox = boundingBox.cloneBox();
+            Point2f startPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(spinePosition);
+            Point2f endPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(childSpineEndPosition);
+            childBox.setXLength((float) Math.sqrt(
+                    Math.pow(startPosition.x - endPosition.x, 2) +
+                            Math.pow(startPosition.y - endPosition.y, 2)));
+
+            Joint joint = parent == null ? firstParentJoint : parent.getSpineJoint();
+            TransformationMatrix transform = joint.calculateChildTransform(childBox);
+            transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
+
+            Vertebra child;
+            TerminalElement parentElement = parent == null ? firstParent : parent;
+            if (tailVertebrae) {
+                child = new TailVertebrae(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
+                i += 2;
+            } else {
+                child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
+            }
+            parentElement.addChild(child);
+            generatedParts.add(child);
+
+            boolean rib = spinePart == SpinePart.BACK && isInChestInterval(spinePosition);
+            if (rib) {
+                float ribLengthEvaluationPos = sign > 0 ? spinePosition : childSpineEndPosition;
+                generatedParts.add(generateRibForVertebra(ancestor, child, getRibLength(ribLengthEvaluationPos)));
+            }
+
+            parent = child;
+        }
+
+        return generatedParts;
+    }
+
+    private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra, float yScale) {
+        float xzScale = vertebra.getBoundingBox().getXLength();
+        BoundingBox boundingBox = new BoundingBox(new Vector3f(
+                xzScale, yScale, xzScale
+        ));
+        TransformationMatrix transform = vertebra.getRibJoint().calculateChildTransform(boundingBox);
+        transform.translate(Rib.getLocalTranslationFromJoint(boundingBox));
+
+        Rib rib = new Rib(transform, boundingBox, vertebra, ancestor);
+        vertebra.addChild(rib);
+
+        return rib;
     }
 }

@@ -2,9 +2,10 @@ package skeleton;
 
 import skeleton.elements.ExtremityKind;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class ExtremityStartingPoints {
+public class ExtremityStartingPoints implements Serializable {
 
     private static int[] possibleWingPositions = new int[] {1, 2};
     private static int[] possibleLegPositions = new int[] {0, 1};
@@ -13,7 +14,7 @@ public class ExtremityStartingPoints {
 
     // a two element array of extremity kinds for each extremity starting point
     // the first entry concerns the extremity starting point that is nearest to the tail
-    private List<ExtremityKind[]> extremityKindsForStartingPoints;
+    private ArrayList<ExtremityKind[]> extremityKindsForStartingPoints;
 
     private boolean twoExtremitiesPerGirdleAllowed;
 
@@ -23,9 +24,9 @@ public class ExtremityStartingPoints {
         this.twoExtremitiesPerGirdleAllowed = twoExtremitiesPerGirdleAllowed;
         int countPerPoint = twoExtremitiesPerGirdleAllowed ? 2 : 1;
         if (hasSecondShoulder) {
-            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]);
+            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]));
         } else {
-            extremityKindsForStartingPoints = Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]);
+            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityKind[countPerPoint], new ExtremityKind[countPerPoint]));
         }
     }
 

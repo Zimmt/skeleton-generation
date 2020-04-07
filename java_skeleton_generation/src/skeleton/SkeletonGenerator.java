@@ -1,24 +1,19 @@
 package skeleton;
 
 import skeleton.elements.SkeletonPart;
-import skeleton.elements.joints.Joint;
-import skeleton.elements.joints.SpineOrientedJoint;
 import skeleton.elements.nonterminal.NonTerminalElement;
 import skeleton.elements.nonterminal.WholeBody;
-import skeleton.elements.terminal.Rib;
-import skeleton.elements.terminal.TailVertebrae;
 import skeleton.elements.terminal.TerminalElement;
-import skeleton.elements.terminal.Vertebra;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
-import util.TransformationMatrix;
 import util.pca.PcaHandler;
 
-import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple2f;
-import javax.vecmath.Vector3f;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 public class SkeletonGenerator {
@@ -27,7 +22,6 @@ public class SkeletonGenerator {
     private ArrayList<NonTerminalElement> nonTerminalParts;
     private RuleDictionary ruleDictionary;
 
-    private PcaHandler pcaHandler;
     private SkeletonMetaData skeletonMetaData;
 
     private boolean calculatedMirroredElements = false;
@@ -40,8 +34,15 @@ public class SkeletonGenerator {
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
-        this.pcaHandler = pcaHandler;
         this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint(), userInput);
+    }
+
+    public SkeletonGenerator(String skeletonMetaDataFileName) throws IOException {
+        this.terminalParts = new ArrayList<>();
+        this.nonTerminalParts = new ArrayList<>();
+        this.nonTerminalParts.add(new WholeBody(this));
+        this.ruleDictionary = new RuleDictionary();
+        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFileName);
     }
 
     /**
@@ -238,99 +239,20 @@ public class SkeletonGenerator {
         return childrenToAdd;
     }
 
-    /**
-     * The vertebra are generated from the left side of the interval to the right.
-     * If the left float is greater than the right one, then the vertebra are generated in negative direction on the curve.
-     * Child vertebrae are added to their parents.
-     * For scale SpineData values for y and z are used, x is the maximum space available.
-     * @param spinePart if spinePart is tail then the last three vertebrae are replaced by one instance of TailVertebrae
-     * @param interval has to contain two floats between 0 and 1
-     * @param vertebraCount number of vertebra that shall be generated (equally spaced)
-     * @param firstParent element that shall be parent of the first vertebra generated
-     * @return the generated vertebra
-     */
-    public List<TerminalElement> generateVertebraeAndRibsInInterval(NonTerminalElement ancestor, SpinePart spinePart, Tuple2f interval, int vertebraCount,
-                                                                    TerminalElement firstParent, Joint firstParentJoint) {
+    private SkeletonMetaData readMetaDataFromFile(String fileName) throws IOException {
+        SkeletonMetaData metaData = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(fileName));
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-        ArrayList<TerminalElement> generatedParts = new ArrayList<>();
-        if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
-            System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
-            return generatedParts;
+            metaData = (SkeletonMetaData) objectInputStream.readObject();
+
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not read skeleton meta data from file!");
+            e.printStackTrace();
         }
-
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(1f, SpineData.vertebraYZScale, SpineData.vertebraYZScale)); // x scale is replaced anyway
-
-        float totalIntervalLength = Math.abs(interval.y - interval.x);
-        float sign = interval.y > interval.x ? 1f : -1f;
-        float oneIntervalStep = sign * totalIntervalLength / (float) vertebraCount;;
-
-        Vertebra parent = null;
-        for (int i = 0; i < vertebraCount; i++) {
-            boolean tailVertebrae = spinePart == SpinePart.TAIL && i == vertebraCount-3;
-
-            float spinePosition;
-            float childSpineEndPosition;
-            if (parent == null) {
-                spinePosition = interval.x;
-                childSpineEndPosition = spinePosition + oneIntervalStep;
-                if (firstParentJoint instanceof SpineOrientedJoint) {
-                    ((SpineOrientedJoint) firstParentJoint).setChildSpineEndPosition(childSpineEndPosition, spinePart);
-                }
-            } else {
-                spinePosition = parent.getSpineJoint().getSpinePosition();
-                if (i == vertebraCount-1 || tailVertebrae) {
-                    childSpineEndPosition = interval.y;
-                } else {
-                    childSpineEndPosition = spinePosition + oneIntervalStep;
-                }
-                parent.getSpineJoint().setChildSpineEndPosition(childSpineEndPosition, spinePart);
-            }
-
-            BoundingBox childBox = boundingBox.cloneBox();
-            Point2f startPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(spinePosition);
-            Point2f endPosition = ancestor.getGenerator().getSkeletonMetaData().getSpine().getPart(spinePart).apply(childSpineEndPosition);
-            childBox.setXLength((float) Math.sqrt(
-                    Math.pow(startPosition.x - endPosition.x, 2) +
-                    Math.pow(startPosition.y - endPosition.y, 2)));
-
-            Joint joint = parent == null ? firstParentJoint : parent.getSpineJoint();
-            TransformationMatrix transform = joint.calculateChildTransform(childBox);
-            transform.translate(Vertebra.getLocalTranslationFromJoint(childBox));
-
-            Vertebra child;
-            TerminalElement parentElement = parent == null ? firstParent : parent;
-            if (tailVertebrae) {
-                child = new TailVertebrae(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
-                i += 2;
-            } else {
-                child = new Vertebra(transform, childBox, parentElement, ancestor, sign > 0, spinePart, childSpineEndPosition);
-            }
-            parentElement.addChild(child);
-            generatedParts.add(child);
-
-            boolean rib = spinePart == SpinePart.BACK && getSkeletonMetaData().getSpine().isInChestInterval(spinePosition);
-            if (rib) {
-                float ribLengthEvaluationPos = sign > 0 ? spinePosition : childSpineEndPosition;
-                generatedParts.add(generateRibForVertebra(ancestor, child, getSkeletonMetaData().getSpine().getRibLength(ribLengthEvaluationPos)));
-            }
-
-            parent = child;
-        }
-
-        return generatedParts;
-    }
-
-    private Rib generateRibForVertebra(NonTerminalElement ancestor, Vertebra vertebra, float yScale) {
-        float xzScale = vertebra.getBoundingBox().getXLength();
-        BoundingBox boundingBox = new BoundingBox(new Vector3f(
-                xzScale, yScale, xzScale
-        ));
-        TransformationMatrix transform = vertebra.getRibJoint().calculateChildTransform(boundingBox);
-        transform.translate(Rib.getLocalTranslationFromJoint(boundingBox));
-
-        Rib rib = new Rib(transform, boundingBox, vertebra, ancestor);
-        vertebra.addChild(rib);
-
-        return rib;
+        return metaData;
     }
 }

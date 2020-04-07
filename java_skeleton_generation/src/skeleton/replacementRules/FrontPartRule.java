@@ -47,7 +47,7 @@ public class FrontPartRule extends ReplacementRule {
         List<SkeletonPart> generatedParts = new ArrayList<>();
 
         Tuple2f frontBackInterval = new Point2f(frontPart.getParent().getFrontPartJoint().getSpinePosition(), 0f);
-        List<TerminalElement> frontBack = frontPart.getGenerator().generateVertebraeAndRibsInInterval(frontPart, SpinePart.BACK,
+        List<TerminalElement> frontBack = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(frontPart, SpinePart.BACK,
                 frontBackInterval, SpineData.frontBackVertebraCount, frontPart.getParent(), frontPart.getParent().getFrontPartJoint());
         frontPart.getParent().removeChild(frontPart);
 
@@ -58,7 +58,7 @@ public class FrontPartRule extends ReplacementRule {
         Tuple2f neckInterval = new Point2f(1f, 0f);
         int neckVertebraCount = skeletonMetaData.getSpine().getNeckVertebraCount(skeletonMetaData.getExtremities().hasWings());
         Vertebra neckParent = getNeckParent(frontBack);
-        List<TerminalElement> neck = frontPart.getGenerator().generateVertebraeAndRibsInInterval(frontPart, SpinePart.NECK,
+        List<TerminalElement> neck = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(frontPart, SpinePart.NECK,
                 neckInterval, neckVertebraCount, neckParent, neckParent.getSpineJoint());
 
         if (skeletonMetaData.getExtremities().hasShoulderOnNeck()) {

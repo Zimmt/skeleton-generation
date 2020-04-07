@@ -2,10 +2,11 @@ package util;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CubicBezierCurve {
+public class CubicBezierCurve implements Serializable {
     Point2f controlPoint0;
     Point2f controlPoint1;
     Point2f controlPoint2;

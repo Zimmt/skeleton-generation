@@ -2,10 +2,11 @@ package skeleton;
 
 import skeleton.elements.ExtremityKind;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
-public class ExtremityData {
+public class ExtremityData implements Serializable {
     // PCA data
     private float wingProbability; // [0, 1]
     private float flooredLegProbability; // #legs/2, [0,2]
@@ -19,7 +20,7 @@ public class ExtremityData {
     private float lengthFoot; // [0, 1000]
 
     // non-PCA / user input
-    private UserInput userInput;
+    private transient UserInput userInput; // is empty if the class is reconstructed by deserialization
 
     // derived / calculated values
     private int flooredLegs;
@@ -104,11 +105,15 @@ public class ExtremityData {
      * sets between 2 and 6 extremities
      */
     private void calculateDerivedValues(SpineData spine) {
-        setUserSetExtremities();
-        calculateAndSetLegsAndFloorHeight(spine);
-        calculateAndSetWings();
-        calculateAndSetArmsAndFins();
-        extremityStartingPoints.distributeExtremities();
+        if (userInput != null) {
+            setUserSetExtremities();
+            calculateAndSetLegsAndFloorHeight(spine);
+            calculateAndSetWings();
+            calculateAndSetArmsAndFins();
+            extremityStartingPoints.distributeExtremities();
+        } else {
+            System.out.println("Cannot calculate derived values without user input!");
+        }
     }
 
     private void setUserSetExtremities() {

@@ -6,11 +6,12 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector2d;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SkeletonMetaData {
+public class SkeletonMetaData implements Serializable {
     private SpineData spine;
     private ExtremityData extremities;
     private double weight;
@@ -44,6 +45,16 @@ public class SkeletonMetaData {
 
     public String getHeadKind() {
         return headKind;
+    }
+
+    public void saveToFile(String fileName) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileName));
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(this);
+
+        objectOutputStream.close();
+        fileOutputStream.close();
     }
 
     private SpineData preprocessSpine(List<Point2d> spinePoints) {
