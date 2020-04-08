@@ -34,11 +34,45 @@ public class PcaHandler {
 
     public PcaDataPoint getRandomPcaDataPoint() {
         double[] eigenvectorScales = getRandomScalesForEachEigenvector();
+        return getPcaDataPointFromEigenvectorScales(eigenvectorScales);
+    }
+
+    public PcaDataPoint getPcaDataPointFromEigenvectorScales(double[] eigenvectorScales) {
         List<RealVector> scaledEigenvectors = new ArrayList<>(eigenvectorScales.length);
-        for (int j = 0; j < pca.getEigenvectorCount(); j++) {
+        for (int j = 0; j < eigenvectorScales.length; j++) {
             scaledEigenvectors.add(pca.getEigenvector(j).mapMultiply(eigenvectorScales[j]));
         }
         return pcaMetaData.getConditionedMean().getMovedPoint(scaledEigenvectors);
+    }
+
+    public double[] getRandomScalesForEachEigenvector() {
+        double[] scales = new double[pca.getEigenvectorCount()];
+
+        for (int i = 0; i < scales.length; i++) {
+            double variance = pca.getEigenvalue(i);
+            double r = random.nextGaussian(); // generates normally distributed value with mean 0 and standard deviation 1
+            r = variance * r;
+            scales[i] = r;
+        }
+        return scales;
+    }
+
+    /**
+     * uses for each eigenvector scale a normal distribution with
+     * mean: original eigenvector scale
+     * variance: original variance / 2
+     */
+    public double[] getVariationForEigenvectorScales(double[] eigenvectorScales) {
+        double[] newScales = new double[eigenvectorScales.length];
+
+        for (int i = 0; i < eigenvectorScales.length; i++) {
+            double variance = pca.getEigenvalue(i) / 2;
+            double mean = eigenvectorScales[i];
+            double r = random.nextGaussian(); // generates normally distributed value with mean 0 and standard deviation 1
+            r = variance * r + mean;
+            newScales[i] = r;
+        }
+        return newScales;
     }
 
     public List<PcaDataPoint> getDataPoints() {
@@ -55,6 +89,10 @@ public class PcaHandler {
 
     public RealVector getEigenvector(int number) {
         return pca.getEigenvector(number);
+    }
+
+    public PcaConditions getPcaConditions() {
+        return pcaMetaData.getConditions();
     }
 
     public void exportOriginalPcaData() throws IOException {
@@ -285,17 +323,5 @@ public class PcaHandler {
         }
 
         return new PcaDataPoint[] {minPoint, secondMaxPoint, maxPoint};
-    }
-
-    private double[] getRandomScalesForEachEigenvector() {
-        double[] scales = new double[pca.getEigenvectorCount()];
-
-        for (int i = 0; i < scales.length; i++) {
-            double variance = pca.getEigenvalue(i);
-            double r = random.nextGaussian(); // generates normally distributed value with mean 0 and standard deviation 1
-            r = variance * r;
-            scales[i] = r;
-        }
-        return scales;
     }
 }

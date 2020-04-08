@@ -1,6 +1,8 @@
 package skeleton;
 
+import util.pca.PcaConditions;
 import util.pca.PcaDataPoint;
+import util.pca.PcaHandler;
 
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Point2d;
@@ -12,23 +14,50 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SkeletonMetaData implements Serializable {
+    private PcaConditions pcaConditions;
+    private double[] eigenvectorScales;
+
     private SpineData spine;
     private ExtremityData extremities;
     private double weight;
     private String headKind;
 
+    public SkeletonMetaData(PcaHandler pcaHandler, UserInput userInput) {
+        this.pcaConditions = pcaHandler.getPcaConditions();
+        this.eigenvectorScales = pcaHandler.getRandomScalesForEachEigenvector();
+        PcaDataPoint p = pcaHandler.getPcaDataPointFromEigenvectorScales(eigenvectorScales);
 
-    public SkeletonMetaData(PcaDataPoint p, UserInput userInput) {
         this.spine = preprocessSpine(p.getSpine());
-        if ((Math.abs(spine.getNeck().getGradient(1f) - spine.getBack().getGradient(0f)) > 0.1) ||
-                (Math.abs(spine.getBack().getGradient(1f) - spine.getTail().getGradient(0f)) > 0.1)) {
-            System.err.println("Alignment of spine went wrong");
-        }
         this.extremities = new ExtremityData(p.getWings(), p.getFlooredLegs(),
                 p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
                 p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine, userInput);
         this.weight = p.getWeight();
         this.headKind = userInput.getHead();
+    }
+
+    private SkeletonMetaData(PcaConditions pcaConditions, double[] eigenvectorScales, SpineData spineData, ExtremityData extremityData, double weight, String headKind) {
+        this.pcaConditions = pcaConditions;
+        this.eigenvectorScales = eigenvectorScales;
+
+        this.spine = spineData;
+        this.extremities = extremityData;
+        this.weight = weight;
+        this.headKind = headKind;
+    }
+
+    public SkeletonMetaData newWithVariation(List<PcaDataPoint> pcaInputData) {
+        PcaHandler pcaHandler = new PcaHandler(pcaInputData, pcaConditions);
+        double[] newEigenvectorScales = pcaHandler.getVariationForEigenvectorScales(eigenvectorScales);
+        PcaDataPoint p = pcaHandler.getPcaDataPointFromEigenvectorScales(newEigenvectorScales);
+
+        SpineData spine = preprocessSpine(p.getSpine());
+        ExtremityStartingPoints extremityStartingPoints = extremities.getExtremityStartingPoints().newWithVariation();
+        ExtremityData extremities = new ExtremityData(p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
+                p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(),
+                extremityStartingPoints, spine);
+        double weight = p.getWeight();
+
+        return new SkeletonMetaData(pcaHandler.getPcaConditions(), newEigenvectorScales, spine, extremities, weight, headKind);
     }
 
     public SpineData getSpine() {
@@ -70,7 +99,14 @@ public class SkeletonMetaData implements Serializable {
         preprocessedPoints.set(5, alignedTailPoints.get(0));
         preprocessedPoints.set(7, alignedTailPoints.get(1));
 
-        return new SpineData(preprocessedPoints);
+        SpineData spineData = new SpineData(preprocessedPoints);
+
+        if ((Math.abs(spineData.getNeck().getGradient(1f) - spineData.getBack().getGradient(0f)) > 0.1) ||
+                (Math.abs(spineData.getBack().getGradient(1f) - spineData.getTail().getGradient(0f)) > 0.1)) {
+            System.err.println("Alignment of spine went wrong");
+        }
+
+        return spineData;
     }
 
     private List<Point2d> alignControlPoints(Point2d p1, Point2d center, Point2d p2) {

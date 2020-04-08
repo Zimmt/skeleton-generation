@@ -28,6 +28,7 @@ public class ExtremityData implements Serializable {
     private int wings;
     private int arms;
     private int fins;
+
     private float floorHeight = 0f;
     private float flooredAnkleWristProbability;
     private ExtremityStartingPoints extremityStartingPoints;
@@ -49,6 +50,23 @@ public class ExtremityData implements Serializable {
         this.userInput = userInput;
         this.extremityStartingPoints = new ExtremityStartingPoints(userInput.hasSecondShoulder(), userInput.twoExtremitiesPerGirdleAllowed());
         calculateDerivedValues(spine);
+    }
+
+    /**
+     * leaves wing and floored legs probability, user input and number of extremities empty
+     * (but they are not needed as extremityStartingPoints is provided)
+     */
+    public ExtremityData(double lengthUpperArm, double lengthLowerArm, double lengthHand,
+                         double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
+                         ExtremityStartingPoints extremityStartingPoints, SpineData spine) {
+        this.lengthUpperArm = (float) lengthUpperArm;
+        this.lengthLowerArm = (float) lengthLowerArm;
+        this.lengthHand = (float) lengthHand;
+        this.lengthUpperLeg = (float) lengthUpperLeg;
+        this.lengthLowerLeg = (float) lengthLowerLeg;
+        this.lengthFoot = (float) lengthFoot;
+        this.extremityStartingPoints = extremityStartingPoints;
+        calculateFloorHeightAndAnkleWristProb(spine);
     }
 
     public float getLengthUpperArm() {
@@ -102,6 +120,10 @@ public class ExtremityData implements Serializable {
         return extremityStartingPoints.getExtremityPositioningsForStartingPoint(position);
     }
 
+    public ExtremityStartingPoints getExtremityStartingPoints() {
+        return extremityStartingPoints;
+    }
+
     /**
      * sets between 2 and 6 extremities
      */
@@ -120,19 +142,19 @@ public class ExtremityData implements Serializable {
     private void setUserSetExtremities() {
         if (userInput.hasFlooredLegs()) {
             flooredLegs = userInput.getFlooredLegs();
-            extremityStartingPoints.setLegs(flooredLegs);
+            extremityStartingPoints.setKind(ExtremityKind.LEG, flooredLegs);
         }
         if (userInput.hasWings()) {
             wings = userInput.getWings();
-            extremityStartingPoints.setWings(wings);
+            extremityStartingPoints.setKind(ExtremityKind.WING, wings);
         }
         if (userInput.hasArms()) {
             arms = userInput.getArms();
-            extremityStartingPoints.setArms(arms);
+            extremityStartingPoints.setKind(ExtremityKind.ARM, arms);
         }
         if (userInput.hasFins()) {
             fins = userInput.getFins();
-            extremityStartingPoints.setFins(fins);
+            extremityStartingPoints.setKind(ExtremityKind.FIN, fins);
         }
     }
 
@@ -140,7 +162,7 @@ public class ExtremityData implements Serializable {
      * legs: user input or calculated by flooredLegProbability
      */
     private void calculateAndSetLegsAndFloorHeight(SpineData spine) {
-        if (!userInput.hasFlooredLegs() && extremityStartingPoints.getFreeLegCount() > 0) {
+        if (!userInput.hasFlooredLegs() && extremityStartingPoints.getFreeCountForKind(ExtremityKind.LEG) > 0) {
             float probability = random.nextFloat();
             boolean moreLegs = probability > (flooredLegProbability % 1);
             if (moreLegs) {
@@ -148,16 +170,16 @@ public class ExtremityData implements Serializable {
             } else {
                 flooredLegs = (int) Math.floor(flooredLegProbability);
             }
-            flooredLegs = Math.min(extremityStartingPoints.getFreeLegCount(), flooredLegs);
+            flooredLegs = Math.min(extremityStartingPoints.getFreeCountForKind(ExtremityKind.LEG), flooredLegs);
             flooredLegs = Math.max(0, flooredLegs);
-            extremityStartingPoints.setLegs(flooredLegs);
+            extremityStartingPoints.setKind(ExtremityKind.LEG, flooredLegs);
         }
         System.out.println("floored legs: " + flooredLegs);
-        calculateFloorHeight(spine);
+        calculateFloorHeightAndAnkleWristProb(spine);
     }
 
-    // Must be called _after_ number of floored legs is calculated
-    private void calculateFloorHeight(SpineData spine) {
+    // Must be called _after_ number of floored legs is set in extremityStartingPoints
+    private void calculateFloorHeightAndAnkleWristProb(SpineData spine) {
         float minFloorHeight = 0f;
         float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
         int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityPositioningsForStartingPoint(0)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
@@ -209,15 +231,15 @@ public class ExtremityData implements Serializable {
      * wings: user input or calculated by wingProbability (but then max 1 per shoulder)
      */
     private void calculateAndSetWings() {
-        if (!userInput.hasWings() && extremityStartingPoints.getFreeWingCount() > 0) {
-            int freeWingCount = extremityStartingPoints.getFreeWingCount();
+        if (!userInput.hasWings() && extremityStartingPoints.getFreeCountForKind(ExtremityKind.WING) > 0) {
+            int freeWingCount = extremityStartingPoints.getFreeCountForKind(ExtremityKind.WING);
             if (random.nextDouble() < wingProbability) {
                 wings = 1;
             }
             if (userInput.hasSecondShoulder() && freeWingCount > 1 && random.nextDouble() < wingProbability) {
                 wings++;
             }
-            extremityStartingPoints.setWings(wings);
+            extremityStartingPoints.setKind(ExtremityKind.WING, wings);
         }
         System.out.println("wings: " + wings);
     }
@@ -227,20 +249,20 @@ public class ExtremityData implements Serializable {
      * fins: user input or one per empty extremity starting point
      */
     private void calculateAndSetArmsAndFins() {
-        if (!userInput.hasArms() && extremityStartingPoints.getFreeArmCount() > 0) {
-            int freeArmCount = extremityStartingPoints.getFreeWingCount();
+        if (!userInput.hasArms() && extremityStartingPoints.getFreeCountForKind(ExtremityKind.ARM) > 0) {
+            int freeArmCount = extremityStartingPoints.getFreeCountForKind(ExtremityKind.ARM);
             if (random.nextDouble() < wingProbability) {
                 arms = 1;
             }
             if (userInput.hasSecondShoulder() && freeArmCount > 1 && random.nextDouble() < wingProbability) {
                 arms++;
             }
-            extremityStartingPoints.setArms(arms);
+            extremityStartingPoints.setKind(ExtremityKind.ARM, arms);
         }
 
         if (!userInput.hasFins()) {
             for (int i = 0; i < extremityStartingPoints.getStartingPointCount(); i++) {
-                if (extremityStartingPoints.getFreeExtremityCountAtPosition(i) >= 2) {
+                if (extremityStartingPoints.getFreeCountAtPosition(i) >= 2) {
                     extremityStartingPoints.setKindAtPosition(ExtremityKind.FIN, i);
                     fins += 1;
                 }

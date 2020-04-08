@@ -7,6 +7,7 @@ import skeleton.elements.terminal.TerminalElement;
 import skeleton.replacementRules.ReplacementRule;
 import skeleton.replacementRules.RuleDictionary;
 import util.BoundingBox;
+import util.pca.PcaDataPoint;
 import util.pca.PcaHandler;
 
 import javax.vecmath.Point3f;
@@ -34,7 +35,7 @@ public class SkeletonGenerator {
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
-        this.skeletonMetaData = new SkeletonMetaData(pcaHandler.getRandomPcaDataPoint(), userInput);
+        this.skeletonMetaData = new SkeletonMetaData(pcaHandler, userInput);
     }
 
     public SkeletonGenerator(String skeletonMetaDataFileName) throws IOException {
@@ -43,6 +44,17 @@ public class SkeletonGenerator {
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
         this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFileName);
+    }
+
+    /**
+     * Reads skeleton meta data from file and creates a variation of that based on pca results
+     */
+    public SkeletonGenerator(String skeletonMetaDataFileName, List<PcaDataPoint> pcaInputData) throws IOException {
+        this.terminalParts = new ArrayList<>();
+        this.nonTerminalParts = new ArrayList<>();
+        this.nonTerminalParts.add(new WholeBody(this));
+        this.ruleDictionary = new RuleDictionary();
+        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFileName).newWithVariation(pcaInputData);
     }
 
     /**

@@ -1,6 +1,8 @@
 package util.pca;
 
-public class PcaConditions {
+import java.io.Serializable;
+
+public class PcaConditions implements Serializable {
 
     private Double neckYLength; // the y-difference between first control point of neck and the last
     private Double tailXLength; // the x-difference between first control point of tail and the last

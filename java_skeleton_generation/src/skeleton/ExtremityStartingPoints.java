@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class ExtremityStartingPoints implements Serializable {
 
-    private static int[] possibleWingPositions = new int[] {1, 2};
-    private static int[] possibleLegPositions = new int[] {0, 1};
-    private static int[] possibleArmPositions = new int[] {1, 2};
-    private static int[] possibleFinPositions = new int[] {0, 1, 2};
+    private static final int[] possibleWingPositions = new int[]{1, 2};
+    private static final int[] possibleLegPositions = new int[] {0, 1};
+    private static final int[] possibleArmPositions = new int[] {1, 2};
+    private static final int[] possibleFinPositions = new int[] {0, 1, 2};
 
     // a two/three element array of extremity positionings for each extremity starting point
     // the first entry concerns the extremity starting point that is nearest to the tail
-    private ArrayList<ExtremityPositioning[]> extremityKindsForStartingPoints;
+    private ArrayList<ExtremityPositioning[]> extremityPositioningsForStartingPoints;
 
     private boolean twoExtremitiesPerGirdleAllowed;
 
@@ -28,28 +29,66 @@ public class ExtremityStartingPoints implements Serializable {
         this.twoExtremitiesPerGirdleAllowed = twoExtremitiesPerGirdleAllowed;
         int countPerPoint = twoExtremitiesPerGirdleAllowed ? 2 : 1;
         if (hasSecondShoulder) {
-            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
+            extremityPositioningsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
         } else {
-            extremityKindsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
+            extremityPositioningsForStartingPoints = new ArrayList<>(Arrays.asList(new ExtremityPositioning[countPerPoint], new ExtremityPositioning[countPerPoint]));
         }
     }
 
+    private ExtremityStartingPoints(ArrayList<ExtremityPositioning[]> extremityKindsForStartingPoints, boolean twoExtremitiesPerGirdleAllowed) {
+        this.extremityPositioningsForStartingPoints = extremityKindsForStartingPoints;
+        this.twoExtremitiesPerGirdleAllowed = twoExtremitiesPerGirdleAllowed;
+    }
+
+    public ExtremityStartingPoints newWithVariation() {
+        List<ExtremityKind[]> extremityKinds = extremityPositioningsForStartingPoints.stream().map(
+                sp -> Arrays.stream(sp).map(pos -> pos != null ? pos.getExtremityKind() : null).toArray(ExtremityKind[]::new)
+        ).collect(Collectors.toList());
+
+        int countPerPoint = twoExtremitiesPerGirdleAllowed ? 2 : 1;
+        int changedStartingPoint = random.nextInt(extremityPositioningsForStartingPoints.size());
+        int changedPosition = random.nextInt(countPerPoint);
+        if (extremityKinds.get(changedStartingPoint)[changedPosition] == null && countPerPoint > 1) {
+            changedPosition = 1 - changedPosition;
+        }
+
+        if (extremityKinds.get(changedStartingPoint)[changedPosition] != null && random.nextFloat() > 0.2) {
+            ExtremityKind kind = extremityKinds.get(changedStartingPoint)[changedPosition];
+            if (getFreeCountForKind(kind) > 0 && random.nextFloat() > 0.2) {
+                int pos = getRandomPossiblePositionForKind(kind);
+                if (extremityKinds.get(pos)[0] == null) {
+                    extremityKinds.get(pos)[0] = kind;
+                } else if (countPerPoint > 1 && extremityKinds.get(pos)[1] == null) {
+                    extremityKinds.get(pos)[1] = kind;
+                } else {
+                    System.err.println("Could not move extremity!");
+                }
+            }
+            extremityKinds.get(changedStartingPoint)[changedPosition] = null;
+        }
+
+        ArrayList<ExtremityPositioning[]> newExtremityPositionings = extremityKinds.stream().map(
+                a -> Arrays.stream(a).map(k -> k != null ? new ExtremityPositioning(k) : null).toArray(ExtremityPositioning[]::new)
+        ).collect(Collectors.toCollection(ArrayList::new));
+        return new ExtremityStartingPoints(newExtremityPositionings, twoExtremitiesPerGirdleAllowed);
+    }
+
     public boolean hasShoulderOnNeck() {
-        return extremityKindsForStartingPoints.size() > 2;
+        return extremityPositioningsForStartingPoints.size() > 2;
     }
 
     public int getStartingPointCount() {
-        return extremityKindsForStartingPoints.size();
+        return extremityPositioningsForStartingPoints.size();
     }
 
     public ExtremityPositioning[] getExtremityPositioningsForStartingPoint(int startingPoint) {
-        if (startingPoint >= extremityKindsForStartingPoints.size()) {
+        if (startingPoint >= extremityPositioningsForStartingPoints.size()) {
             return new ExtremityPositioning[0];
         } else {
-            List<ExtremityPositioning> extremityPositionings = new ArrayList<>(extremityKindsForStartingPoints.get(startingPoint).length);
-            for (int i = 0; i < extremityKindsForStartingPoints.get(startingPoint).length; i++) {
-                if (extremityKindsForStartingPoints.get(startingPoint)[i] != null) {
-                    extremityPositionings.add(extremityKindsForStartingPoints.get(startingPoint)[i]);
+            List<ExtremityPositioning> extremityPositionings = new ArrayList<>(extremityPositioningsForStartingPoints.get(startingPoint).length);
+            for (int i = 0; i < extremityPositioningsForStartingPoints.get(startingPoint).length; i++) {
+                if (extremityPositioningsForStartingPoints.get(startingPoint)[i] != null) {
+                    extremityPositionings.add(extremityPositioningsForStartingPoints.get(startingPoint)[i]);
                 }
             }
             return extremityPositionings.toArray(ExtremityPositioning[]::new);
@@ -64,7 +103,7 @@ public class ExtremityStartingPoints implements Serializable {
         if (!twoExtremitiesPerGirdleAllowed) {
             return; // this makes no sense if there is max one extremity per point
         }
-        if (!(getFreeExtremityCountAtPosition(0) == 0 && getFreeExtremityCountAtPosition(1) == 0)) {
+        if (!(getFreeCountAtPosition(0) == 0 && getFreeCountAtPosition(1) == 0)) {
             distributeLegs(); // otherwise there is no space to distribute
         }
         if (hasShoulderOnNeck() && !(getExtremityPositioningsForStartingPoint(2).length > 0 && getExtremityPositioningsForStartingPoint(1).length > 0)) {
@@ -73,6 +112,42 @@ public class ExtremityStartingPoints implements Serializable {
                 return;
             }
             distributeShoulderExtremities();
+        }
+    }
+
+    public void setKind(ExtremityKind kind, int count) {
+        int toSet = count;
+        while (toSet > 0) {
+            int position = getRandomPossiblePositionForKind(kind);
+            if (position < 0) {
+                System.err.println("Could not set all extremities");
+                break;
+            } else {
+                setKindAtPosition(kind, position);
+                toSet--;
+            }
+        }
+    }
+
+    public int getFreeCountAtPosition(int position) {
+        if (position >= extremityPositioningsForStartingPoints.size()) {
+            return 0;
+        }
+        ExtremityPositioning[] positionings = getExtremityPositioningsForStartingPoint(position);
+        return extremityPositioningsForStartingPoints.get(position).length - positionings.length;
+    }
+
+    public int getFreeCountForKind(ExtremityKind kind) {
+        return getFreeCount(getPossiblePositionsForKind(kind));
+    }
+
+    public void setKindAtPosition(ExtremityKind kind, int position) {
+        if (extremityPositioningsForStartingPoints.get(position)[0] == null) {
+            extremityPositioningsForStartingPoints.get(position)[0] = new ExtremityPositioning(kind);
+        } else if (extremityPositioningsForStartingPoints.get(position)[1] == null){
+            extremityPositioningsForStartingPoints.get(position)[1] = new ExtremityPositioning(kind);
+        } else {
+            System.err.println("Cannot set kind in specified position!");
         }
     }
 
@@ -110,90 +185,45 @@ public class ExtremityStartingPoints implements Serializable {
         setKindAtPosition(movedPositioning.getExtremityKind(), moveTo);
     }
 
-    public void setWings(int wingCount) {
-        setKindAtPositions(ExtremityKind.WING, wingCount, possibleWingPositions);
-    }
-
-    public void setLegs(int legCount) {
-        setKindAtPositions(ExtremityKind.LEG, legCount, possibleLegPositions);
-    }
-
-    public void setArms(int armCount) {
-        setKindAtPositions(ExtremityKind.ARM, armCount, possibleArmPositions);
-    }
-
-    public void setFins(int finCount) {
-        setKindAtPositions(ExtremityKind.FIN, finCount, possibleFinPositions);
-    }
-
-    public int getFreeExtremityCountAtPosition(int position) {
-        if (position >= extremityKindsForStartingPoints.size()) {
-            return 0;
-        }
-        ExtremityPositioning[] positionings = getExtremityPositioningsForStartingPoint(position);
-        return extremityKindsForStartingPoints.get(position).length - positionings.length;
-    }
-
-    public int getFreeWingCount() {
-        return getFreeCount(possibleWingPositions);
-    }
-
-    public int getFreeArmCount() {
-        return getFreeCount(possibleArmPositions);
-    }
-
-    public int getFreeLegCount() {
-        return getFreeCount(possibleLegPositions);
-    }
-
-    public int getFreeFinCount() {
-        return getFreeCount(possibleFinPositions);
-    }
-
-    public void setKindAtPosition(ExtremityKind kind, int position) {
-        if (extremityKindsForStartingPoints.get(position)[0] == null) {
-            extremityKindsForStartingPoints.get(position)[0] = new ExtremityPositioning(kind);
-        } else if (extremityKindsForStartingPoints.get(position)[1] == null){
-            extremityKindsForStartingPoints.get(position)[1] = new ExtremityPositioning(kind);
-        } else {
-            System.err.println("Cannot set kind in specified position!");
-        }
-    }
-
     private void removeKindAtPosition(ExtremityKind kind, int position) {
-        for (int i = 0; i < extremityKindsForStartingPoints.get(position).length; i++) {
-            if (extremityKindsForStartingPoints.get(position)[i].getExtremityKind() == kind) {
-                extremityKindsForStartingPoints.get(position)[i] = null;
+        for (int i = 0; i < extremityPositioningsForStartingPoints.get(position).length; i++) {
+            if (extremityPositioningsForStartingPoints.get(position)[i].getExtremityKind() == kind) {
+                extremityPositioningsForStartingPoints.get(position)[i] = null;
                 break;
             }
         }
     }
 
-    private void setKindAtPositions(ExtremityKind kind, int count, int[] positions) {
-        int toSet = count;
-        while (toSet > 0) {
-            List<Integer> possiblePositions = new ArrayList<>(positions.length);
-            for (int pos : positions) {
-                if (getFreeExtremityCountAtPosition(pos) > 0) {
-                    possiblePositions.add(pos);
-                }
+    private int getRandomPossiblePositionForKind(ExtremityKind kind) {
+        int[] positionsForKind = getPossiblePositionsForKind(kind);
+        List<Integer> possiblePositions = new ArrayList<>(positionsForKind.length);
+        for (int pos : positionsForKind) {
+            if (getFreeCountAtPosition(pos) > 0) {
+                possiblePositions.add(pos);
             }
-            if (possiblePositions.isEmpty()) {
-                System.err.println("Could not set all extremities");
-                break;
-            } else {
-                int position = possiblePositions.get(random.nextInt(possiblePositions.size()));
-                setKindAtPosition(kind, position);
-                toSet--;
-            }
+        }
+        if (possiblePositions.isEmpty()) {
+            System.err.println("Could not find position for extremity");
+            return -1;
+        } else {
+            return possiblePositions.get(random.nextInt(possiblePositions.size()));
         }
     }
 
     private int getFreeCount(int[] possiblePositions) {
         int count = 0;
         for (int pos : possiblePositions) {
-            count += getFreeExtremityCountAtPosition(pos);
+            count += getFreeCountAtPosition(pos);
         }
         return count;
+    }
+
+    private int[] getPossiblePositionsForKind(ExtremityKind kind) {
+        switch(kind) {
+            case WING: return possibleWingPositions;
+            case ARM: return possibleArmPositions;
+            case LEG: return possibleLegPositions;
+            default: return possibleFinPositions;
+        }
     }
 }

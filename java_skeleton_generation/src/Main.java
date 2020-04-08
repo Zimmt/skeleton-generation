@@ -39,12 +39,15 @@ public class Main {
 
     private static void runSkeletonGenerator(boolean logWeight) throws IOException {
         boolean readMetaDataFromFile = true;
+        boolean createVariationsFromFile = false;
+        boolean saveSkeletonMetaDataToFile = false;
         String metaDataFileName = "skeletonMetaData.txt";
 
         boolean allCubes = false;
         boolean lowResolution = true;
         UserInput userInput = null;
         PcaHandler pcaHandler = null;
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         if (!readMetaDataFromFile) {
             boolean allowTwoExtremitiesPerGirdle = true;
             Integer userInputFlooredLegs = null;
@@ -58,7 +61,6 @@ public class Main {
             userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, allowTwoExtremitiesPerGirdle,
                     userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
 
-            List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
             PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
                     userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
             pcaHandler = new PcaHandler(dataPoints, conditions);
@@ -69,7 +71,9 @@ public class Main {
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println("- " + i + " --------------------------------------------------------------");
             SkeletonGenerator skeletonGenerator;
-            if (readMetaDataFromFile) {
+            if (createVariationsFromFile) {
+                skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
+            } else if (readMetaDataFromFile) {
                 skeletonGenerator = new SkeletonGenerator(metaDataFileName);
             } else {
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
@@ -85,7 +89,7 @@ public class Main {
             ObjGenerator objGenerator = new ObjGenerator();
             objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowResolution);
 
-            if (!readMetaDataFromFile) {
+            if (saveSkeletonMetaDataToFile) {
                 skeletonGenerator.getSkeletonMetaData().saveToFile(metaDataFileName);
             }
         }
