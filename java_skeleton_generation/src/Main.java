@@ -41,7 +41,6 @@ public class Main {
         boolean readMetaDataFromFile = true;
         boolean createVariationsFromFile = false;
         boolean saveSkeletonMetaDataToFile = false;
-        String metaDataFileName = "skeletonMetaData.txt";
 
         boolean allCubes = false;
         boolean lowResolution = true;
@@ -70,6 +69,7 @@ public class Main {
         int skeletonCount = 1;
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println("- " + i + " --------------------------------------------------------------");
+            String metaDataFileName = String.format("skeletonMetaData%d.txt", i);
             SkeletonGenerator skeletonGenerator;
             if (createVariationsFromFile) {
                 skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
