@@ -26,14 +26,14 @@ public class ArmRule extends ReplacementRule {
 
     private final String inputID = "arm";
 
-    public String getInputID() {return inputID; }
+    public String getInputID() { return inputID; }
 
     public List<SkeletonPart> apply(SkeletonPart skeletonPart) {
         // if rule is not compatible return element unchanged
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.print("Arm generation... ");
+        //System.out.print("Arm generation... ");
 
         Arm arm = (Arm) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ArmRule extends ReplacementRule {
         extremityPositioning.setBonesAndJoints(shoulder.getJoint(), upperArm.getJoint(), lowerArm.getJoint(), upperArm, lowerArm, hand);
         extremityPositioning.findPosition();
 
-        System.out.println("...finished.");
+        //System.out.println("...finished.");
 
         return generatedParts;
     }

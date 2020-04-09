@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class ExtremityPositioning implements Serializable {
 
-    private ExtremityKind extremityKind;
+    private final ExtremityKind extremityKind;
 
     private transient XZAngleBasedJoint firstJoint; // joint between parent of fist bone and first bone
     private transient OneAngleBasedJoint secondJoint; // joint between first and second bone
@@ -73,7 +73,7 @@ public class ExtremityPositioning implements Serializable {
         if (extremityKind == ExtremityKind.LEG) {
             ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
             boolean flooredSecondBone = random.nextFloat() < extremityData.getFlooredAnkleWristProbability();
-            System.out.print("floored second bone: " + flooredSecondBone + "... ");
+            //System.out.print("floored second bone: " + flooredSecondBone + "... ");
             extremityData.setFlooredAnkleWristProbability(flooredSecondBone); // other extremities do the same
 
             success = findFlooredPosition(flooredSecondBone);
@@ -131,7 +131,7 @@ public class ExtremityPositioning implements Serializable {
         while (Math.abs(endPosition.y - floorHeight) > floorDistanceEps && step < maxSteps) {
             boolean nearerToFloor = true;
             float oldDistance = endPosition.y - floorHeight;
-            System.out.println("Distance to floor: " + oldDistance);
+            //System.out.println("Distance to floor: " + oldDistance);
             /*System.out.println(String.format("1.front: %f, 1.side: %f, 2.: %f, 3.: %f",
                     Math.toDegrees(firstJoint.getCurrentFirstAngle()), Math.toDegrees(firstJoint.getCurrentSecondAngle()),
                     Math.toDegrees(secondJoint.getCurrentAngle()), Math.toDegrees(thirdJoint.getCurrentAngle())));*/

@@ -34,7 +34,7 @@ public class LegRule extends ReplacementRule {
         if (!isApplicableTo(skeletonPart)) {
             return Arrays.asList(skeletonPart);
         }
-        System.out.print("Leg generation... ");
+        //System.out.print("Leg generation... ");
 
         Leg leg = (Leg) skeletonPart;
         List<SkeletonPart> generatedParts = new ArrayList<>();
@@ -55,7 +55,7 @@ public class LegRule extends ReplacementRule {
             extremityPositioning.findPosition();
         }
 
-        System.out.println("...finished.");
+        //System.out.println("...finished.");
 
         return generatedParts;
     }
