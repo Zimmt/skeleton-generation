@@ -26,43 +26,31 @@ public class SkeletonGeneratorHandler {
 
     private void runSkeletonGenerator() throws IOException {
         boolean readMetaDataFromFile = false;
-        boolean createVariationsFromFile = false;
         boolean saveSkeletonMetaDataToFile = false;
 
-        boolean allCubes = true;
-        boolean lowResolution = false;
         UserInput userInput = null;
         PcaHandler pcaHandler = null;
         List<PcaDataPoint> dataPoints = null;
 
-
         if (!readMetaDataFromFile) {
-            boolean allowTwoExtremitiesPerGirdle = gui.getTwoExtremitiesPerGirdleAllowed();
-            Integer userInputFlooredLegs = gui.getLegInput();
-            Integer userInputWings = gui.getWingInput();
-            Integer userInputArms = gui.getArmInput();
-            Integer userInputFins = gui.getFinInput();
-            Boolean userInputSecondShoulder = gui.getSecondShoulderInput();
-            Double userInputNeckYLength = gui.getNeckInput();
-            Double userInputTailXLength = gui.getTailInput();
-            String userInputHead = gui.getHeadKindInput();
-
             dataPoints = PcaDataReader.readInputData(true);
 
-            userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, allowTwoExtremitiesPerGirdle,
-                    userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
+            userInput = new UserInput(
+                    gui.getLegInput(), gui.getWingInput(), gui.getArmInput(), gui.getFinInput(),
+                    gui.getTwoExtremitiesPerGirdleAllowed(), gui.getSecondShoulderInput(),
+                    gui.getNeckInput(), gui.getTailInput(), gui.getHeadKindInput());
 
             PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
                     userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
             pcaHandler = new PcaHandler(dataPoints, conditions);
         }
 
-        int skeletonCount = 1;
+        int skeletonCount = gui.getSkeletonCount();
         for (int i = 0; i < skeletonCount; i++) {
-            System.out.println("- " + i + " --------------------------------------------------------------");
+            System.out.println(String.format("- %d --------------------------------------------------------------", i));
             String metaDataFileName = String.format("skeletonMetaData%d.txt", i);
             SkeletonGenerator skeletonGenerator;
-            if (createVariationsFromFile) {
+            if (gui.getCreateVariationsInput()) {
                 skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
             } else if (readMetaDataFromFile) {
                 skeletonGenerator = new SkeletonGenerator(metaDataFileName);
@@ -79,7 +67,7 @@ public class SkeletonGeneratorHandler {
             skeletonGenerator.calculateMirroredElements();
 
             ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowResolution);
+            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, gui.getAllCubes(), gui.getLowResoultion());
 
             if (saveSkeletonMetaDataToFile) {
                 skeletonGenerator.getSkeletonMetaData().saveToFile(metaDataFileName);

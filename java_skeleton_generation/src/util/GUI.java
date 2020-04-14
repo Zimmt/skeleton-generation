@@ -10,56 +10,29 @@ public class GUI {
 
     private final JButton startButton;
 
-    private final JFormattedTextField legInputField;
-    private final JFormattedTextField wingInputField;
-    private final JFormattedTextField armInputField;
-    private final JFormattedTextField finInputField;
+    private JCheckBox createVariations;
 
-    private final JFormattedTextField neckYLengthInputField;
-    private final JFormattedTextField tailXLengthInputField;
+    private JFormattedTextField legInputField;
+    private JFormattedTextField wingInputField;
+    private JFormattedTextField armInputField;
+    private JFormattedTextField finInputField;
 
-    private final JCheckBox twoExtremitiesPerGirdleAllowed;
-    private final JComboBox<String> secondShoulder;
-    private final JComboBox<String> headKind;
+    private JFormattedTextField neckYLengthInputField;
+    private JFormattedTextField tailXLengthInputField;
+
+    private JCheckBox twoExtremitiesPerGirdleAllowed;
+    private JComboBox<String> secondShoulder;
+    private JComboBox<String> headKind;
+
+    private JFormattedTextField skeletonCount;
+    private JComboBox<String> resolution;
 
     public GUI(ActionListener startButtonListener) {
         JFrame frame = new JFrame("Skeleton Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(600, 600);
 
-        this.legInputField = constructIntTextField(4);
-        this.wingInputField = constructIntTextField(4);
-        this.armInputField = constructIntTextField(4);
-        this.finInputField = constructIntTextField(6);
-        this.neckYLengthInputField = constructDoubleTextField();
-        this.tailXLengthInputField = constructDoubleTextField();
-        this.twoExtremitiesPerGirdleAllowed = new JCheckBox();
-        this.secondShoulder = new JComboBox<>(new String[]{"allowed", "disallowed", "enforced"});
-        this.headKind = new JComboBox<>(new String[]{"horse_skull"});
-
-        String[] labels = new String[] {
-                "floored legs",
-                "wings",
-                "arms",
-                "fins",
-                "neck y length",
-                "tail x length",
-                "2 extremities per girdle allowed?",
-                "second shoulder on neck?",
-                "head kind"
-        };
-        Component[] inputComponents = new Component[] {
-                legInputField,
-                wingInputField,
-                armInputField,
-                finInputField,
-                neckYLengthInputField,
-                tailXLengthInputField,
-                twoExtremitiesPerGirdleAllowed,
-                secondShoulder,
-                headKind
-        };
-        JPanel userInputPanel = constructBoxLayout(labels, inputComponents);
+        JPanel userInputPanel = initializeUserInputPanel();
 
         this.startButton = new JButton("start generator");
         startButton.addActionListener(startButtonListener);
@@ -67,6 +40,10 @@ public class GUI {
         frame.getContentPane().add(BorderLayout.NORTH, userInputPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, startButton);
         frame.setVisible(true);
+    }
+
+    public boolean getCreateVariationsInput() {
+        return createVariations.isSelected();
     }
 
     public Integer getLegInput() {
@@ -112,7 +89,97 @@ public class GUI {
         return (String) headKind.getSelectedItem();
     }
 
-    private JPanel constructBoxLayout(String[] labelTexts, Component[] textFields) {
+    public int getSkeletonCount() {
+        Integer count = (Integer) skeletonCount.getValue();
+        if (count == null || count <= 0) {
+            return 1;
+        }
+        return count;
+    }
+
+    public boolean getAllCubes() {
+        return resolution.getSelectedItem().equals("only bounding boxes");
+    }
+
+    public boolean getLowResoultion() {
+        return resolution.getSelectedItem().equals("low");
+    }
+
+
+    private JPanel initializeUserInputPanel() {
+        JPanel userInputPanel = new JPanel();
+        userInputPanel.setLayout(new BoxLayout(userInputPanel, BoxLayout.Y_AXIS));
+
+        JPanel fromFilePanel = initializeFromFilePanel();
+        JSeparator separator1 = new JSeparator();
+        JPanel algorithmConstraintsPanel = initializeAlgorithmConstraintsPanel();
+        JSeparator separator2 = new JSeparator();
+        JPanel otherInputPanel = initializeOtherInputPanel();
+
+        userInputPanel.add(fromFilePanel);
+        userInputPanel.add(separator1);
+        userInputPanel.add(algorithmConstraintsPanel);
+        userInputPanel.add(separator2);
+        userInputPanel.add(otherInputPanel);
+        return userInputPanel;
+    }
+
+    private JPanel initializeFromFilePanel() {
+        this.createVariations = new JCheckBox();
+
+        String[] labels = new String[] {"create variations"};
+        Component[] inputComponents = new Component[] {createVariations};
+        return constructGridLayout(labels, inputComponents);
+    }
+
+    private JPanel initializeAlgorithmConstraintsPanel() {
+        this.legInputField = constructIntTextField(4);
+        this.wingInputField = constructIntTextField(4);
+        this.armInputField = constructIntTextField(4);
+        this.finInputField = constructIntTextField(6);
+        this.neckYLengthInputField = constructDoubleTextField();
+        this.tailXLengthInputField = constructDoubleTextField();
+        this.twoExtremitiesPerGirdleAllowed = new JCheckBox();
+        this.secondShoulder = new JComboBox<>(new String[]{"allowed", "disallowed", "enforced"});
+        this.headKind = new JComboBox<>(new String[]{"horse_skull"});
+
+        String[] labels = new String[] {
+                "floored legs",
+                "wings",
+                "arms",
+                "fins",
+                "neck y length",
+                "tail x length",
+                "2 extremities per girdle allowed?",
+                "second shoulder on neck?",
+                "head kind"
+        };
+        Component[] inputComponents = new Component[] {
+                legInputField,
+                wingInputField,
+                armInputField,
+                finInputField,
+                neckYLengthInputField,
+                tailXLengthInputField,
+                twoExtremitiesPerGirdleAllowed,
+                secondShoulder,
+                headKind
+        };
+        return constructGridLayout(labels, inputComponents);
+    }
+
+    private JPanel initializeOtherInputPanel() {
+        this.skeletonCount = constructIntTextField(1000);
+        skeletonCount.setValue(1);
+        this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
+
+        String[] labels = new String[] {"number of skeletons to generate", "resolution"};
+        Component[] inputComponents = new Component[] {skeletonCount, resolution};
+
+        return constructGridLayout(labels, inputComponents);
+    }
+
+    private JPanel constructGridLayout(String[] labelTexts, Component[] textFields) {
         if (labelTexts.length != textFields.length) {
             return null;
         }
