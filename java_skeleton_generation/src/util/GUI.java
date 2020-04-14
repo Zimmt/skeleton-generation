@@ -15,28 +15,51 @@ public class GUI {
     private final JFormattedTextField armInputField;
     private final JFormattedTextField finInputField;
 
+    private final JFormattedTextField neckYLengthInputField;
+    private final JFormattedTextField tailXLengthInputField;
+
+    private final JCheckBox twoExtremitiesPerGirdleAllowed;
+    private final JComboBox<String> secondShoulder;
+    private final JComboBox<String> headKind;
+
     public GUI(ActionListener startButtonListener) {
         JFrame frame = new JFrame("Skeleton Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
+        frame.setSize(600, 400);
 
         this.legInputField = constructIntTextField(4);
         this.wingInputField = constructIntTextField(4);
         this.armInputField = constructIntTextField(4);
         this.finInputField = constructIntTextField(6);
+        this.neckYLengthInputField = constructDoubleTextField();
+        this.tailXLengthInputField = constructDoubleTextField();
+        this.twoExtremitiesPerGirdleAllowed = new JCheckBox();
+        this.secondShoulder = new JComboBox<>(new String[]{"allowed", "disallowed", "enforced"});
+        this.headKind = new JComboBox<>(new String[]{"horse_skull"});
+
         String[] labels = new String[] {
                 "floored legs",
                 "wings",
                 "arms",
-                "fins"
+                "fins",
+                "neck y length",
+                "tail x length",
+                "2 extremities per girdle allowed?",
+                "second shoulder on neck?",
+                "head kind"
         };
-        JFormattedTextField[] textFields = new JFormattedTextField[] {
+        Component[] inputComponents = new Component[] {
                 legInputField,
                 wingInputField,
                 armInputField,
-                finInputField
+                finInputField,
+                neckYLengthInputField,
+                tailXLengthInputField,
+                twoExtremitiesPerGirdleAllowed,
+                secondShoulder,
+                headKind
         };
-        JPanel userInputPanel = constructBoxLayout(labels, textFields);
+        JPanel userInputPanel = constructBoxLayout(labels, inputComponents);
 
         this.startButton = new JButton("start generator");
         startButton.addActionListener(startButtonListener);
@@ -62,7 +85,34 @@ public class GUI {
         return (Integer) finInputField.getValue();
     }
 
-    private JPanel constructBoxLayout(String[] labelTexts, JFormattedTextField[] textFields) {
+    public Double getNeckInput() {
+        return (Double) neckYLengthInputField.getValue();
+    }
+
+    public Double getTailInput() {
+        return (Double) tailXLengthInputField.getValue();
+    }
+
+    public boolean getTwoExtremitiesPerGirdleAllowed() {
+        return twoExtremitiesPerGirdleAllowed.isSelected();
+    }
+
+    public Boolean getSecondShoulderInput() {
+        switch ((String) secondShoulder.getSelectedItem()) {
+            case "allowed": return null;
+            case "disallowed": return false;
+            case "enforced": return true;
+            default:
+                System.err.println("invalid value!");
+                return null;
+        }
+    }
+
+    public String getHeadKindInput() {
+        return (String) headKind.getSelectedItem();
+    }
+
+    private JPanel constructBoxLayout(String[] labelTexts, Component[] textFields) {
         if (labelTexts.length != textFields.length) {
             return null;
         }
@@ -78,7 +128,13 @@ public class GUI {
 
     private JFormattedTextField constructIntTextField(int maxValue) {
         JFormattedTextField textField = new JFormattedTextField(new IntFormatter(maxValue));
-        textField.setColumns(3);
+        textField.setColumns(1);
+        return textField;
+    }
+
+    private JFormattedTextField constructDoubleTextField() {
+        JFormattedTextField textField = new JFormattedTextField(new DoubleFormatter());
+        textField.setColumns(5);
         return textField;
     }
 
@@ -95,11 +151,33 @@ public class GUI {
             return super.valueToString(object);
         }
 
-        public Integer stringToValue(String string) throws ParseException {
+        public Integer stringToValue(String string) {
             try {
                 int value = Integer.parseInt(string);
+                if (value < 0) {
+                    value = -value;
+                }
                 if (value > max) {
                     value = max;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    }
+
+    private static class DoubleFormatter extends DefaultFormatter {
+
+        public String valueToString(Object object) throws ParseException {
+            return super.valueToString(object);
+        }
+
+        public Double stringToValue(String string) {
+            try {
+                double value = Double.parseDouble(string);
+                if (value < 0) {
+                    value = -value;
                 }
                 return value;
             } catch (NumberFormatException e) {

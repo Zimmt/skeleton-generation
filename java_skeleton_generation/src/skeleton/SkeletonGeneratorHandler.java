@@ -37,15 +37,15 @@ public class SkeletonGeneratorHandler {
 
 
         if (!readMetaDataFromFile) {
-            boolean allowTwoExtremitiesPerGirdle = true;
+            boolean allowTwoExtremitiesPerGirdle = gui.getTwoExtremitiesPerGirdleAllowed();
             Integer userInputFlooredLegs = gui.getLegInput();
             Integer userInputWings = gui.getWingInput();
             Integer userInputArms = gui.getArmInput();
             Integer userInputFins = gui.getFinInput();
-            Boolean userInputSecondShoulder = null;
-            Double userInputNeckYLength = null;
-            Double userInputTailXLength = null;
-            String userInputHead = "horse_skull";
+            Boolean userInputSecondShoulder = gui.getSecondShoulderInput();
+            Double userInputNeckYLength = gui.getNeckInput();
+            Double userInputTailXLength = gui.getTailInput();
+            String userInputHead = gui.getHeadKindInput();
 
             dataPoints = PcaDataReader.readInputData(true);
 
