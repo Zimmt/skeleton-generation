@@ -26,7 +26,6 @@ public class SkeletonGeneratorHandler {
 
     private void runSkeletonGenerator() throws IOException {
         boolean readMetaDataFromFile = false;
-        boolean saveSkeletonMetaDataToFile = false;
 
         UserInput userInput = null;
         PcaHandler pcaHandler = null;
@@ -48,7 +47,7 @@ public class SkeletonGeneratorHandler {
         int skeletonCount = gui.getSkeletonCount();
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println(String.format("- %d --------------------------------------------------------------", i));
-            String metaDataFileName = String.format("skeletonMetaData%d.txt", i);
+            String metaDataFileName = "skeletonMetaData.txt";
             SkeletonGenerator skeletonGenerator;
             if (gui.getCreateVariationsInput()) {
                 skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
@@ -69,8 +68,14 @@ public class SkeletonGeneratorHandler {
             ObjGenerator objGenerator = new ObjGenerator();
             objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, gui.getAllCubes(), gui.getLowResoultion());
 
-            if (saveSkeletonMetaDataToFile) {
-                skeletonGenerator.getSkeletonMetaData().saveToFile(metaDataFileName);
+            if (gui.getSaveToFile()) {
+                String saveToFileName;
+                if (skeletonCount > 1) {
+                    saveToFileName = String.format("%s%d.txt", gui.getSaveFileName(), i);
+                } else {
+                    saveToFileName = String.format("%s.txt", gui.getSaveFileName());
+                }
+                skeletonGenerator.getSkeletonMetaData().saveToFile(saveToFileName);
             }
         }
     }

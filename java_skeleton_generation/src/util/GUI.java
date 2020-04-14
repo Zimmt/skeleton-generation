@@ -26,6 +26,8 @@ public class GUI {
 
     private JFormattedTextField skeletonCount;
     private JComboBox<String> resolution;
+    private JCheckBox saveToFile;
+    private JTextField saveFileName;
 
     public GUI(ActionListener startButtonListener) {
         JFrame frame = new JFrame("Skeleton Generator");
@@ -105,6 +107,14 @@ public class GUI {
         return resolution.getSelectedItem().equals("low");
     }
 
+    public boolean getSaveToFile() {
+        return saveToFile.isSelected();
+    }
+
+    public String getSaveFileName() {
+        return saveFileName.getText();
+    }
+
 
     private JPanel initializeUserInputPanel() {
         JPanel userInputPanel = new JPanel();
@@ -172,9 +182,15 @@ public class GUI {
         this.skeletonCount = constructIntTextField(1000);
         skeletonCount.setValue(1);
         this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
+        this.saveToFile = new JCheckBox();
+        this.saveFileName = new JTextField();
 
-        String[] labels = new String[] {"number of skeletons to generate", "resolution"};
-        Component[] inputComponents = new Component[] {skeletonCount, resolution};
+        JPanel saveToFilePanel = new JPanel(new BorderLayout());
+        saveToFilePanel.add(saveToFile, BorderLayout.LINE_START);
+        saveToFilePanel.add(saveFileName, BorderLayout.CENTER);
+
+        String[] labels = new String[] {"number of skeletons to generate", "resolution", "save to file"};
+        Component[] inputComponents = new Component[] {skeletonCount, resolution, saveToFilePanel};
 
         return constructGridLayout(labels, inputComponents);
     }
@@ -195,7 +211,7 @@ public class GUI {
 
     private JFormattedTextField constructIntTextField(int maxValue) {
         JFormattedTextField textField = new JFormattedTextField(new IntFormatter(maxValue));
-        textField.setColumns(1);
+        textField.setColumns(5);
         return textField;
     }
 
