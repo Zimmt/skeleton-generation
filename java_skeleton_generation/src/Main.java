@@ -1,6 +1,4 @@
-import skeleton.SkeletonGenerator;
-import skeleton.UserInput;
-import util.ObjGenerator;
+import skeleton.SkeletonGeneratorHandler;
 import util.pca.PcaConditions;
 import util.pca.PcaDataPoint;
 import util.pca.PcaDataReader;
@@ -11,9 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        runSkeletonGenerator(true);
+        new SkeletonGeneratorHandler().run();
         System.out.println("Finished");
     }
 
@@ -35,63 +33,5 @@ public class Main {
         dataPoints = dataPoints.stream().filter(p -> p.getWings() <= 0).collect(Collectors.toList());
         PcaHandler pcaHandlerNoWings = new PcaHandler(dataPoints, new PcaConditions());
         pcaHandlerNoWings.visualize();
-    }
-
-    private static void runSkeletonGenerator(boolean logWeight) throws IOException {
-        boolean readMetaDataFromFile = true;
-        boolean createVariationsFromFile = false;
-        boolean saveSkeletonMetaDataToFile = false;
-
-        boolean allCubes = false;
-        boolean lowResolution = true;
-        UserInput userInput = null;
-        PcaHandler pcaHandler = null;
-        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
-        if (!readMetaDataFromFile) {
-            boolean allowTwoExtremitiesPerGirdle = true;
-            Integer userInputFlooredLegs = null;
-            Integer userInputWings = null;
-            Integer userInputArms = null;
-            Integer userInputFins = null;
-            Boolean userInputSecondShoulder = null;
-            Double userInputNeckYLength = null;
-            Double userInputTailXLength = null;
-            String userInputHead = "horse_skull";
-            userInput = new UserInput(userInputFlooredLegs, userInputWings, userInputArms, userInputFins, allowTwoExtremitiesPerGirdle,
-                    userInputSecondShoulder, userInputNeckYLength, userInputTailXLength, userInputHead);
-
-            PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
-                    userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
-            pcaHandler = new PcaHandler(dataPoints, conditions);
-        }
-
-
-        int skeletonCount = 1;
-        for (int i = 0; i < skeletonCount; i++) {
-            System.out.println("- " + i + " --------------------------------------------------------------");
-            String metaDataFileName = String.format("skeletonMetaData%d.txt", i);
-            SkeletonGenerator skeletonGenerator;
-            if (createVariationsFromFile) {
-                skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
-            } else if (readMetaDataFromFile) {
-                skeletonGenerator = new SkeletonGenerator(metaDataFileName);
-            } else {
-                skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
-            }
-            while (!skeletonGenerator.isFinished()) {
-                boolean stepDone = skeletonGenerator.doOneStep();
-                if (!stepDone) { // there might be missing rules
-                    break;
-                }
-            }
-            skeletonGenerator.calculateMirroredElements();
-
-            ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowResolution);
-
-            if (saveSkeletonMetaDataToFile) {
-                skeletonGenerator.getSkeletonMetaData().saveToFile(metaDataFileName);
-            }
-        }
     }
 }
