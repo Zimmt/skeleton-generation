@@ -17,17 +17,17 @@ public class GUI {
 
     private JCheckBox readFromFile;
     private JTextField inputFilePath;
+    private JButton chooseFileButton;
     private JFileChooser fileChooser;
     private JCheckBox createVariations;
 
+    private JPanel algorithmConstraintsPanel;
     private JFormattedTextField legInputField;
     private JFormattedTextField wingInputField;
     private JFormattedTextField armInputField;
     private JFormattedTextField finInputField;
-
     private JFormattedTextField neckYLengthInputField;
     private JFormattedTextField tailXLengthInputField;
-
     private JCheckBox twoExtremitiesPerGirdleAllowed;
     private JComboBox<String> secondShoulder;
     private JComboBox<String> headKind;
@@ -138,7 +138,7 @@ public class GUI {
 
         JPanel fromFilePanel = initializeFromFilePanel();
         JSeparator separator1 = new JSeparator();
-        JPanel algorithmConstraintsPanel = initializeAlgorithmConstraintsPanel();
+        this.algorithmConstraintsPanel = initializeAlgorithmConstraintsPanel();
         JSeparator separator2 = new JSeparator();
         JPanel otherInputPanel = initializeOtherInputPanel();
 
@@ -153,8 +153,10 @@ public class GUI {
     private JPanel initializeFromFilePanel() {
         this.readFromFile = new JCheckBox();
         this.inputFilePath = new JTextField();
-        JButton chooseFileButton = new JButton("choose");
+        inputFilePath.setEnabled(false);
+        this.chooseFileButton = new JButton("choose");
         chooseFileButton.addActionListener(this::chooseInputFile);
+        chooseFileButton.setEnabled(false);
         this.fileChooser = new JFileChooser(".");
         fileChooser.setFileFilter(new FileNameExtensionFilter("txt files","txt"));
 
@@ -164,6 +166,17 @@ public class GUI {
         loadFilePanel.add(chooseFileButton, BorderLayout.LINE_END);
 
         this.createVariations = new JCheckBox();
+        createVariations.setEnabled(false);
+
+        readFromFile.addActionListener(e -> {
+            boolean enabled = readFromFile.isSelected();
+            inputFilePath.setEnabled(enabled);
+            chooseFileButton.setEnabled(enabled);
+            createVariations.setEnabled(enabled);
+            for (Component c : algorithmConstraintsPanel.getComponents()) {
+                c.setEnabled(!enabled);
+            }
+        });
 
         String[] labels = new String[] {"load from file", "create variations"};
         Component[] inputComponents = new Component[] {loadFilePanel, createVariations};
