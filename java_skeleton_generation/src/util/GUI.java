@@ -1,5 +1,11 @@
 package util;
 
+import jv.loader.PjImportModel;
+import jv.project.PgGeometryIf;
+import jv.vecmath.PdVector;
+import jv.viewer.PvDisplay;
+import jv.viewer.PvViewer;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultFormatter;
@@ -15,8 +21,8 @@ public class GUI {
 
     private JCheckBox readFromFile;
     private JTextField inputFilePath;
-    private JButton chooseFileButton;
-    private JFileChooser fileChooser;
+    private JButton chooseInputFileButton;
+    private JFileChooser inputFileChooser;
     private JCheckBox createVariations;
 
     private JPanel algorithmConstraintsPanel;
@@ -34,6 +40,8 @@ public class GUI {
     private JComboBox<String> resolution;
     private JCheckBox saveToFile;
     private JTextField saveFileName;
+    private JButton chooseSkeletonButton;
+    private JFileChooser skeletonFileChooser;
 
     public GUI(ActionListener startButtonListener) {
         JFrame frame = new JFrame("Skeleton Generator");
@@ -152,16 +160,16 @@ public class GUI {
         this.readFromFile = new JCheckBox();
         this.inputFilePath = new JTextField();
         inputFilePath.setEnabled(false);
-        this.chooseFileButton = new JButton("choose");
-        chooseFileButton.addActionListener(this::chooseInputFile);
-        chooseFileButton.setEnabled(false);
-        this.fileChooser = new JFileChooser(".");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("txt files","txt"));
+        this.chooseInputFileButton = new JButton("choose");
+        chooseInputFileButton.addActionListener(this::chooseInputFile);
+        chooseInputFileButton.setEnabled(false);
+        this.inputFileChooser = new JFileChooser(".");
+        inputFileChooser.setFileFilter(new FileNameExtensionFilter("txt files","txt"));
 
         JPanel loadFilePanel = new JPanel(new BorderLayout());
         loadFilePanel.add(readFromFile, BorderLayout.LINE_START);
         loadFilePanel.add(inputFilePath, BorderLayout.CENTER);
-        loadFilePanel.add(chooseFileButton, BorderLayout.LINE_END);
+        loadFilePanel.add(chooseInputFileButton, BorderLayout.LINE_END);
 
         this.createVariations = new JCheckBox();
         createVariations.setEnabled(false);
@@ -169,7 +177,7 @@ public class GUI {
         readFromFile.addActionListener(e -> {
             boolean enabled = readFromFile.isSelected();
             inputFilePath.setEnabled(enabled);
-            chooseFileButton.setEnabled(enabled);
+            chooseInputFileButton.setEnabled(enabled);
             createVariations.setEnabled(enabled);
             for (Component c : algorithmConstraintsPanel.getComponents()) {
                 c.setEnabled(!enabled);
@@ -223,22 +231,52 @@ public class GUI {
         this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
         this.saveToFile = new JCheckBox();
         this.saveFileName = new JTextField();
+        this.chooseSkeletonButton = new JButton("choose skeleton");
+        chooseSkeletonButton.addActionListener(this::chooseAndShowSkeleton);
+        this.skeletonFileChooser = new JFileChooser(".");
+        skeletonFileChooser.setFileFilter(new FileNameExtensionFilter("obj files", "obj"));
 
         JPanel saveToFilePanel = new JPanel(new BorderLayout());
         saveToFilePanel.add(saveToFile, BorderLayout.LINE_START);
         saveToFilePanel.add(saveFileName, BorderLayout.CENTER);
 
-        String[] labels = new String[] {"number of skeletons to generate", "resolution", "save to file"};
-        Component[] inputComponents = new Component[] {skeletonCount, resolution, saveToFilePanel};
+        String[] labels = new String[] {"number of skeletons to generate", "resolution", "save to file", "show skeleton"};
+        Component[] inputComponents = new Component[] {skeletonCount, resolution, saveToFilePanel, chooseSkeletonButton};
 
         return constructGridLayout(labels, inputComponents);
     }
 
     private void chooseInputFile(ActionEvent e) {
-        int returnValue = fileChooser.showOpenDialog(inputFilePath);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
+        int chooserReturn = inputFileChooser.showOpenDialog(inputFilePath);
+        if (chooserReturn == JFileChooser.APPROVE_OPTION) {
+            File file = inputFileChooser.getSelectedFile();
             inputFilePath.setText(file.getPath());
+        }
+    }
+
+    private void chooseAndShowSkeleton(ActionEvent e) {
+        int chooserReturn = skeletonFileChooser.showOpenDialog(null);
+        if (chooserReturn == JFileChooser.APPROVE_OPTION) {
+            File file = skeletonFileChooser.getSelectedFile();
+
+            PvViewer javaView = new PvViewer();
+
+            PjImportModel importModel = new PjImportModel();
+            importModel.load(file.getPath());
+            PgGeometryIf geometry = importModel.getGeometry();
+
+            PvDisplay pvDisplay = (PvDisplay) javaView.getDisplay();
+            pvDisplay.addGeometry(geometry);
+            pvDisplay.getCamera().setViewDir(new PdVector(0.0, 0.0, -1.0));
+            pvDisplay.getLight().setIntensity(0.4);
+
+            pvDisplay.setVisible(true);
+
+            JDialog dialog = new JDialog();
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.add(pvDisplay);
+            dialog.setSize(500, 500);
+            dialog.setVisible(true);
         }
     }
 
