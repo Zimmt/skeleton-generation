@@ -63,19 +63,19 @@ public class GUI {
     }
 
     public Integer getLegInput() {
-        return (Integer) legInputField.getValue();
+        return legInputField.getValue() == null ? null : (Integer) legInputField.getValue() / 2;
     }
 
     public Integer getWingInput() {
-        return (Integer) wingInputField.getValue();
+        return wingInputField.getValue() == null ? null : (Integer) wingInputField.getValue() / 2;
     }
 
     public Integer getArmInput() {
-        return (Integer) armInputField.getValue();
+        return armInputField.getValue() == null ? null : (Integer) armInputField.getValue() / 2;
     }
 
     public Integer getFinInput() {
-        return (Integer) finInputField.getValue();
+        return finInputField.getValue() == null ? null : (Integer) finInputField.getValue() / 2;
     }
 
     public Double getNeckInput() {
@@ -182,10 +182,10 @@ public class GUI {
     }
 
     private JPanel initializeAlgorithmConstraintsPanel() {
-        this.legInputField = constructIntTextField(4);
-        this.wingInputField = constructIntTextField(4);
-        this.armInputField = constructIntTextField(4);
-        this.finInputField = constructIntTextField(6);
+        this.legInputField = constructIntTextField(8, true);
+        this.wingInputField = constructIntTextField(8, true);
+        this.armInputField = constructIntTextField(8, true);
+        this.finInputField = constructIntTextField(12, true);
         this.neckYLengthInputField = constructDoubleTextField();
         this.tailXLengthInputField = constructDoubleTextField();
         this.twoExtremitiesPerGirdleAllowed = new JCheckBox();
@@ -218,7 +218,7 @@ public class GUI {
     }
 
     private JPanel initializeOtherInputPanel() {
-        this.skeletonCount = constructIntTextField(1000);
+        this.skeletonCount = constructIntTextField(1000, false);
         skeletonCount.setValue(1);
         this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
         this.saveToFile = new JCheckBox();
@@ -256,8 +256,8 @@ public class GUI {
         return panel;
     }
 
-    private JFormattedTextField constructIntTextField(int maxValue) {
-        JFormattedTextField textField = new JFormattedTextField(new IntFormatter(maxValue));
+    private JFormattedTextField constructIntTextField(int maxValue, boolean onlyEvenNumbers) {
+        JFormattedTextField textField = new JFormattedTextField(new IntFormatter(maxValue, onlyEvenNumbers));
         textField.setColumns(5);
         return textField;
     }
@@ -271,10 +271,12 @@ public class GUI {
     private static class IntFormatter extends DefaultFormatter {
 
         private final int max;
+        private final boolean onlyEvenNumbers;
 
-        public IntFormatter(int max) {
+        public IntFormatter(int max, boolean onlyEvenNumbers) {
             super();
             this.max = max;
+            this.onlyEvenNumbers = onlyEvenNumbers;
         }
 
         public String valueToString(Object object) throws ParseException {
@@ -289,6 +291,9 @@ public class GUI {
                 }
                 if (value > max) {
                     value = max;
+                }
+                if (onlyEvenNumbers && value % 2 != 0) {
+                    value -= 1;
                 }
                 return value;
             } catch (NumberFormatException e) {
