@@ -1,15 +1,23 @@
 package util;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultFormatter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 
 public class GUI {
 
     private final JButton startButton;
 
+    private JCheckBox readFromFile;
+    private JTextField inputFilePath;
+    private JFileChooser fileChooser;
     private JCheckBox createVariations;
 
     private JFormattedTextField legInputField;
@@ -42,6 +50,14 @@ public class GUI {
         frame.getContentPane().add(BorderLayout.NORTH, userInputPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, startButton);
         frame.setVisible(true);
+    }
+
+    public boolean getReadFromFile() {
+        return readFromFile.isSelected();
+    }
+
+    public String getInputFilePath() {
+        return inputFilePath.getText();
     }
 
     public boolean getCreateVariationsInput() {
@@ -135,10 +151,22 @@ public class GUI {
     }
 
     private JPanel initializeFromFilePanel() {
+        this.readFromFile = new JCheckBox();
+        this.inputFilePath = new JTextField();
+        JButton chooseFileButton = new JButton("choose");
+        chooseFileButton.addActionListener(this::chooseInputFile);
+        this.fileChooser = new JFileChooser(".");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("txt files","txt"));
+
+        JPanel loadFilePanel = new JPanel(new BorderLayout());
+        loadFilePanel.add(readFromFile, BorderLayout.LINE_START);
+        loadFilePanel.add(inputFilePath, BorderLayout.CENTER);
+        loadFilePanel.add(chooseFileButton, BorderLayout.LINE_END);
+
         this.createVariations = new JCheckBox();
 
-        String[] labels = new String[] {"create variations"};
-        Component[] inputComponents = new Component[] {createVariations};
+        String[] labels = new String[] {"load from file", "create variations"};
+        Component[] inputComponents = new Component[] {loadFilePanel, createVariations};
         return constructGridLayout(labels, inputComponents);
     }
 
@@ -193,6 +221,16 @@ public class GUI {
         Component[] inputComponents = new Component[] {skeletonCount, resolution, saveToFilePanel};
 
         return constructGridLayout(labels, inputComponents);
+    }
+
+    private void chooseInputFile(ActionEvent e) {
+        int returnValue = fileChooser.showOpenDialog(inputFilePath);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            Path basePath = Paths.get(new File(".").getAbsolutePath());
+            Path absolutePath = Paths.get(file.getAbsolutePath());
+            inputFilePath.setText(basePath.relativize(absolutePath).toString());
+        }
     }
 
     private JPanel constructGridLayout(String[] labelTexts, Component[] textFields) {

@@ -38,23 +38,23 @@ public class SkeletonGenerator {
         this.skeletonMetaData = new SkeletonMetaData(pcaHandler, userInput);
     }
 
-    public SkeletonGenerator(String skeletonMetaDataFileName) throws IOException {
+    public SkeletonGenerator(String skeletonMetaDataFilePath) throws IOException {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
-        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFileName);
+        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFilePath);
     }
 
     /**
      * Reads skeleton meta data from file and creates a variation of that based on pca results
      */
-    public SkeletonGenerator(String skeletonMetaDataFileName, List<PcaDataPoint> pcaInputData) throws IOException {
+    public SkeletonGenerator(String skeletonMetaDataFilePath, List<PcaDataPoint> pcaInputData) throws IOException {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
-        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFileName).newWithVariation(pcaInputData);
+        this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFilePath).newWithVariation(pcaInputData);
     }
 
     /**
@@ -251,10 +251,10 @@ public class SkeletonGenerator {
         return childrenToAdd;
     }
 
-    private SkeletonMetaData readMetaDataFromFile(String fileName) throws IOException {
+    private SkeletonMetaData readMetaDataFromFile(String filePath) throws IOException {
         SkeletonMetaData metaData = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(fileName));
+            FileInputStream fileInputStream = new FileInputStream(new File(filePath));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             metaData = (SkeletonMetaData) objectInputStream.readObject();

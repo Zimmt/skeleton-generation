@@ -25,15 +25,11 @@ public class SkeletonGeneratorHandler {
     }
 
     private void runSkeletonGenerator() throws IOException {
-        boolean readMetaDataFromFile = false;
-
         UserInput userInput = null;
         PcaHandler pcaHandler = null;
-        List<PcaDataPoint> dataPoints = null;
+        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(true);
 
-        if (!readMetaDataFromFile) {
-            dataPoints = PcaDataReader.readInputData(true);
-
+        if (!gui.getReadFromFile()) {
             userInput = new UserInput(
                     gui.getLegInput(), gui.getWingInput(), gui.getArmInput(), gui.getFinInput(),
                     gui.getTwoExtremitiesPerGirdleAllowed(), gui.getSecondShoulderInput(),
@@ -47,12 +43,15 @@ public class SkeletonGeneratorHandler {
         int skeletonCount = gui.getSkeletonCount();
         for (int i = 0; i < skeletonCount; i++) {
             System.out.println(String.format("- %d --------------------------------------------------------------", i));
-            String metaDataFileName = "skeletonMetaData.txt";
+            String metaDataFilePath = gui.getInputFilePath();
+
             SkeletonGenerator skeletonGenerator;
-            if (gui.getCreateVariationsInput()) {
-                skeletonGenerator = new SkeletonGenerator(metaDataFileName, dataPoints);
-            } else if (readMetaDataFromFile) {
-                skeletonGenerator = new SkeletonGenerator(metaDataFileName);
+            if (gui.getReadFromFile()) {
+                if (gui.getCreateVariationsInput()) {
+                    skeletonGenerator = new SkeletonGenerator(metaDataFilePath, dataPoints);
+                } else {
+                    skeletonGenerator = new SkeletonGenerator(metaDataFilePath);
+                }
             } else {
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
             }
