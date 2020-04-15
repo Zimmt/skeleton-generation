@@ -7,8 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 
 public class GUI {
@@ -240,9 +238,7 @@ public class GUI {
         int returnValue = fileChooser.showOpenDialog(inputFilePath);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            Path basePath = Paths.get(new File(".").getAbsolutePath());
-            Path absolutePath = Paths.get(file.getAbsolutePath());
-            inputFilePath.setText(basePath.relativize(absolutePath).toString());
+            inputFilePath.setText(file.getPath());
         }
     }
 
