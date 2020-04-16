@@ -28,8 +28,16 @@ Außerdem wird während der Iteration verboten, dass Knochen unterhalb der Boden
 
 % Änderung der Winkel und Wahrscheinlichkeiten
 In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht.
-Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadruch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen? bzw braucht man dise Wkten überhaupt?}
+Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadurch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen? bzw braucht man dise Wkten überhaupt?}
 \todo{Konkrete Einstellungen erwähnen (in Implementierungsdetails?)}
+
+Evaluierung \todo{ausformulieren}
+\begin{itemize}
+ \item generierte Extremitäten mit echten Positionen vergleichen, diskutieren
+ \item Restpose nicht klar definiert (vielleicht irgendwie in PCA einfügen? hier gab es keine guten Ideen; außerdem ist Position auf Skelettbildern teilweise auch eher beliebig)
+ \item keine wissenschaftliche Argumentation für Änderungen am Beinalgo, nicht klar was Verbesserungen wären; Beine müssen für Animation, Muskelgeneration etc sowieso nochmal angefasst werden -> future work
+\end{itemize}
+
 
 %--------------------------------------
 \section{Ansatzpunkte für Extremitäten}
@@ -50,7 +58,9 @@ Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermögli
 %--------------------------------
 \section{Knochenmodelle einfügen}
 
-Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt. Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen:
+Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt.
+\todo{es sind nicht wirklich Bounding Boxen, eher "`Proxyboxen"'}
+Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen:
 
 Das Modell ist korrekt an den Achsen ausgerichtet und so verzerrt, dass es einen Würfel mit 1(m) Kantenlänge in jeder Richtung möglichst gut ausfüllt.
 
@@ -80,9 +90,13 @@ Da der Kopf \bzw der Schädelknochen im Gegensatz zu anderen Knochen bei Wirbelt
 
 % Hände und Füße
 Bei Händen und Füßen ist das Problem ebenso, dass es sehr viele verschiedene Ausprägungen davon gibt. Hier lassen sie sich jedoch grob nach Extremitätentyp unterscheiden. Diese Unterscheidung kann aber beliebig fein sein. Hier wurde nur nach Flügel, Flosse \todo{?} und Extremität mit Bodenkontakt unterschieden. Und bei Extremitäten mit Bodenkontakt wurde nochmals danach unterschieden wie flach der Fuß oder die Hand auf dem Boden aufkommt (bei weniger als $45^\circ$ ist es eine menschliche Hand, sonst ein Huf). \todo{ggf. an Implementierung anpassen}
+\todo{erwähnen, dass Knochen für Flügel"`hand"' nicht vollständig}
 
 % mehrere Extremitäten an einer Schulter/Hüfte
 Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein "`normales"' Modell der Schulter/Hüfte nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde an der Schulter so behoben, dass einfach mehrere Schulterblätte mit einem gewissen Abstand generiert wurden. Für die Hüfte wurde ein kombiniertes 3D-Modell aus zwei einzelnen Hüften erstellt, an dem nun zwei Gelenke vorhanden sind.
+
+\todo{3D-Modelle leider nicht ganz einfach Austauschbar wegen Offsets -> erkläre wie Offsets eingelesen werden müssten}
+\todo{Wenn Muskeln generiert werden sollen, müssen noch mehr Ansatzpunkte bestimmt werden und Positionierung der Knochen hängt von Muskeln ab -> future work}
 
 %------------------------
 \section{Ergebnisskelette}
@@ -104,3 +118,11 @@ Das funktioniert natürlich nur über das implementierte Programm und liefert ke
 \todo{Ideen für Zusatzinfos, die sinnvoll sein könnten, aufschreiben / future work (zB Knochenhierarchie); wären aber wsh nicht super hilfreich, weil für Animation etc. sowieso nochmal alles angefasst werden muss}
 
 \todo{Möglichkeiten Zusatzinfos abzuspeichern (fbx, alembic, universal scene description \url{https://graphics.pixar.com/usd/docs/index.html}), python script für Blender etc. um Knochen anzulegen}
+
+Erzeugung von Variationen \todo{ausformulieren}
+\begin{itemize}
+ \item was genau wird variiert
+ \item PCA Daten normalverteilt variieren (Verteilung bleibt Gauß, Erwartungswert bleibt gleich, Überlegungen dazu wie sie sich ändert durch Aufaddieren der Variation / Faltung mit anderem Gauß)
+ \item Variation der Daten, die nicht von PCA abhängen, beschreiben; generische Algorithmen zitieren (auch hinzufügen und löschen oder ändern von Features um Variationen/Verbesserungen zu erzeugen)
+\end{itemize}
+
