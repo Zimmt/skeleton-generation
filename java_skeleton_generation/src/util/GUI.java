@@ -17,12 +17,12 @@ import java.text.ParseException;
 
 public class GUI {
 
-    private final JButton startButton;
-
     private JCheckBox readFromFile;
     private JTextField inputFilePath;
     private JButton chooseInputFileButton;
     private JFileChooser inputFileChooser;
+    private JCheckBox constructFromExample;
+    private JComboBox<String> exampleName;
     private JCheckBox createVariations;
 
     private JPanel algorithmConstraintsPanel;
@@ -40,15 +40,16 @@ public class GUI {
     private JComboBox<String> resolution;
     private JCheckBox saveToFile;
     private JTextField saveFileName;
-    private JButton chooseSkeletonButton;
     private JFileChooser skeletonFileChooser;
 
-    public GUI(ActionListener startButtonListener) {
+    private final JButton startButton;
+
+    public GUI(String[] exampleNames, ActionListener startButtonListener) {
         JFrame frame = new JFrame("Skeleton Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 600);
+        frame.setSize(600, 700);
 
-        JPanel userInputPanel = initializeUserInputPanel();
+        JPanel userInputPanel = initializeUserInputPanel(exampleNames);
 
         this.startButton = new JButton("start generator");
         startButton.addActionListener(startButtonListener);
@@ -64,6 +65,14 @@ public class GUI {
 
     public String getInputFilePath() {
         return inputFilePath.getText();
+    }
+
+    public boolean getConstructFromExample() {
+        return constructFromExample.isSelected();
+    }
+
+    public String getPcaDataPointName() {
+        return (String) exampleName.getSelectedItem();
     }
 
     public boolean getCreateVariationsInput() {
@@ -138,11 +147,11 @@ public class GUI {
     }
 
 
-    private JPanel initializeUserInputPanel() {
+    private JPanel initializeUserInputPanel(String[] exampleNames) {
         JPanel userInputPanel = new JPanel();
         userInputPanel.setLayout(new BoxLayout(userInputPanel, BoxLayout.Y_AXIS));
 
-        JPanel fromFilePanel = initializeFromFilePanel();
+        JPanel fromFilePanel = initializeFromFilePanel(exampleNames);
         JSeparator separator1 = new JSeparator();
         this.algorithmConstraintsPanel = initializeAlgorithmConstraintsPanel();
         JSeparator separator2 = new JSeparator();
@@ -156,7 +165,7 @@ public class GUI {
         return userInputPanel;
     }
 
-    private JPanel initializeFromFilePanel() {
+    private JPanel initializeFromFilePanel(String[] exampleNames) {
         this.readFromFile = new JCheckBox();
         this.inputFilePath = new JTextField();
         inputFilePath.setEnabled(false);
@@ -171,6 +180,13 @@ public class GUI {
         loadFilePanel.add(inputFilePath, BorderLayout.CENTER);
         loadFilePanel.add(chooseInputFileButton, BorderLayout.LINE_END);
 
+        this.constructFromExample = new JCheckBox();
+        this.exampleName = new JComboBox<>(exampleNames);
+        exampleName.setEnabled(false);
+        JPanel constructFromExamplePanel = new JPanel(new BorderLayout());
+        constructFromExamplePanel.add(constructFromExample, BorderLayout.LINE_START);
+        constructFromExamplePanel.add(exampleName, BorderLayout.CENTER);
+
         this.createVariations = new JCheckBox();
         createVariations.setEnabled(false);
 
@@ -178,14 +194,21 @@ public class GUI {
             boolean enabled = readFromFile.isSelected();
             inputFilePath.setEnabled(enabled);
             chooseInputFileButton.setEnabled(enabled);
-            createVariations.setEnabled(enabled);
+            if (enabled) constructFromExample.setSelected(false);
+            createVariations.setEnabled(enabled || constructFromExample.isSelected());
             for (Component c : algorithmConstraintsPanel.getComponents()) {
                 c.setEnabled(!enabled);
             }
         });
+        constructFromExample.addActionListener(e -> {
+            boolean enabled = constructFromExample.isSelected();
+            exampleName.setEnabled(enabled);
+            if (enabled) readFromFile.setSelected(false);
+            createVariations.setEnabled(enabled || readFromFile.isSelected());
+        });
 
-        String[] labels = new String[] {"load from file", "create variations"};
-        Component[] inputComponents = new Component[] {loadFilePanel, createVariations};
+        String[] labels = new String[] {"load from file", "construct from example", "create variations"};
+        Component[] inputComponents = new Component[] {loadFilePanel, constructFromExamplePanel, createVariations};
         return constructGridLayout(labels, inputComponents);
     }
 
@@ -231,7 +254,7 @@ public class GUI {
         this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
         this.saveToFile = new JCheckBox();
         this.saveFileName = new JTextField();
-        this.chooseSkeletonButton = new JButton("choose skeleton");
+        JButton chooseSkeletonButton = new JButton("choose skeleton");
         chooseSkeletonButton.addActionListener(this::chooseAndShowSkeleton);
         this.skeletonFileChooser = new JFileChooser(".");
         skeletonFileChooser.setFileFilter(new FileNameExtensionFilter("obj files", "obj"));

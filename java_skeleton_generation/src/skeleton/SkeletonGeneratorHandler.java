@@ -12,10 +12,13 @@ import java.util.List;
 
 public class SkeletonGeneratorHandler {
 
+    private List<PcaDataPoint> pcaDataPoints;
     private GUI gui;
 
-    public void run() {
-        this.gui = new GUI(c -> {
+    public void run() throws IOException {
+        this.pcaDataPoints = PcaDataReader.readInputData(true);
+        String[] exampleNames = pcaDataPoints.stream().map(PcaDataPoint::getName).toArray(String[]::new);
+        this.gui = new GUI(exampleNames, c -> {
             try {
                 runSkeletonGenerator();
             } catch (IOException e) {
@@ -27,7 +30,6 @@ public class SkeletonGeneratorHandler {
     private void runSkeletonGenerator() throws IOException {
         UserInput userInput = null;
         PcaHandler pcaHandler = null;
-        List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(true);
 
         if (!gui.getReadFromFile()) {
             userInput = new UserInput(
@@ -37,7 +39,7 @@ public class SkeletonGeneratorHandler {
 
             PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
                     userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
-            pcaHandler = new PcaHandler(dataPoints, conditions);
+            pcaHandler = new PcaHandler(pcaDataPoints, conditions);
         }
 
         int skeletonCount = gui.getSkeletonCount();
@@ -48,10 +50,12 @@ public class SkeletonGeneratorHandler {
             SkeletonGenerator skeletonGenerator;
             if (gui.getReadFromFile()) {
                 if (gui.getCreateVariationsInput()) {
-                    skeletonGenerator = new SkeletonGenerator(metaDataFilePath, dataPoints);
+                    skeletonGenerator = new SkeletonGenerator(metaDataFilePath, pcaDataPoints);
                 } else {
                     skeletonGenerator = new SkeletonGenerator(metaDataFilePath);
                 }
+            } else if (gui.getConstructFromExample()) {
+                skeletonGenerator = new SkeletonGenerator(pcaHandler, gui.getPcaDataPointName(), userInput, gui.getCreateVariationsInput());
             } else {
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
             }

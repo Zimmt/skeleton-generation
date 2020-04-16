@@ -95,6 +95,15 @@ public class PcaHandler {
         return pcaMetaData.getConditions();
     }
 
+    public PcaDataPoint getPcaDataPointByName(String pcaDataPointName) {
+        for (PcaDataPoint point : dataPoints) {
+            if (point.getName().equals(pcaDataPointName)) {
+                return point;
+            }
+        }
+        return null;
+    }
+
     public void exportOriginalPcaData() throws IOException {
 
         String heading = String.format("# Original PCA examples\n# %s\n", PcaDataPoint.getDimensionNames());
@@ -208,28 +217,32 @@ public class PcaHandler {
         }
     }
 
-    /**
-     * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
-     */
-    public List<RealVector> getEigenvectorScalesForPoints(double minEigenvalueSize) {
+    public RealVector getEigenvectorScalesForPoint(PcaDataPoint point, double minEigenvalueSize) {
         if (pcaMetaData.getConditions() != null && pcaMetaData.getConditions().anyConditionPresent()) {
             System.err.println("Can only calculate eigenvector scales for points without conditions!");
             return null;
         }
         RealVector meanVector = new ArrayRealVector(pcaMetaData.getOriginalMean().getScaledDataForPCA());
         int dimension = pca.getEigenvalues(minEigenvalueSize).size();
-        List<RealVector> results = new ArrayList<>(dimension);
 
+        RealVector animal = new ArrayRealVector(point.getScaledDataForPCA());
+        RealVector relativeAnimal = animal.subtract(meanVector);
+
+        RealVector eigenvectorScales = pca.getEigenDecomposition().getVT().operate(relativeAnimal);
+        RealVector sortedEigenvectorScales = new ArrayRealVector(dimension);
+        for (int i = 0; i < sortedEigenvectorScales.getDimension(); i++) {
+            sortedEigenvectorScales.setEntry(i, eigenvectorScales.getEntry(pca.getEigenvectorIndex(i)));
+        }
+        return sortedEigenvectorScales;
+    }
+
+    /**
+     * @return for each data point a list of eigenvector scales (in the same order as in dataPoints)
+     */
+    public List<RealVector> getEigenvectorScalesForPoints(double minEigenvalueSize) {
+        List<RealVector> results = new ArrayList<>(dataPoints.size());
         for (PcaDataPoint point : dataPoints) {
-            RealVector animal = new ArrayRealVector(point.getScaledDataForPCA());
-            RealVector relativeAnimal = animal.subtract(meanVector);
-
-            RealVector eigenvectorScales = pca.getEigenDecomposition().getVT().operate(relativeAnimal);
-            RealVector sortedEigenvectorScales = new ArrayRealVector(dimension);
-            for (int i = 0; i < sortedEigenvectorScales.getDimension(); i++) {
-                sortedEigenvectorScales.setEntry(i, eigenvectorScales.getEntry(pca.getEigenvectorIndex(i)));
-            }
-            results.add(sortedEigenvectorScales);
+            results.add(getEigenvectorScalesForPoint(point, minEigenvalueSize));
         }
         return results;
     }

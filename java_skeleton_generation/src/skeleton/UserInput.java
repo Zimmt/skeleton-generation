@@ -7,16 +7,20 @@ public class UserInput {
     private Integer wings;
     private Integer arms;
     private Integer fins;
-    private boolean allowTwoExtremitiesPerGirdle;
-    private int totalExtremityCount;
+    private boolean allowTwoExtremitiesPerGirdle = false;
+    private int totalExtremityCount = 0;
 
-    private boolean secondShoulder; // if there is a second shoulder or not is determined here (even if there is no user input on this)
+    private boolean secondShoulder = false; // if there is a second shoulder or not is determined here (even if there is no user input on this)
     private Double neckYLength;
     private Double tailXLength;
 
     private String head;
 
     private Random random = new Random();
+
+    public UserInput(String head) {
+        this.head = head;
+    }
 
     public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, boolean allowTwoExtremitiesPerGirdle,
                      Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
@@ -28,7 +32,6 @@ public class UserInput {
         this.tailXLength = tailXLength;
         this.neckYLength = neckYLength;
         this.head = head;
-        this.totalExtremityCount = 0;
         if (flooredLegs != null) totalExtremityCount += flooredLegs;
         if (wings != null) totalExtremityCount += wings;
         if (arms != null) totalExtremityCount += arms;

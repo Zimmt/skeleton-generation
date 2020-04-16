@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SkeletonMetaData implements Serializable {
-    private PcaConditions pcaConditions;
-    private double[] eigenvectorScales;
+    private final PcaConditions pcaConditions;
+    private final double[] eigenvectorScales;
 
-    private SpineData spine;
-    private ExtremityData extremities;
-    private double weight;
-    private String headKind;
+    private final SpineData spine;
+    private final ExtremityData extremities;
+    private final double weight;
+    private final String headKind;
 
     public SkeletonMetaData(PcaHandler pcaHandler, UserInput userInput) {
         this.pcaConditions = pcaHandler.getPcaConditions();
@@ -32,6 +32,21 @@ public class SkeletonMetaData implements Serializable {
                 p.getLengthUpperArm(), p.getLengthLowerArm(), p.getLengthHand(),
                 p.getLengthUpperLeg(), p.getLengthLowerLeg(), p.getLengthFoot(), spine, userInput);
         this.weight = p.getWeight();
+        this.headKind = userInput.getHead();
+    }
+
+    /**
+     * @param userInput only uses 'head kind' of user input
+     */
+    public SkeletonMetaData(PcaHandler pcaHandler, PcaDataPoint point, UserInput userInput) {
+        this.pcaConditions = pcaHandler.getPcaConditions();
+        this.eigenvectorScales = pcaHandler.getEigenvectorScalesForPoint(point, 0.0).toArray();
+        this.spine = preprocessSpine(point.getSpine());
+        this.extremities = new ExtremityData(point.getWings(), point.getFlooredLegs(),
+                point.getLengthUpperArm(), point.getLengthLowerArm(), point.getLengthHand(),
+                point.getLengthUpperLeg(), point.getLengthLowerLeg(), point.getLengthFoot(),
+                spine, userInput);
+        this.weight = point.getWeight();
         this.headKind = userInput.getHead();
     }
 

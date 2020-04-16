@@ -38,6 +38,9 @@ public class SkeletonGenerator {
         this.skeletonMetaData = new SkeletonMetaData(pcaHandler, userInput);
     }
 
+    /**
+     * reads meta data from file
+     */
     public SkeletonGenerator(String skeletonMetaDataFilePath) throws IOException {
         this.terminalParts = new ArrayList<>();
         this.nonTerminalParts = new ArrayList<>();
@@ -55,6 +58,27 @@ public class SkeletonGenerator {
         this.nonTerminalParts.add(new WholeBody(this));
         this.ruleDictionary = new RuleDictionary();
         this.skeletonMetaData = readMetaDataFromFile(skeletonMetaDataFilePath).newWithVariation(pcaInputData);
+    }
+
+    /**
+     * @param pcaDataPointName is used to construct skeleton meta data (user input is ignored except from head kind)
+     * if data point with this name does not exist skeleton meta data is constructed only from user input
+     */
+    public SkeletonGenerator(PcaHandler pcaHandler, String pcaDataPointName, UserInput userInput, boolean createVariation) {
+        this.terminalParts = new ArrayList<>();
+        this.nonTerminalParts = new ArrayList<>();
+        this.nonTerminalParts.add(new WholeBody(this));
+        this.ruleDictionary = new RuleDictionary();
+        PcaDataPoint point = pcaHandler.getPcaDataPointByName(pcaDataPointName);
+        if (point == null) {
+            System.err.println("This example data point does not exist!");
+            this.skeletonMetaData = new SkeletonMetaData(pcaHandler, userInput);
+        } else  {
+            this.skeletonMetaData = new SkeletonMetaData(pcaHandler, point, userInput);
+        }
+        if (createVariation) {
+            this.skeletonMetaData = skeletonMetaData.newWithVariation(pcaHandler.getDataPoints());
+        }
     }
 
     /**
