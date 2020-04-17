@@ -147,26 +147,27 @@ public class UserInput {
     }
 
     private void checkValidityOfValues() {
-        if (totalExtremityCount > 6 || (!secondShoulder && totalExtremityCount > 4) ||
+        boolean secondShoulderDisallowed = secondShoulder != null && !secondShoulder;
+        if (totalExtremityCount > 6 || (secondShoulderDisallowed && totalExtremityCount > 4) ||
                 (!allowTwoExtremitiesPerGirdle && totalExtremityCount > 3) ||
-                (!secondShoulder && !allowTwoExtremitiesPerGirdle && totalExtremityCount > 2)) {
+                (secondShoulderDisallowed && !allowTwoExtremitiesPerGirdle && totalExtremityCount > 2)) {
             System.err.println("Too many extremities found!");
         }
         if (flooredLegs != null && (flooredLegs < 0 || flooredLegs > 4 || (!allowTwoExtremitiesPerGirdle && flooredLegs > 2))) {
             System.err.println("Invalid user input for legs");
         }
         if (wings != null && (wings < 0 || wings > 4 ||
-                ((!allowTwoExtremitiesPerGirdle || !secondShoulder) && wings > 2) ||
-                (!allowTwoExtremitiesPerGirdle && !secondShoulder && wings > 1))) {
+                ((!allowTwoExtremitiesPerGirdle || secondShoulderDisallowed) && wings > 2) ||
+                (!allowTwoExtremitiesPerGirdle && secondShoulderDisallowed && wings > 1))) {
             System.err.println("Invalid user input for wings");
         }
         if (arms != null && (arms < 0 || arms > 4 ||
-                ((!allowTwoExtremitiesPerGirdle || !secondShoulder) && arms > 2) ||
-                (!allowTwoExtremitiesPerGirdle && !secondShoulder && arms > 1))) {
+                ((!allowTwoExtremitiesPerGirdle || secondShoulderDisallowed) && arms > 2) ||
+                (!allowTwoExtremitiesPerGirdle && secondShoulderDisallowed && arms > 1))) {
             System.err.println("Invalid user input for arms");
         }
-        if (fins != null && (fins < 0 || fins > 6 || (!secondShoulder && fins > 4) || (!allowTwoExtremitiesPerGirdle && fins > 3) ||
-                (!secondShoulder && !allowTwoExtremitiesPerGirdle && fins > 2))) {
+        if (fins != null && (fins < 0 || fins > 6 || (secondShoulderDisallowed && fins > 4) || (!allowTwoExtremitiesPerGirdle && fins > 3) ||
+                (secondShoulderDisallowed && !allowTwoExtremitiesPerGirdle && fins > 2))) {
             System.err.println("Invalid user input for fins");
         }
     }

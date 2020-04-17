@@ -4,7 +4,9 @@ import skeleton.elements.ExtremityKind;
 import skeleton.replacementRules.ExtremityPositioning;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ExtremityData implements Serializable {
@@ -55,7 +57,15 @@ public class ExtremityData implements Serializable {
         } else {
             shoulderOnNeck = shoulderOnNeck && spine.getNeck().apply(0f).y - spine.getNeck().apply(1f).y > minNeckLengthForSecondShoulder;
         }
-        this.extremityStartingPoints = new ExtremityStartingPoints(shoulderOnNeck, userInput.twoExtremitiesPerGirdleAllowed());
+        List<Integer> forbiddenPositions = new ArrayList<>();
+        if (getBackExtremityLength() == 0) {
+            forbiddenPositions.add(0);
+        }
+        if (getFrontExtremityLength() == 0) {
+            forbiddenPositions.add(1);
+            forbiddenPositions.add(2);
+        }
+        this.extremityStartingPoints = new ExtremityStartingPoints(shoulderOnNeck, userInput.twoExtremitiesPerGirdleAllowed(), forbiddenPositions);
         calculateDerivedValues(spine);
     }
 
@@ -142,17 +152,9 @@ public class ExtremityData implements Serializable {
     }
 
     /**
-     * Remove all extremities with length 0.
      * Distribute extremities.
      */
     private void postprocessExtremities() {
-        if (lengthUpperArm + lengthLowerArm + lengthHand == 0) {
-            extremityStartingPoints.removeAllFromPosition(1);
-            extremityStartingPoints.removeAllFromPosition(2);
-        }
-        if (lengthUpperLeg + lengthLowerLeg + lengthHand == 0) {
-            extremityStartingPoints.removeAllFromPosition(0);
-        }
         extremityStartingPoints.distributeExtremities();
     }
 
@@ -204,7 +206,7 @@ public class ExtremityData implements Serializable {
 
         if (backLegs > 0) {
             float pelvicHeight = spine.getBack().getControlPoint3().y;
-            float legLength = lengthUpperLeg + lengthLowerLeg + lengthFoot;
+            float legLength = getBackExtremityLength();
             if (lengthUpperLeg + lengthLowerLeg >= pelvicHeight) {
                 flooredAnkleWristProbability = 1f;
             } else if (legLength < pelvicHeight) {
@@ -218,7 +220,7 @@ public class ExtremityData implements Serializable {
 
         if (frontLegs > 0) {
             float shoulderHeight = spine.getBack().getControlPoint0().y;
-            float armLength = lengthUpperArm + lengthLowerArm + lengthHand;
+            float armLength = getFrontExtremityLength();
             if (flooredAnkleWristProbability >= 1f || lengthUpperArm + lengthLowerArm >= shoulderHeight) {
                 flooredAnkleWristProbability = 1f;
             } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {
@@ -253,7 +255,7 @@ public class ExtremityData implements Serializable {
             if (random.nextDouble() < wingProbability) {
                 wings = 1;
             }
-            if (userInput.getSecondShoulder() && freeWingCount > 1 && random.nextDouble() < wingProbability) {
+            if (shoulderOnNeck && freeWingCount > 1 && random.nextDouble() < wingProbability) {
                 wings++;
             }
             extremityStartingPoints.setKind(ExtremityKind.WING, wings);
@@ -271,7 +273,7 @@ public class ExtremityData implements Serializable {
             if (random.nextDouble() < wingProbability) {
                 arms = 1;
             }
-            if (userInput.getSecondShoulder() && freeArmCount > 1 && random.nextDouble() < wingProbability) {
+            if (shoulderOnNeck && freeArmCount > 1 && random.nextDouble() < wingProbability) {
                 arms++;
             }
             extremityStartingPoints.setKind(ExtremityKind.ARM, arms);
@@ -297,5 +299,13 @@ public class ExtremityData implements Serializable {
         this.lengthUpperLeg = (float) Math.max(lengthUpperLeg, 0);
         this.lengthLowerLeg = (float) Math.max(lengthLowerLeg, 0);
         this.lengthFoot = (float) Math.max(lengthFoot, 0);
+    }
+
+    private float getFrontExtremityLength() {
+        return lengthUpperArm + lengthLowerArm + lengthHand;
+    }
+
+    private float getBackExtremityLength() {
+        return lengthUpperLeg + lengthLowerLeg + lengthFoot;
     }
 }
