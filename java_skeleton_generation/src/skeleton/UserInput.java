@@ -3,24 +3,20 @@ package skeleton;
 import java.util.Random;
 
 public class UserInput {
-    private Integer flooredLegs;
-    private Integer wings;
-    private Integer arms;
-    private Integer fins;
-    private boolean allowTwoExtremitiesPerGirdle = false;
+    private final Integer flooredLegs;
+    private final Integer wings;
+    private final Integer arms;
+    private final Integer fins;
+    private final boolean allowTwoExtremitiesPerGirdle;
     private int totalExtremityCount = 0;
 
-    private boolean secondShoulder = false; // if there is a second shoulder or not is determined here (even if there is no user input on this)
-    private Double neckYLength;
-    private Double tailXLength;
+    private Boolean secondShoulder;
+    private final Double neckYLength;
+    private final Double tailXLength;
 
-    private String head;
+    private final String head;
 
-    private Random random = new Random();
-
-    public UserInput(String head) {
-        this.head = head;
-    }
+    private final Random random = new Random();
 
     public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, boolean allowTwoExtremitiesPerGirdle,
                      Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
@@ -40,7 +36,7 @@ public class UserInput {
         checkValidityOfValues();
     }
 
-    public boolean hasSecondShoulder() {
+    public Boolean getSecondShoulder() {
         return secondShoulder;
     }
 
@@ -118,7 +114,7 @@ public class UserInput {
     }
 
     public Double getNeckYLength() {
-        if (neckYLength == null && hasSecondShoulder()) {
+        if (neckYLength == null && getSecondShoulder()) {
             return 200.0 + random.nextDouble() * 100;
         }
         return neckYLength;
@@ -134,16 +130,19 @@ public class UserInput {
 
     /**
      * extremities and total extremity count have to be set before this is called
+     * second shoulder is set by user or, if null, it is set true when it is needed (by number of extremities)
+     * else it is left null
      */
     private void setSecondShoulder(Boolean userInputSecondShoulder) {
         if (userInputSecondShoulder != null) {
             secondShoulder = userInputSecondShoulder;
         } else if ((wings != null && (wings > 2 || !allowTwoExtremitiesPerGirdle && wings > 1)) ||
                 (arms != null && (arms > 2 || !allowTwoExtremitiesPerGirdle && arms > 1)) ||
-                (wings != null && arms != null && (wings + arms > 2 || !allowTwoExtremitiesPerGirdle && wings + arms > 1))) {
+                (wings != null && arms != null && (wings + arms > 2 || !allowTwoExtremitiesPerGirdle && wings + arms > 1)) ||
+                totalExtremityCount > 4 || (!allowTwoExtremitiesPerGirdle && totalExtremityCount > 2)) {
             secondShoulder = true;
         } else {
-            secondShoulder = totalExtremityCount > 4 || (!allowTwoExtremitiesPerGirdle && totalExtremityCount > 2);
+            secondShoulder = null;
         }
     }
 

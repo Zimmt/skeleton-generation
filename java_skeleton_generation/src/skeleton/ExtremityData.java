@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class ExtremityData implements Serializable {
+    private final static float minNeckLengthForSecondShoulder = 100f;
+
     // PCA data
     private float wingProbability; // [0, 1]
     private float flooredLegProbability; // #legs/2, [0,2]
@@ -31,6 +33,7 @@ public class ExtremityData implements Serializable {
 
     private float floorHeight = 0f;
     private float flooredAnkleWristProbability;
+    private boolean shoulderOnNeck;
     private final ExtremityStartingPoints extremityStartingPoints;
 
     private final transient Random random = new Random();
@@ -43,7 +46,16 @@ public class ExtremityData implements Serializable {
         this.flooredLegProbability = (float) Math.max(flooredLegProbability, 0);
         initializeExtremityLengths(lengthUpperArm, lengthLowerArm, lengthHand, lengthUpperLeg, lengthLowerLeg, lengthFoot);
         this.userInput = userInput;
-        this.extremityStartingPoints = new ExtremityStartingPoints(userInput.hasSecondShoulder(), userInput.twoExtremitiesPerGirdleAllowed());
+        this.shoulderOnNeck = spine.hasNeck(); // there can be no second shoulder if there is no neck!
+        if (userInput.getSecondShoulder() != null) {
+            shoulderOnNeck = shoulderOnNeck && userInput.getSecondShoulder();
+            if (shoulderOnNeck != userInput.getSecondShoulder()) {
+                System.out.println("Could not generate a second shoulder as there is no neck to place it on!");
+            }
+        } else {
+            shoulderOnNeck = shoulderOnNeck && spine.getNeck().apply(0f).y - spine.getNeck().apply(1f).y > minNeckLengthForSecondShoulder;
+        }
+        this.extremityStartingPoints = new ExtremityStartingPoints(shoulderOnNeck, userInput.twoExtremitiesPerGirdleAllowed());
         calculateDerivedValues(spine);
     }
 
@@ -96,7 +108,7 @@ public class ExtremityData implements Serializable {
     }
 
     public boolean hasShoulderOnNeck() {
-        return extremityStartingPoints.hasShoulderOnNeck();
+        return shoulderOnNeck;
     }
 
     public boolean hasWings() {
@@ -241,7 +253,7 @@ public class ExtremityData implements Serializable {
             if (random.nextDouble() < wingProbability) {
                 wings = 1;
             }
-            if (userInput.hasSecondShoulder() && freeWingCount > 1 && random.nextDouble() < wingProbability) {
+            if (userInput.getSecondShoulder() && freeWingCount > 1 && random.nextDouble() < wingProbability) {
                 wings++;
             }
             extremityStartingPoints.setKind(ExtremityKind.WING, wings);
@@ -259,7 +271,7 @@ public class ExtremityData implements Serializable {
             if (random.nextDouble() < wingProbability) {
                 arms = 1;
             }
-            if (userInput.hasSecondShoulder() && freeArmCount > 1 && random.nextDouble() < wingProbability) {
+            if (userInput.getSecondShoulder() && freeArmCount > 1 && random.nextDouble() < wingProbability) {
                 arms++;
             }
             extremityStartingPoints.setKind(ExtremityKind.ARM, arms);
