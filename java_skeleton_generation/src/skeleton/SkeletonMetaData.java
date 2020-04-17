@@ -102,26 +102,28 @@ public class SkeletonMetaData implements Serializable {
     }
 
     private SpineData preprocessSpine(List<Point2d> spinePoints) {
+        if (spinePoints.size() != 10) {
+            System.err.println("Spine does not have 10 points!");
+            return null;
+        }
         List<Point2d> preprocessedPoints = new ArrayList<>(spinePoints.size());
         for (Point2d p : spinePoints) {
             preprocessedPoints.add(new Point2d(p));
         }
 
-        List<Point2d> alignedNeckPoints = alignControlPoints(preprocessedPoints.get(2), preprocessedPoints.get(3), preprocessedPoints.get(4));
-        List<Point2d> alignedTailPoints = alignControlPoints(preprocessedPoints.get(5), preprocessedPoints.get(6), preprocessedPoints.get(7));
-        preprocessedPoints.set(2, alignedNeckPoints.get(0));
-        preprocessedPoints.set(4, alignedNeckPoints.get(1));
-        preprocessedPoints.set(5, alignedTailPoints.get(0));
-        preprocessedPoints.set(7, alignedTailPoints.get(1));
-
-        SpineData spineData = new SpineData(preprocessedPoints);
-
-        if ((Math.abs(spineData.getNeck().getGradient(1f) - spineData.getBack().getGradient(0f)) > 0.1) ||
-                (Math.abs(spineData.getBack().getGradient(1f) - spineData.getTail().getGradient(0f)) > 0.1)) {
-            System.err.println("Alignment of spine went wrong");
+        // can check on equality here because same points would be the same instance in spinePoints
+        if (spinePoints.get(2) != spinePoints.get(3) && spinePoints.get(3) != spinePoints.get(4)) {
+            List<Point2d> alignedNeckPoints = alignControlPoints(preprocessedPoints.get(2), preprocessedPoints.get(3), preprocessedPoints.get(4));
+            preprocessedPoints.set(2, alignedNeckPoints.get(0));
+            preprocessedPoints.set(4, alignedNeckPoints.get(1));
+        }
+        if (spinePoints.get(5) != spinePoints.get(6) && spinePoints.get(6) != spinePoints.get(7)) {
+            List<Point2d> alignedTailPoints = alignControlPoints(preprocessedPoints.get(5), preprocessedPoints.get(6), preprocessedPoints.get(7));
+            preprocessedPoints.set(5, alignedTailPoints.get(0));
+            preprocessedPoints.set(7, alignedTailPoints.get(1));
         }
 
-        return spineData;
+        return new SpineData(preprocessedPoints);
     }
 
     private List<Point2d> alignControlPoints(Point2d p1, Point2d center, Point2d p2) {

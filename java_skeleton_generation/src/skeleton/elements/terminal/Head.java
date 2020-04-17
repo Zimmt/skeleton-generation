@@ -33,7 +33,12 @@ public class Head extends TerminalElement {
     }
 
     public static Point3f getGlobalHeadPosition(SpineData spine, BoundingBox boundingBox) {
-        Point3f headPosition = spine.getNeck().apply3d(0f);
+        Point3f headPosition;
+        if (spine.hasNeck()) {
+            headPosition = spine.getNeck().apply3d(0f);
+        } else {
+            headPosition = spine.getBack().apply3d(0f);
+        }
         headPosition.add(Head.getLocalTranslationFromJoint(boundingBox));
         return headPosition;
     }

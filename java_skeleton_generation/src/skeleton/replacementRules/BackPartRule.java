@@ -22,15 +22,15 @@ import java.util.List;
 
 /**
  * Generates
- * - non terminal leg
- * - terminal vertebrae between root and pelvic (+ rib if in chest interval)
- * - terminal pelvis
- * - terminal vertebrae on tail
+ * - non terminal leg (if there are extremities starting from pelvis)
+ * - terminal vertebrae between root and pelvis (+ rib if in chest interval)
+ * - terminal pelvis (if there are extremities starting from it)
+ * - terminal vertebrae on tail (if there is a tail)
  */
 public class BackPartRule extends ReplacementRule {
 
     private final String inputID = "back part";
-    private static float pelvisZScale = 100f;
+    private static final float pelvisZScale = 100f;
 
     public String getInputID() {
         return inputID;
@@ -85,11 +85,13 @@ public class BackPartRule extends ReplacementRule {
             }
         }
 
-        Tuple2f tailInterval = new Point2f(0f, 1f);
-        int tailVertebraCount = skeletonMetaData.getSpine().getTailVertebraCount();
-        List<TerminalElement> tail = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(backPart, SpinePart.TAIL,
-                tailInterval, tailVertebraCount, tailParent, tailParent.getSpineJoint());
-        generatedParts.addAll(tail);
+        if (skeletonMetaData.getSpine().hasTail()) {
+            Tuple2f tailInterval = new Point2f(0f, 1f);
+            int tailVertebraCount = skeletonMetaData.getSpine().getTailVertebraCount();
+            List<TerminalElement> tail = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(backPart, SpinePart.TAIL,
+                    tailInterval, tailVertebraCount, tailParent, tailParent.getSpineJoint());
+            generatedParts.addAll(tail);
+        }
 
         return generatedParts;
     }

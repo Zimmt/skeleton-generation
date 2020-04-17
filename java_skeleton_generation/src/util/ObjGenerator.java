@@ -77,15 +77,15 @@ public class ObjGenerator {
         obj.setActiveGroupNames(Collections.singletonList("spine"));
         int precision = 10;
 
-        CubicBezierCurve[] spineParts = spine.getAll();
-        for (int p = 0; p < 3; p++) {
+        List<CubicBezierCurve> spineParts = spine.getAll();
+        for (int p = 0; p < spineParts.size(); p++) {
             int upperBound = precision;
-            if (p == 2) {
+            if (p == spineParts.size()-1) {
                 upperBound = precision+1;
             }
             for (int i = 0; i < upperBound; i++) {
                 float t = (float) i / precision;
-                Point2f spinePoint = spineParts[p].apply(t);
+                Point2f spinePoint = spineParts.get(p).apply(t);
                 obj.addVertex(spinePoint.x, spinePoint.y, 0f);
                 if (p > 0 || i > 0) {
                     obj.addFace(p*precision + i-1, p*precision + i);

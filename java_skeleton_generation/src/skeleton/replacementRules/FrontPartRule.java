@@ -20,16 +20,16 @@ import java.util.List;
 
 /**
  * Generates
- * - non terminal shoulder girdle
+ * - non terminal shoulder girdle(s) (if there extremities starting from them)
  * - terminal vertebrae between root and shoulder girdle (+ rib if in chest interval),
  *      includes vertebra/rib that is parent of shoulder girdle
- * - terminal vertebrae of neck
+ * - terminal vertebrae of neck (if there is a neck)
  * - terminal head
  */
 public class FrontPartRule extends ReplacementRule {
 
     private final String inputID = "front part";
-    private static Vector3f headScale = new Vector3f(100f, 40f, 60f);
+    private static final Vector3f headScale = new Vector3f(100f, 40f, 60f);
 
     public String getInputID() {
         return inputID;
@@ -54,20 +54,25 @@ public class FrontPartRule extends ReplacementRule {
         generatedParts.addAll(shoulderGirdles);
         generatedParts.addAll(frontBack); // shoulder vertebra is changed, so it has to be set after generating the shoulder girdle
 
-        Tuple2f neckInterval = new Point2f(1f, 0f);
-        int neckVertebraCount = skeletonMetaData.getSpine().getNeckVertebraCount(skeletonMetaData.getExtremities().hasWings());
-        Vertebra neckParent = getNeckParent(frontBack);
-        List<TerminalElement> neck = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(frontPart, SpinePart.NECK,
-                neckInterval, neckVertebraCount, neckParent, neckParent.getSpineJoint());
+        if (skeletonMetaData.getSpine().hasNeck()) {
+            Tuple2f neckInterval = new Point2f(1f, 0f);
+            int neckVertebraCount = skeletonMetaData.getSpine().getNeckVertebraCount(skeletonMetaData.getExtremities().hasWings());
+            Vertebra neckParent = getNeckParent(frontBack);
+            List<TerminalElement> neck = skeletonMetaData.getSpine().generateVertebraeAndRibsInInterval(frontPart, SpinePart.NECK,
+                    neckInterval, neckVertebraCount, neckParent, neckParent.getSpineJoint());
 
-        if (skeletonMetaData.getExtremities().hasShoulderOnNeck()) {
-            List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 2, neck, neck.size()-3, true);
-            generatedParts.addAll(secondShoulderGirdles);
+            if (skeletonMetaData.getExtremities().hasShoulderOnNeck()) {
+                List<ShoulderGirdle> secondShoulderGirdles = generateShoulderGirdlesOnOnePosition(frontPart, 2, neck, neck.size()-3, true);
+                generatedParts.addAll(secondShoulderGirdles);
+            }
+            generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
+
+            Head head = generateHead(frontPart, headScale, neck.get(neck.size() - 1));
+            generatedParts.add(head);
+        } else {
+            Head head = generateHead(frontPart, headScale, getNeckParent(frontBack));
+            generatedParts.add(head);
         }
-        generatedParts.addAll(neck); // shoulder vertebra might be changed, so it has to be set after generating the shoulder girdle
-
-        Head head = generateHead(frontPart, headScale, neck.get(neck.size() - 1));
-        generatedParts.add(head);
 
         return generatedParts;
     }

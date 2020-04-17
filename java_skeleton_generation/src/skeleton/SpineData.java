@@ -34,20 +34,25 @@ public class SpineData implements Serializable {
     private Integer tailVertebraCount = null;
 
     private CubicBezierCurve neck;
-    private CubicBezierCurve back;
+    private final CubicBezierCurve back;
     private CubicBezierCurve tail;
 
-    private Tuple2f chestIntervalOnBack;
+    private final Tuple2f chestIntervalOnBack;
 
-    private transient Random random = new Random();
+    private final transient Random random = new Random();
 
     public SpineData(List<Point2d> spinePoints) {
         if (spinePoints.size() != 10) {
             System.err.println("Cannot create spine!");
         }
-        this.neck = new CubicBezierCurve(new Point2f(spinePoints.get(0)), new Point2f(spinePoints.get(1)), new Point2f(spinePoints.get(2)), new Point2f(spinePoints.get(3)));
+        double eps = 0.1;
+        if (!spinePoints.get(0).epsilonEquals(spinePoints.get(3), eps)) {
+            this.neck = new CubicBezierCurve(new Point2f(spinePoints.get(0)), new Point2f(spinePoints.get(1)), new Point2f(spinePoints.get(2)), new Point2f(spinePoints.get(3)));
+        }
         this.back = new CubicBezierCurve(new Point2f(spinePoints.get(3)), new Point2f(spinePoints.get(4)), new Point2f(spinePoints.get(5)), new Point2f(spinePoints.get(6)));
-        this.tail = new CubicBezierCurve(new Point2f(spinePoints.get(6)), new Point2f(spinePoints.get(7)), new Point2f(spinePoints.get(8)), new Point2f(spinePoints.get(9)));
+        if (!spinePoints.get(6).epsilonEquals(spinePoints.get(9), eps)) {
+            this.tail = new CubicBezierCurve(new Point2f(spinePoints.get(6)), new Point2f(spinePoints.get(7)), new Point2f(spinePoints.get(8)), new Point2f(spinePoints.get(9)));
+        }
         this.chestIntervalOnBack = new Point2f(0f, (new Random().nextFloat())*2/3f);
         System.out.println("Chest interval: " + chestIntervalOnBack);
     }
@@ -63,8 +68,12 @@ public class SpineData implements Serializable {
         }
     }
 
-    public CubicBezierCurve[] getAll() {
-        return new CubicBezierCurve[] {neck, back, tail};
+    public List<CubicBezierCurve> getAll() {
+        List<CubicBezierCurve> curves = new ArrayList<>(3);
+        if (hasNeck()) curves.add(neck);
+        curves.add(back);
+        if (hasTail()) curves.add(tail);
+        return curves;
     }
 
     public CubicBezierCurve getNeck() {
@@ -77,6 +86,14 @@ public class SpineData implements Serializable {
 
     public CubicBezierCurve getTail() {
         return tail;
+    }
+
+    public boolean hasNeck() {
+        return neck != null;
+    }
+
+    public boolean hasTail() {
+        return tail != null;
     }
 
     public boolean isInChestInterval(float backSpinePosition) {
@@ -131,6 +148,10 @@ public class SpineData implements Serializable {
         ArrayList<TerminalElement> generatedParts = new ArrayList<>();
         if (interval.x < 0 || interval.y < 0 || interval.x > 1 || interval.y > 1) {
             System.err.println(String.format("Invalid interval [%f, %f]", interval.x, interval.y));
+            return generatedParts;
+        }
+        if (getPart(spinePart) == null) {
+            System.err.println(String.format("Spine part %s does not exist.", spinePart.name()));
             return generatedParts;
         }
 
