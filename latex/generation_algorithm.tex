@@ -33,7 +33,8 @@ Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verän
 
 Evaluierung \todo{ausformulieren}
 \begin{itemize}
- \item generierte Extremitäten mit echten Positionen vergleichen, diskutieren
+ \item generierte Extremitäten mit echten Positionen vergleichen, diskutieren\\
+    schlimmes Beispiel für Beinalgo: Brachiosaurus
  \item Restpose nicht klar definiert (vielleicht irgendwie in PCA einfügen? hier gab es keine guten Ideen; außerdem ist Position auf Skelettbildern teilweise auch eher beliebig)
  \item keine wissenschaftliche Argumentation für Änderungen am Beinalgo, nicht klar was Verbesserungen wären; Beine müssen für Animation, Muskelgeneration etc sowieso nochmal angefasst werden -> future work
 \end{itemize}
@@ -53,6 +54,22 @@ Eine Überlegung war auch zwischen Schulter und Hüfte weitere Extremitätengür
 
 % zweiter Schultergürtel
 Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermöglichen. Hat das Tier einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann keine alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.
+
+%- - - - - - - - - - - - - - - - - - - 
+\subsection{Anordnung der Extremitäten}
+
+\begin{itemize}
+ \item Anzahl der Extremitäten orientiert sich an Benutzereingabe
+ \item falls keine Benutzereingabe, dann orientiert es sich an den von der PCA ausgespuckten Wahrscheinlichkeiten für Beine und Flügel
+ \item die Position jeder Extremität wird zufällig aus der Menge der möglichen Positionen ausgewählt. Ist für eine Extremität kein Platz mehr, wird geschaut, ob andere Extremität an eine andere Position wechseln kann um Platz zu schaffen
+ \item da Positionen nicht deterministisch kommt es bei Tieren mit mehreren möglichen Anordnungen zu unterschiedlichen Ergebnissen bei gleicher Eingabe
+ \item da die Anzahl der Arme und Flossen nicht mit PCA erhoben kann sie für die Eingabebeispiele der PCA nicht rekonstruiert werden. Deshalb kann Benutzer hier eigene Angaben machen.
+ \item nachdem Extremitäten zugeteilt wurden, werden sie nochmal "`verteilt"', damit nicht \zb zwei Beine an Hüfte aber keins an Schulter \todo{sinnvoll?}
+ \item wenn es keine Angabe für die Anzahl der Flügel gibt, werden diese mit der PCA Wkt generiert, aber max ein Paar pro Schultergürtel; bei Beinen wir die Wkt (kann auch 2 sein) auf- oder abgerundet
+ \item Arme werden ebenfalls mit Flügelwkt generiert (auch max 1 pro Schultergürtel)
+ \item Flossen werden in komplett leere Extremitätengürtel generiert, wenn sie nicht zu lang wären
+\end{itemize}
+
 
 
 %--------------------------------
@@ -91,6 +108,8 @@ Da der Kopf \bzw der Schädelknochen im Gegensatz zu anderen Knochen bei Wirbelt
 % Hände und Füße
 Bei Händen und Füßen ist das Problem ebenso, dass es sehr viele verschiedene Ausprägungen davon gibt. Hier lassen sie sich jedoch grob nach Extremitätentyp unterscheiden. Diese Unterscheidung kann aber beliebig fein sein. Hier wurde nur nach Flügel, Flosse \todo{?} und Extremität mit Bodenkontakt unterschieden. Und bei Extremitäten mit Bodenkontakt wurde nochmals danach unterschieden wie flach der Fuß oder die Hand auf dem Boden aufkommt (bei weniger als $45^\circ$ ist es eine menschliche Hand, sonst ein Huf). \todo{ggf. an Implementierung anpassen}
 \todo{erwähnen, dass Knochen für Flügel"`hand"' nicht vollständig}
+
+\todo{Schwanzspitze: ein Modell für drei Wirbel. Das sieht bei wenigen Wirbeln komisch abgeknickt aus}
 
 % mehrere Extremitäten an einer Schulter/Hüfte
 Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein "`normales"' Modell der Schulter/Hüfte nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde an der Schulter so behoben, dass einfach mehrere Schulterblätte mit einem gewissen Abstand generiert wurden. Für die Hüfte wurde ein kombiniertes 3D-Modell aus zwei einzelnen Hüften erstellt, an dem nun zwei Gelenke vorhanden sind.

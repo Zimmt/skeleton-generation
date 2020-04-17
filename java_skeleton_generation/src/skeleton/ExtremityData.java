@@ -265,7 +265,7 @@ public class ExtremityData implements Serializable {
 
     /**
      * arms: user input or calculated by wingProbability (but then max 1 per shoulder)
-     * fins: user input or one per empty extremity starting point
+     * fins: user input or one per empty extremity starting point (if fin would not be too long)
      */
     private void calculateAndSetArmsAndFins() {
         if (!userInput.hasArms() && extremityStartingPoints.getFreeCountForKind(ExtremityKind.ARM) > 0) {
@@ -281,9 +281,13 @@ public class ExtremityData implements Serializable {
 
         if (!userInput.hasFins()) {
             for (int i = 0; i < extremityStartingPoints.getStartingPointCount(); i++) {
-                if (extremityStartingPoints.getFreeCountAtPosition(i) >= 2) {
-                    extremityStartingPoints.setKindAtPosition(ExtremityKind.FIN, i);
-                    fins += 1;
+                int maxExtremityCountPerGirdle = userInput.twoExtremitiesPerGirdleAllowed() ? 2 : 1;
+                if (extremityStartingPoints.getFreeCountAtPosition(i) >= maxExtremityCountPerGirdle) {
+                    if ((i == 0 && getBackExtremityLength() <= 200f && getBackExtremityLength() > 0) ||
+                            (i > 0 && getFrontExtremityLength() <= 200f) && getFrontExtremityLength() > 0) {
+                        extremityStartingPoints.setKindAtPosition(ExtremityKind.FIN, i);
+                        fins += 1;
+                    }
                 }
             }
         }

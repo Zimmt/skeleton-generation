@@ -164,6 +164,9 @@ public class ExtremityStartingPoints implements Serializable {
     }
 
     public void setKindAtPosition(ExtremityKind kind, int position) {
+        if (!possiblePositionsForKinds.get(kind).contains(position)) {
+            return;
+        }
         if (extremityPositioningsForStartingPoints.get(position)[0] == null) {
             extremityPositioningsForStartingPoints.get(position)[0] = new ExtremityPositioning(kind);
         } else if (twoExtremitiesPerGirdleAllowed && extremityPositioningsForStartingPoints.get(position)[1] == null){
