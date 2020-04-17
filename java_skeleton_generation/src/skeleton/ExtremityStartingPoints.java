@@ -159,6 +159,13 @@ public class ExtremityStartingPoints implements Serializable {
         }
     }
 
+    public void removeAllFromPosition(int position) {
+        if (position >= extremityPositioningsForStartingPoints.size()) {
+            return;
+        }
+        Arrays.fill(extremityPositioningsForStartingPoints.get(position), null);
+    }
+
     /**
      * If there is an extremity girdle with no legs and one with more than one, the leg is moved.
      * (only for extremity girdles on back)

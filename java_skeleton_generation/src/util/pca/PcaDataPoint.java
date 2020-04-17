@@ -241,7 +241,11 @@ public class PcaDataPoint {
         data[nextIndex++] = lengthLowerLeg / coordinateScaleFactor;
         data[nextIndex++] = lengthFoot / coordinateScaleFactor;
         if (logWeight) {
-            data[nextIndex] = Math.log10(weight+1) / (Math.log10(weightScaleFactor+1) * downscaleFactor);
+            if (weight < 0) {
+                data[nextIndex] = 0.0;
+            } else {
+                data[nextIndex] = Math.log10(weight+1) / (Math.log10(weightScaleFactor+1) * downscaleFactor);
+            }
         } else {
             data[nextIndex] = weight / (weightScaleFactor * downscaleFactor);
         }

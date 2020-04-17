@@ -31,22 +31,17 @@ public class ExtremityData implements Serializable {
 
     private float floorHeight = 0f;
     private float flooredAnkleWristProbability;
-    private ExtremityStartingPoints extremityStartingPoints;
+    private final ExtremityStartingPoints extremityStartingPoints;
 
-    private transient Random random = new Random();
+    private final transient Random random = new Random();
 
     public ExtremityData(double wingProbability, double flooredLegProbability,
                          double lengthUpperArm, double lengthLowerArm, double lengthHand,
                          double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
                          SpineData spine, UserInput userInput) {
-        this.wingProbability = (float) wingProbability;
-        this.flooredLegProbability = (float) flooredLegProbability;
-        this.lengthUpperArm = (float) lengthUpperArm;
-        this.lengthLowerArm = (float) lengthLowerArm;
-        this.lengthHand = (float) lengthHand;
-        this.lengthUpperLeg = (float) lengthUpperLeg;
-        this.lengthLowerLeg = (float) lengthLowerLeg;
-        this.lengthFoot = (float) lengthFoot;
+        this.wingProbability = (float) Math.max(wingProbability, 0);
+        this.flooredLegProbability = (float) Math.max(flooredLegProbability, 0);
+        initializeExtremityLengths(lengthUpperArm, lengthLowerArm, lengthHand, lengthUpperLeg, lengthLowerLeg, lengthFoot);
         this.userInput = userInput;
         this.extremityStartingPoints = new ExtremityStartingPoints(userInput.hasSecondShoulder(), userInput.twoExtremitiesPerGirdleAllowed());
         calculateDerivedValues(spine);
@@ -59,12 +54,7 @@ public class ExtremityData implements Serializable {
     public ExtremityData(double lengthUpperArm, double lengthLowerArm, double lengthHand,
                          double lengthUpperLeg, double lengthLowerLeg, double lengthFoot,
                          ExtremityStartingPoints extremityStartingPoints, SpineData spine) {
-        this.lengthUpperArm = (float) lengthUpperArm;
-        this.lengthLowerArm = (float) lengthLowerArm;
-        this.lengthHand = (float) lengthHand;
-        this.lengthUpperLeg = (float) lengthUpperLeg;
-        this.lengthLowerLeg = (float) lengthLowerLeg;
-        this.lengthFoot = (float) lengthFoot;
+        initializeExtremityLengths(lengthUpperArm, lengthLowerArm, lengthHand, lengthUpperLeg, lengthLowerLeg, lengthFoot);
         this.extremityStartingPoints = extremityStartingPoints;
         calculateFloorHeightAndAnkleWristProb(spine);
     }
@@ -133,10 +123,25 @@ public class ExtremityData implements Serializable {
             calculateAndSetLegsAndFloorHeight(spine);
             calculateAndSetWings();
             calculateAndSetArmsAndFins();
-            extremityStartingPoints.distributeExtremities();
+            postprocessExtremities();
         } else {
             System.out.println("Cannot calculate derived values without user input!");
         }
+    }
+
+    /**
+     * Remove all extremities with length 0.
+     * Distribute extremities.
+     */
+    private void postprocessExtremities() {
+        if (lengthUpperArm + lengthLowerArm + lengthHand == 0) {
+            extremityStartingPoints.removeAllFromPosition(1);
+            extremityStartingPoints.removeAllFromPosition(2);
+        }
+        if (lengthUpperLeg + lengthLowerLeg + lengthHand == 0) {
+            extremityStartingPoints.removeAllFromPosition(0);
+        }
+        extremityStartingPoints.distributeExtremities();
     }
 
     private void setUserSetExtremities() {
@@ -270,5 +275,15 @@ public class ExtremityData implements Serializable {
         }
         System.out.println("arms: " + arms);
         System.out.println("fins: " + fins);
+    }
+
+    private void initializeExtremityLengths(double lengthUpperArm, double lengthLowerArm, double lengthHand,
+                                           double lengthUpperLeg, double lengthLowerLeg, double lengthFoot) {
+        this.lengthUpperArm = (float) Math.max(lengthUpperArm, 0);
+        this.lengthLowerArm = (float) Math.max(lengthLowerArm, 0);
+        this.lengthHand = (float) Math.max(lengthHand, 0);
+        this.lengthUpperLeg = (float) Math.max(lengthUpperLeg, 0);
+        this.lengthLowerLeg = (float) Math.max(lengthLowerLeg, 0);
+        this.lengthFoot = (float) Math.max(lengthFoot, 0);
     }
 }
