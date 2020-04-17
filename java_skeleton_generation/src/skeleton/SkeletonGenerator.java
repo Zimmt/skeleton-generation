@@ -61,7 +61,7 @@ public class SkeletonGenerator {
     }
 
     /**
-     * @param pcaDataPointName is used to construct skeleton meta data (user input is ignored except from head kind)
+     * @param pcaDataPointName is used to construct skeleton meta data
      * if data point with this name does not exist skeleton meta data is constructed only from user input
      */
     public SkeletonGenerator(PcaHandler pcaHandler, String pcaDataPointName, UserInput userInput, boolean createVariation) {

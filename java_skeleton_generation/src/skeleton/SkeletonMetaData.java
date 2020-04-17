@@ -35,9 +35,6 @@ public class SkeletonMetaData implements Serializable {
         this.headKind = userInput.getHead();
     }
 
-    /**
-     * @param userInput only uses 'head kind' of user input
-     */
     public SkeletonMetaData(PcaHandler pcaHandler, PcaDataPoint point, UserInput userInput) {
         this.pcaConditions = pcaHandler.getPcaConditions();
         this.eigenvectorScales = pcaHandler.getEigenvectorScalesForPoint(point, 0.0).toArray();

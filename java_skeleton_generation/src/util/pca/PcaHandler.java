@@ -28,8 +28,14 @@ public class PcaHandler {
         this.dataPoints = dataPoints;
         this.pcaMetaData = new PcaMetaData(dataPoints, pcaConditions);
         this.pca = new PCA(pcaMetaData.getConditionedCovariance());
-        pca.run();
         this.dataExporter = new DataExporter(dataPoints);
+    }
+
+    /**
+     * MUST be called before anything else is done!
+     */
+    public void runPCA() {
+        pca.run();
     }
 
     public PcaDataPoint getRandomPcaDataPoint() {

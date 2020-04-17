@@ -18,6 +18,7 @@ public class Main {
     private static void pca(boolean logWeight) throws IOException {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         PcaHandler pcaHandler = new PcaHandler(dataPoints, new PcaConditions());
+        pcaHandler.runPCA();
         pcaHandler.visualize();
     }
 
@@ -25,6 +26,7 @@ public class Main {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         dataPoints = dataPoints.stream().filter(p -> p.getWings() > 0).collect(Collectors.toList());
         PcaHandler pcaHandlerOnlyWings = new PcaHandler(dataPoints, new PcaConditions());
+        pcaHandlerOnlyWings.runPCA();
         pcaHandlerOnlyWings.visualize();
     }
 
@@ -32,6 +34,7 @@ public class Main {
         List<PcaDataPoint> dataPoints = PcaDataReader.readInputData(logWeight);
         dataPoints = dataPoints.stream().filter(p -> p.getWings() <= 0).collect(Collectors.toList());
         PcaHandler pcaHandlerNoWings = new PcaHandler(dataPoints, new PcaConditions());
+        pcaHandlerNoWings.runPCA();
         pcaHandlerNoWings.visualize();
     }
 }

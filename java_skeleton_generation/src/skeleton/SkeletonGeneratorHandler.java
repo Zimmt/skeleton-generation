@@ -28,19 +28,19 @@ public class SkeletonGeneratorHandler {
     }
 
     private void runSkeletonGenerator() throws IOException {
-        UserInput userInput = null;
-        PcaHandler pcaHandler = null;
+        UserInput userInput = new UserInput(
+                gui.getLegInput(), gui.getWingInput(), gui.getArmInput(), gui.getFinInput(),
+                gui.getTwoExtremitiesPerGirdleAllowed(), gui.getSecondShoulderInput(),
+                gui.getNeckInput(), gui.getTailInput(), gui.getHeadKindInput());
 
-        if (!gui.getReadFromFile()) {
-            userInput = new UserInput(
-                    gui.getLegInput(), gui.getWingInput(), gui.getArmInput(), gui.getFinInput(),
-                    gui.getTwoExtremitiesPerGirdleAllowed(), gui.getSecondShoulderInput(),
-                    gui.getNeckInput(), gui.getTailInput(), gui.getHeadKindInput());
-
-            PcaConditions conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
+        PcaConditions conditions;
+        if (!(gui.getReadFromFile() || gui.getConstructFromExample())) {
+             conditions = new PcaConditions(userInput.getNeckYLength(), userInput.getTailXLength(),
                     userInput.getWingConditionForPCA(), userInput.getLegConditionForPCA());
-            pcaHandler = new PcaHandler(pcaDataPoints, conditions);
+        } else {
+            conditions = new PcaConditions();
         }
+        PcaHandler pcaHandler = new PcaHandler(pcaDataPoints, conditions);
 
         int skeletonCount = gui.getSkeletonCount();
         for (int i = 0; i < skeletonCount; i++) {
@@ -55,8 +55,10 @@ public class SkeletonGeneratorHandler {
                     skeletonGenerator = new SkeletonGenerator(metaDataFilePath);
                 }
             } else if (gui.getConstructFromExample()) {
+                pcaHandler.runPCA();
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, gui.getPcaDataPointName(), userInput, gui.getCreateVariationsInput());
             } else {
+                pcaHandler.runPCA();
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
             }
 
