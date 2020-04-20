@@ -104,7 +104,7 @@ public class ExtremityPositioning implements Serializable {
      */
     private boolean findFlooredPosition(boolean flooredSecondBone) {
         float floorHeight = firstBone.getGenerator().getSkeletonMetaData().getExtremities().getFloorHeight();
-        float floorDistanceEps = 1f;
+        float floorDistanceEps = 5f;
 
         if (anyOverturnedBone()) {
             fixOverturnedBones();
@@ -126,9 +126,9 @@ public class ExtremityPositioning implements Serializable {
 
         if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps) ) {
             // this can happen sometimes (e.g. for Dimetrodon), at least align foot
-            System.err.println("Other start position needed! Bone end position already below floor.");
-            flooredSecondBone = true;
-            step = maxSteps;
+            System.out.println("Other start position needed! Bone end position already below floor.");
+            adjustFoot();
+            return false;
         }
 
         float initialAngleStepSize = (float) Math.toRadians(30);
@@ -141,16 +141,30 @@ public class ExtremityPositioning implements Serializable {
             float oldDistance = endPosition.y - floorHeight;
             //System.out.println("Distance to floor: " + oldDistance);
 
-            if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                    random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(true, true)) {
-
-                firstBoneEndPosition = tryChangeFirstJointSecondAngle(angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
+            if (Math.abs(secondJoint.getCurrentAngle()) <= Math.toRadians(2) && flooredSecondBone) {
+                System.out.println("Leg is too short. Ankle/wrist cannot be floored...");
+                flooredSecondBone = false;
+                thirdJoint.setCurrentAngle(0f);
+                if (!bonePositionsOverFloor(floorHeight, false, floorDistanceEps) || anyOverturnedBone()) {
+                    thirdJoint.resetAngle();
+                } else {
+                    thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
+                }
+            }
+            if (Math.abs(secondJoint.getCurrentAngle()) <= Math.toRadians(2) && Math.abs(thirdJoint.getCurrentAngle()) <= Math.toRadians(2)) {
+                // this happens when shoulder joint is too much above the point where neck and back meet
+                // (this is used to determine floor height)
+                System.out.println("Leg is too short. It cannot reach the floor.");
+                return true;
             }
 
+            if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
+                    random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(true, true)) {
+                firstBoneEndPosition = tryChangeFirstJointSecondAngle(angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
+            }
             secondBoneEndPosition = secondBone.getWorldPosition();
             if (secondBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < secondJointAngleProbability && secondJoint.movementPossible(true)) {
-
                 secondBoneEndPosition = tryChangeOneAngleBasedJointAngle(2, angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
             }
 
@@ -160,7 +174,6 @@ public class ExtremityPositioning implements Serializable {
                 thirdBoneEndPosition = thirdBone.getWorldPosition();
                 if (thirdBoneEndPosition.y > floorHeight+floorDistanceEps &&
                         random.nextFloat() < thirdJointAngleProbability && thirdJoint.movementPossible(true)) {
-
                     thirdBoneEndPosition = tryChangeOneAngleBasedJointAngle(3, angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
                 }
                 endPosition = thirdBoneEndPosition;
@@ -185,11 +198,7 @@ public class ExtremityPositioning implements Serializable {
 
 
         if (flooredSecondBone) { // adjust foot
-            Vector3f localDir = new Vector3f(0f, 1f, 0f);
-            secondBone.calculateWorldTransform().applyOnVector(localDir);
-            float angle = new Vector3f(1f, 0f, 0f).angle(new Vector3f(localDir.x, localDir.y, 0f));
-            thirdJoint.setCurrentAngle(-angle);
-            thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
+            adjustFoot();
         }
 
         float finalDistanceToFloor = Math.abs(endPosition.y-floorHeight);
@@ -201,6 +210,14 @@ public class ExtremityPositioning implements Serializable {
                     Math.toDegrees(secondJoint.getCurrentAngle()), Math.toDegrees(thirdJoint.getCurrentAngle())));
         }
         return successful;
+    }
+
+    private void adjustFoot() {
+        Vector3f localDir = new Vector3f(0f, 1f, 0f);
+        secondBone.calculateWorldTransform().applyOnVector(localDir);
+        float angle = new Vector3f(1f, 0f, 0f).angle(new Vector3f(localDir.x, localDir.y, 0f));
+        thirdJoint.setCurrentAngle(-angle);
+        thirdBone.setTransform(thirdJoint.calculateChildTransform(thirdBone.getBoundingBox()));
     }
 
     private void saveJointAngles() {

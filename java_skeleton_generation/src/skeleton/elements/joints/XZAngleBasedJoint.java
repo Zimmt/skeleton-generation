@@ -51,8 +51,10 @@ public abstract class XZAngleBasedJoint extends TwoAngleBasedJoint {
 
         if (Math.abs(testVectorChild.x) > eps) {
             turnDirections.add(testVectorChild.x < 0);
-        } else {
+        } else if (testVectorChild.y > 0) {
             turnDirections.add(getTurnDirectionNearerToFloorForPositiveVerticalPosition());
+        } else {
+            turnDirections.add(null);
         }
 
         if (turnDirections.get(0) == null && turnDirections.get(1) == null) {

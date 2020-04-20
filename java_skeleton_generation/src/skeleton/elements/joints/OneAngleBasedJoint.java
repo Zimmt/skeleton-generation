@@ -46,7 +46,7 @@ public abstract class OneAngleBasedJoint extends Joint {
         } else if (Math.abs(testVectorChild.z) > eps) {
             return testVectorChild.z > 0;
         } else {
-            return null;
+            return testVectorChild.y > 0;
         }
     }
 

@@ -221,15 +221,10 @@ public class ExtremityData implements Serializable {
         if (frontLegs > 0) {
             float shoulderHeight = spine.getBack().getControlPoint0().y;
             float armLength = getFrontExtremityLength();
-            if (flooredAnkleWristProbability >= 1f || lengthUpperArm + lengthLowerArm >= shoulderHeight) {
+            if (flooredAnkleWristProbability >= 1f && lengthUpperArm + lengthLowerArm >= shoulderHeight) {
                 flooredAnkleWristProbability = 1f;
             } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {
-                if (flooredAnkleWristProbability > 0f) {
-                    //System.out.println("arms are too short, but legs not");
-                    minFloorHeight = shoulderHeight - bentRatio*armLength;
-                } else {
-                    minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*armLength);
-                }
+                minFloorHeight = Math.max(minFloorHeight, shoulderHeight - bentRatio*armLength);
                 flooredAnkleWristProbability = 0f;
             } else {
                 float flooredWristProbability = (armLength - shoulderHeight) / lengthHand;
