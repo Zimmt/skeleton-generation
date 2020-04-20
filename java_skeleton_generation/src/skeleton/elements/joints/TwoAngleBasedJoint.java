@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class TwoAngleBasedJoint extends Joint {
-    private static float eps = 0.01f;
+    private static final float eps = 0.01f;
 
     float minFirstAngle;
     float maxFirstAngle;
     float minSecondAngle;
     float maxSecondAngle;
 
+    float nextToLastFirstAngle = 0f;
+    float nextToLastSecondAngle = 0f;
     float lastFirstAngle = 0f;
     float lastSecondAngle = 0f;
     float currentFirstAngle = 0f;
@@ -63,14 +65,14 @@ public abstract class TwoAngleBasedJoint extends Joint {
     }
 
     public void setRandomAngles() {
-        lastFirstAngle = currentFirstAngle;
-        lastSecondAngle = currentSecondAngle;
+        shiftFirstAngleState();
+        shiftSecondAngleState();
         currentFirstAngle = (random.nextFloat() * (maxFirstAngle - minFirstAngle)) + minFirstAngle;
         currentSecondAngle = (random.nextFloat() * (maxSecondAngle - minSecondAngle)) + minSecondAngle;
     }
 
     public void setNewFirstAngle(boolean nearerToFloor, float stepSize) {
-        lastFirstAngle = currentFirstAngle;
+        shiftFirstAngleState();
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
         if (nearerToFloor && turnDirections == null) {
             System.err.println("can't set new front angle");
@@ -102,7 +104,7 @@ public abstract class TwoAngleBasedJoint extends Joint {
     }
 
     public void setNewSecondAngle(boolean nearerToFloor, float stepSize) {
-        lastSecondAngle = currentSecondAngle;
+        shiftSecondAngleState();
         List<Boolean> turnDirections = getTurnDirectionsNearerToFloor();
         if (nearerToFloor && turnDirections == null) {
             System.err.println("can't set new side angle");
@@ -131,28 +133,42 @@ public abstract class TwoAngleBasedJoint extends Joint {
         }
     }
 
-    public void resetCurrentFirstAngle() {
+    public void resetFirstAngle() {
         currentFirstAngle = lastFirstAngle;
+        lastFirstAngle = nextToLastFirstAngle;
     }
 
-    public void resetCurrentSecondAngle() {
+    public void resetSecondAngle() {
         currentSecondAngle = lastSecondAngle;
+        lastSecondAngle = nextToLastSecondAngle;
+    }
+
+    public void resetFirstAngleTwice() {
+        resetFirstAngle();
+        resetFirstAngle();
+    }
+
+    public void resetSecondAngleTwice() {
+        resetSecondAngle();
+        resetSecondAngle();
     }
 
     public void setCurrentFirstAngle(float currentFirstAngle) {
         if (currentFirstAngle < minFirstAngle-eps || currentFirstAngle > maxFirstAngle+eps) {
-            System.err.println("Invalid first angle to set");
+            System.err.println("Invalid first angle to set, clipping to bounds...");
+            this.currentFirstAngle = clipAngle(currentFirstAngle, minFirstAngle, maxFirstAngle);
         } else {
-            this.lastFirstAngle = this.currentFirstAngle;
+            shiftFirstAngleState();
             this.currentFirstAngle = currentFirstAngle;
         }
     }
 
     public void setCurrentSecondAngle(float currentSecondAngle) {
         if (currentSecondAngle < minSecondAngle-eps || currentSecondAngle > maxSecondAngle+eps) {
-            System.err.println("Invalid second angle to set");
+            System.err.println("Invalid second angle to set, clipping to bounds...");
+            this.currentSecondAngle = clipAngle(currentSecondAngle, minSecondAngle, maxSecondAngle);
         } else {
-            this.lastSecondAngle = this.currentSecondAngle;
+            shiftSecondAngleState();
             this.currentSecondAngle = currentSecondAngle;
         }
     }
@@ -167,5 +183,22 @@ public abstract class TwoAngleBasedJoint extends Joint {
 
     public void setChild(TerminalElement child) {
         this.child = child;
+    }
+
+    private void shiftFirstAngleState() {
+        nextToLastFirstAngle = lastFirstAngle;
+        lastFirstAngle = currentFirstAngle;
+    }
+
+    private void shiftSecondAngleState() {
+        nextToLastSecondAngle = lastSecondAngle;
+        lastSecondAngle = currentSecondAngle;
+    }
+
+    private float clipAngle(float angle, float min, float max) {
+        float clampedAngle = angle;
+        clampedAngle = Math.max(min, clampedAngle);
+        clampedAngle = Math.min(max, clampedAngle);
+        return clampedAngle;
     }
 }

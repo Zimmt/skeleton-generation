@@ -12,6 +12,8 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     float minAngle;
     float maxAngle;
+
+    float nextToLastAngle = 0f;
     float lastAngle = 0f; // angle to which joint was set before
     float currentAngle = 0f;
 
@@ -57,12 +59,12 @@ public abstract class OneAngleBasedJoint extends Joint {
     }
 
     public void setRandomAngle() {
-        lastAngle = currentAngle;
+        shiftAngleState();
         currentAngle = (random.nextFloat() * (maxAngle - minAngle)) + minAngle;
     }
 
     public void setNewAngle(boolean nearerToFloor, float stepSize) {
-        lastAngle = currentAngle;
+        shiftAngleState();
 
         Boolean turnDirection = getTurnDirectionNearerToFloor();
         if (nearerToFloor && turnDirection == null) {
@@ -101,6 +103,11 @@ public abstract class OneAngleBasedJoint extends Joint {
         currentAngle = lastAngle;
     }
 
+    public void resetAngleTwice() {
+        resetAngle();
+        resetAngle();
+    }
+
     /**
      * Uses an angle of 0° for the initial child.
      */
@@ -111,7 +118,7 @@ public abstract class OneAngleBasedJoint extends Joint {
     }
 
     public void setCurrentAngle(float currentAngle) {
-        this.lastAngle = this.currentAngle;
+        shiftAngleState();
         this.currentAngle = currentAngle;
     }
 
@@ -129,5 +136,10 @@ public abstract class OneAngleBasedJoint extends Joint {
 
     public void setChild(TerminalElement child) {
         this.child = child;
+    }
+
+    private void shiftAngleState() {
+        nextToLastAngle = lastAngle;
+        lastAngle = currentAngle;
     }
 }
