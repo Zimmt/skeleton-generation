@@ -11,7 +11,7 @@ public class PelvisLegJoint extends PelvisJoint {
     private static float minFrontAnglePelvis = 0f;
     private static float maxFrontAnglePelvis = (float) Math.toRadians(45);
     private static float minSideAnglePelvis = (float) -Math.toRadians(170);
-    private static float maxSideAnglePelvis = 0f;
+    private static float maxSideAnglePelvis = (float) Math.toRadians(170);
 
     public PelvisLegJoint(TerminalElement parent, Point3f position, ExtremityPositioning extremityPositioning) {
         super(parent, position, minFrontAnglePelvis, maxFrontAnglePelvis, minSideAnglePelvis, maxSideAnglePelvis, extremityPositioning);

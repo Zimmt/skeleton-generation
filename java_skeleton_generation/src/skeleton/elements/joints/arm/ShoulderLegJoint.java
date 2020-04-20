@@ -10,7 +10,7 @@ public class ShoulderLegJoint extends ShoulderJoint {
 
     private static float minFrontAngle = 0f;
     private static float maxFrontAngle = (float) Math.toRadians(45);
-    private static float minSideAngle =  0f;
+    private static float minSideAngle =  -(float) Math.toRadians(170);
     private static float maxSideAngle = (float) Math.toRadians(170);
 
     public ShoulderLegJoint(TerminalElement parent, Point3f position, boolean secondShoulder, ExtremityPositioning extremityPositioning) {

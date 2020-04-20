@@ -4,6 +4,7 @@ import skeleton.ExtremityData;
 import skeleton.elements.ExtremityKind;
 import skeleton.elements.joints.Joint;
 import skeleton.elements.joints.OneAngleBasedJoint;
+import skeleton.elements.joints.TwoAngleBasedJoint;
 import skeleton.elements.joints.XZAngleBasedJoint;
 import skeleton.elements.terminal.TerminalElement;
 import skeleton.elements.terminal.UpperArm;
@@ -13,6 +14,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector3f;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ExtremityPositioning implements Serializable {
@@ -137,9 +140,6 @@ public class ExtremityPositioning implements Serializable {
         while (Math.abs(endPosition.y - floorHeight) > floorDistanceEps && step < maxSteps) {
             float oldDistance = endPosition.y - floorHeight;
             //System.out.println("Distance to floor: " + oldDistance);
-            /*System.out.println(String.format("1.front: %f, 1.side: %f, 2.: %f, 3.: %f",
-                    Math.toDegrees(firstJoint.getCurrentFirstAngle()), Math.toDegrees(firstJoint.getCurrentSecondAngle()),
-                    Math.toDegrees(secondJoint.getCurrentAngle()), Math.toDegrees(thirdJoint.getCurrentAngle())));*/
 
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
                     random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(true, true)) {
@@ -175,9 +175,10 @@ public class ExtremityPositioning implements Serializable {
                 float newDistance = endPosition.y - floorHeight;
                 if (Math.abs(newDistance-oldDistance) < 0.1) {
                     // distance did not change much, maybe angles are too big and always lead to invalid positions that are reverted
+                    // System.out.println("angle step size / 2");
                     angleStepSize *= 1f/2f;
                 } else {
-                    angleStepSize *= 4f/5f;
+                    angleStepSize *= 5f/6f;
                 }
             }
         }
@@ -195,6 +196,9 @@ public class ExtremityPositioning implements Serializable {
         boolean successful = finalDistanceToFloor < floorDistanceEps;
         if (!successful) {
             System.err.println("Could not reach floor. Final distance to floor is: " + finalDistanceToFloor);
+            System.out.println(String.format("1.front: %f, 1.side: %f, 2.: %f, 3.: %f",
+                    Math.toDegrees(firstJoint.getCurrentFirstAngle()), Math.toDegrees(firstJoint.getCurrentSecondAngle()),
+                    Math.toDegrees(secondJoint.getCurrentAngle()), Math.toDegrees(thirdJoint.getCurrentAngle())));
         }
         return successful;
     }
@@ -215,9 +219,12 @@ public class ExtremityPositioning implements Serializable {
             joint.resetAngle();
             boneEndPosition = setTransformAndCalculateWorldPositionOfBone(jointNumber);
         } else if (anyOverturnedBone()) {
-            fixOverturnedBones();
+            List<Integer> changedBoneIds = fixOverturnedBones();
             if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
-                joint.resetAngleTwice();
+                for (Integer id : changedBoneIds) {
+                    resetJointAngle(id);
+                }
+                joint.resetAngle();
             }
             boneEndPosition = setTransformAndCalculateWorldPositionOfBone(jointNumber);
         }
@@ -232,9 +239,12 @@ public class ExtremityPositioning implements Serializable {
             firstJoint.resetSecondAngle();
             boneEndPosition = setTransformAndCalculateWorldPositionOfBone(1);
         } else if (anyOverturnedBone()) {
-            fixOverturnedBones();
+            List<Integer> changedBoneIds = fixOverturnedBones();
             if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps)) {
-                firstJoint.resetSecondAngleTwice();
+                for (Integer id : changedBoneIds) {
+                    resetJointAngle(id);
+                }
+                firstJoint.resetSecondAngle();
             }
             boneEndPosition = setTransformAndCalculateWorldPositionOfBone(1);
         }
@@ -275,13 +285,18 @@ public class ExtremityPositioning implements Serializable {
         return boneOverturned(1) || boneOverturned(3);
     }
 
-    private void fixOverturnedBones() {
+    /**
+     * @return numbers of bones that have been changed
+     */
+    private List<Integer> fixOverturnedBones() {
+        List<Integer> feedback = new ArrayList<>(2);
         float eps = (float) Math.toRadians(5.0);
         Vector3f localYAxis = new Vector3f(0f, -1f, 0f);
         Vector3f posGlobalYAxis = new Vector3f(0f, 1f, 0f);
         Vector3f negGlobalYAxis = new Vector3f(0f, -1f, 0f);
 
         if (boneOverturned(1)) {
+            feedback.add(1);
             firstBone.calculateWorldTransform().applyOnVector(localYAxis);
             float posAngle = localYAxis.angle(posGlobalYAxis) + eps;
             float negAngle = localYAxis.angle(negGlobalYAxis) + eps;
@@ -293,11 +308,18 @@ public class ExtremityPositioning implements Serializable {
             firstBone.setTransform(firstJoint.calculateChildTransform(firstBone.getBoundingBox()));
         }
         if (boneOverturned(3)) {
+            feedback.add(3);
             thirdBone.calculateWorldTransform().applyOnVector(localYAxis);
-            float angle = localYAxis.angle(posGlobalYAxis) + eps;
+            float posAngle = localYAxis.angle(posGlobalYAxis) + eps;
+            float negAngle = localYAxis.angle(negGlobalYAxis) + eps;
+            float angle = posAngle < negAngle ? posAngle : -negAngle;
             thirdJoint.setCurrentAngle(thirdJoint.getCurrentAngle() + angle);
             thirdBone.setTransform((thirdJoint.calculateChildTransform(thirdBone.getBoundingBox())));
         }
+        if (anyOverturnedBone()) {
+            System.err.println("Fixing overturned bone(s) did not work!");
+        }
+        return feedback;
     }
 
     private TerminalElement getBone(int number) {
@@ -306,5 +328,14 @@ public class ExtremityPositioning implements Serializable {
 
     private Joint getJoint(int number) {
         return joints[number-1];
+    }
+
+    private void resetJointAngle(int jointNumber) {
+        Joint joint = getJoint(jointNumber);
+        if (joint instanceof TwoAngleBasedJoint) {
+            ((TwoAngleBasedJoint) joint).resetSecondAngle();
+        } else {
+            ((OneAngleBasedJoint) joint).resetAngle();
+        }
     }
 }
