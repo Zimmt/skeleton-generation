@@ -37,8 +37,6 @@ public class ExtremityPositioning implements Serializable {
     private float secondJointAngle;
     private float thirdJointAngle;
 
-    private transient Random random = new Random();
-
     public ExtremityPositioning(ExtremityKind extremityKind) {
         this.extremityKind = extremityKind;
     }
@@ -80,7 +78,7 @@ public class ExtremityPositioning implements Serializable {
         boolean success = true;
         if (extremityKind == ExtremityKind.LEG) {
             ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
-            boolean flooredSecondBone = random.nextFloat() < extremityData.getFlooredAnkleWristProbability();
+            boolean flooredSecondBone = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
             //System.out.print("floored second bone: " + flooredSecondBone + "... ");
             extremityData.setFlooredAnkleWristProbability(flooredSecondBone); // other extremities do the same
 
@@ -159,12 +157,12 @@ public class ExtremityPositioning implements Serializable {
             }
 
             if (firstBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                    random.nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(true, true)) {
+                    (new Random()).nextFloat() < firstJointZAngleProbability && firstJoint.movementPossible(true, true)) {
                 firstBoneEndPosition = tryChangeFirstJointSecondAngle(angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
             }
             secondBoneEndPosition = secondBone.getWorldPosition();
             if (secondBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                    random.nextFloat() < secondJointAngleProbability && secondJoint.movementPossible(true)) {
+                    (new Random()).nextFloat() < secondJointAngleProbability && secondJoint.movementPossible(true)) {
                 secondBoneEndPosition = tryChangeOneAngleBasedJointAngle(2, angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
             }
 
@@ -173,7 +171,7 @@ public class ExtremityPositioning implements Serializable {
             } else {
                 thirdBoneEndPosition = thirdBone.getWorldPosition();
                 if (thirdBoneEndPosition.y > floorHeight+floorDistanceEps &&
-                        random.nextFloat() < thirdJointAngleProbability && thirdJoint.movementPossible(true)) {
+                        (new Random()).nextFloat() < thirdJointAngleProbability && thirdJoint.movementPossible(true)) {
                     thirdBoneEndPosition = tryChangeOneAngleBasedJointAngle(3, angleStepSize, floorHeight, flooredSecondBone, floorDistanceEps);
                 }
                 endPosition = thirdBoneEndPosition;
