@@ -114,7 +114,7 @@ public class UserInput {
     }
 
     public Double getNeckYLength() {
-        if (neckYLength == null && getSecondShoulder()) {
+        if (neckYLength == null && getSecondShoulder() != null && getSecondShoulder()) {
             return 200.0 + random.nextDouble() * 100;
         }
         return neckYLength;
