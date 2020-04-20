@@ -106,10 +106,6 @@ public class ExtremityPositioning implements Serializable {
         if (anyOverturnedBone()) {
             fixOverturnedBones();
         }
-        if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps) ) {
-            System.err.println("Other start position needed! Bone end position already below floor.");
-            return false;
-        }
 
         Point3f firstBoneEndPosition = firstBone.getWorldPosition();
         Point3f secondBoneEndPosition = secondBone.getWorldPosition();
@@ -124,6 +120,14 @@ public class ExtremityPositioning implements Serializable {
 
         int step = 0;
         int maxSteps = 50;
+
+        if (!bonePositionsOverFloor(floorHeight, flooredSecondBone, floorDistanceEps) ) {
+            // this can happen sometimes (e.g. for Dimetrodon), at least align foot
+            System.err.println("Other start position needed! Bone end position already below floor.");
+            flooredSecondBone = true;
+            step = maxSteps;
+        }
+
         float initialAngleStepSize = (float) Math.toRadians(30);
         float firstJointZAngleProbability = 1f; // first joint x angle is ignored
         float secondJointAngleProbability = 1f;
