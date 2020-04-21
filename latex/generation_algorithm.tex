@@ -27,7 +27,8 @@ Außerdem wird während der Iteration verboten, dass Knochen unterhalb der Boden
 \todo{Zweiter Freiheitsgrad an Hüft- und Schultergelenk macht es schwieriger, da Winkel, je nach Winkel der anderen Richtung, vergrößert oder verkleinert werden muss um den Boden zu erreichen. Weggelassen. Bei mehr Anforderungen doch IK verwenden.}
 
 % Änderung der Winkel und Wahrscheinlichkeiten
-In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht.
+In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht. 
+\todo{Wenn Änderung zu klein, wird Knochen wahrscheinlich meistens wieder zurückgesetzt, deshalb stärkere Verkleinerung des Winkels}
 Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadurch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen? bzw braucht man dise Wkten überhaupt?}
 \todo{Konkrete Einstellungen erwähnen (in Implementierungsdetails?)}
 
@@ -37,6 +38,15 @@ Evaluierung \todo{ausformulieren}
     schlimmes Beispiel für Beinalgo: Brachiosaurus
  \item Restpose nicht klar definiert (vielleicht irgendwie in PCA einfügen? hier gab es keine guten Ideen; außerdem ist Position auf Skelettbildern teilweise auch eher beliebig)
  \item keine wissenschaftliche Argumentation für Änderungen am Beinalgo, nicht klar was Verbesserungen wären; Beine müssen für Animation, Muskelgeneration etc sowieso nochmal angefasst werden -> future work
+ \item Bei Skeletten, die sehr kurze Beine haben, funktioniert der Algorithmus teilweise nicht besonders gut:
+  \begin{itemize}
+   \item Beinstartposition kann schon unter Bodenhöhe sein, wenn Beine sehr unterschiedlich lang / Startpunkte sehr unterschiedlich hoch sind (Berechnung der Bodenhöhe erklären). Beispiel dafür: Dimetrodon
+   \item Bei Berechnung der Bodenhöhe wird von Kontrollpunkten der Bezierkurve aus gemessen (da Position der Hüfte/Schulter noch nicht klar). Deshalb kann es bei sehr kurzen Beinen sein, dass Abstand zwischen Boden und Gelenk zu groß ist und Boden so nicht erreichbar ist.
+   \item Bei sehr kurzen Knochen ändert sich der Abstand zum Boden durch Drehung der Gelenke nicht so stark wie bei langen Knochen, deshalb wird Winkel öfter halbiert, was in diesem Fall aber kontraproduktiv ist. Aus diesem Grund schafft der Algorithmus es dann nicht mehr die Knochen in die richtige Lage zu bringen. (der Bewegungsspielraum wird zu stark eingeschänkt)
+   \item bei ganz kurzen Beinen (Gesamtlänge unter 5) macht es keinen Sinn sie anzuordnen (außerdem gibt es den gleichen Effekt wie oben schon erwähnt)
+   \item Bei kurzen Arm/Beinknochen kann es dazu kommen, dass der Oberarm nicht näher zum Boden kann, aber Unterarm (+Hand) durch das Gelenkoffset über dem Boden schweben und nicht näher heran kommen (siehe Krokodil screenshot)
+  \end{itemize}
+
 \end{itemize}
 
 
