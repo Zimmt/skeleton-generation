@@ -77,6 +77,11 @@ public class ExtremityPositioning implements Serializable {
         }
         boolean success = true;
         if (extremityKind == ExtremityKind.LEG) {
+            if (firstBone.getBoundingBox().getYLength() + secondBone.getBoundingBox().getYLength() + thirdBone.getBoundingBox().getYLength() < 5) {
+                // there is no point in finding a position for such a short leg
+                System.out.println("Leg is too short, don't change position");
+                return true;
+            }
             ExtremityData extremityData = firstBone.getGenerator().getSkeletonMetaData().getExtremities();
             boolean flooredSecondBone = (new Random()).nextFloat() < extremityData.getFlooredAnkleWristProbability();
             //System.out.print("floored second bone: " + flooredSecondBone + "... ");
@@ -129,7 +134,7 @@ public class ExtremityPositioning implements Serializable {
             return false;
         }
 
-        float initialAngleStepSize = (float) Math.toRadians(30);
+        float initialAngleStepSize = (float) Math.toRadians(40);
         float firstJointZAngleProbability = 1f; // first joint x angle is ignored
         float secondJointAngleProbability = 1f;
         float thirdJointAngleProbability = 1f;
@@ -189,13 +194,14 @@ public class ExtremityPositioning implements Serializable {
                     // System.out.println("angle step size / 2");
                     angleStepSize *= 1f/2f;
                 } else {
-                    angleStepSize *= 5f/6f;
+                    angleStepSize *= 6f/7f;
                 }
             }
         }
+        System.out.println("last angle step size: " + Math.toDegrees(angleStepSize));
 
 
-        if (flooredSecondBone) { // adjust foot
+        if (flooredSecondBone) {
             adjustFoot();
         }
 

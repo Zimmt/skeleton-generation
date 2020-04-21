@@ -201,26 +201,31 @@ public class ExtremityData implements Serializable {
     private void calculateFloorHeightAndAnkleWristProb(SpineData spine) {
         float minFloorHeight = 0f;
         float bentRatio = 0.8f; // 1 means, that extremities can be completely vertical stretched out
+        float minBentRatio = 0.4f; // used if floor is too near
         int backLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityPositioningsForStartingPoint(0)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
         int frontLegs = (int) Arrays.stream(extremityStartingPoints.getExtremityPositioningsForStartingPoint(1)).filter(e -> e.getExtremityKind() == ExtremityKind.LEG).count();
 
         if (backLegs > 0) {
-            float pelvicHeight = spine.getBack().getControlPoint3().y;
+            float pelvisHeight = spine.getBack().getControlPoint3().y;
             float legLength = getBackExtremityLength();
-            if (lengthUpperLeg + lengthLowerLeg >= pelvicHeight) {
+            minFloorHeight = Math.min(pelvisHeight - minBentRatio * legLength, minFloorHeight);
+
+            if (lengthUpperLeg + lengthLowerLeg >= pelvisHeight) {
                 flooredAnkleWristProbability = 1f;
-            } else if (legLength < pelvicHeight) {
+            } else if (legLength < pelvisHeight) {
                 flooredAnkleWristProbability = 0f;
-                minFloorHeight = pelvicHeight - bentRatio * legLength;
+                minFloorHeight = pelvisHeight - bentRatio * legLength;
             } else {
-                flooredAnkleWristProbability = (legLength - pelvicHeight) / lengthFoot;
-                minFloorHeight = pelvicHeight - bentRatio * lengthUpperLeg - bentRatio * lengthLowerLeg;
+                flooredAnkleWristProbability = (legLength - pelvisHeight) / lengthFoot;
+                minFloorHeight = pelvisHeight - bentRatio * lengthUpperLeg - bentRatio * lengthLowerLeg;
             }
         }
 
         if (frontLegs > 0) {
             float shoulderHeight = spine.getBack().getControlPoint0().y;
             float armLength = getFrontExtremityLength();
+            minFloorHeight = Math.min(shoulderHeight - minBentRatio * armLength, minFloorHeight);
+
             if (flooredAnkleWristProbability >= 1f && lengthUpperArm + lengthLowerArm >= shoulderHeight) {
                 flooredAnkleWristProbability = 1f;
             } else if (flooredAnkleWristProbability <= 0f || armLength < shoulderHeight) {

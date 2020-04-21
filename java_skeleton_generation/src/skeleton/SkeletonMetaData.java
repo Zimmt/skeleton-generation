@@ -60,6 +60,10 @@ public class SkeletonMetaData implements Serializable {
     public SkeletonMetaData newWithVariation(List<PcaDataPoint> pcaInputData) {
         PcaHandler pcaHandler = new PcaHandler(pcaInputData, pcaConditions);
         pcaHandler.runPCA();
+        return newWithVariation(pcaHandler);
+    }
+
+    public SkeletonMetaData newWithVariation(PcaHandler pcaHandler) {
         double[] newEigenvectorScales = pcaHandler.getVariationForEigenvectorScales(eigenvectorScales);
         PcaDataPoint p = pcaHandler.getPcaDataPointFromEigenvectorScales(newEigenvectorScales);
 

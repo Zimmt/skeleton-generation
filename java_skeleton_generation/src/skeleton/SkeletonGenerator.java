@@ -77,7 +77,7 @@ public class SkeletonGenerator {
             this.skeletonMetaData = new SkeletonMetaData(pcaHandler, point, userInput);
         }
         if (createVariation) {
-            this.skeletonMetaData = skeletonMetaData.newWithVariation(pcaHandler.getDataPoints());
+            this.skeletonMetaData = skeletonMetaData.newWithVariation(pcaHandler);
         }
     }
 
