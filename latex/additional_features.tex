@@ -3,10 +3,8 @@
 \chapter{Zusätzliche Features}
 
 \begin{itemize}
- \item Skelette speichern und laden (nur Programmintern, future work: Metadaten in anderem Format speichern, damit sie wiederverwendet werden können)
  \item Variationen erzeugen
  \item Beispiele von PCA laden
- \item GUI
  \item (was ist aus Interaktivität geworden?)
 \end{itemize}
 
@@ -27,4 +25,33 @@ Erzeugung von Variationen \todo{ausformulieren}
  \item was genau wird variiert
  \item PCA Daten normalverteilt variieren (Verteilung bleibt Gauß, Erwartungswert bleibt gleich, Überlegungen dazu wie sie sich ändert durch Aufaddieren der Variation / Faltung mit anderem Gauß)
  \item Variation der Daten, die nicht von PCA abhängen, beschreiben; generische Algorithmen zitieren (auch hinzufügen und löschen oder ändern von Features um Variationen/Verbesserungen zu erzeugen)
+\end{itemize}
+
+
+%-----------
+\section{GUI}
+
+\todo{Funktionen beschreiben + wie verknüpft mit Programm}
+JavaView zum anzeigen für groben Überblick (Lizenz checken)
+
+% \begin{itemize}
+%  \item OpenGL
+%  \begin {itemize}
+%   \item SDL + OpenGL Tutorials \\ \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \\ \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
+%   \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array)
+%  \end {itemize}
+% 
+%  \item Benutzeroberfläche
+%  \begin{itemize}
+%   \item imgui (opengl/vulcan/3D view integriert) mit Rust oder C++: \url{https://github.com/ocornut/imgui}
+%   
+%   \begin{itemize}
+%    \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2}
+%    \item es gibt Java Bindings (\url{https://github.com/ice1000/jimgui}), aber Swing ist wahrscheinlich einfacher
+%    \item OpenGL scene $\rightarrow$ imgui: \url{https://gamedev.stackexchange.com/questions/140693/how-can-i-render-an-opengl-scene-into-an-imgui-window}
+%   \end{itemize}
+% 
+%   
+%   \item Java Swing Bibliothek und JOGL (Java OpenGL Binding) (\url{http://www.jogl.info})
+%  \end{itemize}
 \end{itemize}

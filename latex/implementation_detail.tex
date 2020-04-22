@@ -3,19 +3,13 @@
 \chapter{Implementierungsdetails}
 \label{chapter_implementation_detail}
 
-\begin{itemize}
- \item Dateiformate + Programmiersprache
- \item ein Wort zur Softwarearchitektur?
- \item Erweiterbarkeit der Software?
-\end{itemize}
-
-
 %---------------------------
 \section{Programmiersprache}
 
 \begin{itemize}
  \item Rust: nicht geeignet, da Datenstrukturen die zyklische Referenzen auf veränderbare Objekte verwenden nicht oder nur kompliziert umsetzbar sind.
- \item Java: scheint gut zu funktionieren. Es gibt Bibliotheken zum im-/exportieren von obj-Dateien und Unterstützung für OpenGL
+ \item Java: scheint gut zu funktionieren. Es gibt Bibliotheken zum im-/exportieren von obj-Dateien und Unterstützung für OpenGL\\
+ Außerdem gibt es Bibliotheken, die PCA (\bzw Kovarianzmatrizen \etc) unterstützen und JavaView um objs darzustellen
 \end{itemize}
 
 
@@ -24,7 +18,7 @@
 
 \begin{itemize}
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
- \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach Knochen als Bounding Box darstellen
+ \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach Knochen als Bounding Box darstellen, später Verwendung von OpenGL mit vertex shadern \etc (Plan erwähnen? wurde ja doch nicht gemacht\dots)
  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
  \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
 \item Vorschlag von Jo: "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
@@ -77,49 +71,20 @@
 \end{itemize}
 
 
-%-----------------------
-\section{Interaktivität}
+%----------------------------
+\section{Aufbau der Software}
 
 \begin{itemize}
- \item OpenGL
- \begin {itemize}
-  \item SDL + OpenGL Tutorials \\ \url{http://headerphile.com/sdl2/opengl-part-1-sdl-opengl-awesome/}, \\ \url{http://www.sdltutorials.com/sdl-opengl-tutorial-basics}
-  \item Daten direkt mit OpenGL erzeugen (laden als vertex und index array)
- \end {itemize}
-
- \item Benutzeroberfläche
- \begin{itemize}
-  \item imgui (opengl/vulcan/3D view integriert) mit Rust oder C++: \url{https://github.com/ocornut/imgui}
-  
-  \begin{itemize}
-   \item OpenGL und Imgui für Rust: \url{https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html}, \url{https://github.com/michaelfairley/rust-imgui-sdl2}
-   \item es gibt Java Bindings (\url{https://github.com/ice1000/jimgui}), aber Swing ist wahrscheinlich einfacher
-   \item OpenGL scene $\rightarrow$ imgui: \url{https://gamedev.stackexchange.com/questions/140693/how-can-i-render-an-opengl-scene-into-an-imgui-window}
-  \end{itemize}
-
-  
-  \item Java Swing Bibliothek und JOGL (Java OpenGL Binding) (\url{http://www.jogl.info})
- \end{itemize}
-\end{itemize}
-
-%- - - - - - - -
-\subsection{GUI}
-
-\begin{itemize}
- \item Funktionen beschreiben + wie verknüpft mit Programm
- \item JavaView zum anzeigen für groben Überblick (Lizenz checken)
+ \item ein Wort zur Softwarearchitektur?
+ \item Erweiterbarkeit der Software?
 \end{itemize}
 
 
 %-----------------------------
-\section{Technische Umsetzung}
+\section{Zufall}
 
-\begin{itemize}
- \item Repräsentation des Zustands als Hierarchie von einzelnen Komponenten (terminale sowie nichtterminale).
- \item Übersetzung in ein 3D-Modell: zunächst .obj, später Verwendung von OpenGL mit vertex shadern etc.\
- \item linearer Kongruenzgenerator reich für Zufallszahlen aus, da nur wenige erzeugt werden (erkennbare Muster entstehen erst bei mehr Zufallszahlen) (erwähnen?)
- \item Um Wirbelsäule aus PCA Daten differenzierbar zu machen, wurden jeweils der vorletzte und der zweite Punkt von Hals und Rücken \bzw Rücken und Schwanz um den Kontaktpunk um den gleichen Winkel in gegensätzliche Richtungen gedreht, damit beide Bézierkurven an dem Kontaktpunkt die gleiche Steigung haben. \todo{beste Lösung?}
-\end{itemize}
+Linearer Kongruenzgenerator reicht für Zufallszahlen aus, da nur wenige erzeugt werden (erkennbare Muster entstehen erst bei mehr Zufallszahlen) \todo{erwähnen?}
+
 
 %--------------------------------
 \section{Transformationsmatrizen}
@@ -172,6 +137,7 @@ Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abl�
 \subsection{Anpassung der PCA-Ergebnisse zur Weiterverarbeitung}
 
 \begin{itemize}
+ \item Um Wirbelsäule aus PCA Daten differenzierbar zu machen, wurden jeweils der vorletzte und der zweite Punkt von Hals und Rücken \bzw Rücken und Schwanz um den Kontaktpunk um den gleichen Winkel in gegensätzliche Richtungen gedreht, damit beide Bézierkurven an dem Kontaktpunkt die gleiche Steigung haben. \todo{beste Lösung?}
  \item An den Kontakpunkten der Wirbelsäulenteile ist die Steigung nicht unbedingt gleich (die Wirbelsäule als ganzes ist nicht $C^1$). Deshalb müssen vor der Weiterverwendung die jeweils nächsten Kontrollpunkte nach dem Kontakpunkt verschoben werden. Das wurde hier so gemacht, dass die zu verschiebenden Kontrollpunkte um den Kontakpunkt in gegensätzliche Richtungen rotiert wurden. Beide werden um den gleichen Winkel rotiert (siehe Abbildung \ref{smooth_spine}). Grundsätzlich könnten die Kontrollpunkte beliebig auf der Tangente des Kontaktpunkts platziert werden (rot im Bild) um eine übereinstimmende Steigung zu bekommen. Um den Verlauf der Wirbelsäulenteile möglichst wenig zu verändern ist es von Vorteil auch die Kontrollpunkte möglichst wenig zu verschieben. Man könnte die Punkte \zb auch senkrecht auf die Tangente projizieren. Welches Verfahren angewendet wird, ist jedoch nicht von großer Bedeutung. 
 \end{itemize}
 
