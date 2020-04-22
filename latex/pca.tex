@@ -93,11 +93,14 @@
  Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
  
  Eine Vorraussetzung dafür, dass die PCA korrekt funktionert, ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Im Folgenden sollen die Eingabemerkmale daraufhin genauer untersucht werden.
+ \todo{(Projektion auf Eigenvektoren auf Normalverteilung testen?)}
  
  Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret nur ein \bzw zwei Werte annehmen können. Sie können jedoch hilfreiche Informationen zur Weiterverarbeitung durch den Algorithmus liefern, weshalb sie nicht ganz außen vor gelassen werden sollten. Da das Hauptaugenmerk der PCA aber auf der Position der Wirbelsäule und dem Aufbau der Extremitäten liegen soll, sollen diese beiden Merkmale keinen großen Einfluss haben. Deshalb wurden diese Merkmale kleinskaliert. Dazu weiter unten mehr.
  
  Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen. 
  \todo{QQ Diagramme erklären, negative Werte sind ganz normal, da inverse CDF bei einem Mittelwert von 0 bei Werten < 0.5 negativ ist.}
+ \todo{welche Methode um Unterscheidungsanteil auszurechnen? \url{https://de.wikipedia.org/wiki/Quantil-Quantil-Diagramm} (verschiedene Sachen ausprobieren, zeigen dass egal? "Zahl" ausrechnen (paper)?}
+ \todo{Plotstil angleichen}
  Die Diagramm zeigen für alle Merkmale außer dem Gewicht, dass sie mehr oder weniger gut normalverteilt sind (siehe Beispiele in Abbildung \ref{qqdiagram_examples} und eine vollständige Aufzählung im Anhang in den Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
  
  Das Merkmal \emph{Gewicht} ist überhaupt nicht normalverteilt (siehe Abbildung \ref{qqdiagrams_weight} a und b). Verwendet man es als Eingabe für die PCA und generiert dann zufällig normalverteilte Punkte im Ergebnisraum, treten schnell Gewichte kleiner null auf.

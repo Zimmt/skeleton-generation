@@ -3,6 +3,12 @@
 \chapter{Implementierungsdetails}
 \label{chapter_implementation_detail}
 
+\begin{itemize}
+ \item ein Wort zur Softwarearchitektur?
+ \item Erweiterbarkeit der Software?
+\end{itemize}
+
+
 %---------------------------
 \section{Programmiersprache}
 
@@ -117,6 +123,8 @@
 %--------------------------------
 \section{Transformationsmatrizen}
 
+\todo{Recherchiere warum rechtshändige Koordinatensysteme bzw. konsistene Koordinatensysteme wichtig sind (back face culling, Rotationsrichtung der Matrizen bei positiven Winkeln)}
+
 Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Position des Ursprungs seines Koordinatensystems. Um den Überblick über die Transformationsmatrizen bzw. Abbildungen behalten, die vom einen ins andere Koordinatensystem umwandeln, hier zwei Übersichtsgrafiken:
 
 \begin{figure}
@@ -163,18 +171,7 @@ Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abl�
  \label{smooth_spine}
 \end{figure}
 
-%------------------------------------------------
-\section{Algorithmus zur Extremitätengenerierung}
 
-Wie in Abschnitt \ref{section:extremity_generation} bereits beschrieben, ist die Extremität in der initialen Position für den Algorithmus möglichst stark angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den Iterationen des Algorithmus wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. Die Winkel der Gelenke werden also im Wesentlichen nur in eine Richtung verändert. (Würden die Gelenke nicht in der extremsten Position starten, wären diese Winkel nie wieder erreichbar.)
-Wenn sich der Endpunkt eines Knochens durch das Drehen unter die Bodenhöhe verschieben würde, so wird jene Drehung verworfen. In der nächsten Iteration könnte es wieder möglich sein, da eine kleinere Drehung verwendet wird.
-
-In jeder Iteration werden die Winkel um eine bestimmte Gradzahl verändert. Zu Beginn sind das $30^{\circ}$. In den nächsten Iterationen sind es dann jeweils $\frac{4}{5}$ davon. Falls sich der Abstand zum Boden dadurch aber kaum verändert (konkret: weniger als $0.1$), liegt die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen zu einer Positionen führen würden, in der mindestens ein Knochen unterhalb der Bodenhöhe läge. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration halbiert.
-
-Außerdem ist es möglich für jedes Gelenk und jeden Winkel eine Wahrscheinlichkeit festzulegen mit der jener Winkel verändert wird. Das wird aber tatsächlich nur für den Winkel des Oberarms/-schenkels gemacht, der die Abspreizung der Extremität in z-Richtung festlegt. Würde man hier die Wahrscheinlichkeit im Vergleich zu den anderen nicht verringern, hätten die meisten Tiere stark abgespreizte Beine. Da dies oft eher unnatürlich wirkt und auch in der Natur nicht bei dem Großteil der Tiere vorkommt, ist hier die Anpassung der Wahrscheinlichkeit sinnvoll.
-
-Um für jedes Gelenk die Drehrichtung zu bestimmen, die den Endpunkt näher Richtung Boden bringt, wird die negative lokale y-Achse in Weltkoordinaten betrachtet und mit der Welt-y-Achse verglichen. \todo{für beide Gelenktypen Schaubilder einfügen}
-Dies funktioniert allerdings nur, wenn die Gelenke nicht zu weit drehen, also über die Welt-y-Achse hinaus. Zusätzlich ergibt sich auch keine sinnvolle Position des Knochens, wenn die Gelenke so weit gedreht werden. Deshalb wird auch das verhindert. Das funktioniert, indem Gelenke, die zu weit gedreht wurden, auf eine Position zurückgesetzt werden, die gerade noch erlaubt ist.
 
 
 

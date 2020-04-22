@@ -1,0 +1,31 @@
+%-----------------------------------------------------
+%-----------------------------------------------------
+\chapter{Erweiterungs- und Verbesserungsmöglichkeiten}
+
+\begin{itemize}
+ \item Muskeln, Haut \etc anbauen
+ \item austauschbare 3D-Modelle
+ \item mehr verschiedene 3D-Modelle
+ \item Beinalgo verbessern / IK
+ \item mehr Daten für PCA sammeln
+\end{itemize}
+
+
+%----------------
+\section{Muskeln}
+
+\begin{itemize}
+ \item Die "`Hauptmuskeln"' verlaufen bei Wirbeltieren wahrscheinlich ähnlich, relativ zu den Knochen. Trotzdem unterscheiden sie sich recht stark.
+ \item Knochen/Gelenke bekommen Zusatzattribute für Start- und Zielpunkte der Muskeln.
+ \item Muskeln haben eine "`Dicke"' und aus Start- und Zielpunkt muss Kurve des Muskels generiert werden.
+ \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ future work
+\end{itemize}
+
+%-------------
+\section{Haut}
+
+\begin{itemize}
+ \item Was für Algorithmen gibt es, die zu einem vorhandenen 3D-Modell eine Hülle mit gewissen Eigenschaften generieren? \\
+ es gibt eine solche Funktion z.B. in AutoCAD \url{https://knowledge.autodesk.com/de/support/autocad/learn-explore/caas/CloudHelp/cloudhelp/2016/DEU/AutoCAD-Core/files/GUID-B7F99810-765E-4E7E-ABDD-275C64147CCC-htm.html}
+ \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen (siehe \url{https://www.proko.com/landmarks-of-the-human-body/}) oder "`bone weights"'
+\end{itemize}

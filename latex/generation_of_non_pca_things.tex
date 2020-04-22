@@ -1,0 +1,107 @@
+%---------------------------------------------------------------
+%---------------------------------------------------------------
+\chapter{Erzeugung der Dinge, die nicht von PCA vorgegeben sind}
+
+\begin{itemize}
+ \item Wirbel
+ \item Rippen (wieviele Rippen, wie lang ist Brustkorb in x-Richtung)
+ \item Beine (Einschränkungen, IK, Gelenke mit Einschränkungen, andere Extremitäten)
+ \item Kopf
+ \item Schulter
+ \item fantastische Tiere
+\end{itemize}
+
+
+%-----------------------------------------------
+\section{Generierung der einzelnen Extremitäten}
+\label{section:extremity_generation}
+
+Extremitäten werden zunächst danach unterschieden, ob sie Bodenkontakt haben sollen oder nicht.
+Wenn nicht, dann sind es entweder Flossen, Arme oder Flügel:
+
+\begin{itemize}
+ \item Flossen: gerade nach hinten (orientiert an Welt-x-Achse)
+ \item Arme: Oberarm gerade nach unten (orientiert an negativer Welt-y-Achse), Unterarm im $90^{\circ}$ Winkel nach vorne, Hand verlängert Unterarm 
+ \item Flügel: spezielles Winkelintervall für jedes beteiligte Gelenk, daraus jeweils zufällig gewählte Winkel
+\end{itemize}
+
+% Beine mit iterativem Algo
+Bei Extremitäten mit Bodenkontakt wird iterativ vorgegangen. Der allgemeinste Ansatz wäre hier inverse Kinematik zu verwenden. Das ist hier aber nicht nötig, da in jedem Schritt klar ist, wie die Winkel verändert werden müssen, dass der Endpunkt näher zum Boden kommt. \todo{Absatz über IK, lcp (linear complementary problem) (nicht Hauptaugenmerk / Ziel der Arbeit ist etwas anderes / reicht für Proof of Concept, bei Animationen muss große Maschinerie sowieso nochmal angeworfen werden)}\\
+\todo{Absatz über Darstellung der Gelenke (auch mit zwei Freiheitsgraden), Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden}
+Von der Startposition aus, werden die Winkel an den Gelenken in jedem Schritt jeweils so vergrößert oder verkleinert, dass sich der Punkt, der zum Schluss den Boden berühren soll, sich der Bodenoberfläche nähert. Ob die Winkel jeweils vergößert oder verkleinert werden sollen, wird bestimmt, indem die Ausrichtung des Kindelements mit der y-Achse des Weltkoordinatensystems verglichen wird. Soll der Endpunkt der Extremität dem Boden nähern, so wird der Winkel so verändert, dass die Ausrichtung des Kindelements sich der Senkrechten nähert. Wenn nicht, so wird der Winkel in die entgegengesetzte Richtung verändert. \todo{das passiert aber nicht}
+
+% Tweaks
+Je nach Ausgangsposition sieht das Ergebnis aber nicht unbedingt natürlich aus. Zum Beispiel kann es passieren, dass das Fußgelenk nicht gedreht wird, also der Fuß das Schienbein einfach verlängert und die Spitze des Fußes Bodenkontakt hat. Wenn dann die Oberseite des Fußes näher am Boden ist als die Unterseite, dann ist das keine sinnvolle Position.
+Um so etwas zu verhindern, wird die Startposition der Extremität so gewählt, dass alle Gelenke stark angewinkelt sind. \todo{Abbildung}
+Außerdem wird während der Iteration verboten, dass Knochen unterhalb der Bodenhöhe enden.
+\todo{Zweiter Freiheitsgrad an Hüft- und Schultergelenk macht es schwieriger, da Winkel, je nach Winkel der anderen Richtung, vergrößert oder verkleinert werden muss um den Boden zu erreichen. Weggelassen. Bei mehr Anforderungen doch IK verwenden.}
+
+% Änderung der Winkel und Wahrscheinlichkeiten
+In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht. 
+\todo{Wenn Änderung zu klein, wird Knochen wahrscheinlich meistens wieder zurückgesetzt, deshalb stärkere Verkleinerung des Winkels}
+Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadurch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen? bzw braucht man dise Wkten überhaupt?}
+\todo{Konkrete Einstellungen erwähnen (in Implementierungsdetails?)}
+
+Evaluierung \todo{ausformulieren}
+\begin{itemize}
+ \item generierte Extremitäten mit echten Positionen vergleichen, diskutieren\\
+    schlimmes Beispiel für Beinalgo: Brachiosaurus
+ \item Restpose nicht klar definiert (vielleicht irgendwie in PCA einfügen? hier gab es keine guten Ideen; außerdem ist Position auf Skelettbildern teilweise auch eher beliebig)
+ \item keine wissenschaftliche Argumentation für Änderungen am Beinalgo, nicht klar was Verbesserungen wären; Beine müssen für Animation, Muskelgeneration etc sowieso nochmal angefasst werden -> future work
+ \item Bei Skeletten, die sehr kurze Beine haben, funktioniert der Algorithmus teilweise nicht besonders gut:
+  \begin{itemize}
+   \item Beinstartposition kann schon unter Bodenhöhe sein, wenn Beine sehr unterschiedlich lang / Startpunkte sehr unterschiedlich hoch sind (Berechnung der Bodenhöhe erklären). Beispiel dafür: Dimetrodon
+   \item Bei Berechnung der Bodenhöhe wird von Kontrollpunkten der Bezierkurve aus gemessen (da Position der Hüfte/Schulter noch nicht klar). Deshalb kann es bei sehr kurzen Beinen sein, dass Abstand zwischen Boden und Gelenk zu groß ist und Boden so nicht erreichbar ist.
+   \item Bei sehr kurzen Knochen ändert sich der Abstand zum Boden durch Drehung der Gelenke nicht so stark wie bei langen Knochen, deshalb wird Winkel öfter halbiert, was in diesem Fall aber kontraproduktiv ist. Aus diesem Grund schafft der Algorithmus es dann nicht mehr die Knochen in die richtige Lage zu bringen. (der Bewegungsspielraum wird zu stark eingeschänkt)
+   \item bei ganz kurzen Beinen (Gesamtlänge unter 5) macht es keinen Sinn sie anzuordnen (außerdem gibt es den gleichen Effekt wie oben schon erwähnt)
+   \item Bei kurzen Arm/Beinknochen kann es dazu kommen, dass der Oberarm nicht näher zum Boden kann, aber Unterarm (+Hand) durch das Gelenkoffset über dem Boden schweben und nicht näher heran kommen (siehe Krokodil screenshot)
+  \end{itemize}
+
+\end{itemize}
+
+
+%------------------------------------------------
+\section{Mehr Details zum Algorithmus zur Extremitätengenerierung}
+\todo{mit oberem Abschnitt zusammenfassen}
+
+Wie in Abschnitt \ref{section:extremity_generation} bereits beschrieben, ist die Extremität in der initialen Position für den Algorithmus möglichst stark angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den Iterationen des Algorithmus wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. Die Winkel der Gelenke werden also im Wesentlichen nur in eine Richtung verändert. (Würden die Gelenke nicht in der extremsten Position starten, wären diese Winkel nie wieder erreichbar.)
+Wenn sich der Endpunkt eines Knochens durch das Drehen unter die Bodenhöhe verschieben würde, so wird jene Drehung verworfen. In der nächsten Iteration könnte es wieder möglich sein, da eine kleinere Drehung verwendet wird.
+
+In jeder Iteration werden die Winkel um eine bestimmte Gradzahl verändert. Zu Beginn sind das $30^{\circ}$. In den nächsten Iterationen sind es dann jeweils $\frac{4}{5}$ davon. Falls sich der Abstand zum Boden dadurch aber kaum verändert (konkret: weniger als $0.1$), liegt die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen zu einer Positionen führen würden, in der mindestens ein Knochen unterhalb der Bodenhöhe läge. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration halbiert.
+
+Außerdem ist es möglich für jedes Gelenk und jeden Winkel eine Wahrscheinlichkeit festzulegen mit der jener Winkel verändert wird. Das wird aber tatsächlich nur für den Winkel des Oberarms/-schenkels gemacht, der die Abspreizung der Extremität in z-Richtung festlegt. Würde man hier die Wahrscheinlichkeit im Vergleich zu den anderen nicht verringern, hätten die meisten Tiere stark abgespreizte Beine. Da dies oft eher unnatürlich wirkt und auch in der Natur nicht bei dem Großteil der Tiere vorkommt, ist hier die Anpassung der Wahrscheinlichkeit sinnvoll.
+
+Um für jedes Gelenk die Drehrichtung zu bestimmen, die den Endpunkt näher Richtung Boden bringt, wird die negative lokale y-Achse in Weltkoordinaten betrachtet und mit der Welt-y-Achse verglichen. \todo{für beide Gelenktypen Schaubilder einfügen}
+Dies funktioniert allerdings nur, wenn die Gelenke nicht zu weit drehen, also über die Welt-y-Achse hinaus. Zusätzlich ergibt sich auch keine sinnvolle Position des Knochens, wenn die Gelenke so weit gedreht werden. Deshalb wird auch das verhindert. Das funktioniert, indem Gelenke, die zu weit gedreht wurden, auf eine Position zurückgesetzt werden, die gerade noch erlaubt ist.
+
+%--------------------------------------
+\section{Ansatzpunkte für Extremitäten}
+
+Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber Möglich dies zu erweitern.
+
+Eine einfache Möglichkeit ist hier zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden einfach an der Hüfte \bzw der Schulter mehrere Gelenke mit ein wenig Abstand angelegt, an denen Extremitäten ansetzen können.
+Flügel und Arme dürfen hierbei weiterhin nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen.
+
+% mehr Extremitätengürtel auf dem Rücken
+Eine Überlegung war auch zwischen Schulter und Hüfte weitere Extremitätengürtel anzubringen. Das stellt sich aber als schwierig heraus. Die Wirbelsäule ist zwischen Hüfte und Schulter nach oben geschwungen und im Bauchraum befinden sich die meisten Organe des Tieres. Ein zusätzlicher Extremitätengürtel würde den Bauchraum einschränken. Außerdem wirkt dann auch die nach oben geschwungene Wirbelsäule anatomisch seltsam.
+"`Verdoppelt"' man die Schwingung der Wirbelsäule und hängt einfach einen weiteren Rücken hinten oder vorne an, so wirkt es ebenso seltsam, da dann die "`Höcker"' der Wirbelsäule für das Tier wahrscheinlich nicht wirklich ein Vorteil sind und nur die Fortbewegung erschweren.
+
+% zweiter Schultergürtel
+Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermöglichen. Hat das Tier einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann keine alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.
+
+%- - - - - - - - - - - - - - - - - - - 
+\subsection{Anordnung der Extremitäten}
+
+\begin{itemize}
+ \item Anzahl der Extremitäten orientiert sich an Benutzereingabe
+ \item falls keine Benutzereingabe, dann orientiert es sich an den von der PCA ausgespuckten Wahrscheinlichkeiten für Beine und Flügel
+ \item die Position jeder Extremität wird zufällig aus der Menge der möglichen Positionen ausgewählt. Ist für eine Extremität kein Platz mehr, wird geschaut, ob andere Extremität an eine andere Position wechseln kann um Platz zu schaffen
+ \item da Positionen nicht deterministisch kommt es bei Tieren mit mehreren möglichen Anordnungen zu unterschiedlichen Ergebnissen bei gleicher Eingabe
+ \item da die Anzahl der Arme und Flossen nicht mit PCA erhoben kann sie für die Eingabebeispiele der PCA nicht rekonstruiert werden. Deshalb kann Benutzer hier eigene Angaben machen.
+ \item nachdem Extremitäten zugeteilt wurden, werden sie nochmal "`verteilt"', damit nicht \zb zwei Beine an Hüfte aber keins an Schulter \todo{sinnvoll?}
+ \item wenn es keine Angabe für die Anzahl der Flügel gibt, werden diese mit der PCA Wkt generiert, aber max ein Paar pro Schultergürtel; bei Beinen wir die Wkt (kann auch 2 sein) auf- oder abgerundet
+ \item Arme werden ebenfalls mit Flügelwkt generiert (auch max 1 pro Schultergürtel)
+ \item Flossen werden in komplett leere Extremitätengürtel generiert, wenn sie nicht zu lang wären
+\end{itemize}
+
+

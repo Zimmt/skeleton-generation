@@ -1,0 +1,30 @@
+%-----------------------------
+%-----------------------------
+\chapter{Zusätzliche Features}
+
+\begin{itemize}
+ \item Skelette speichern und laden (nur Programmintern, future work: Metadaten in anderem Format speichern, damit sie wiederverwendet werden können)
+ \item Variationen erzeugen
+ \item Beispiele von PCA laden
+ \item GUI
+ \item (was ist aus Interaktivität geworden?)
+\end{itemize}
+
+
+%------------------------------------------
+\section{Speichern und Laden von Skeletten}
+
+Um ein Skelett zu speichern reicht es jene Metadaten herauszuschreiben, aus denen der Algorithmus das Skelett wieder reproduzieren kann. Zu den benötigten Daten gehören die Daten, die die PCA liefert (Position der Wirbelsäule, Länge der Knochen in den Extremitäten, Gewicht) und Daten, die durch den Algorithmus generiert werden (Anzahl der Wirbel, Intervall auf der Wirbelsäule, in dem sich Rippen befinden, Anzahl und Art der Extremitäten an den jeweiligen Extremitätengürteln und die Winkel an Gelenken der Extremitäten, Art des einzusetzenden Kopfes).
+Das alles wird in ein paar wenigen Java-Klassen gebündelt und über Java-Serialisierung in eine Textdatei geschrieben. Diese Datei kann dann wieder eingelesen werden um die Klassen wieder herzustellen.
+
+Das funktioniert natürlich nur über das implementierte Programm und liefert keine Metainformationen zu dem generierten Skelett nach außen.
+\todo{Ideen für Zusatzinfos, die sinnvoll sein könnten, aufschreiben / future work (zB Knochenhierarchie); wären aber wsh nicht super hilfreich, weil für Animation etc. sowieso nochmal alles angefasst werden muss}
+
+\todo{Möglichkeiten Zusatzinfos abzuspeichern (fbx, alembic, universal scene description \url{https://graphics.pixar.com/usd/docs/index.html}), python script für Blender etc. um Knochen anzulegen}
+
+Erzeugung von Variationen \todo{ausformulieren}
+\begin{itemize}
+ \item was genau wird variiert
+ \item PCA Daten normalverteilt variieren (Verteilung bleibt Gauß, Erwartungswert bleibt gleich, Überlegungen dazu wie sie sich ändert durch Aufaddieren der Variation / Faltung mit anderem Gauß)
+ \item Variation der Daten, die nicht von PCA abhängen, beschreiben; generische Algorithmen zitieren (auch hinzufügen und löschen oder ändern von Features um Variationen/Verbesserungen zu erzeugen)
+\end{itemize}
