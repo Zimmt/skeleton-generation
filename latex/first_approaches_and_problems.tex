@@ -2,48 +2,18 @@
 %-----------------------------------
 \chapter{Erste Ansätze und Probleme}
 
-%---------------
-\section{Skelett}
+%------------------------------------
+\section{Bestandteile eines Skeletts}
+
+Grundelemente aus denen ein Skelett besteht: Knochen, Gelenke + jeweils (relative) Positionen und Orientierungen (Knochen zunächst Rechtecke (siehe Knochenmodelle))
 
 \begin{itemize}
- \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
- \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\
- \todo{Graphen zur Visualisierung der Regeln einfügen}
- Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). $\rightarrow$ Darauf achten, dass das nicht von Algorithmus verlangt wird
- \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
- \item Darstellung des Skeletts in "`sinnvoller"' Pose.
- \item Beachte, dass Tier nicht umfällt: berechne Drehmomente um Kontaktpunkte mit Boden. Dafür sind aber Muskeln bzw.\ Masse wichtig $\rightarrow$ Schätzung der Masse anhand der Knochengröße bzw.\ Größe der Bounding Box?
- \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
- \begin{itemize}
-  \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
-  \item Proportionen (länge der Extremitäten, Kopfgröße,\dots)
-  \item Anzahl vorhandener Gliedmaßen / Zehen / \dots
- \end{itemize}
-
  \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen.
+ 
  \item Ein Knochen ist im einfachsten Fall ein Zylinder (Strecke) mit Länge und Radius, kann aber auch eine konvexe Kurve mit einem Radius sein.
+ 
  \item Ein Gelenk hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
- \item Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar oder ineinander überführbar)
- \item Brustbein sorgt dafür, dass Skelett nicht mehr baumartig $\rightarrow$ erstmal weglassen, ist wahrscheinlich auch nicht unglaublich relevant
-\end{itemize}
-
-%-----------------------
-\section{Interaktivität}
-
-\begin{itemize}
- \item Eine Anwendung, bei der nach Eingabe von Parametern sofort das komplette Tier generiert wird, ist weniger hilfreich als eine, bei der schrittweise Teile davon generiert werden können (und auch rückgängig gemacht werden können)
- \item Teile, die einem nicht gefallen, sollten geändert werden können
- \item Änderungen können Auswirkungen auf den Rest des Körpers haben (durch Regeln) bzw. manche Änderungen sind nicht möglich
- \item Könnte verwendet werden um schnell verschiedene Möglichkeiten zu testen
-\end{itemize}
-
-%------------------------
-\section{Datenstrukturen}
-
-%- - - - - - - - - - -
-\subsection{Terminale}
-
-\begin{itemize}
+ 
  \item Terminale zunächst als Bounding Box. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
  
  \item Knochen: Bounding Box bzw. Skalierung in drei Raumrichtungen, Position, Orientierungen und Name bzw. ID (wird für Ersetzung benötigt).
@@ -56,24 +26,53 @@
  \todo{Bewegungseinschränkungen für bestimmtes Gelenk bei jedem Tier gleich? Wie Einschränkungen erzeugen?}, %TODO 
  
  \item Erzeugung von Kindelementen nicht nur von direktem Elternteil abhängig $\rightarrow$ Abhängigkeiten zwischen entfernten Teilen nötig; auch für Balance nützlich. "`Kommunikation"' über Überobjekt, das auch alle Einzelteile speichert. (SkeletonGenerator)
- \end{itemize}
- 
-%- - - - - - - - - - - -
-\subsection{"`Wachstum"'}
- 
-\begin{itemize}
-
-\item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
-  
-\item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.\\
-Regel, die zunächst sinnvoll klingt: Ansatzpunkte der Extremitäten an der Wirbelsäule können nur in Bereichen der Kurve sein, an denen die Steigung nahe null ist.
-
-\item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\ Bounding Box für Nichtterminale ist dafür aber nicht nötig.
-  
-\item Die Knochen sollen eine Hierarchie (Baum) bilden. Am besten ist ein Knochen in der Nähe es Schwerpunkts (oft wird die Hüfte verwendet). Die Hüfte gibt es aber nicht immer. Verwende ersten Wirbel nach dem Brustkorb (fals existent).
 \end{itemize}
 
+
+%-----------------------------
+\section{Aufbau als Grammatik}
+
+\begin{itemize}
+  \item Aufbau als Grammatik (am Ende aber für jedes Nichtterminal genau eine Regel)
+  \item Aufbau der (Nicht)terminale als Baum, nur Terminale können Kinder haben, Reihenfolge der Anwendung der Regeln sollte beliebig sein
+  \item Symmetrie der Skelette (spiegle Elemente zum Schluss)
+ \end{itemize}
  
+ \begin{itemize}
+  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
+  
+  \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\
+  \todo{Graphen zur Visualisierung der Regeln einfügen}
+  Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). $\rightarrow$ Darauf achten, dass das nicht von Algorithmus verlangt wird
+  
+  \item Brustbein sorgt dafür, dass Skelett nicht mehr baumartig $\rightarrow$ erstmal weglassen, ist wahrscheinlich auch nicht unglaublich relevant
+ \end{itemize}
+
+ 
+
+%---------------------
+\section{"`Restpose"'}
+
+\begin{itemize}
+  \item Tier sollte funktional aussehen (was für Regeln sind da nötig?), Wie ausbalancierte Skelette generieren? Wie Gewicht der Teile bestimmen?
+  \item Form der Wirbelsäule bestimmt wesentlich das Aussehen $\rightarrow$ Startpunkt
+ \end{itemize}
+ 
+\begin{itemize}
+  \item Regeln wichtig, die dafür sorgen, dass das Tier am Ende auch funktional ist.
+  \item Darstellung des Skeletts in "`sinnvoller"' Pose.
+  \item Beachte, dass Tier nicht umfällt: berechne Drehmomente um Kontaktpunkte mit Boden. Dafür sind aber Muskeln bzw.\ Masse wichtig $\rightarrow$ Schätzung der Masse anhand der Knochengröße bzw.\ Größe der Bounding Box?
+  
+  \item Lage der Wirbelsäule am Anfang festlegen, da sie der zentrale Teil des Körpers ist und die Lage der anderen Körperteile grob festlegt. Form variiert von Gerade (Fisch) bis geschwungener Hals und Schwanz (z.B. Giraffe). Mensch passt hier nicht ganz ins Schema $\rightarrow$ weglassen?
+  
+  \item Position der Wirbelsäule wird zu Beginn durch ein, oder mehrere, Beziérkurve(n) festgelegt. Außerdem wird gestgelegt wo Elemente ansetzen, die nicht einfach Wirbel sind, \zb Extremitäten. Von diesen Punkten aus, kann das Skelett dann weiter "`wachsen"'. Diese Positionierung der Wirbelsäule legt die Länge und die Höhe des Tieres fest. Außerdem natürlich den Verlauf der Wirbelsäule, also \zb auch die Länge des Halses.\\
+  Regel, die zunächst sinnvoll klingt: Ansatzpunkte der Extremitäten an der Wirbelsäule können nur in Bereichen der Kurve sein, an denen die Steigung nahe null ist.
+
+  \item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\ Bounding Box für Nichtterminale ist dafür aber nicht nötig.
+  
+  \item Die Knochen sollen eine Hierarchie (Baum) bilden. Am besten ist ein Knochen in der Nähe es Schwerpunkts (oft wird die Hüfte verwendet). Die Hüfte gibt es aber nicht immer. Verwende ersten Wirbel nach dem Brustkorb (fals existent).
+\end{itemize}
+
 %- - - - - - - - - -
 \subsection{Balance} 
 
@@ -93,7 +92,3 @@ Berechnung der Blance: Drehmomente der Knochen (benötigt Position der Knochen u
    Das heißt zu Beginn der Generierung muss der Schwerpunkt des Körpers festgelegt werden, damit die Drehmomente berechnet werden können. Das ist am Anfang aber sehr einfach, da das initiale Element die Bounding Box des Gesamten Skeletts ist. Also ist der Schwerpunkt der Mittelpunkt.
    
   \end{itemize}
-
-
-
-
