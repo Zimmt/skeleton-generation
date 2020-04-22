@@ -2,19 +2,11 @@
 %---------------------------------------------------------------
 \chapter{Erzeugung der Dinge, die nicht von PCA vorgegeben sind}
 
-\begin{itemize}
- \item Wirbel
- \item Rippen (wieviele Rippen, wie lang ist Brustkorb in x-Richtung)
- \item Beine (Einschränkungen, IK, Gelenke mit Einschränkungen, andere Extremitäten)
- \item Kopf
- \item Schulter
- \item fantastische Tiere
-\end{itemize}
-
-
 %-----------------------------------------------
-\section{Generierung der einzelnen Extremitäten}
+\section{Generierung einzelner Extremitäten}
 \label{section:extremity_generation}
+
+% Beine (Einschränkungen, IK, Gelenke mit Einschränkungen, andere Extremitäten)
 
 Extremitäten werden zunächst danach unterschieden, ob sie Bodenkontakt haben sollen oder nicht.
 Wenn nicht, dann sind es entweder Flossen, Arme oder Flügel:
@@ -75,9 +67,10 @@ Um für jedes Gelenk die Drehrichtung zu bestimmen, die den Endpunkt näher Rich
 Dies funktioniert allerdings nur, wenn die Gelenke nicht zu weit drehen, also über die Welt-y-Achse hinaus. Zusätzlich ergibt sich auch keine sinnvolle Position des Knochens, wenn die Gelenke so weit gedreht werden. Deshalb wird auch das verhindert. Das funktioniert, indem Gelenke, die zu weit gedreht wurden, auf eine Position zurückgesetzt werden, die gerade noch erlaubt ist.
 
 %--------------------------------------
-\section{Ansatzpunkte für Extremitäten}
+\section{Zusätzliche Ansatzpunkte für Extremitäten}
 
-Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber Möglich dies zu erweitern.
+Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber Möglich dies zu erweitern.\\
+\todo{andere Möglichkeiten fantastische Tiere zu generieren?}
 
 Eine einfache Möglichkeit ist hier zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden einfach an der Hüfte \bzw der Schulter mehrere Gelenke mit ein wenig Abstand angelegt, an denen Extremitäten ansetzen können.
 Flügel und Arme dürfen hierbei weiterhin nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen.
@@ -105,3 +98,12 @@ Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermögli
 \end{itemize}
 
 
+%---------------------------------------------------
+\section{Weitere Dinge, die generiert werden müssen}
+
+\begin{itemize}
+ \item Wirbel
+ \item Rippen (wieviele Rippen, wie lang ist Brustkorb in x-Richtung)
+ \item Kopf
+ \item Schulter 
+\end{itemize}
