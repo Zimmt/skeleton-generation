@@ -144,7 +144,18 @@ Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Positio
 
 %------------
 \section{PCA}
-\label{section_pca}
+\label{implementation_detail_pca}
+
+Die Bilder der Skelette wurden folgendermaßen für die Datenerhebung vorbereitet:
+ 
+ \begin{enumerate}
+  \item Zuschneiden des Bildes, so dass möglichst nur das Skelett mit wenig Rand außen herum zu sehen ist.
+  \item Einfügen in eine $1000 \times 1000$ Pixel große Bildumgebung.
+  \item Verschieben innerhalb der Bildumgebung an den unteren Rand und horizontal in die Mitte.
+ \end{enumerate}
+
+ Ist das geschehen kann die Lage der Wirbelsäule und die Länge der Knochen der Extremitäten annotiert werden.
+ 
 %- - - - - - - - - - - - - - - - -
 \subsection{Annotation der Bilder}
 

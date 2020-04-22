@@ -2,10 +2,11 @@
 %------------
 \chapter{PCA}
 
-% apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
+ % apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
 
  \todo{einheitliche Benennung von PCA Dimension, erhobenen Daten etc.}
 
+ % Ziel
  Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse wir auf einer Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen ausgeführt. Sie findet diejenigen Richtungen im $n$-dimensionalen Raum, in denen sich die Beispiele am meisten unterscheiden, die "`principal components"'. Das Ziel ist in den meisten Fällen die Dimensionalität der Daten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden, da die anderen Dimensionen optimalerweise nur einen marginalen Einfluss auf die Daten haben.
  
  Das Ziel im Bezug auf die Generierung von Skeletten war vor allem die Position und Krümmung der Wirbelsäule bei unterschiedlichen Tieren zu untersuchen, da diese sehr charakteristische Merkmale eines Skeletts sind. Aus dem gleichen Grund soll der Algorithmus zur Generierung der Skelette mit der Generierung der Wirbelsäule starten und daraus dann den Rest der Knochen "`wachsen"' lassen.
@@ -17,7 +18,7 @@
  %-----------------------
  \section{Funktionsweise}
  
- \todo{PCA Quelle} % Folien? Oder besser Standardwerk zitieren?
+ \todo{PCA Quelle} % Folien? Oder besser Standardwerk zitieren? Oder weglassen?
  \todo{PCA-Algorithmus mit Pseudocode und Ein- und Ausgabe als Referenz (Eingabe ist Kovarianzmatrix, Rest Vorberechnung?)}
  
  Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll. Hier sind die Datenpunkte Skelette von Wirbeltieren. Für jede Eigenschaft des Skeletts, die untersucht werden soll, hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten mit jeweils $n$ Dimensionen. Die PCA nimmt an, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. In diesem Fall bilden die Punkte im $n$-dimensionalen Raum einen Ellipsoid.
@@ -38,14 +39,16 @@
  Viele Beispiele stammen Zoologiebüchern, in denen sie als Beispiele für bestimmte Erklärungen angegeben waren (Bildquellen siehe Anhang \ref{appendix_pca_skeletons}). Dem ist auch geschuldet, dass recht viele Dinosaurierskelette dabei sind. Denn von anderen Tieren gibt es als alternative Darstellungsmöglichkeit eine Außenansicht des lebenden Tieres. Das geht bei ausgestorbenen Tieren im Allgemeinen nicht.
  
  Die Merkmale, die zur Datenerhebung ausgesucht wurden, sind charakteristisch für ein Skelett, tragen also viel zum Gesamteindruck bei. Das sind vor allem der Verlauf der Wirbelsäule und der Aufbau der Extremitäten.
-%   \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
+
+ Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. Am einfachsten zu bekommen sind 2D-Bilder mit Seitenansichten von Skeletten. Das schließt Merkmale aus, die Tiefeninformationen benötigen, \zb den Abstand der Füße oder die Winkel der Gelenke an den Beinen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu bekommen, da sie teilweise schwierig zu Erkennen und zu Markieren sind. 
+ \todo{welche weiteren Merkmale könnte man sich überlegen, warum waren sie nicht sinnvoll? future work?}
+ %   \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
 %  \begin{itemize}
 %   \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
 %   \item Proportionen (länge der Extremitäten, Kopfgröße,\dots)
 %   \item Anzahl vorhandener Gliedmaßen / Zehen / \dots
 %  \end{itemize}
-  
- Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. Am einfachsten zu bekommen sind 2D-Bilder mit Seitenansichten von Skeletten. Das schließt Merkmale aus, die Tiefeninformationen benötigen, \zb den Abstand der Füße oder die Winkel der Gelenke an den Beinen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu bekommen, da sie teilweise schwierig zu Erkennen und zu Markieren sind. Deshalb haben wir die Erhebung auf folgende Daten eingeschränkt:
+ Deshalb haben wir die Erhebung auf folgende Daten eingeschränkt:
   
  \begin{itemize}
   \item Ein Bild mit der Seitenansicht des Skeletts.
@@ -60,15 +63,7 @@
   \item Das ungefähre Gewicht eines ausgewachsenen Exemplars des Tieres, zu dem das Skelett gehört, in Kilogramm. Hier wurde oft das maximale Gewicht verwendet, da keine Angaben zum Durchschnittsgewicht zu finden waren. Teilweise gibt es auch verschiedene (Unter-)Arten, die unterschiedlich schwer werden können, deren Skelette aber, bei der Auflösung der hier erhobenen Daten, gleich aussehen. In diesem Fall wurde ein beliebiger Wert gewählt, der zwischen dem Gewicht der leichtesten und dem der schwersten (Unter-)Art liegt. (Die Quellen zu den Gewichten sind im Anhang \ref{appendix_pca_weight} zu finden.)
  \end{itemize}
 
- Die Bilder der Skelette wurden folgendermaßen für die Datenerhebung vorbereitet:
- 
- \begin{enumerate}
-  \item Zuschneiden des Bildes, so dass möglichst nur das Skelett mit wenig Rand außen herum zu sehen ist.
-  \item Einfügen in eine $1000 \times 1000$ Pixel große Bildumgebung.
-  \item Verschieben innerhalb der Bildumgebung an den unteren Rand und horizontal in die Mitte.
- \end{enumerate}
-
- Ist das geschehen kann die Lage der Wirbelsäule und die Länge der Knochen der Extremitäten annotiert werden. Details dazu wie die Daten annotiert und ausgelesen wurden sind in Abschnitt \ref{section_pca} zu finden.
+ Wie genau die Datenerhebung auf den Bildern der Skelette durchgeführt wurde ist im Kapitel "`Implementierungsdetails"' im Abschnitt \ref{implementation_detail_pca} nachzulesen.
  
  Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils einer für Hals, Rücken und Schwanz. Hals und Rücken gehen an der Schulter ineinander über und Rücken und Schwanz beim Becken.
  Diese Bézierkurven sind die ersten $20$ Eingabedimensionen für die PCA ($10$ zweidimensionale Punkte). Bei manchen Tieren ist kein Hals oder kein Schwanz vorhanden. In diesen Fällen werden die $3$ fehlenden Punkte jeweils mit dem ersten \bzw letzten Punkt des Rückens ersetzt.
@@ -95,7 +90,7 @@
   Insgesamt wurden $44$ Datenpunkte erhoben. Das entspricht bei $29$ Dimensionen $44 \cdot 44 = 1276$ Zahlen als Eingabe. Das Ergebnis der PCA ist im wesentlichen die $29 \times 29$ große Kovarianzmatrix. Das sind $841$ \bzw $\frac{29 \cdot 30}{2} = 435$ Zahlen als Ausgabe. Da $1276 < 435$, ist das eine ausreichende Menge an erhobenen Beispielen. \todo{bessere Begründung?}
  
  Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean} visualisiert.
- \todo{Werte der Mittelwertvisualisierung angeben wenn zuletzt aktualiert, damit Bild nicht so groß sein muss; und Rand abschneiden}
+ \todo{Werte der Mittelwertvisualisierung angeben wenn zuletzt aktualisiert, damit Bild nicht so groß sein muss; und Rand abschneiden}
  Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
  
  Eine Vorraussetzung dafür, dass die PCA korrekt funktionert, ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Im Folgenden sollen die Eingabemerkmale daraufhin genauer untersucht werden.
@@ -177,7 +172,7 @@
 
  
  Zuletzt betrachten wir noch die Projektion der Eingabedaten auf die ersten zwei  Eigenvektoren. In Abbildung \ref{projections_scales} ist noch einmal gut zu vergleichen was die Effekte der Skalierung der Eingabedaten ist. Ganz links sind die Ergenisse zusehen, die entstehen, wenn man alle Merkmale nur auf das Intervall $[0, 1]$ skaliert. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich kleinskaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Anpassungen verringert.
- \todo{aAnpassung der Stile der Plots}
+ \todo{Anpassung der Stile der Plots}
  
  In Abbildung \ref{projections_tags} ist nocheinmal jeweils die Projektion der Daten auf die ersten beiden Eigenvektoren zu sehen. Diesmal mit unterschiedlich markiert mit den diskret erhobenen Daten. Hier sieht man \zb schön dass alle Tiere mit Flügeln auch Vögel sind und dass fast alle Tiere mit zwei Beinen Vögel sind. Die vier Tiere, die zwei Beine haben, aber keine Vögel sind, sind die Ohrenrobbe, der Seehund, der Tyrannosaurus Rex und das Känguru.
 
