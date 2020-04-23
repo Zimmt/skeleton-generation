@@ -1,7 +1,7 @@
 # skeleton-generation #
 
-To use the skeleton generator download the folder `executable_skeleton_generation` and execute the .jar file in it.
-For this you need java SE 11.
+To use the skeleton generator you only need the folder `executable_skeleton_generation` and java SE 11.
+Execute the .jar file in the folder with the command `java -jar java_skeleton_generation.jar`.
 The generator works with relative file paths, so the .jar file has to be executed inside the folder.
 
 For the first run you don't need to do anything but click the "start generator" button. Then a file named `skeleton0.obj`should
