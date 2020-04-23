@@ -8,11 +8,11 @@ import java.util.List;
 public class PcaDataReader {
 
     /**
-     * Reads input data from ./PCA/PCA_data.txt
+     * Reads input data from pca/PCA_input_data.txt and pca/Skelettbilder/*
      */
     public static List<PcaDataPoint> readInputData(boolean logWeight) throws IOException {
         System.out.print("Reading input data... ");
-        File file = new File("../PCA/PCA_input_data.txt");
+        File file = new File("pca/PCA_input_data.txt");
         BufferedReader fileReader = new BufferedReader(new FileReader(file));
         List<PcaDataPoint> dataPoints = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class PcaDataReader {
             dataPoint.setFlooredLegs(flooredLegs);
             dataPoint.setWeight(weight);
 
-            String svgFilePath = "../PCA/Skelettbilder/" + name + ".svg";
+            String svgFilePath = "pca/Skelettbilder/" + name + ".svg";
             SvgReader svgReader = new SvgReader();
             List<ParsedSvgPath> parsedSvgPaths = svgReader.parseFile(svgFilePath);
 

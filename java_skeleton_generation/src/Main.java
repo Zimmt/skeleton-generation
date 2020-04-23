@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         new SkeletonGeneratorHandler().run();
-        System.out.println("Finished");
     }
 
     private static void pca(boolean logWeight) throws IOException {

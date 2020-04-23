@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE jv-lic SYSTEM "http://www.javaview.de/rsrc/jv-lic.dtd">
+<jv-lic>
+	<meta generator="JavaView License Generator v.1.00"/>
+	<meta date="Wed Apr 15 15:50:11 2020"/>
+	<version type="release">1.00</version>
+	<title>JavaView License File</title>
+	<license type="evaluation" usage="single">
+		<license-id>5284.9022.8573.3868</license-id>
+		<license-expire>2020-12-31</license-expire>
+		<licensee>
+			<firstname>uwd</firstname>
+			<lastname>nk</lastname>
+			<affiliation>
+				<organization></organization>
+				<address>
+					<line>Germany</line>
+				</address>
+			</affiliation>
+			<email>uwdnk@student.kit.edu</email>
+			<url></url>
+		</licensee>
+	</license>
+</jv-lic>
+

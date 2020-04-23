@@ -83,5 +83,6 @@ public class SkeletonGeneratorHandler {
                 skeletonGenerator.getSkeletonMetaData().saveToFile(saveToFileName);
             }
         }
+        System.out.println("Finished.");
     }
 }

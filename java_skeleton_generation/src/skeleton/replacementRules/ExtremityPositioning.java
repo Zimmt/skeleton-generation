@@ -198,7 +198,7 @@ public class ExtremityPositioning implements Serializable {
                 }
             }
         }
-        System.out.println("last angle step size: " + Math.toDegrees(angleStepSize));
+        //System.out.println("last angle step size: " + Math.toDegrees(angleStepSize));
 
 
         if (flooredSecondBone) {

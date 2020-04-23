@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE jv-rsrc SYSTEM "http://www.javaview.de/rsrc/jv-rsrc.dtd">
+<jv-rsrc>
+	<meta generator="by hand"/>
+	<meta dtd="0.99.012"/>
+	<meta date="20.03.2011"/>
+	<version type="beta">0.99.073</version>
+	<title>Sample Resource File</title>
+	<authors>
+		<author>
+			<firstname></firstname>
+			<lastname></lastname>
+			<affiliation>
+				<organization></organization>
+				<address>
+					<line></line>
+					<line></line>
+					<line></line>
+				</address>
+			</affiliation>
+			<email></email>
+			<url></url>
+		</author>
+	</authors>
+	<preferences>
+		<directory type="working">c:\tmp\</directory>
+		<workshop backup="enabled"/>
+	</preferences>
+</jv-rsrc>

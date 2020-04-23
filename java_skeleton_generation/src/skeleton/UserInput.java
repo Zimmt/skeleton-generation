@@ -58,7 +58,7 @@ public class UserInput {
             }
         }
         Double pcaLegCondition = legCondition;
-        System.out.println("PCA leg condition: " + pcaLegCondition);
+        //System.out.println("PCA leg condition: " + pcaLegCondition);
         return legCondition;
     }
 
@@ -73,7 +73,7 @@ public class UserInput {
             wingCondition = Math.min(1.0, wings.doubleValue()) + variance;
         }
         Double pcaWingCondtion = wingCondition;
-        System.out.println("PCA wing condition: " + pcaWingCondtion);
+        //System.out.println("PCA wing condition: " + pcaWingCondtion);
         return wingCondition;
     }
 
