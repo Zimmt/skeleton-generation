@@ -2,44 +2,127 @@
 %---------------------------------------------------------------
 \chapter{Erzeugung der Dinge, die nicht von PCA vorgegeben sind}
 
+Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
+
 %-----------------------------------------------
-\section{Generierung einzelner Extremitäten}
+\section{Ausrichtung der Extremitäten}
 \label{section:extremity_generation}
 
-% Beine (Einschränkungen, IK, Gelenke mit Einschränkungen, andere Extremitäten)
+% Allgemeine Schwierigkeit Extremitäten zu positionieren
+Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer} am Beispiel des Klippschliefers sehr gut zu sehen.
 
-Extremitäten werden zunächst danach unterschieden, ob sie Bodenkontakt haben sollen oder nicht.
-Wenn nicht, dann sind es entweder Flossen, Arme oder Flügel:
+ \begin{figure}
+  \centering
+  \includegraphics{../PCA/Skelettbilder/Klippschliefer.jpg}
+  \caption{Skelett eines Klippschliefers. Dieses Bild wurde auch als Eingabe für die PCA verwendet.}
+  \label{klippschliefer}
+ \end{figure}
 
+Wie in Kapitel \ref{chapter:pca} zur PCA schon erwähnt, ist es deshalb auch schwer möglich die Ausrichtung der Extremitäten \bzw die Winkel an den Gelenken als zusätzliche Dimension in den PCA-Raum mitaufzunehmen.
+
+Die Positionierung der Extremitäten bleibt also ein Problem mit unklaren Anforderungen und vielen Freitheitsgraden.
+
+% Einteilung in Kategorien
+Ein erster Schritt an das Problem heranzugehen, ist es in kleinere Unterprobleme zu zerteilen:
+Extremitäten können anhand ihrer Funktion in vier Kategorien eingeteilt werden:
+Flügel, Flossen, Extremitäten mit Bodenkontakt (im Folgenden als Beine bezeichnet), und Extremitäten ohne Bodenkontakt (im Folgenden als Arme bezeichnet).
+
+Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, dass sie als solche zu erkennen sein sollten. Deshalb werden sie nach folgenden simplen Anweisungen orientiert:
+\todo{Beispielbilder?}
 \begin{itemize}
- \item Flossen: gerade nach hinten (orientiert an Welt-x-Achse)
- \item Arme: Oberarm gerade nach unten (orientiert an negativer Welt-y-Achse), Unterarm im $90^{\circ}$ Winkel nach vorne, Hand verlängert Unterarm 
- \item Flügel: spezielles Winkelintervall für jedes beteiligte Gelenk, daraus jeweils zufällig gewählte Winkel
+ \item Flossen: Ausrichtung gerade nach hinten (orientiert an Welt-x-Achse)
+ \item Arme: Der Oberarm zeigt senkrecht nach unten (orientiert an Welt-y-Achse), im Ellenbogengelenk ist ein $90^{\circ}$ Winkel und die Hand verlängert Unterarm nach vorne.
+ \item Flügel: Jedes beteiligte Gelenk hat ein Intervall mit festen Grenzen, aus dem zufällig ein Winkel gewählt wird.
 \end{itemize}
 
-% Beine mit iterativem Algo
-Bei Extremitäten mit Bodenkontakt wird iterativ vorgegangen. Der allgemeinste Ansatz wäre hier inverse Kinematik zu verwenden. Das ist hier aber nicht nötig, da in jedem Schritt klar ist, wie die Winkel verändert werden müssen, dass der Endpunkt näher zum Boden kommt. \todo{Absatz über IK, lcp (linear complementary problem) (nicht Hauptaugenmerk / Ziel der Arbeit ist etwas anderes / reicht für Proof of Concept, bei Animationen muss große Maschinerie sowieso nochmal angeworfen werden)}\\
-\todo{Absatz über Darstellung der Gelenke (auch mit zwei Freiheitsgraden), Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden}
-Von der Startposition aus, werden die Winkel an den Gelenken in jedem Schritt jeweils so vergrößert oder verkleinert, dass sich der Punkt, der zum Schluss den Boden berühren soll, sich der Bodenoberfläche nähert. Ob die Winkel jeweils vergößert oder verkleinert werden sollen, wird bestimmt, indem die Ausrichtung des Kindelements mit der y-Achse des Weltkoordinatensystems verglichen wird. Soll der Endpunkt der Extremität dem Boden nähern, so wird der Winkel so verändert, dass die Ausrichtung des Kindelements sich der Senkrechten nähert. Wenn nicht, so wird der Winkel in die entgegengesetzte Richtung verändert. \todo{das passiert aber nicht}
+Nun bleibt nur doch die Ausrichtung der Beine, für die die zusätzliche Anforderung gilt, dass sie den Boden berühren sollen.
 
-% Tweaks
-Je nach Ausgangsposition sieht das Ergebnis aber nicht unbedingt natürlich aus. Zum Beispiel kann es passieren, dass das Fußgelenk nicht gedreht wird, also der Fuß das Schienbein einfach verlängert und die Spitze des Fußes Bodenkontakt hat. Wenn dann die Oberseite des Fußes näher am Boden ist als die Unterseite, dann ist das keine sinnvolle Position.
-Um so etwas zu verhindern, wird die Startposition der Extremität so gewählt, dass alle Gelenke stark angewinkelt sind. \todo{Abbildung}
-Außerdem wird während der Iteration verboten, dass Knochen unterhalb der Bodenhöhe enden.
-\todo{Zweiter Freiheitsgrad an Hüft- und Schultergelenk macht es schwieriger, da Winkel, je nach Winkel der anderen Richtung, vergrößert oder verkleinert werden muss um den Boden zu erreichen. Weggelassen. Bei mehr Anforderungen doch IK verwenden.}
 
-% Änderung der Winkel und Wahrscheinlichkeiten
-In jedem Schritt werden die Winkel um eine bestimmte Gradzahl verändert. Diese Gradzahl verkleinert sich mit jedem Schritt bis zu einer Minimalgröße. Zu Beginn werden die Winkel stark verändert um die grobe Ausrichtung des Beines festzulegen und in den kleiner werdenen Schritten wird die Extremität genauer ausgerichtet, so dass der Endpunkt zum Schluss auf dem Boden steht. 
-\todo{Wenn Änderung zu klein, wird Knochen wahrscheinlich meistens wieder zurückgesetzt, deshalb stärkere Verkleinerung des Winkels}
-Zusätzlich wird nicht in jedem Schritt jeder Freiheitsgrad jedes Gelenks verändert. Für jeden Freiheitsgrad wird eine Wahrscheinlichkeit (kleiner als eins) festgelegt, dass dieser ausgewählt wird. Dadurch können bestimmte Richtungen oder Gelenke priorisiert werden um ein besseres Ergebnis zu erzielen. \todo{Was sind die guten Einstellungen? bzw braucht man dise Wkten überhaupt?}
-\todo{Konkrete Einstellungen erwähnen (in Implementierungsdetails?)}
-\todo{Zweiter Freiheitsgrad des Schulter-/Hüftgelenks nicht verwendet; breitbeinige Reptilien erwähnen (siehe auch "`Vergleichende Anatmie)}
+%- - - - - - - - - - - - - - - - - - 
+\subsection{Berechnung der Bodenhöhe}
 
-Evaluierung \todo{ausformulieren}
+% Warum nicht Höhe 0?
+Zunächst könnte man davon ausgehen, dass der Boden einfach auf Höhe null sein sollte. Das Problem hierbei ist aber, dass die von der PCA berechneten Längen für die Extremitäten meist so kurz sind, dass die Beine dann den Boden nicht mehr erreichen würden. Das liegt daran, dass auf den Bildern, die als Eingabebeispiele für die PCA verwendet wurden, der Boden meistens auch nicht ganz am unteren Rand ist. Hier würde rigoroses Abschneiden der Bilder auf Fußhöhe wahrscheinlich helfen, es würde aber in vielen Fällen auch ein Großteil der Füße fehlen.
+
+% Berechnung
+Die Höhe des Bodens wird also anhand der von der PCA generierten Längen der Extremitäten festgelegt.
+Theoretisch würde es reichen einfach das kürzeste Bein im komplett ausgestreckten Zustand zu betrachten und den Boden auf die Höhe dessen Endpunkts festzulegen.
+Das führt aber zu unnatürlich aussehenden Beinen, da das kürzeste Bein einfach gerade nach unten führt.
+
+Deshalb wird nur ein bestimmter Anteil der Länge der Beine betrachtet. So wird erzwungen, dass die Beine, wenn sie auf dem neu definierten Boden stehen, auch etwas gekrümmt sind.
+
+\todo{Wkt für Verse auf Boden erklären}
+
+
+%- - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Algorithmus zur Ausrichtung der Beine}
+
+\todo{Absatz über IK, lcp (linear complementary problem) (nicht Hauptaugenmerk / Ziel der Arbeit ist etwas anderes / reicht für Proof of Concept, bei Animationen muss große Maschinerie sowieso nochmal angeworfen werden)}
+
+% iterativ, Drehrichtung
+Der hier verwendete Algorithmus zur Ausrichtung der Beine geht iterativ vor.
+In jedem Schritt wird für jedes Gelenk berechnet ob sein Winkel vergrößert oder verkleinert werden muss um den dazugehörigen Knochen näher zum Boden zu bewegen.
+Mit dem "`dazugehörigen"' Knochen ist hier derjenige der beiden an das Gelenk anschließenden Knochen gemeint, der das Kindelement des anderen ist.
+Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung des Knochens mit der Welt-y-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
+\todo{Schaubilder für verschiedene Gelenkarten?}
+
+% Einschränkungen der Gelenke
+Zusätzlich gibt es für jedes Gelenk und jeden Freitheitsgrad einen minimalen und einen maximalen Winkel, der eingenommen werden kann. Dieses Intervall hängt von den anatomischen Möglichkeiten des Gelenks ab und von den Winkeln, die in einer "`sinnvollen"' Ruheposition eingenommen werden können. 
+\todo{ist das überhaupt eine Einschränkung?}
+\todo{Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden}
+
+% Startposition, Bewegungseinschränkungen
+Die Startposition der Extremität ist maximal angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den folgenden Iterationen wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll.
+Ohne weitere Einschränkungen kann es nun passieren, dass unnatürliche Positionen auftreten, in denen \zb der Fußspann näher am Boden ist als die Fußsohle.
+Oder es kann passieren, dass ein Knochen, der über die positive Welt-y-Achse hinaus gedreht wird. Das Problem dabei ist, dass die Einschränkungen an den Gelenken nicht zulassen, dass der Knochen sich unbegrenzt in diese Richtung weiterdreht und der Knochen dann "`feststeckt"'. Deshalb wird nach jeder Drehung festgestellt ob so eine Situation eingetreten ist und wenn ja, wird die Drehung rückgängig gemacht.
+Die Drehung wird ebenfalls rückgängig gemacht, falls sie bewirkt, dass die Knochen unterhalb der Bodenhöhe landen.
+\todo{Beispielbilder}
+So ist zu jeder Zeit garantiert, dass die Knochen auf der "`richtigen"' Seite der y-Achse liegen und nicht unterhalb der Bodenhöhe sind. % Invarianten
+
+% Verkleinerung der Größe der Drehwinkel
+In jeder Iteration werden die Winkel, um den die Gelenke gedreht werden, um einen bestimmten Anteil verkleinert. Zu Beginn soll, mit den großen Veränderungen, eine grobe Ausrichtung der Gelenke vorgenommen werden, die dann immer weiter verfeinert wird.
+In der ersten Iteration startet der Algorithmus mit $40^{\circ}$. Später sind es dann jeweils $\frac{6}{7}$ davon.
+Diese Zahlen sind durch Ausprobieren zu Stand gekommen. Der Startwinkel darf nicht zu klein sein, weil die Gelenke sonst ihre Zielpositionen nicht erreichen können. Ist der Startwinkel zu groß, bewirkt es in vielen Fällen nur, dass die Drehung nicht durchgeführt werden kann, weil die oben genannten Randbedingungen verletzt werden.
+Die Verkleinerung des Winkels darf nicht zu schnell geschehen, weil dann wiederum nicht die Endposition nicht erreicht werden kann. Wenn sie zu langsam geschieht passiert in vielen Schritten wiederum nichts wegen verletzter Randbingungen.
+
+Falls sich der Abstand zum Boden also kaum verändert, liegt die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen invalide sind. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration stärker verkleinert (halbiert).
+
+\todo{Wkten für Gelenke, Vorteil?}
+
+% Zweiter Freiheitsgrad
+Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Das lässt sich auch als zweite Art von Gelenk im Code abbilden. Allerdings liefert der Algorithmus dann oft seltsam anmutende breitbeinige Tiere.
+Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
+Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Beinen gibt, wie \zb Echsen.
+% + max angewinkelte Pos komisch und Drehrichtung ändert sich je nach anderen Winkel
+
+
+% \begin{algorithm}
+%  \caption{Beinalgorithmus}
+%  \label{beinalgo}
+%  
+%  \begin{algorithmic}
+%     \STATE{step = 0\\
+%     maxSteps = 50\\
+%     angleStepSize = $40^\circ$}
+% 
+%     \WHILE{floor not reached and step < maxSteps}
+%         \FORALL{joints}
+%             \IF{child bone of joint has not reached floor and movement nearer to floor possible}
+%                 \STATE try change joint angle
+%             \ENDIF
+%         \ENDFOR
+%         \IF{angleStepSize > eps}
+%             \STATE reduce angleStepSize
+%         \ENDIF
+%     \ENDWHILE
+%  \end{algorithmic}
+% \end{algorithm}
+\todo{Pseudocode?}
+
+\todo{Evaluierung}
 \begin{itemize}
  \item generierte Extremitäten mit echten Positionen vergleichen, diskutieren\\
-    schlimmes Beispiel für Beinalgo: Brachiosaurus
- \item Restpose nicht klar definiert (vielleicht irgendwie in PCA einfügen? hier gab es keine guten Ideen; außerdem ist Position auf Skelettbildern teilweise auch eher beliebig)
+    schlimmes Beispiel für Beinalgo: Brachiosaurus (+ Elefant?)
  \item keine wissenschaftliche Argumentation für Änderungen am Beinalgo, nicht klar was Verbesserungen wären; Beine müssen für Animation, Muskelgeneration etc sowieso nochmal angefasst werden -> future work
  \item Bei Skeletten, die sehr kurze Beine haben, funktioniert der Algorithmus teilweise nicht besonders gut:
   \begin{itemize}
@@ -49,23 +132,7 @@ Evaluierung \todo{ausformulieren}
    \item bei ganz kurzen Beinen (Gesamtlänge unter 5) macht es keinen Sinn sie anzuordnen (außerdem gibt es den gleichen Effekt wie oben schon erwähnt)
    \item Bei kurzen Arm/Beinknochen kann es dazu kommen, dass der Oberarm nicht näher zum Boden kann, aber Unterarm (+Hand) durch das Gelenkoffset über dem Boden schweben und nicht näher heran kommen (siehe Krokodil screenshot)
   \end{itemize}
-
 \end{itemize}
-
-
-%------------------------------------------------
-\section{Mehr Details zum Algorithmus zur Extremitätengenerierung}
-\todo{mit oberem Abschnitt zusammenfassen}
-
-Wie in Abschnitt \ref{section:extremity_generation} bereits beschrieben, ist die Extremität in der initialen Position für den Algorithmus möglichst stark angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den Iterationen des Algorithmus wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. Die Winkel der Gelenke werden also im Wesentlichen nur in eine Richtung verändert. (Würden die Gelenke nicht in der extremsten Position starten, wären diese Winkel nie wieder erreichbar.)
-Wenn sich der Endpunkt eines Knochens durch das Drehen unter die Bodenhöhe verschieben würde, so wird jene Drehung verworfen. In der nächsten Iteration könnte es wieder möglich sein, da eine kleinere Drehung verwendet wird.
-
-In jeder Iteration werden die Winkel um eine bestimmte Gradzahl verändert. Zu Beginn sind das $30^{\circ}$. In den nächsten Iterationen sind es dann jeweils $\frac{4}{5}$ davon. Falls sich der Abstand zum Boden dadurch aber kaum verändert (konkret: weniger als $0.1$), liegt die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen zu einer Positionen führen würden, in der mindestens ein Knochen unterhalb der Bodenhöhe läge. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration halbiert.
-
-Außerdem ist es möglich für jedes Gelenk und jeden Winkel eine Wahrscheinlichkeit festzulegen mit der jener Winkel verändert wird. Das wird aber tatsächlich nur für den Winkel des Oberarms/-schenkels gemacht, der die Abspreizung der Extremität in z-Richtung festlegt. Würde man hier die Wahrscheinlichkeit im Vergleich zu den anderen nicht verringern, hätten die meisten Tiere stark abgespreizte Beine. Da dies oft eher unnatürlich wirkt und auch in der Natur nicht bei dem Großteil der Tiere vorkommt, ist hier die Anpassung der Wahrscheinlichkeit sinnvoll.
-
-Um für jedes Gelenk die Drehrichtung zu bestimmen, die den Endpunkt näher Richtung Boden bringt, wird die negative lokale y-Achse in Weltkoordinaten betrachtet und mit der Welt-y-Achse verglichen. \todo{für beide Gelenktypen Schaubilder einfügen}
-Dies funktioniert allerdings nur, wenn die Gelenke nicht zu weit drehen, also über die Welt-y-Achse hinaus. Zusätzlich ergibt sich auch keine sinnvolle Position des Knochens, wenn die Gelenke so weit gedreht werden. Deshalb wird auch das verhindert. Das funktioniert, indem Gelenke, die zu weit gedreht wurden, auf eine Position zurückgesetzt werden, die gerade noch erlaubt ist.
 
 %--------------------------------------
 \section{Zusätzliche Ansatzpunkte für Extremitäten}

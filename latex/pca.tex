@@ -1,6 +1,7 @@
 %------------
 %------------
 \chapter{PCA}
+\label{chapter:pca}
 
  % apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
 
@@ -42,6 +43,7 @@
 
  Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. Am einfachsten zu bekommen sind 2D-Bilder mit Seitenansichten von Skeletten. Das schließt Merkmale aus, die Tiefeninformationen benötigen, \zb den Abstand der Füße oder die Winkel der Gelenke an den Beinen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu bekommen, da sie teilweise schwierig zu Erkennen und zu Markieren sind. 
  \todo{welche weiteren Merkmale könnte man sich überlegen, warum waren sie nicht sinnvoll? future work?}
+ \todo{erklären warum Winkel an Extremitäten nicht erhoben}
  %   \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
 %  \begin{itemize}
 %   \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
@@ -67,6 +69,7 @@
  
  Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils einer für Hals, Rücken und Schwanz. Hals und Rücken gehen an der Schulter ineinander über und Rücken und Schwanz beim Becken.
  Diese Bézierkurven sind die ersten $20$ Eingabedimensionen für die PCA ($10$ zweidimensionale Punkte). Bei manchen Tieren ist kein Hals oder kein Schwanz vorhanden. In diesen Fällen werden die $3$ fehlenden Punkte jeweils mit dem ersten \bzw letzten Punkt des Rückens ersetzt.
+ \todo{Koordinatensystem beschreiben, Achsen etc auch für später (zB Beinalgo) festlegen}
  
  Zusätzlich wird jeweils durch eine Gerade im Bild die Länge des Ober- und Unterarms, der Hand, des Ober- und Unterschenkels und des Fußes eingetragen, falls vorhanden. Die Bezeichnung der Extremität als Arm oder Bein ist nur zur Unterschiedung zwischen Vorder- und Hinterextremitäten gedacht. Sie hat in keiner Weise etwas mit der Funktion der Gliedmaßen zu tun.
  
