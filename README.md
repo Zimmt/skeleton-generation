@@ -11,7 +11,7 @@ or by clicking the "choose skeleton" button next to "show skeleton".
 
 ## Generating random skeletons ##
 
-Staring the generator without any other settings will generate random skeletons. 
+Starting the generator without any other settings will generate random skeletons. 
 You can generate several at once by entering the desired number next to "number of skeletons to generate".
 They will be saved as `skeletonX.obj` with X from 0 to the desired number.
 (This also means that skeletons of a previous run will possibly be overwritten!)
