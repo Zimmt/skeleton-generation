@@ -5,14 +5,14 @@
 
 Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
 
-\todo{Übeblick über den Ablauf des Algorithmus}
+\todo{Überblick über den Ablauf des Algorithmus}
 
 %-----------------------------------------------
 \section{Ausrichtung der Extremitäten}
 \label{section:extremity_generation}
 
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
-Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer} am Beispiel des Klippschliefers sehr gut zu sehen.
+Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer} am Beispiel des Klippschliefers sehr gut zu sehen.
 
  \begin{figure}
   \centering
@@ -23,7 +23,7 @@ Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen is
 
 Wie in Kapitel \ref{chapter:pca} zur PCA schon erwähnt, ist es deshalb auch schwer möglich die Ausrichtung der Extremitäten \bzw die Winkel an den Gelenken als zusätzliche Dimension in den PCA-Raum mitaufzunehmen.
 
-Die Positionierung der Extremitäten bleibt also ein Problem mit unklaren Anforderungen und vielen Freitheitsgraden.
+Die Positionierung der Extremitäten bleibt also ein Problem mit unklaren Anforderungen und vielen Freiheitsgraden.
 
 % Einteilung in Kategorien
 Ein erster Schritt an das Problem heranzugehen, ist es in kleinere Unterprobleme zu zerteilen.
@@ -103,7 +103,7 @@ Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung d
 \todo{Schaubilder für verschiedene Gelenkarten?}
 
 % Einschränkungen der Gelenke
-Zusätzlich gibt es für jedes Gelenk und jeden Freitheitsgrad einen minimalen und einen maximalen Winkel, der eingenommen werden kann. Dieses Intervall hängt von den anatomischen Möglichkeiten des Gelenks ab und von den Winkeln, die in einer "`sinnvollen"' Ruheposition eingenommen werden können. 
+Zusätzlich gibt es für jedes Gelenk und jeden Freiheitsgrad einen minimalen und einen maximalen Winkel, der eingenommen werden kann. Dieses Intervall hängt von den anatomischen Möglichkeiten des Gelenks ab und von den Winkeln, die in einer "`sinnvollen"' Ruheposition eingenommen werden können. 
 \todo{ist das überhaupt eine Einschränkung?}
 Es gibt also lokale Einschränkungen je nach Gelenk und globale Randbedingungen. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
 
@@ -118,7 +118,7 @@ So ist zu jeder Zeit garantiert, dass die Knochen auf der "`richtigen"' Seite de
 % Verkleinerung der Größe der Drehwinkel
 In jeder Iteration werden die Winkel, um den die Gelenke gedreht werden, um einen bestimmten Anteil verkleinert. Zu Beginn soll, mit großen Veränderungen, eine grobe Ausrichtung der Gelenke vorgenommen werden, die dann immer weiter verfeinert wird.
 Der Startwinkel darf nicht zu klein sein, weil die Gelenke sonst ihre Zielpositionen nicht erreichen können. Ist der Startwinkel allerdings zu groß, bewirkt es in vielen Fällen nur, dass die Drehung nicht durchgeführt werden kann, weil die oben genannten Randbedingungen verletzt werden.\\
-Die Verkleinerung des Winkels darf nicht zu schnell geschehen, weil dann wiederum die Endposition nicht erreicht werden kann. Wenn sie aber zu langsam geschieht passiert in vielen Schritten wiederum nichts wegen verletzter Randbingungen.\\
+Die Verkleinerung des Winkels darf nicht zu schnell geschehen, weil dann wiederum die Endposition nicht erreicht werden kann. Wenn sie aber zu langsam geschieht passiert in vielen Schritten wiederum nichts wegen verletzter Randbedingungen.\\
 Durch Ausprobieren wurden folgende Zahlen als sinnvoll erachtet: Startwinkel $40^{\circ}$, später dann jeweils $\frac{6}{7}$ davon.
 
 Falls sich der Abstand zum Boden kaum verändert, liegt also die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen invalide sind. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration stärker verkleinert (halbiert).
@@ -151,8 +151,7 @@ Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als
 %--------------------------------------
 \section{Zusätzliche Ansatzpunkte für Extremitäten}
 
-Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber möglich dies zu erweitern.\\
-\todo{andere Möglichkeiten fantastische Tiere zu generieren?}
+Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber möglich dies zu erweitern.
 
 Eine einfache Möglichkeit ist hier zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt, an denen Extremitäten ansetzen können.\\
 Flügel und Arme dürfen hierbei weiterhin nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen. Deshalb wird die Wirbelsäule durch die PCA auch dementsprechend angelegt.
@@ -162,31 +161,41 @@ Eine Überlegung war auch zwischen Schulter und Hüfte weitere Extremitätengür
 "`Verdoppelt"' man die Schwingung der Wirbelsäule und hängt einfach einen weiteren Rücken hinten oder vorne an, so wirkt es ebenso seltsam, da dann die "`Höcker"' der Wirbelsäule für das Tier wahrscheinlich nicht wirklich ein Vorteil sind und nur die Fortbewegung erschweren.
 
 % zweiter Schultergürtel
-Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermöglichen. Hat das Tier einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.
+Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermöglichen. Hat das Tier einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.\\
+Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn auch der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben. Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
 
-%- - - - - - - - - - - - - - - - - - - 
-\subsection{Anordnung der Extremitäten}
+%----------------------------------- 
+\section{Anordnung und Anzahl der Extremitäten}
 
-\begin{itemize}
- \item wenn Beispiele geladen werden Anzahl und Art der Extremitäten nicht unbedingt richtig (bei PCA Beispiel)
- \item Anzahl der Extremitäten orientiert sich an Benutzereingabe
- \item falls keine Benutzereingabe, dann orientiert es sich an den von der PCA ausgespuckten Wahrscheinlichkeiten für Beine und Flügel
- \item die Position jeder Extremität wird zufällig aus der Menge der möglichen Positionen ausgewählt. Ist für eine Extremität kein Platz mehr, wird geschaut, ob andere Extremität an eine andere Position wechseln kann um Platz zu schaffen
- \item da Positionen nicht deterministisch kommt es bei Tieren mit mehreren möglichen Anordnungen zu unterschiedlichen Ergebnissen bei gleicher Eingabe
- \item da die Anzahl der Arme und Flossen nicht mit PCA erhoben kann sie für die Eingabebeispiele der PCA nicht rekonstruiert werden. Deshalb kann Benutzer hier eigene Angaben machen.
- \item nachdem Extremitäten zugeteilt wurden, werden sie nochmal "`verteilt"', damit nicht \zb zwei Beine an Hüfte aber keins an Schulter \todo{sinnvoll?}
- \item wenn es keine Angabe für die Anzahl der Flügel gibt, werden diese mit der PCA Wkt generiert, aber max ein Paar pro Schultergürtel; bei Beinen wir die Wkt (kann auch 2 sein) auf- oder abgerundet
- \item Arme werden ebenfalls mit Flügelwkt generiert (auch max 1 pro Schultergürtel)
- \item Flossen werden in komplett leere Extremitätengürtel generiert, wenn sie nicht zu lang wären
-\end{itemize}
+Ein PCA-Datenpunkt stellt die Länge der Vorder- und Hinterbeine, die Wahrscheinlichkeit für Flügel und die "`Wahrscheinlichkeit"' für Beine zur Verfügung.
+Die genaue Anzahl (auch für fantastische Tiere) und die Anordnung müssen noch festgelegt werden.
+
+Die Position jeder Extremität wird zufällig aus der Menge der möglichen Positionen gewählt. Beine dürfen nicht am zusätzlichen Schultergürtel am Hals generiert werden, Arme und Flügel dürfen nicht an der Hüfte generiert werden und Flossen sind überall erlaubt. \todo{wurde das schon irgendwo begründet?}\\
+Ist für eine Extremität kein Platz mehr, wird zunächst getestet, ob eine der anderen Extremitäten an ihre Position wechseln kann um Platz zu schaffen. Erst wenn das fehlschlägt kann die betreffende Extremität nicht platziert werden.\\
+Da die Positionen nicht deterministisch gewählt werden, kommt es bei Tieren mit mehreren möglichen Anordnungen zu unterschiedlichen Ergebnissen bei gleicher Eingabe.
+
+Die Anzahl und Art der Extremitäten orientiert sich zunächst an Benutzereingabe. Gegebenenfalls wurden diese Eingaben auch schon als Bedingungen an die PCA weitergeleitet (siehe Abschnitt \ref{pca_conditions}).
+
+Falls es keine Benutzereingabe für eine Art von Extremitäten gibt, so wird zunächst getestet ob es noch Platz gibt für diese Art. Falls noch Platz vorhanden ist, wird je nach Art unterschiedlich vorgegangen:
+Die Anzahl der Beine oder Flügel wird anhand der Wahrscheinlichkeiten des PCA-Datenpunktes generiert, aber maximal ein Paar pro Schulter- und Hüftgürtel. Die "`Wahrscheinlichkeit"' der Beine liegt im Intervall $[0, 2]$. Hier wird, je nach dem ob die "`Wahrscheinlichkeit"' in $[0, 1]$ oder in $[1, 2]$ liegt, ausgelost ob null oder ein \bzw ein oder zwei Beinpaare generiert werden.\\
+Für Arme und Flossen gibt es keine Anhaltspunkte durch die PCA. Deshalb wurde einfach festgelegt, dass Arme, wie Flügel, mit der PCA-Flügelwahrscheinlichkeit generiert werden. Beine werden ganz zum Schluss in noch komplett leeren Extremitätengürteln generiert, falls die Länge der dort zu generierenden Extremitäten nicht zu lang ist.
+
+\todo{nachträgliche Umverteilung der Extremitäten sinnvoll? (leere Gürtel auffüllen)}
+
+Dieses Vorgehen führt dazu, dass, wenn ein PCA-Beispiel geladen wird, die Anzahl, Art und Position der Extremitäten nicht unbedingt dem realen Tier entsprechen muss.
+Zunächst kann es einen zusätzlichen Schultergürtel geben, falls der Nutzer das erlaubt und der Hals lang genug ist, und es können mehrere Extremitäten pro Extremitätengürtel platziert werden, wenn das erlaubt ist.\\
+Die Anzahl der Flügel und Beine wird stimmen, da ihre Wahrscheinlichkeiten ja festgelegt sind, aber ihre Position wird zufällig bestimmt, falls möglich.  Arme und Flossen werden nach den oben genannten Kriterien generiert, falls der Nutzer nichts anderes vorgibt.\\
+Wenn ein Tier also möglichst genau reproduziert werden soll, sollte zumindest die Anzahl der Arme und Flossen angegeben werden und ein zweiter Schultergürtel und mehrere Extremitäten pro Gürtel verboten werden.
 
 
 %---------------------------------------------------
 \section{Weitere Dinge, die generiert werden müssen}
 
-\begin{itemize}
- \item Wirbel
- \item Rippen (wieviele Rippen, wie lang ist Brustkorb in x-Richtung)
- \item Kopf
- \item Schulter 
-\end{itemize}
+Weitere Dinge, die festgelegt werden müssen, ist die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
+
+Die Anzahl der Wirbel orientiert sich an echten Wirbeltierskeletten (siehe Absatz \ref{biology_skeleton}). Auf dem Hals werden $7$ Wirbel generiert, außer das Tier hat Flügel, dann liegt die Anzahl zwischen $10$ und $30$. Auf dem Rücken liegen $25$ Wirbel und auf dem Schwanz $5$ bis $20$.
+
+Die Anzahl der Rippen und auch die Ausdehnung des Brustkorbs variiert zwischen Wirbeltieren sehr stark. Es gibt Tiere, die an jedem Wirbel der Rückenwirbelsäule Rippen haben und es gibt Tiere die haben nur ein paar wenige auf dem vorderen Teil.
+\todo{Beispiele}\\
+Deshalb wird ein zufälliges Intervall $[0, x]$ auf der Bézierkurve des Rückens bestimmt. Jeder Wirbel, der in diesem Intervall liegt, bekommt auch eine Rippe.
+\todo{Bestimmung der Rippenlänge beschreiben?}
