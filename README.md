@@ -5,7 +5,7 @@ Execute the .jar file in the folder with the command `java -jar java_skeleton_ge
 The generator works with relative file paths, so the .jar file has to be executed inside the folder.
 
 For the first run you don't need to do anything but click the "start generator" button. Then a file named `skeleton0.obj`should
-be generated in the `executable_skeleton_generator` folder. You can view this file with a 3D editor of your choice
+be generated in the `executable_skeleton_generation` folder. You can view this file with a 3D editor of your choice
 or by clicking the "choose skeleton" button next to "show skeleton".
 
 
