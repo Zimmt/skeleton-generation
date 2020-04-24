@@ -1,7 +1,7 @@
 %--------------------------------
 %--------------------------------
 \chapter{Implementierungsdetails}
-\label{chapter_implementation_detail}
+\label{chapter:implementation_detail}
 
 %---------------------------
 \section{Programmiersprache}
@@ -154,6 +154,38 @@ Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abl�
 \section{Gelenke}
 
 \todo{Für jede Art von Extremität und jede Position ein anderes Gelenk mit anderen Einschränkungen (nicht alle Möglichkeiten in einem)}
+
+%----------------------------------------------------------
+\section{Probleme der Beinpositionierung bei kurzen Beinen}
+\label{leg_positioning_short_legs}
+
+Wie in Absatz \ref{leg_algo} zur Ausrichtung der Beine bereits beschrieben, treten bei sehr kurzen Beinen ein paar Probleme auf. Diese werden im Folgenden kurz umrissen.
+
+\begin{enumerate}
+ \item % Bodenhöhe nicht von Gelenk aus gemessen
+   Bei Berechnung der Bodenhöhe wird die Beinlänge von den entsprechenden Kontrollpunkten der Bézierkurve aus gemessen, da die Position der Hüfte/Schulter in diesem Stadium noch nicht klar ist. Deshalb kann es bei sehr kurzen Beinen sein, dass der Abstand zwischen Boden und Gelenk zu groß ist und der Boden nicht erreichbar ist.
+   
+   In diesem Fall wird das Bein einfach komplett ausgestreckt senkrecht nach unten positioniert. Da der Abstand zwischen dem Hüft- / Schultergelenk und dem Kontrollpunkt der Bézierkurve nicht sehr groß ist, ist auch der Abstand zu Bodenhöhe nicht enorm und fällt nicht allzusehr auf.
+   
+ \item % keine starke Änderung durch Drehung der Gelenke
+   Bei sehr kurzen Knochen ändert sich der Abstand zum Boden durch Drehung der Gelenke nicht so stark wie bei langen Knochen. Wenn der Winkel sich zu wenig ändert, wird aber davon ausgegangen, dass die Winkeländerung zu klein ist und alle Änderungen sofort wieder zurückgesetzt wurden. Deshalb wird die Winkeländerung dann für die nächste Iteration stärker verkleinert. Das ist aber in diesem Fall kontraproduktiv. Der Algorithmus schafft es dann nämlich nicht mehr die Knochen in die richtige Lage zu bringen, da der Bewegungsspielraum dadurch zu stark eingeschänkt wird.
+   
+   Dem könnte man natürlich entgegenwirken, indem man, statt die Änderung des Abstandes zum Boden zu messen, abfragt wie oft die Drehungen in der jeweiligen Iteration zurückgesetzt wurden.
+   
+ \item % ganz kurze Beine
+   Bei wirklich sehr kurzen Beinen (hier eine Gesamtlänge unter 5) macht es gar keinen Sinn sie anzuordnen, da man sie kaum sieht. Außerdem tritt hier der Effekt auf, der in Punkt 2 schon beschrieben wurde.
+   
+ \item % Beinstartpos unter Bodenhöhe
+   Die Beinstartposition kann schon vor der ersten Iteration unterhalb der Bodenhöhe liegen. Das tritt auf, wenn mindestens ein Paar Beine sehr kurz ist und die Wirbelsäule an den Ansatzpunkten auf sehr unterschiedlicher Höhe liegt (siehe auch Absatz \ref{floor_height} zur Berechnung der Bodenhöhe).
+   \todo{Beispiel: Dimetrodon}
+   
+   In diesem Fall ist der Algorithmus natürlich nicht anwendbar. Das Bein wird dann einfach senkrecht nach unten ausgerichtet und mit einem Fuß versehen, der mit der Sohle auf dem Boden steht.
+   
+ \item % Gelenkoffsets
+   Bei kurzen Beinknochen kann es dazu kommen, dass der Oberschenkel nicht näher zum Boden kann, weil er schon aufliegt, aber Schienbein und Hand durch das Gelenkoffset (siehe Kapitel \ref{chapter:bone_models} zur Positionierung der Knochenmodelle) über dem Boden schweben und nicht näher zum Boden bewegt werden können.
+   \todo{Beispiel Krokodil (siehe auch Screenshot)}
+\end{enumerate}
+
 
 
 
