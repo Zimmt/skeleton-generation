@@ -71,14 +71,14 @@ public class SkeletonGeneratorHandler {
             skeletonGenerator.calculateMirroredElements();
 
             ObjGenerator objGenerator = new ObjGenerator();
-            objGenerator.generateObjFrom(skeletonGenerator, "skeleton" + i, gui.getAllCubes(), gui.getLowResoultion());
+            objGenerator.generateObjFrom(skeletonGenerator, gui.getSkeletonFileName() + i, gui.getAllCubes(), gui.getLowResoultion());
 
             if (gui.getSaveToFile()) {
                 String saveToFileName;
                 if (skeletonCount > 1) {
-                    saveToFileName = String.format("%s%d.txt", gui.getSaveFileName(), i);
+                    saveToFileName = String.format("%s%d.txt", gui.getMetaDataFileName(), i);
                 } else {
-                    saveToFileName = String.format("%s.txt", gui.getSaveFileName());
+                    saveToFileName = String.format("%s.txt", gui.getMetaDataFileName());
                 }
                 skeletonGenerator.getSkeletonMetaData().saveToFile(saveToFileName);
             }

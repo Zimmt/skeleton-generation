@@ -37,9 +37,10 @@ public class GUI {
     private JComboBox<String> headKind;
 
     private JFormattedTextField skeletonCount;
+    private JTextField skeletonFileName;
     private JComboBox<String> resolution;
     private JCheckBox saveToFile;
-    private JTextField saveFileName;
+    private JTextField metaDataFileName;
     private JFileChooser skeletonFileChooser;
 
     private final JButton startButton;
@@ -130,6 +131,10 @@ public class GUI {
         return count;
     }
 
+    public String getSkeletonFileName() {
+        return skeletonFileName.getText();
+    }
+
     public boolean getAllCubes() {
         return resolution.getSelectedItem().equals("only bounding boxes");
     }
@@ -142,8 +147,8 @@ public class GUI {
         return saveToFile.isSelected();
     }
 
-    public String getSaveFileName() {
-        return saveFileName.getText();
+    public String getMetaDataFileName() {
+        return metaDataFileName.getText();
     }
 
 
@@ -251,9 +256,10 @@ public class GUI {
     private JPanel initializeOtherInputPanel() {
         this.skeletonCount = constructIntTextField(1000, false);
         skeletonCount.setValue(1);
+        this.skeletonFileName = new JTextField("skeleton");
         this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
         this.saveToFile = new JCheckBox();
-        this.saveFileName = new JTextField();
+        this.metaDataFileName = new JTextField();
         JButton chooseSkeletonButton = new JButton("choose skeleton");
         chooseSkeletonButton.addActionListener(this::chooseAndShowSkeleton);
         this.skeletonFileChooser = new JFileChooser(".");
@@ -261,10 +267,10 @@ public class GUI {
 
         JPanel saveToFilePanel = new JPanel(new BorderLayout());
         saveToFilePanel.add(saveToFile, BorderLayout.LINE_START);
-        saveToFilePanel.add(saveFileName, BorderLayout.CENTER);
+        saveToFilePanel.add(metaDataFileName, BorderLayout.CENTER);
 
-        String[] labels = new String[] {"number of skeletons to generate", "resolution", "save to file", "show skeleton"};
-        Component[] inputComponents = new Component[] {skeletonCount, resolution, saveToFilePanel, chooseSkeletonButton};
+        String[] labels = new String[] {"number of skeletons to generate", "skeleton name", "resolution", "save metadata to file", "show skeleton"};
+        Component[] inputComponents = new Component[] {skeletonCount, skeletonFileName, resolution, saveToFilePanel, chooseSkeletonButton};
 
         return constructGridLayout(labels, inputComponents);
     }
