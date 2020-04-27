@@ -3,8 +3,6 @@ package util;
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CubicBezierCurve implements Serializable {
     Point2f controlPoint0;
@@ -52,11 +50,6 @@ public class CubicBezierCurve implements Serializable {
         return new Point3f(point2d.x, point2d.y, 0f);
     }
 
-    public float getGradient(float t) {
-        Point2f derivation = applyDerivation(t);
-        return derivation.y / derivation.x;
-    }
-
     /**
      * derivation: 3 * [(1-t)² (p1 - p0) + 2t(1-t) (p2 - p1) + t² (p3 - p2) ]
      */
@@ -78,37 +71,5 @@ public class CubicBezierCurve implements Serializable {
         result.scale(3);
 
         return result;
-    }
-
-    /**
-     * Calculates all intervals of the curve where the gradient is in the interval [x-eps, x+eps]
-     * by testing the derivation with the step size of 0.01
-     * The intervals are sorted in ascending order.
-     */
-    public List<Float> getIntervalsByGradientEpsilon(float x, float eps) {
-
-        List<Float> intervals = new ArrayList<>();
-        boolean inInterval = false;
-
-        for (float t = 0f; t <= 1f; t += 0.01) {
-            float gradient = getGradient(t);
-
-            if (!inInterval && x-eps <= gradient && gradient <= x+eps) {
-                intervals.add(t);
-                inInterval = true;
-
-            } else if (inInterval && (gradient < x-eps || gradient > x+eps)) {
-                intervals.add(t);
-                inInterval = false;
-            }
-        }
-        if (inInterval) { // interval not closed
-            intervals.add(1f);
-        }
-        if (intervals.size() % 2 != 0) {
-            System.err.println("Spine interval calculation wrong!");
-        }
-
-        return intervals;
     }
 }

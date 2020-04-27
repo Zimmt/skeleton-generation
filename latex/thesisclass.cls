@@ -44,6 +44,7 @@
 % see http://www.ctan.org/tex-archive/macros/latex/contrib/algorithm2e/algorithm2e.pdf
 % for more sophisticated algorithm listings
 \usepackage{amssymb} % Math Symbols
+\usepackage{amsmath}
 
 \usepackage[raiselinks=true,
 						bookmarks=true,
