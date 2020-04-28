@@ -9,11 +9,12 @@ Grundelemente aus denen ein Skelett besteht: Knochen, Gelenke + jeweils (relativ
 \todo{erwähnen, dass keine aufrechteren Tiere als T-Rex oder Känguru generiert werden (keine Menschen)}
 
 \begin{itemize}
- \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen.
+ \item Ein Skelett besteht aus Knochen, Gelenken und deren (relativen) Positionen und Orientierungen. (Verwendung von homogenen Transformationsmatrizen)
  
  \item Ein Knochen ist im einfachsten Fall ein Zylinder (Strecke) mit Länge und Radius, kann aber auch eine konvexe Kurve mit einem Radius sein.
  
  \item Ein Gelenk hat keine Ausdehnung (?). Es ist das Verbindungsstück zwischen zwei oder mehr Knochen und legt fest wie die Knochen sich relativ zueinander bewegen können. Werden mehr als zwei Knochen verbunden ist es einfach eine feste Verbindung.
+ \todo{Schaubilder für verschiedene Gelenkarten?}
  
  \item Terminale zunächst als Bounding Box. Später werden sie durch Knochenmodelle ersetzt. Für jeden möglichen Knochen wird ein Modell gespeichert. Diese Modelle werden so skaliert, dass sie einen 1x1-Würfel ausfüllen. So kann dann später leicht die Skalierung auf diesen Würfel übertragen werden.
  
