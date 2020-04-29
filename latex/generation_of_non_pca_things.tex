@@ -1,15 +1,19 @@
 %---------------------------------------------------------------
 %---------------------------------------------------------------
-\chapter{Erzeugung der Dinge, die nicht von PCA vorgegeben sind}
+\chapter{Erzeugung eines Skeletts}
 \label{chapter:non_pca_things}
 
-Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
+%--------------------------------------------------
+\section{Überblick über den Ablauf der Generierung}
 
-\todo{Überblick über den Ablauf des Algorithmus}
+\todo{Überblick über den Ablauf des Algorithmus}\\
+\todo{"`Kommunikation"' über SkeletonGenerator}
 
 %-----------------------------------------------
-\section{Ausrichtung der Extremitäten}
+\section{Extremitäten}
 \label{section:extremity_generation}
+
+Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
 
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
 Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer} am Beispiel des Klippschliefers sehr gut zu sehen.
@@ -155,7 +159,7 @@ Ein fertig generiertes Skelett wird höchstwahrscheinlich auch noch "`weitervera
 Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als erster Eindruck dienen muss aber in den meisten Fällen noch angepasst werden. Ausgehend von der gegebenen Datenlagen und von den zu erwartenden Anwendungen ist es aber nicht sinnvoll den Algorithmus weiter zu verfeinern.
 
 %--------------------------------------
-\section{Zusätzliche Ansatzpunkte für Extremitäten}
+\subsection{Zusätzliche Ansatzpunkte für Extremitäten}
 
 Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere zu ermöglichen, ist es aber möglich dies zu erweitern.
 
@@ -173,7 +177,7 @@ Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermögli
 Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn auch der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben. Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
 
 %----------------------------------- 
-\section{Anordnung und Anzahl der Extremitäten}
+\subsection{Anordnung und Anzahl der Extremitäten}
 
 Ein PCA-Datenpunkt stellt die Länge der Vorder- und Hinterbeine, die Wahrscheinlichkeit für Flügel und die "`Wahrscheinlichkeit"' für Beine zur Verfügung.
 Die genaue Anzahl (auch für fantastische Tiere) und die Anordnung müssen noch festgelegt werden.
