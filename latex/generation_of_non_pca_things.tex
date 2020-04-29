@@ -9,6 +9,13 @@
 \todo{Überblick über den Ablauf des Algorithmus}\\
 \todo{"`Kommunikation"' über SkeletonGenerator}
 
+\begin{itemize}
+ \item Einheiten der PCA für Koordinaten $[0, 1000]$, deshalb sind die Wirbelsäulen der generierten Skelette auch in diesem Rahmen. Blender interpretiert eine Einheit als $1$m. Deshalb wirken sie sehr groß.
+ 
+ \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
+ \todo{in Implementierungsdetails aufzählen was an Abmessungen alles beliebig (oder auch weniger beliebig) festgelegt wurde.}
+\end{itemize}
+
 %-----------------------------------------------
 \section{Extremitäten}
 \label{section:extremity_generation}
@@ -201,7 +208,7 @@ Wenn ein Tier also möglichst genau reproduziert werden soll, sollte zumindest d
 
 
 %---------------------------------------------------
-\section{Weitere Dinge, die generiert werden müssen}
+\section{Wirbel und Rippen}
 
 Weitere Dinge, die festgelegt werden müssen, ist die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
 
@@ -224,3 +231,4 @@ Die Anzahl der Rippen und auch die Ausdehnung des Brustkorbs variiert zwischen W
 \todo{Beispiele}\\
 Deshalb wird ein zufälliges Intervall $[0, x]$ auf der Bézierkurve des Rückens bestimmt. Jeder Wirbel, der in diesem Intervall liegt, bekommt auch eine Rippe.
 \todo{Bestimmung der Rippenlänge beschreiben?}
+

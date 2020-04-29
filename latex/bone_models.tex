@@ -3,9 +3,6 @@
 \chapter{Knochenmodelle}
 \label{chapter:bone_models}
 
-%--------------------------------
-\section{Knochenmodelle einfügen}
-
 Zunächst wird jeder terminale Knochen durch seine Bounding Box dargestellt.
 \todo{es sind nicht wirklich Bounding Boxen, eher "`Proxyboxen"'}
 Diese Boxen lassen sich aber leicht durch die 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen:
@@ -53,15 +50,4 @@ Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein
 
 \todo{3D-Modelle leider nicht ganz einfach Austauschbar wegen Offsets -> erkläre wie Offsets eingelesen werden müssten}
 \todo{Wenn Muskeln generiert werden sollen, müssen noch mehr Ansatzpunkte bestimmt werden und Positionierung der Knochen hängt von Muskeln ab -> future work}
-
-
-%------------------------
-\section{Ergebnisskelette}
-
-\begin{itemize}
- \item Einheiten der PCA für Koordinaten $[0, 1000]$, deshalb sind die Wirbelsäulen der generierten Skelette auch in diesem Rahmen. Blender interpretiert eine Einheit als $1$m. Deshalb wirken sie sehr groß.
- 
- \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
- \todo{in Implementierungsdetails aufzählen was an Abmessungen alles beliebig (oder auch weniger beliebig) festgelegt wurde.}
-\end{itemize}
 
