@@ -16,6 +16,8 @@ import java.io.File;
 import java.text.ParseException;
 
 public class GUI {
+    private String[] exampleNames;
+    private ActionListener startButtonListener;
 
     private JCheckBox readFromFile;
     private JTextField inputFilePath;
@@ -43,9 +45,14 @@ public class GUI {
     private JTextField metaDataFileName;
     private JFileChooser skeletonFileChooser;
 
-    private final JButton startButton;
+    private JButton startButton;
 
     public GUI(String[] exampleNames, ActionListener startButtonListener) {
+        this.exampleNames = exampleNames;
+        this.startButtonListener = startButtonListener;
+    }
+
+    public void startGUI() {
         JFrame frame = new JFrame("Skeleton Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 700);

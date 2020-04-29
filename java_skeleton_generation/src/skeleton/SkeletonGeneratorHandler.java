@@ -7,6 +7,7 @@ import util.pca.PcaDataPoint;
 import util.pca.PcaDataReader;
 import util.pca.PcaHandler;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class SkeletonGeneratorHandler {
                 e.printStackTrace();
             }
         });
+        EventQueue.invokeLater(() -> gui.startGUI());
     }
 
     private void runSkeletonGenerator() throws IOException {
