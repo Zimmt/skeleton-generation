@@ -55,7 +55,6 @@ public class GUI {
     public void startGUI() {
         JFrame frame = new JFrame("Skeleton Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 700);
 
         JPanel userInputPanel = initializeUserInputPanel(exampleNames);
 
@@ -64,6 +63,8 @@ public class GUI {
 
         frame.getContentPane().add(BorderLayout.NORTH, userInputPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, startButton);
+        frame.pack();
+        frame.setSize(600, 700);
         frame.setVisible(true);
     }
 
