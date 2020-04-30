@@ -81,9 +81,7 @@ Deshalb legt auch das erste Bein, das generiert wird, basierend auf der oben ber
 \subsection{Algorithmus zur Ausrichtung der Beine}
 \label{leg_algo}
 
-Eine Herangehensweise dieses Problem zu lösen, wäre inverse Kinematik zu verwenden. Dieses Verfahren wird unter anderem in der Robotik verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte auf dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Zielpunkte erreicht werden.\\
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden.
-
+Eine Herangehensweise dieses Problem zu lösen, wäre inverse Kinematik zu verwenden. 
 Da das vorliegende Problem aber recht viele Randbedingungen hat, die ausgenutzt werden können, ist es gar nicht unbedingt nötig einen schwergewichtigen Algorithmus zu implementieren, der ein allgemeineres Problem löst.\\
 Hier ist \zb in den allermeisten Fällen klar in welche Richtung ein Gelenk gedreht werden muss um den Fuß dem Boden zu nähern oder ihn vom Boden zu entfernen. Außerdem ist gar kein spezieller Punkt auf dem Boden vorgegeben, der erreicht werden soll.
 

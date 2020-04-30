@@ -21,9 +21,12 @@ Angst dass nur Monster generiert werden -> Einschränkungen nötig, muss steuerb
  \item rag doll
  \item Skelett, Muskeln, Haut, Faszien (für lebensecht wirkende Tiere)
  \item Featherstone Algorithmus
- \item Drehmomente ausrechnen um Gleichgewicht auszurechnen
- \item IK
+ \item Drehmomente ausrechnen um Gleichgewicht auszurechnen (hier? oder im Kapitel zu ersten Ansätzen lassen?)
 \end{itemize}
+
+% IK
+Inverse Kinematik wird unter anderem in der Robotik verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte auf dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Zielpunkte erreicht werden.\\
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden.
 
 
 %--------------------
@@ -34,10 +37,26 @@ am Ende gar nicht nötig
 
 
 %------------
-\section{PCA}
+\section{PCA} % a priori algorithmus?
 
-wird auch für prozedurale Generierung verwendet\\
-Blantz und Vetter (morphable face models) zitieren
+ \todo{wird auch für prozedurale Generierung verwendet}\\
+ \todo{Blantz und Vetter (morphable face models) zitieren + andere Quelle nötig?}
+ \todo{PCA-Algorithmus mit Pseudocode und Ein- und Ausgabe als Referenz (Eingabe ist Kovarianzmatrix, Rest Vorberechnung?)}
+
+ % Ziel
+ Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse bekommt als Eingabe eine Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen. Voraussetzung ist, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. Dann liegen die Punkte im $n$-dimensionalen Raum in einem Ellipsoid.
+ 
+ Die PCA wird durchgeführt um herauszufinden wo die Achsen des Ellipsoids liegen, denn
+ jede Achse beschreibt eine Raumrichtung, die unabhängig von allen anderen ist.
+ Transformiert man dann die Datenpunkte vom Eingabekoordinatensystem in dasjenige Koordinatensystem, das von den Achsen des Ellipsoids beschrieben wird, sind die einzelnen Dimensionen der Datenpunkte danach unabhängig voneinander.
+ 
+ Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen, die "`principal components"'. Oft ist das Ziel die Dimensionalität der Eingabedaten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden und die anderen Dimensionen weggelassen werden. Das funktioniert natürlich besser, je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden.
+ 
+ Der Mittelpunkt des Ellipsoids ist der Mittelwert der Daten.
+ Um die Achsen des Ellipsoids zu berechnen, wird zunächst eine Kovarianzmatrix aufgestellt. Ihre Einträge sind die Kovarianzen aller möglichen Kombinationen der Eingabedimensionen. Von dieser Matrix werden dann alle Eigenvektoren mit zugehörigen Eigenwerten berechnet.
+ Die Eigenvektoren sind die Achsen des Ellipsoids und die Eigenwerte geben an wie groß die Varianz entlang dieser Achse ist.
+ 
+ Will man nun herausfinden was die Haupteigenschaften oder "`principal components"' eines Datenpunktes sind, stellt man ihn im Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren. Dann betrachtet man die Dimensionen mit den größten Eigenwerten. Dazu zieht man zunächst den Mittelwert vom Datenpunkt ab und multipliziert ihn mit der transponierten Basiswechselmatrix. Das ist diejenige Matrix, in deren Zeilen die Eigenvektoren der Kovarianzmatrix stehen.
 
 
 %-------------------------------

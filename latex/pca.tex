@@ -1,40 +1,13 @@
 %------------
 %------------
-\chapter{PCA}
+\chapter{Analyse von Skeletten mit Hilfe von PCA}
 \label{chapter:pca}
 
 \todo{umbenennen}
-
- % apriori Algorithmus nicht sinnvoll, aber evtl erste Überlegung, da er Implikationen findet, die evtl gewollter Eingabe ähneln
-
- \todo{einheitliche Benennung von PCA Dimension, erhobenen Daten etc.}
-
- % Ziel
- Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse wir auf einer Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen ausgeführt. Sie findet diejenigen Richtungen im $n$-dimensionalen Raum, in denen sich die Beispiele am meisten unterscheiden, die "`principal components"'. Das Ziel ist in den meisten Fällen die Dimensionalität der Daten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden, da die anderen Dimensionen optimalerweise nur einen marginalen Einfluss auf die Daten haben.
- \todo{Transformiert Eingabedimensionen in unabhängige Dimensionen}
  
- Das Ziel im Bezug auf die Generierung von Skeletten war vor allem die Position und Krümmung der Wirbelsäule bei unterschiedlichen Tieren zu untersuchen, da diese sehr charakteristische Merkmale eines Skeletts sind. Aus dem gleichen Grund soll der Algorithmus zur Generierung der Skelette mit der Generierung der Wirbelsäule starten und daraus dann den Rest der Knochen "`wachsen"' lassen.
- Die Hoffnung hier ist auch, dass dadurch Skelette generiert werden, die ausbalanciert wirken. Es soll nichts generiert werden, das aussieht, als würde es sofort umfallen. \todo{Hat das funktioniert?}
- 
- Eine PCA, die als Eingabe viele Beispiele für Wirbelsäulen und ein paar weiteren Daten zum zugehörigen Tier bekommt, ist hier hilfreich, da sie Zusammenhänge für die Positionierung der Wirbelsäule liefert.
+ PCA wird verwendet um Position und Krümmung der Wirbelsäule bei Wirbeltieren zu untersuchen. Die Datenpunkte, die durch PCA untersucht werden sollen, sind also Skelette von Wirbeltieren.
  
  
- %-----------------------
- \section{Funktionsweise}
- 
- \todo{PCA Quelle} % Folien? Oder besser Standardwerk zitieren? Oder weglassen?
- \todo{PCA-Algorithmus mit Pseudocode und Ein- und Ausgabe als Referenz (Eingabe ist Kovarianzmatrix, Rest Vorberechnung?)}
- 
- Die Eingabe für eine PCA ist eine Menge von Punkten. Diese Punkte repräsentieren einzelne Instanzen dessen, was untersucht werden soll. Hier sind die Datenpunkte Skelette von Wirbeltieren. Für jede Eigenschaft des Skeletts, die untersucht werden soll, hat der Punkt eine Dimension. Gegeben ist also eine Menge von Punkten mit jeweils $n$ Dimensionen. Die PCA nimmt an, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. In diesem Fall bilden die Punkte im $n$-dimensionalen Raum einen Ellipsoid.
- 
- Das Ziel der PCA ist herauszufinden wo die Achsen des Ellipsoids liegen, also wie die Eingabedimensionen miteinander korreliert sind. Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen.
- 
- Um diese Achsen zu berechnen, wird zunächst die Kovarianzmatrix aufgestellt, deren Einträge die Kovarianz zwischen den verschiedenen Achsen beschreibt.
- Die Eigenvektoren dieser Kovarianzmatrix sind dann die Achsen des Ellipsoids und die zugehörigen Eigenwerte geben an wie groß die Varianz in dieser Richtung ist, also wie weit ausgedehnt das Ellipsoid in dieser Richtung ist. Der Mittelpunkt des Ellipsoids ist der Mittelwert der Daten.
- 
- Will man nun herausfinden was die Haupteigenschaften eines Datenpunktes sind, stellt man ihn im neuen Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren. Dann betrachtet die Dimensionen mit den größten Eigenwerten. Dazu zieht man zunächst den Mittelwert vom Datenpunkt ab und multipliziert ihn dann mit der transponierten Basiswechselmatrix, also der Matrix, in der in den Zeilen die Eigenvektoren stehen.
-
-
  %---------------------- 
  \section{Datenerhebung}
  
