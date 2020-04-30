@@ -39,15 +39,14 @@ am Ende gar nicht nötig
 %------------
 \section{PCA} % a priori algorithmus?
 
- \todo{wird auch für prozedurale Generierung verwendet}\\
- \todo{Blantz und Vetter (morphable face models) zitieren + andere Quelle nötig?}
  \todo{PCA-Algorithmus mit Pseudocode und Ein- und Ausgabe als Referenz (Eingabe ist Kovarianzmatrix, Rest Vorberechnung?)}
-
- % Ziel
- Eine \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse bekommt als Eingabe eine Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen. Voraussetzung ist, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. Dann liegen die Punkte im $n$-dimensionalen Raum in einem Ellipsoid.
  
- Die PCA wird durchgeführt um herauszufinden wo die Achsen des Ellipsoids liegen, denn
- jede Achse beschreibt eine Raumrichtung, die unabhängig von allen anderen ist.
+ % Ziel
+ \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse \cite{PCA} wird meist mit dem Ziel angewendet die Dimensionalität einer Menge von Datenpunkten zu verringern, dabei aber möglichst wenig Information zu verwerfen.
+ So wie beispielsweise in \cite{PCA_faces} bei 3D-Modellen von Gesichtern oder in \cite{PCA_bodies} bei 3D-Modellen von menschlichen Körpern. Auch im Zusammenhang mit prozeduraler Generierung wird PCA öfter verwendet, \zb zur Generierung von humanoiden Charakteren \cite{ProceduralCharacterGeneration} oder Texturen für Gesichter \cite{GeneratingFacialTextures}. \\
+ Die Eingabe für eine PCA ist also eine Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen. Voraussetzung ist, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. Dann liegen die Punkte im $n$-dimensionalen Raum in einem Ellipsoid.
+ 
+ Eine PCA wird durchgeführt um herauszufinden wo die Achsen des Ellipsoids liegen, denn jede Achse beschreibt eine Raumrichtung, die unabhängig von allen anderen ist.
  Transformiert man dann die Datenpunkte vom Eingabekoordinatensystem in dasjenige Koordinatensystem, das von den Achsen des Ellipsoids beschrieben wird, sind die einzelnen Dimensionen der Datenpunkte danach unabhängig voneinander.
  
  Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen, die "`principal components"'. Oft ist das Ziel die Dimensionalität der Eingabedaten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden und die anderen Dimensionen weggelassen werden. Das funktioniert natürlich besser, je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden.
