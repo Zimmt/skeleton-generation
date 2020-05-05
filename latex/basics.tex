@@ -6,10 +6,15 @@
 %--------------------------------
 \section{Prozedurale Generierung}
 
-perlin noise (nicht ausreichend für Skelette, mehr Einschränkungen nötig)\\
-was wird alles prozedural generiert? Pflanzen, Landschaften, Wolken\dots
+Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der Ausführung des Algorithmus festgelegt wurden, so wird dies als \emph{prozedurale Generierung} (PG) bezeichnet.
+Ursprünglich wurde PG verwendet, weil der Speicherplatz auf Computern sehr begrenzt war. Große 3D-Landschaften oder andere vorgefertigte künstlerische Werke konnten nicht gespeichert werden.\\
+Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \cite{DemoScene}.
 
-Angst dass nur Monster generiert werden -> Einschränkungen nötig, muss steuerbar sein
+Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt für \zb PC-Spiele von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, denn der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, ist aufwändig und benötigt viel Zeit. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl verwendet werden um fertige 3D-Modelle zu generieren, als auch um als Inspiration und Hilfe für den Künstler zu dienen. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
+
+Dinge, die oft prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Theme beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. Das lässt viel Spielraum für diese Arbeit.
+
+\todo{perlin noise (nicht ausreichend für Skelette, mehr Einschränkungen nötig sonst würden nur Monster generiert)}
 
 
 %-------------------------------------------
@@ -17,16 +22,25 @@ Angst dass nur Monster generiert werden -> Einschränkungen nötig, muss steuerb
 
 \begin{itemize}
  \item Knochen in Hierarchie (Baum)
- \item keyframes, motion capture
+ \item keyframes, motion capture (traditional keyframed workflow (sporeanim S.3), wo kann hier Algorithmus verwendet werden?)
  \item rag doll
  \item Skelett, Muskeln, Haut, Faszien (für lebensecht wirkende Tiere)
  \item Featherstone Algorithmus
  \item Drehmomente ausrechnen um Gleichgewicht auszurechnen (hier? oder im Kapitel zu ersten Ansätzen lassen?)
+ \item Animation von vorher unbekannten Kreaturen (sporeanim)
+ \item skeleton-based design tool (Yamamoto et al 2011): rudimentäres Skelett/Rig für schnelle Produktion und leichte Änderung an Charakteren
+        \url{https://dl.acm.org/doi/10.1145/2073304.2073316}, \url{https://www.youtube.com/watch?v=yhq1aUp8QLY}
 \end{itemize}
 
 % IK
 Inverse Kinematik wird unter anderem in der Robotik verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte auf dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Zielpunkte erreicht werden.\\
 Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden.
+
+\begin{itemize}
+ \item IK für die Animation von Beinen: Girard and Maciejewski 1985
+ \item IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
+\end{itemize}
+
 
 
 %--------------------
@@ -34,6 +48,11 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
 
 L-Systeme, Expertensystem?\\
 am Ende gar nicht nötig
+
+\begin{itemize}
+ \item architecture shape grammars to generate Skeletons: Ilcik et al 2010 (Grammatik für Skelett und für Pose parallel), verwendet CGA shape grammar (Müller) wie auch thesis zur prozeduralen Städtegenerierung
+\end{itemize}
+
 
 
 %------------
@@ -62,4 +81,16 @@ am Ende gar nicht nötig
 \section{Genetische Algorithmen}
 
 als Alternative zu Variationen mit PCA
+
+\begin{itemize}
+ \item introduction to evolutionary design (bently)
+ \item basics on genetic algorithms (Holland 1992) -> bei Bib bestellt
+ \item interactive evolutionary computation (Takagi 2001) (fitness function = human evaluation)
+ \item jon hudson thesis: creature generation using genetic algorithms \cite{JonHudson}
+   \begin{itemize}
+    \item relativ simple Regeln, nicht orientiert an spezieller Tierklasse, Einschränkung für Anzahl Beine, für Houdini, kein Skelett sondern 3D-Modell, Rig wird auch generiert
+    \item auch Variationen eines Tiers und Crossover zwischen mehreren Exemplaren möglich
+   \end{itemize}
+\end{itemize}
+
 
