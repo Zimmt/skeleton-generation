@@ -75,6 +75,7 @@ Ansonsten ist die Wahrscheinlichkeit
 \[\frac{\text{Beinlänge} - \text{Höhe des Extremitätengürtels über }0}{\text{Länge des Fußes}}\]
 Wenn es Vorder- und Hinterbeine gibt, so wird für beide diese Wahrscheinlichkeit berechnet und dann der Mittelwert genommen. Denn es ist sinnvoll, dass alle Beine den gleichen Punkt auf den Boden bringen.
 Deshalb legt auch das erste Bein, das generiert wird, basierend auf der oben berechneten Wahrscheinlichkeit, fest, welcher Punkt gewählt wird.
+\todo{Wann wird welcher Fuß verwendet?}
 
 
 %- - - - - - - - - - - - - - - - - - - - - - - - -
@@ -211,6 +212,7 @@ Wenn ein Tier also möglichst genau reproduziert werden soll, sollte zumindest d
 Weitere Dinge, die festgelegt werden müssen, ist die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
 
 Die Anzahl der Wirbel orientiert sich an echten Wirbeltierskeletten (siehe Absatz \ref{biology_skeleton}). Auf dem Hals werden $7$ Wirbel generiert, außer das Tier hat Flügel, dann liegt die Anzahl zwischen $10$ und $30$. Auf dem Rücken liegen $25$ Wirbel und auf dem Schwanz $5$ bis $20$.
+ Da der "`Wurzelwirbel"' in der Mitte der Rückenwirbelsäule liegt (oder zumindest ungefähr, da Bezierkurve bei $0,5$ ausgewertet bei wird) werden $13$ Wirbel auf der vorderen Hälfte und $12$ hinten generiert.
 
 Eine Bézierkurve ist ein Weg im $\mathbb{R}^2$. Sie ist parametrisiert auf $[0, 1]$ und im Allgemeinen nicht nach Bogenlänge parametrisiert. Das heißt die Geschwindigkeit, mit der die Kurve durchlaufen wird, ist nicht konstant. Wertet man die Kurve also bei $0.5$ aus, wurde nicht notwendigerweise die Hälfte der Strecke zurückgelegt.\\
 Für die Generierung von $n$ Wirbeln wurde die Kurve einfach an den Stellen $\frac{i}{n}$ ausgewertet, für $0 \leq i \leq n$. Durch den oben genannten Effekt variiert dann die Länge der Wirbel über den Kurvenverlauf.
