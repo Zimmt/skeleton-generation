@@ -7,6 +7,7 @@
 \section{Überblick über den Ablauf der Generierung}
 
 \todo{Überblick über den Ablauf des Algorithmus}\\
+\todo{Koordinatensystem beschreiben, Achsen etc auch für später (zB Beinalgo) festlegen}\\
 \todo{"`Kommunikation"' über SkeletonGenerator}
 
 \begin{itemize}
@@ -23,14 +24,7 @@
 Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
 
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
-Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer} am Beispiel des Klippschliefers sehr gut zu sehen.
-
- \begin{figure}
-  \centering
-  \includegraphics{../PCA/Skelettbilder/Klippschliefer.jpg}
-  \caption{Skelett eines Klippschliefers. Dieses Bild wurde auch als Eingabe für die PCA verwendet.}
-  \label{klippschliefer}
- \end{figure}
+Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer_farbig} am Beispiel des Klippschliefers sehr gut zu sehen.
 
 Wie in Kapitel \ref{chapter:pca} zur PCA schon erwähnt, ist es deshalb auch schwer möglich die Ausrichtung der Extremitäten \bzw die Winkel an den Gelenken als zusätzliche Dimension in den PCA-Raum mitaufzunehmen.
 

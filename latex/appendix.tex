@@ -116,58 +116,6 @@ Notizen aus "`Über Wachstum und Form"' von D'Arcy Wentworth Thompson \cite{DArc
 %-------------------------------
 \chapter{Erhobene Daten für PCA}
 \label{appendix_pca}
-
- % ------
- % Flügel
- % ------
- \begin{figure}
-   \subfloat[Erster Punkt des Halses]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_neck1.pdf}}
-   \qquad
-   \subfloat[Zweiter Punkt des Halses]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_neck2.pdf}}
-   \qquad
-   \subfloat[Dritter Punkt des Halses]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_neck3.pdf}}
-   \\
-   \subfloat[Vierter Punkt des Halses \bzw erster Punkt des Rückens]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_back1.pdf}}
-   \qquad
-   \subfloat[Zweiter Punkt des Rückens]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_back2.pdf}}
-   \qquad
-   \subfloat[Dritter Punkt des Rückens]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_back3.pdf}}
-   \\
-   \subfloat[Vierter Punkt des Rückens \bzw erster Punkt des Schwanzes]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_back4.pdf}}
-   \qquad
-   \subfloat[Zweiter Punkt des Schwanzes]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_tail2.pdf}}
-   \qquad
-   \subfloat[Dritter Punkt des Schwanzes]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_tail3.pdf}}
-   \\
-   \subfloat[Vierter Punkt des Schwanzes]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_tail4.pdf}}
-   \qquad
-   \subfloat[Länge Ober- und Unterarm]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_upper+lowerArm.pdf}}
-   \qquad
-   \subfloat[Länge Unterarm und Hand]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_lowerArm+hand.pdf}}
-  \end{figure}
-  \begin{figure}
-   \ContinuedFloat
-   \subfloat[Länge Ober- und Unterschenkel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_upper+lowerLeg.pdf}}
-   \qquad
-   \subfloat[Länge Unterschenkel und Fuß]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_lowerLeg+foot.pdf}}
-   
-   \caption{Erhobene Daten: Punkte der Bézierkurven der Wirbelsäule und Längen der Extremitäten. Bei den Extremitäten ist jeweils gegeneinander abgetragen Ober- und Unterarm, Ober- und Unterschenkel, Unterarm und Hand, Unterschenkel und Fuß. Markiert ist jeweils ob die Datenpunkte Flügel haben (blau) oder nicht (rot).}
-   \label{input_data_wings}
-  \end{figure}
- 
- \begin{figure}
-  \subfloat[lineare Skala]{\includegraphics[width=0.5\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_weight.pdf} \label{gnuplot_weight}}
-  \qquad
-  \subfloat[logarithmische Skala]{\includegraphics[width=0.5\textwidth]{../PCA/gnuplot/results_with_wing_tag/input_weight_logarithmic.pdf}\label{gnuplot_log_weight}}
-  
-  \caption{Erhobene Daten: Gewicht. Markiert ist jeweils ob die Datenpunkte Flügel haben (blau) oder nicht (rot).}
-  \label{input_data_weight_wings}
- \end{figure}
- 
- 
- % ------
- % Beine
- % ------
  
   \begin{figure}
    \subfloat[Erster Punkt des Halses]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_leg_tag/input_neck1.pdf}}
@@ -201,8 +149,17 @@ Notizen aus "`Über Wachstum und Form"' von D'Arcy Wentworth Thompson \cite{DArc
    \subfloat[Länge Unterschenkel und Fuß]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_leg_tag/input_lowerLeg+foot.pdf}}
    
    \caption{Erhobene Daten: Punkte der Bézierkurven der Wirbelsäule und Längen der Extremitäten. Bei den Extremitäten ist jeweils gegeneinander abgetragen Ober- und Unterarm, Ober- und Unterschenkel, Unterarm und Hand, Unterschenkel und Fuß. Markiert ist jeweils ob die Datenpunkte $0$ (rot), $2$ (blau) oder $4$ (grün) Beine haben.}
-   \label{input_data_legs}
+   \label{input_data}
   \end{figure}
+  
+ \begin{figure}
+  \subfloat[lineare Skala]{\includegraphics[width=0.5\textwidth]{../PCA/gnuplot/results_with_leg_tag/input_weight.pdf} \label{gnuplot_weight}}
+  \qquad
+  \subfloat[logarithmische Skala]{\includegraphics[width=0.5\textwidth]{../PCA/gnuplot/results_with_leg_tag/input_weight_logarithmic.pdf}\label{gnuplot_log_weight}}
+  
+  \caption{Erhobene Daten: Gewicht. Markiert ist jeweils ob die Datenpunkte $0$ (rot), $2$ (blau) oder $4$ (grün) Beine haben.}
+  \label{input_data_weight}
+ \end{figure}
  
  %--------------
  % QQ Diagramme

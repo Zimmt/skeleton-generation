@@ -3,9 +3,9 @@
 set terminal pdf size 11cm, 10cm
 set key box opaque
 set key above
-NO_LEG = 'pointtype 6 pointsize 0.5 linecolor rgb "red"'
-ONE_LEG = 'pointtype 10 pointsize 0.5 linecolor rgb "blue"'
-TWO_LEGS = 'pointtype 4 pointsize 0.5 linecolor rgb "green"'
+NO_LEG = 'pointtype 7 pointsize 1 linecolor rgb "red"'
+ONE_LEG = 'pointtype 7 pointsize 1 linecolor rgb "blue"'
+TWO_LEGS = 'pointtype 7 pointsize 1 linecolor rgb "green"'
 
 set xrange [-2:2]
 set yrange [-2:2]

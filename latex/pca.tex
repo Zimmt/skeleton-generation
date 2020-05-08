@@ -1,11 +1,9 @@
 %------------
 %------------
-\chapter{Analyse von Skeletten mit Hilfe von PCA}
+\chapter{Beispielanalyse mit Hilfe von PCA}
 \label{chapter:pca}
-
-\todo{umbenennen}
  
- PCA wird verwendet um Position und Krümmung der Wirbelsäule bei Wirbeltieren zu untersuchen. Die Datenpunkte, die durch PCA untersucht werden sollen, sind also Skelette von Wirbeltieren.
+ PCA kann hier verwendet werden um Position und Krümmung der Wirbelsäule bei Wirbeltieren zu untersuchen. Die Datenpunkte, die durch die PCA untersucht werden sollen, sind also Skelette von Wirbeltieren.
  
  
  %---------------------- 
@@ -13,83 +11,79 @@
  
  Die konkret erhobenen Beispiele sind vor allem der Datenlage \bzw der zugänglichen Quellen geschuldet. Trotzdem wurde darauf geachtet möglichst viele unterschiedliche Tierarten mit viel Variation in den erhobenen Merkmalen zu finden.
  
- Viele Beispiele stammen Zoologiebüchern, in denen sie als Beispiele für bestimmte Erklärungen angegeben waren (Bildquellen siehe Anhang \ref{appendix_pca_skeletons}). Dem ist auch geschuldet, dass recht viele Dinosaurierskelette dabei sind. Denn von anderen Tieren gibt es als alternative Darstellungsmöglichkeit eine Außenansicht des lebenden Tieres. Das geht bei ausgestorbenen Tieren im Allgemeinen nicht.
+ % welche Beispiele
+ Viele Beispiele entstammen Zoologiebüchern, in denen sie als Beispiele für bestimmte Erklärungen angegeben waren (Bildquellen siehe Anhang \ref{appendix_pca_skeletons}). Dem ist auch geschuldet, dass recht viele Dinosaurierskelette dabei sind. Denn von anderen Tieren gibt es als alternative Darstellungsmöglichkeit eine Außenansicht des lebenden Tieres. Das geht bei ausgestorbenen Tieren im Allgemeinen nicht.
  
+ % welche Merkmale
  Die Merkmale, die zur Datenerhebung ausgesucht wurden, sind charakteristisch für ein Skelett, tragen also viel zum Gesamteindruck bei. Das sind vor allem der Verlauf der Wirbelsäule und der Aufbau der Extremitäten.
 
- Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. Am einfachsten zu bekommen sind 2D-Bilder mit Seitenansichten von Skeletten. Das schließt Merkmale aus, die Tiefeninformationen benötigen, \zb den Abstand der Füße oder die Winkel der Gelenke an den Beinen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu bekommen, da sie teilweise schwierig zu Erkennen und zu Markieren sind. 
- \todo{welche weiteren Merkmale könnte man sich überlegen, warum waren sie nicht sinnvoll? future work?}
- \todo{erklären warum Winkel an Extremitäten nicht erhoben}
- %   \item Der Zufall ist eingeschränkt durch Eingabeparameter oder Benutzereingabe (siehe Interaktivität). Ähnliche Parameter sollten zu ähnlichem Tier führen. Parameter könnten folgendes beschreiben:
-%  \begin{itemize}
-%   \item äußere Einflüsse (Klima, Terrain, Lebensraum,\dots)
-%   \item Proportionen (länge der Extremitäten, Kopfgröße,\dots)
-%   \item Anzahl vorhandener Gliedmaßen / Zehen / \dots
-%  \end{itemize}
- Deshalb haben wir die Erhebung auf folgende Daten eingeschränkt:
+ % Einschränkungen der Merkmale
+ Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. Am einfachsten zu bekommen sind 2D-Bilder mit Seitenansichten von Skeletten. Das schließt Merkmale aus, die Tiefeninformationen benötigen, \zb den Abstand der Füße oder die Winkel der Gelenke an den Beinen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu bekommen, da sie teilweise schwer zu Erkennen und zu Markieren sind. 
+ Deshalb ist die Erhebung auf folgende Daten eingeschränkt:
   
  \begin{itemize}
   \item Ein Bild mit der Seitenansicht des Skeletts.
-  Darin wurde die Lage der Wirbelsäule und die Länge der Knochen der Vorder- und Hintergliedmaßen markiert, falls vorhanden.
+  Darin wurde die Lage der \emph{Wirbelsäule} und die Länge der Knochen der \emph{Vorder- und Hintergliedmaßen} markiert, falls vorhanden.\\
+  Hier hätte man zusätzlich auch die Positionen der Knochen und damit auch die Winkel an den Gelenken erheben können. Da die Position der Tiere auf den Abbildungen aber wenig vergleichbar und relativ beliebig ist, ist das nicht sinnvoll.
   
-  \item Die Tierklasse, also ob das Tier ein Fisch, ein Amphib, ein Reptil oder ein Säugetier ist. Dieses Merkmal lässt sich nicht auf einer kontinuierlichen Skala abbilden und ist deshalb nicht als Eingabedimension für die PCA geeignet. Es wurde trotzdem erhoben, da es für eine anderweitige Auswertung hilfreich sein könnte.
+  \item Die \emph{Tierklasse}, also ob das Tier ein Fisch, ein Amphib, ein Reptil oder ein Säugetier ist. Dieses Merkmal lässt sich nicht auf einer kontinuierlichen Skala abbilden und ist deshalb nicht als Eingabedimension für die PCA geeignet. Es wurde trotzdem erhoben, da es für eine anderweitige Auswertung hilfreich sein könnte.\\
+  Auch andere Merkmale wie etwa der Lebensraum könnten für weitere Analysen interessant sein. Man könnte sie, je nach Ziel, in zukünftigen Analysen mitaufnehmen.
   
-  \item Ob Flügel vorhanden sind ("`ja"' repräsentiert durch die Zahl eins und "`nein"' repräsentiert durch null).
+  \item Ob \emph{Flügel} vorhanden sind oder nicht.
   
-  \item Die Anzahl der Beine mit Bodenkontakt.
+  \item Die Anzahl der \emph{Beine} mit Bodenkontakt. Hier werden sowohl Vorder- als auch Hinterbeine berücksichtigt.
   
-  \item Das ungefähre Gewicht eines ausgewachsenen Exemplars des Tieres, zu dem das Skelett gehört, in Kilogramm. Hier wurde oft das maximale Gewicht verwendet, da keine Angaben zum Durchschnittsgewicht zu finden waren. Teilweise gibt es auch verschiedene (Unter-)Arten, die unterschiedlich schwer werden können, deren Skelette aber, bei der Auflösung der hier erhobenen Daten, gleich aussehen. In diesem Fall wurde ein beliebiger Wert gewählt, der zwischen dem Gewicht der leichtesten und dem der schwersten (Unter-)Art liegt. (Die Quellen zu den Gewichten sind im Anhang \ref{appendix_pca_weight} zu finden.)
+  \item Das ungefähre \emph{Gewicht} eines ausgewachsenen Exemplars des Tieres, zu dem das Skelett gehört, in Kilogramm. Dieses Merkmal wurde mitaufgenommen, da die tatsächliche Größe der Tiere nicht durch die Abbildungen dargestellt wird.\\
+  Hier wurden oft Angaben zum maximalen Gewicht der Tiere verwendet, da keine Angaben zum Durchschnittsgewicht zu finden waren. Teilweise gibt es auch verschiedene (Unter-)Arten, die unterschiedlich schwer werden können, deren Skelette aber, bei der Auflösung der hier erhobenen Daten, gleich aussehen. In diesem Fall wurde ein beliebiger Wert gewählt, der zwischen dem Gewicht der leichtesten und dem der schwersten (Unter-)Art liegt. (Die Quellen zu den Gewichten sind im Anhang \ref{appendix_pca_weight} zu finden.)
  \end{itemize}
 
+ % Verweis auf Implementierungsdetails
  Wie genau die Datenerhebung auf den Bildern der Skelette durchgeführt wurde ist im Kapitel "`Implementierungsdetails"' im Abschnitt \ref{implementation_detail_pca} nachzulesen.
+ Das Ergebnis der Erhebung sind annotierte Bilddateien und eine Textdatei, in der Tierklasse, Flügel, Beine und Gewicht erfasst werden.
  
- Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils einer für Hals, Rücken und Schwanz. Hals und Rücken gehen an der Schulter ineinander über und Rücken und Schwanz beim Becken.
+ % Wirbelsäule als Bézierkurven
+ Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst. Jeweils eine für Hals, Rücken und Schwanz. Hals und Rücken gehen an der Schulter ineinander über und Rücken und Schwanz an der Hüfte.
  Diese Bézierkurven sind die ersten $20$ Eingabedimensionen für die PCA ($10$ zweidimensionale Punkte). Bei manchen Tieren ist kein Hals oder kein Schwanz vorhanden. In diesen Fällen werden die $3$ fehlenden Punkte jeweils mit dem ersten \bzw letzten Punkt des Rückens ersetzt.
- \todo{Koordinatensystem beschreiben, Achsen etc auch für später (zB Beinalgo) festlegen}
  
- Hier wurden Bézierkurven verwendet, weil sie einfach in der Handhabung sind. Sie werden von Programmen unterstützt, mit den Vektorgrafiken erstellt werden können, sind leicht in die Beispielbilder einzutragen und leicht zu interpretieren. Es könnten aber natürlich auch andere Repräsentationen, wie B-Splines, verwendet werden. B-Splines und Bézierkurven können sogar ineinander umgewandelt werden \cite{BezierAndBSplineTechniques}.
+ % warum Bézierkurven
+ Es wurden Bézierkurven verwendet, weil sie einfach in der Handhabung sind. Sie werden von Programmen unterstützt, mit den Vektorgrafiken erstellt werden können, sind leicht in die Beispielbilder einzutragen und leicht zu interpretieren. Es könnten aber natürlich auch andere Repräsentationen, wie B-Splines, verwendet werden. B-Splines und Bézierkurven können sogar ineinander umgewandelt werden \cite{BezierAndBSplineTechniques}.
  
- Zusätzlich wird jeweils durch eine Gerade im Bild die Länge des Ober- und Unterarms, der Hand, des Ober- und Unterschenkels und des Fußes eingetragen, falls vorhanden. Die Bezeichnung der Extremität als Arm oder Bein ist nur zur Unterschiedung zwischen Vorder- und Hinterextremitäten gedacht. Sie hat in keiner Weise etwas mit der Funktion der Gliedmaßen zu tun.
- 
- Zusätzlich zum Bild gibt es noch eine Textdatei, in der die anderen Daten, die oben schon erwähnt wurden, erfasst werden.
- 
+ % Schwierigkeiten
  Bei der Annotation der Bilder sind folgende Schwierigkeiten aufgetreten:
- \todo{in Text einbetten}
- 
  \begin{itemize}
-  \item Bei Fischen ist nicht klar wo Rücken in Schwanz übergeht, da der Beckengürtel sich teilweise beim Kopf befindet oder auch gar nicht vorhanden ist. Bei der Datenerhebung wurde der Übergang ungefähr bei der Rücken- oder der Afterflosse festgelegt, da dies relativ gut zum Algorithmus passt.\\
-  \todo{Referenz zur Biologie}
+  \item Bei Fischen ist nicht klar wo Rücken in Schwanz übergeht, da der Beckengürtel sich teilweise beim Kopf befindet oder auch gar nicht vorhanden ist. Bei der Datenerhebung wurde der Übergang ungefähr bei der Rücken- oder der Afterflosse festgelegt. Alternativ hätte man auch die komplette Wirbelsäule als Rücken klassifizieren können.
   
-  \item Hals und Schwanz von manchen Tieren ist mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und vom Schwan und der Schwanz vom Ichthyosaurus und vom Koboldmaki. In diesem Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) die im Algorithmus wahrscheinlich sowieso nicht abgebildet werden, einfach wegzulassen.
+  \item Manche Hälse und Schwänze sind mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und Schwan und der Schwanz von Ichthyosaurus und Koboldmaki. In diesem Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) einfach wegzulassen.
   
-  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild irgendwie eingerollt ist.
+  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild eine andere Position hat.
  \end{itemize}
+ 
  
  %---------------------------------
  \section{Analyse der Eingabedaten}
  \label{pca_input_analysis}
  
-  Insgesamt wurden $44$ Datenpunkte erhoben. Das entspricht bei $29$ Dimensionen $44 \cdot 44 = 1276$ Zahlen als Eingabe. Das Ergebnis der PCA ist im wesentlichen die $29 \times 29$ große Kovarianzmatrix. Das sind $841$ \bzw $\frac{29 \cdot 30}{2} = 435$ Zahlen als Ausgabe. Da $1276 < 435$, ist das eine ausreichende Menge an erhobenen Beispielen. \todo{bessere Begründung?}
+ % Genug Datenpunkte?
+ Insgesamt wurden $44$ Datenpunkte erhoben. Das entspricht bei $29$ Dimensionen $44 \cdot 29 = 1276$ Zahlen als Eingabe. Das Ergebnis der PCA ist im wesentlichen die $29 \times 29$ große Basiswecheselmatrix \bzw die Eigenvektoren und $29$ Eigenwerte. Das sind $841 + 29 = 870$ Zahlen als Ausgabe. Immerhin gilt $1276 > 870$ und $44 > 29$, dennoch wäre es besser mehr Datenpunkte zu haben.
  
- Der Mittelwert aller Eingabedaten ist in Abbildung \ref{mean} visualisiert.
- \todo{Werte der Mittelwertvisualisierung angeben wenn zuletzt aktualisiert, damit Bild nicht so groß sein muss; und Rand abschneiden}
- Wie die bei der Datenerhebung ist hier die Position der Wirbelsäule auf einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Beine und Arme nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die Ober- und Unterschenkel und die Ober- und Unterarme, sind von den Übergangspunkten Hals-Rücken und Rücken-Schwanz senkrecht nach unten gezeichnet, Hand und Fuß sind vom jeweiligen Endpunkt von Arm oder Bein horizontal nach links gezeichnet. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform in der oberen linken Ecke angegeben.
+ % auf Normalverteilung untersuchen
+ Eine Vorraussetzung dafür, dass die PCA korrekt funktionert, ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Das soll im Folgenden genauer untersucht werden. Visualisierungen der Eingabedaten in den einzelnen Dimensionen sind in den Abbildungen \ref{input_data} und \ref{input_data_weight} im Anhang zu finden.
  
- Eine Vorraussetzung dafür, dass die PCA korrekt funktionert, ist, dass die Eingabedaten in jeder Dimension normalverteilt sind. Im Folgenden sollen die Eingabemerkmale daraufhin genauer untersucht werden.
- \todo{(Projektion auf Eigenvektoren auf Normalverteilung testen?)}
+ % diskrete Merkmale sind nicht normalverteilt
+ Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret sind und nur einen \bzw zwei Werte annehmen können. Sie können jedoch hilfreiche Informationen zur Weiterverarbeitung durch den Algorithmus liefern, weshalb sie nicht ganz außen vor gelassen werden sollten. Da das Hauptaugenmerk der PCA aber auf der Position der Wirbelsäule und dem Aufbau der Extremitäten liegt, sollen diese beiden Merkmale keinen großen Einfluss haben. Deshalb wurden diese Merkmale kleinskaliert. Dazu weiter unten mehr.
  
- Es gibt die beiden Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, die offensichtlich nicht normalverteilt sind, da sie diskret nur ein \bzw zwei Werte annehmen können. Sie können jedoch hilfreiche Informationen zur Weiterverarbeitung durch den Algorithmus liefern, weshalb sie nicht ganz außen vor gelassen werden sollten. Da das Hauptaugenmerk der PCA aber auf der Position der Wirbelsäule und dem Aufbau der Extremitäten liegen soll, sollen diese beiden Merkmale keinen großen Einfluss haben. Deshalb wurden diese Merkmale kleinskaliert. Dazu weiter unten mehr.
- 
- Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen. 
- \todo{QQ Diagramme erklären, negative Werte sind ganz normal, da inverse CDF bei einem Mittelwert von 0 bei Werten < 0.5 negativ ist.}
- \todo{welche Methode um Unterscheidungsanteil auszurechnen? \url{https://de.wikipedia.org/wiki/Quantil-Quantil-Diagramm} (verschiedene Sachen ausprobieren, zeigen dass egal? "Zahl" ausrechnen (paper)?}
+ % QQDiagramme
+ Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen (siehe Abschnitt \ref{qqdiagrams}).
  \todo{Plotstil angleichen}
- Die Diagramm zeigen für alle Merkmale außer dem Gewicht, dass sie mehr oder weniger gut normalverteilt sind (siehe Beispiele in Abbildung \ref{qqdiagram_examples} und eine vollständige Aufzählung im Anhang in den Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
+ Die Diagramme zeigen für alle Merkmale außer dem Gewicht, dass sie mehr oder weniger gut normalverteilt sind (siehe Beispiele in Abbildung \ref{qqdiagram_examples} und eine vollständige Aufzählung im Anhang in den Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
  
+ % Probleme mit dem Gewicht
  Das Merkmal \emph{Gewicht} ist überhaupt nicht normalverteilt (siehe Abbildung \ref{qqdiagrams_weight} a und b). Verwendet man es als Eingabe für die PCA und generiert dann zufällig normalverteilte Punkte im Ergebnisraum, treten schnell Gewichte kleiner null auf.
  
- Betrachtet man das Gewicht jedoch auf einer logarithmischen Skala, so ist es wieder normalverteilt (siehe Abbildung \ref{qqdiagrams_weight} c). Deshalb wird das Gewicht zunächst logarithmiert, bevor es in die PCA eingeht.
- Welcher Logarithmus hier zur Umrechnung der Daten verwendet wird schlägt sich nur als linearer Faktor nieder und ist eine Frage der Skalierung. Es wurde der Zehnerlogarithmus verwendet. Eine solche Skalierung bestimmt die "`Wichtigkeit"' des Merkmals für die PCA. Da das Gewicht, wie die Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt} nicht die Hauptmerkmale sind, die hier untersucht werden sollen, wurde es ebenfalls kleinskaliert.
+ % logarithmisches Gewicht
+ Betrachtet man das Gewicht jedoch auf einer logarithmischen Skala, so ist es normalverteilt (siehe Abbildung \ref{qqdiagrams_weight} c). Deshalb ist es sinnvoll das Gewicht zunächst zu logarithmieren, bevor es in die PCA eingeht.
+ Welcher Logarithmus hier zur Umrechnung der Daten verwendet wird schlägt sich nur als linearer Faktor nieder und ist eine Frage der Skalierung. Es wurde der Zehnerlogarithmus verwendet. 
+ Da das Gewicht, genauso wie die Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt}, nicht die Hauptmerkmale sind, die mit der PCA untersucht werden sollen, wurde es zusätzlich ebenfalls kleiner skaliert.
  
  \begin{figure}
   \subfloat[x-Wert der $3$. Koordinate des Halses]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram4.pdf}}
@@ -102,7 +96,7 @@
   \label{qqdiagram_examples}
  \end{figure}
  
-\begin{figure}
+ \begin{figure}
   \subfloat[Gewicht linear]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram_linear_weight.pdf}}
   \qquad
   \subfloat[Gewicht linear (Ausschnitt)]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_qq_diagrams/QQ_diagram_linear_weight_without_diagonal.pdf}}
@@ -113,50 +107,30 @@
   \label{qqdiagrams_weight}
  \end{figure}
  
- Generell bewirkt die Skalierung einer Dimension eine Gewichtung. Denn durch eine Skalierung ändert sich auch die (Co-)Varianz und somit auch die Kovarianzmatrix. Seien beispielsweise $s,t \in \mathbb{R}$, dann bewirkt eine Skalierung mit $s$ in Dimension $x$ und eine Skalierung mit $t$ in Dimension $y$ eine Skalierung von $s \cdot t$ der Kovarianz Cov$(x,y)$ von $x$ mit $y$, da $\mathrm{Cov}(sx, ty) = (sx - s\mu_x) (ty - t\mu_y) = st \cdot \mathrm{Cov}(x,y)$, mit Erwartungswert $\mu_i$ in Dimension $i$.
+ % Gewichtung der Daten
+ Generell bewirkt die Skalierung einer Dimension eine Gewichtung, denn durch eine Skalierung ändert sich die (Ko-)Varianz und somit auch die Kovarianzmatrix. Seien beispielsweise $s,t \in \mathbb{R}$, dann bewirkt eine Skalierung mit $s$ in Dimension $x$ und eine Skalierung mit $t$ in Dimension $y$ eine Skalierung von $s \cdot t$ der Kovarianz Cov$(x,y)$ von $x$ mit $y$, da $\mathrm{Cov}(sx, ty) = (sx - s\mu_x) (ty - t\mu_y) = st \cdot \mathrm{Cov}(x,y)$, mit Erwartungswert $\mu_i$ in \mbox{Dimension $i$}.
  
  Wie genau wurden nun die einzelnen Merkmale nur skaliert?
  
+ % Bildkoordinaten + -längen
  Zunächst wurden alle Merkmale auf das Intervall $[0, 1]$ skaliert, damit alle den gleichen Einfluss haben.
- Bei Koordinaten oder Längen im Bild bedeutet das, dass sie mit $1000$ skaliert werden, da sie alle im Intervall $[0, 1000]$ liegen, da sie in Pixeln dargestellt werden und das Bild eine Größe von $1000 \times 1000$ Pixel hat. Bei Längen wären theoretisch auch Werte $> 1000$ möglich. Solche Längen wären aber unrealistisch und werden deshalb ignoriert.
- Koordinaten und Längen im Bild sind diejenigen Merkmale, die uns am meisten interessieren. Deshalb sollten sie den größten Einfluss auf das Ergebnis der PCA haben. Alle anderen Merkmale wurden deshalb kleiner skaliert.
+ Bei Koordinaten oder Längen im Bild bedeutet das, dass sie durch $1000$ geteilt werden, da sie in Pixeln dargestellt werden und das Bild eine Größe von $1000 \times 1000$ Pixeln hat. Bei Längen wären dabei theoretisch auch Werte größer $1000$px möglich. Solche Längen wären aber unrealistisch und werden deshalb ignoriert.\\
+ Koordinaten und Längen im Bild sind diejenigen Merkmale, die hier am interessantesten sind. Deshalb sollten sie den größten Einfluss auf das Ergebnis der PCA haben. Alle anderen Merkmale werden deshalb kleiner skaliert.
  
- Man könnte statt einer Skalierung durch $1000$ auch für jedes einzelne Merkmal den maximal und minimal angenommenen Wert ermitteln und sie dann so skalieren, dass sie Intervalle gleicher länge abdecken. Das würde ausgleichen, dass \zb kleine Längen eine kleinere Varianz und damit auch einen kleineren Einfluss haben.
- Wir haben uns aber für die oben beschriebene Variante entschieden, da es natürlich wirkt, dass kleine Merkmale im Bild auch weniger wichtig sind. Falls in Zukunft Gründe für eine andere Gewichtung auftauchen ließe sich das aber leicht anpassen.
+ % Merkmale nach angenommenem Maximum skalieren?
+ Man könnte statt einer Skalierung mit $0.001$ auch für jedes einzelne Merkmal den maximal und minimal angenommenen Wert ermitteln und sie dann so skalieren, dass sie Intervalle gleicher länge abdecken. Das würde ausgleichen, dass \zb kleine Längen eine kleinere Varianz und damit auch einen kleineren Einfluss haben.
+ Es wurde aber die oben beschriebene Variante verwendet, da es natürlich wirkt, dass kleine Merkmale im Bild auch weniger wichtig sind. Falls es in Zukunft Gründe für eine andere Gewichtung gäbe, ließe sich das aber leicht anpassen.
  
- Die diskreten Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt} und das logarithmische Gewicht wurden zunächst ebenfalls auf das Intervall $[0, 1]$ skaliert. Das bedeutet für das Gewicht $w$: $\frac{\mathrm{log}(w+1)}{\mathrm{log}(\mathrm{max}+1)}$. Das schwerste Wirbeltier ist der Blauwal mit bis zu 120 Tonnen (siehe \ref{appendix_pca_weight}). Deshalb ist hier max $= 120.000$.
+ % kleinskalieren von Flügeln, Beinen und Gewicht
+ Die diskreten Merkmale \emph{Flügel} und \emph{Beine mit Bodenkontakt} und das logarithmische Gewicht wurden zunächst ebenfalls auf das Intervall $[0, 1]$ skaliert. Das bedeutet für das Gewicht $w$: $\frac{\mathrm{log}(w+1)}{\mathrm{log}(\mathrm{max}+1)}$. Das schwerste Wirbeltier ist der Blauwal mit 120 Tonnen (siehe Abschnitt \ref{bigAndSmall}). Deshalb ist hier max $= 120.000$kg.\\
+ Danach wurden die Werte noch einmal durch $100$ geteilt, um ihren Einfluss zu verringern. Das Ziel war, dass diese Merkmale nicht als große Einträge in den größten Eigenvektoren (den "`principal components"') auftauchen. Ohne diese Skalierung sind diese Merkmale recht dominant. Mit der Skalierung hingegen sind sie in den größten Eigenvektoren unter den kleinsten Werten zu finden.
  
- Danach wurden die Werte noch einmal durch $100$ geteilt, um ihren Einfluss zu verringern. Das Ziel war, dass diese Merkmale nicht als große Einträge in den ersten paar Eigenvektoren auftauchen. Ohne diese Skalierung sind diese Merkmale recht dominant. Mit der Skalierung hingegen sind sie in den größten Eigenvektoren unter den kleinsten Werten zu finden.
+ % Projektion auf Eigenvektoren
+ Betrachten wir nun die Projektion der Eingabedaten auf die ersten zwei  Eigenvektoren. In Abbildung \ref{projections_scales} ist gut zu vergleichen was die Effekte der Skalierung der Eingabedaten ist. Ganz links sind die Ergebnisse zusehen, die entstehen, wenn alle Merkmale nur auf das Intervall $[0, 1]$ skaliert werden. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich kleinskaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Anpassungen verringert.
+ \todo{Projektion auf Eigenvektoren auf Normalverteilung testen?}
  
- Berachtet man nun die so skalierten Eingabedaten, so hat der Klippschliefer den minimalen Abstand zum Mittelwert (siehe Abbildung \ref{klippschliefer_farbig}). Zusätzlich zum Bild wurde für den Klippschliefer folgende Daten erhoben:
- \emph{Tierklasse} Säugetier, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $4$, \emph{Gewicht} $4$kg.
- 
- Den maximalen Abstand hat die Schlange. Die erhobenen Daten sind hier:
- \emph{Tierklasse} Reptil, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $0$, \emph{Gewicht} $50$kg. Die Schlange ist allerdings das einzige Tier zu dem es kein Bild des Skeletts gibt. Das liegt daran, dass es keine seitlichen Abbildungen von ausgestreckten Schlangen gibt. Sie werden eigentlich immer gekrümmt dargestellt, da sonst das Bild sehr lang und schmal werden würde. Deshalb wurde für die Schlange nur eine horizontale Gerade knapp über dem unteren Bildrand eingezeichnet, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte an denen der Rücken in Hals oder Schwanz übergeht gibt es ja keine.
- 
- Der Punkt mit dem zweitgrößten Abstand zum Mittelwert ist das Känguru (siehe Abbildung \ref{kaenguru_farbig}). Zusätzlich zum Bild gibt es hier folgende Daten:
-  \emph{Tierklasse} Säugetier, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $2$, \emph{Gewicht} $50$kg
- 
-  \begin{figure}
-  \centering
-  \includegraphics[width=0.9\textwidth]{../PCA/mean_log_weight_downscaled_wings_legs_and_weight.jpg}
-  \caption{Visualisierung des Mittelwerts der Eingabedaten. Die Werte, die nicht visualisiert sind, sind folgende: ...}
-  \label{mean}
- \end{figure}
- 
- \begin{figure}
-  \subfloat[Klippschliefer]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Klippschliefer_farbig.png} \label{klippschliefer_farbig}}
-  \qquad
-  \subfloat[Känguru]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Kaenguru_farbig.png}\label{kaenguru_farbig}}
-  
-  \caption{Annotierte Bild des Skeletts eines Klippschliefers (a) und eines Kängurus(b). Die Teile der Wirbelsäule und die Knochen der Extremitäten sind hier jeweils mit der gleichen Farbe markiert wie in der Visualisierung des Mittelwerts (Abbildung \ref{mean})}
- \end{figure}
-
- 
- Zuletzt betrachten wir noch die Projektion der Eingabedaten auf die ersten zwei  Eigenvektoren. In Abbildung \ref{projections_scales} ist noch einmal gut zu vergleichen was die Effekte der Skalierung der Eingabedaten ist. Ganz links sind die Ergenisse zusehen, die entstehen, wenn man alle Merkmale nur auf das Intervall $[0, 1]$ skaliert. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich kleinskaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Anpassungen verringert.
- \todo{Anpassung der Stile der Plots}
- 
- In Abbildung \ref{projections_tags} ist nocheinmal jeweils die Projektion der Daten auf die ersten beiden Eigenvektoren zu sehen. Diesmal mit unterschiedlich markiert mit den diskret erhobenen Daten. Hier sieht man \zb schön dass alle Tiere mit Flügeln auch Vögel sind und dass fast alle Tiere mit zwei Beinen Vögel sind. Die vier Tiere, die zwei Beine haben, aber keine Vögel sind, sind die Ohrenrobbe, der Seehund, der Tyrannosaurus Rex und das Känguru.
+ % Projektion unterschiedlich gelabelt
+ In Abbildung \ref{projections_tags} ist nocheinmal jeweils die Projektion der skalierten Daten auf die ersten beiden Eigenvektoren zu sehen. Diesmal anhand der verschiedenen diskret erhobenen Daten markiert. Es ist \zb schön zu sehen, dass alle Tiere mit Flügeln auch Vögel sind und dass fast alle Tiere, die zwei Beine haben, Vögel sind. Vier Tiere haben zwei Beine, sind aber keine Vögel: die Ohrenrobbe, der Seehund, der Tyrannosaurus Rex und das Känguru.
 
  \begin{figure}
   \subfloat[gleiche Skalierung aller Dimensionen]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot/results_with_leg_tag/projection_eigenvectors12.pdf}}
@@ -165,25 +139,61 @@
   \qquad
   \subfloat[skalierte "`Zusatzmerkmale"']{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
   
-  \caption{Dargestellt sind hier jeweils die Projektionen der Eingabedaten auf die ersten beiden Eigenvektoren. Für jede Version wurden die Eingabedaten unterschiedlich vorverarbeitet. (a) Skalierung aller erhobenen Daten auf das Intervall $[0, 1]$, (b) zusätzlich Verwendung von logarithmischem Gewicht, statt linearem, (c) zusätzliche Skalierung der Merkmale \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} durch $100$. In Version (b) wurde der erste Eigenvektor durch die PCA umgedreht, weshalb das Cluster der Zweibeiner auf der linken, statt der rechten Seite zu sehen ist.}
+  \caption{Dargestellt sind hier jeweils die Projektionen der Eingabedaten auf die ersten beiden Eigenvektoren. Für jede Version wurden die Eingabedaten unterschiedlich vorverarbeitet. (a) Skalierung aller erhobenen Daten auf das Intervall $[0, 1]$, (b) zusätzlich Verwendung von logarithmischem Gewicht, statt linearem, (c) zusätzliche Skalierung der Merkmale \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} mit $0.01$. In \mbox{Version (b)} wurde der erste Eigenvektor durch die PCA umgedreht, weshalb das Cluster der Zweibeiner auf der linken, statt der rechten Seite zu sehen ist.}
   \label{projections_scales}
  \end{figure}
  
  \begin{figure}
-  \subfloat[Flügel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}
+  \subfloat[Flügel]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}
   \qquad
-  \subfloat[Anzahl Beine mit Bodenkontakt]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
+  \subfloat[Anzahl Beine mit Bodenkontakt]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
   \qquad
-  \subfloat[Tierklasse]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight/results_with_animal_class_tag/projection_eigenvectors12.pdf}}
+  \subfloat[Tierklasse]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_animal_class_tag/projection_eigenvectors12.pdf}}
   
-  \caption{Projektion der Eingabdaten auf die Ebene, die durch den ersten und zweiten Eigenvektor aufgespannt wird. Markiert sind jeweils verschiedene Merkmale der Punkte.}
+  \caption{Projektion der, wie in Abbildung \ref{projections_scales}c skalierten, Eingabdaten auf die Ebene, die durch den ersten und zweiten Eigenvektor aufgespannt wird. Markiert sind jeweils ob Flügel vorhanden sind (a), die Anzahl der Beine (b) und die \mbox{Tierklasse (c)}.}
   \label{projections_tags}
+ \end{figure}
+ 
+ 
+  % Mittelwert
+ Der Mittelwert der skalierten Eingabedaten ist in Abbildung \ref{mean} visualisiert.
+ Wie auch bei der Datenerhebung ist hier die Position der Wirbelsäule in einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Vorder- und Hinterextremitäten nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform angegeben.
+ 
+ \begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{../PCA/mean_log_weight_downscaled_wings_legs_and_weight(onlyBox,stroke4).jpg}
+  \caption{Visualisierung des Mittelwerts der skalierten Eingabedaten. Die Werte, die nicht grafisch visualisiert sind, sind folgende: \emph{Flügel} $0,159$, \emph{Beine mit Bodenkontakt} $1,39$, \emph{Länge des Oberarms} $116$px, \emph{Länge des Unterarms} $122$px, \emph{Länge der Hand} $121$px, \emph{Länge des Oberschenkels} $117$px, \emph{Länge des Unterschenkels} $140$px, \emph{Länge des Fußes} $152$px, \emph{Gewicht} $93,0$kg. (Die Bezeichnung als "`Arm"' oder "`Bein"' dient nur der Unterscheidung zwischen Vorder- und Hintergliedmaßen.)}
+  \label{mean}
+ \end{figure}
+ 
+ % min Abstand
+ Den minimalen Abstand zum Mittelwert hat der Klippschliefer (siehe Abbildung \ref{klippschliefer_farbig}). Zusätzlich zum Bild wurde für den Klippschliefer folgende Daten erhoben:
+ \emph{Tierklasse} Säugetier, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $4$, \emph{Gewicht} $4$kg.
+ 
+ % max Abstand
+ Den maximalen Abstand hat die Schlange. Die erhobenen Daten sind hier:
+ \emph{Tierklasse} Reptil, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $0$, \emph{Gewicht} $50$kg.\\
+ Die Schlange ist allerdings das einzige Tier zu dem es kein "`echtes"' Bild des Skeletts gibt. Das liegt daran, dass es keine seitlichen Abbildungen von ausgestreckten Schlangen gibt. Sie werden eigentlich immer gekrümmt dargestellt, da sonst das Bild sehr lang und schmal werden würde. Deshalb wurde für die Schlange nur eine horizontale Linie knapp über dem unteren Bildrand eingezeichnet, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte an denen der Rücken in Hals oder Schwanz übergeht gibt es bei Schlangen nicht.
+ 
+ % zweitgrößter Abstand (da max Schlange)
+ Der Punkt mit dem zweitgrößten Abstand zum Mittelwert ist das Känguru (siehe Abbildung \ref{kaenguru_farbig}). Zusätzlich zum Bild gibt es hier folgende Daten:
+  \emph{Tierklasse} Säugetier, \emph{Flügel} nein, \emph{Anzahl Beine mit Bodenkontakt} $2$, \emph{Gewicht} $50$kg
+  
+ \begin{figure}
+  \subfloat[Klippschliefer]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Klippschliefer_farbig.png} \label{klippschliefer_farbig}}
+  \qquad
+  \subfloat[Känguru]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Kaenguru_farbig.png}\label{kaenguru_farbig}}
+  
+  \caption{Annotierte Bild des Skeletts eines Klippschliefers (a) und eines \mbox{Kängurus (b)}. Die Teile der Wirbelsäule und die Knochen der Extremitäten sind hier jeweils mit der gleichen Farbe markiert wie in der Visualisierung des Mittelwerts (Abbildung \ref{mean})}
  \end{figure}
  
 
  %-----------------------------------
  \section{Analyse der Ergebnisse}
  \label{section_pca_result_analysis}
+ 
+ \todo{auch hier Plotstile und stroke anpassen}\\
+ \todo{Rekonstruktionen ausschneiden}
  
  Von $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste hat einen Wert von $0,000024$. Von den Eigenwerten sind $7$ größer als $0,01$. Leider reichen diese $7$ Dimensionen aber noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
  \todo{updaten}
@@ -229,7 +239,7 @@
  \todo{Schaubild mit verschiedenen erzeugten Wirbelsäulen?}
  
  %-------------------------------------------------
- \section{Bedingte Verteilung der Eingabedaten}
+ \section{Bedingte Verteilungen}
  \label{pca_conditions}
  
  
