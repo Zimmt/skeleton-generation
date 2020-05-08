@@ -1,34 +1,32 @@
 %-----------------------------------
 %-----------------------------------
-\chapter{Erste Ansätze und Probleme}
+\chapter{Erste Ansätze}
 
 %------------------------------------
 \section{Bestandteile eines Skeletts}
 
-Ein Skelett besteht aus Knochen und Gelenken. Zwei Knochen sind jeweils durch ein Gelenk miteinander verbunden. Im Folgenden werden beide Bestandteile jeweils genauer beschrieben.
+Ein Skelett besteht aus Knochen und Gelenken. Zwei Knochen sind jeweils durch ein Gelenk miteinander verbunden. Im Folgenden werden sowohl Knochen als auch Gelenke genauer beschrieben.
 
 % Knochen
-Jeder Knochen hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
+Jeder \emph{Knochen} hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
 Informationen, die für die Darstellung eines Knochens erforderlich sind, sind also
 seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem.
 
 % Hierarchie
-Die Knochen sollten eine Hierarche (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird. \todo{Verweis auf previous work, wenn ausgearbeitet}
-Es gibt also einen Knochen, der das oberste Element in der Hierarchie ist \bzw der die Wurzel des Baums bildet. Dieser wird im Folgenden als \emph{Wurzelknochen} bezeichnet. Liegt Knochen $B$ in der Hierarchie direkt unter Knochen $A$, so ist $A$ der \emph{Elternknochen} von $B$ und $B$ ein \emph{Kindknochen} von $A$.
-
-% Transformationsmatrizen
-Es ist also sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden.\\
-Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten verwendet. Genauere Informationen zu diesen Transformationsmatrizen und wie sie in verschiedenen Situationen berechnet werden können sind in Absatz \ref{implementation_detail_matrices} zu finden.
+Die Knochen sollten eine Hierarchie (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird. \todo{Verweis auf previous work, wenn ausgearbeitet} Da der Wirbeltierbauplan aus Abbildung \ref{bauplan_skelett} verwendet wird, ist das auch möglich. Im Allgemeinen ist ein Skelett aber weder zusammenhängend noch ohne Kreise.
 
 % Wurzel
-Für die Wahl des Wurzelknochens bietet sich ein Knochen in der Nähe des Schwerpunkts an. Oft wird hierfür die Hüfte verwendet. \todo{Beispiel/Quelle}
-Da aber nicht jedes Wirbeltier eine Hüfte besitzt und es für die Generierung einfach ist, wird als Wurzelknochen ein Knochen ohne Ausdehnung in der Mitte der Rückenwirbelsäule verwendet.
+Für eine Hierarchie ist ein erstes Element nötig, die Wurzel des Baums.
+Dafür bietet sich ein Knochen in der Nähe des Schwerpunkts an. Oft wird hierfür die Hüfte verwendet. \todo{Beispiel/Quelle}
+Da aber nicht jedes Wirbeltier eine Hüfte besitzt und es die Generierung vereinfacht, wird als Wurzelknochen ein Knochen ohne Ausdehnung in der Mitte der Rückenwirbelsäule verwendet. Dieser Knochen wird im Folgenden als \emph{Wurzelknochen} bezeichnet. Liegt Knochen $B$ in der Hierarchie direkt unter Knochen $A$, so ist $A$ der \emph{Elternknochen} von $B$ und $B$ ein \emph{Kindknochen} von $A$.
 
+% Transformationsmatrizen
+Es ist sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden. \todo{Verweis auf IK} \\
+Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten verwendet. Genauere Informationen zu diesen Transformationsmatrizen und wie sie in verschiedenen Situationen berechnet werden können sind in Absatz \ref{implementation_detail_matrices} zu finden.
 
 % Gelenke
-Ein Gelenk ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
-Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement.
-\todo{Schaubilder für verschiedene Gelenkarten}
+Ein \emph{Gelenk} ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
+Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. In Abbildung \ref{joints} sind alle Gelenke mit mindestens einem Freiheitsgrad, die im Algorithmus verwendet werden, dargestellt.
 
 % Berechnung Transformationsmatrix des Kindelements
 Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, so lässt sich daraus die Transformationsmatrix des Kindelements berechnen.
@@ -46,7 +44,7 @@ Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, 
  \end{itemize}
  
  \begin{itemize}
-  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von paramterischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
+  \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von parametrischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
   
   \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\
   \todo{Graphen zur Visualisierung der Regeln einfügen}
@@ -83,8 +81,8 @@ Das Hauptproblem ist, dass nicht klar ist wie das Gewicht der einzelnen Körpert
  
 % Wirbelsäule als Startpunkt
 Die Wirbelsäule ist ein zentraler Teil des Wirbeltierkörpers und bestimmt wesentlich das Aussehen des Skeletts.
-Ihre Form variiert von relativ gerade, \zb bei Fischen oder Schlangen, bis hin zu starkt geschwungenen Hälsen, \va bei Vögeln, und langen Schwänzen, \zb bei Mäusen. Außerdem zeigt sie wie aufrecht ein Tier sich hält. Große Unterschiede sind hier zwischen Fischen und auch Vierbeinern gegenüber Vögeln zu beobachten, da Vögel nur auf ihren Hinterbeinen stehen und deshalb ihr Schwerpunkt nach hinten verschoben ist. Es gibt aber auch aufrechtere Exemplare unter den "`Vierbeinern"' wie beispielsweise das Känguru oder der Tyrannosaurus Rex.\todo{Beispielbilder von Wirbelsäulen} \\
-Der Mensch ist natürlich auch ein Beispiel für ein sehr aufrechtes Wirbeltier. Seine Haltung unterscheidet sich aber so stark von der der anderen Wirbeltiere, dass er zunächst außen vor gelassen werden soll.
+Ihre Form variiert von relativ gerade, \zb bei Fischen oder Schlangen, bis hin zu stark geschwungenen Hälsen, \va bei Vögeln, und langen Schwänzen, \zb bei Mäusen. Außerdem zeigt sie wie aufrecht ein Tier sich hält. Große Unterschiede sind hier zwischen Fischen und auch Vierbeinern gegenüber Vögeln zu beobachten, da Vögel nur auf ihren Hinterbeinen stehen und deshalb ihr Schwerpunkt nach hinten verschoben ist. Es gibt aber auch aufrechtere Exemplare unter den "`Vierbeinern"' wie beispielsweise das Känguru oder der Tyrannosaurus Rex.\todo{Beispielbilder von Wirbelsäulen} \\
+Der Mensch ist natürlich auch ein Beispiel für ein sehr aufrechtes Wirbeltier. Seine Haltung unterscheidet sich aber so stark von der der anderen Wirbeltiere, dass er hier außen vor gelassen werden soll.
 
 Viele Knochen setzen direkt an der Wirbelsäule an, wie \zb der Kopf, die Rippen oder die Hüfte. Durch die Wirbelsäule wird also schon sehr viel vorgegeben.
 Deshalb eignet sie sich sehr gut als Startpunkt für die Generierung eines Skeletts. Ausgehend von ihr kann dann der Rest des Skeletts "`wachsen"'.
@@ -92,5 +90,5 @@ Deshalb eignet sie sich sehr gut als Startpunkt für die Generierung eines Skele
 % Wie Lage der Wirbelsäule bestimmen?
 Wie soll aber nun die Lage der Wirbelsäule bestimmt werden?\\
 Hierfür schien es sinnvoll viele Beispiele zu betrachten und Zusammenhänge zwischen verschiedenen Eigenschaften der Tiere und dem Verlauf der Wirbelsäule zu suchen.
-Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis}, die im folgenden Kapitel beschrieben wird.
+Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (siehe Abschnitt \ref{PCA}).
 
