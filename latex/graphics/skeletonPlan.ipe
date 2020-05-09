@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200507153304" modified="D:20200507153651"/>
+<info created="D:20200507153304" modified="D:20200509121115"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -520,8 +520,8 @@ h
 200.765 767.062 l
 h
 </path>
-<text matrix="1 0 0 1 -1.486 -19.108" transformations="translations" pos="128.141 697.514" stroke="black" type="minipage" width="45.8246" height="5.958" depth="0.96" valign="top">Schulter</text>
-<text matrix="0.999998 0.00221327 -0.00221327 0.999998 219.498 -18.2443" transformations="translations" pos="128.141 697.514" stroke="black" type="minipage" width="45.8246" height="5.958" depth="0.96" valign="top">H\&quot;ufte</text>
+<text matrix="1 0 0 1 -1.486 -19.108" transformations="translations" pos="128.141 697.514" stroke="black" type="minipage" width="45.8246" height="5.958" depth="0.96" valign="top">Schulterblatt</text>
+<text matrix="0.999998 0.00221327 -0.00221327 0.999998 207.184 -18.2443" transformations="translations" pos="128.141 697.514" stroke="black" type="minipage" width="82.311" height="5.958" depth="0.96" valign="top">Beckenknochen</text>
 <text matrix="1 0 0 1 59.7821 35.996" transformations="translations" pos="144 752" stroke="black" type="minipage" width="48" height="6.926" depth="1.93" valign="top">Fl\&quot;ugel</text>
 <text matrix="1 0 0 1 170.402 -207.963" transformations="translations" pos="144 752" stroke="black" type="minipage" width="48" height="5.898" depth="0.91" valign="top">Bein</text>
 <text matrix="1 0 0 1 -93.6418 19.3965" transformations="translations" pos="144 752" stroke="black" type="minipage" width="48" height="5.958" depth="0.96" valign="top">Sch\&quot;adel</text>
