@@ -150,6 +150,30 @@ public class PcaHandler {
         dataExporter.exportRowDataToFile(String.format("../PCA/projected_pcaPoints_with_%s_tag.txt", tag), heading, projectionsWithTag);
     }
 
+    public void exportQQDiagramDataForProjectionsToFiles(int eigenvectorCount, boolean detrended) throws IOException {
+        List<RealVector> projections = getEigenvectorScalesForPoints(eigenvectorCount);
+        for (int i = 0; i < eigenvectorCount; i++) {
+            double variance = pca.getEigenvalue(i);
+            List<Double> data = new ArrayList<>(projections.size());
+            for (RealVector r : projections) {
+                data.add(r.getEntry(i));
+            }
+            List<RealVector> qqData;
+            String heading;
+            String fileName;
+            if (detrended) {
+                qqData = StatisticalEvaluation.getValuesForDetrendedQQDiagram(data.toArray(Double[]::new), variance);
+                heading = String.format("# detrended QQ Diagram data for projected data on eigenvector %d", i);
+                fileName = String.format("QQ_diagram_data_detrended_projection%d.txt", i);
+            } else {
+                qqData = StatisticalEvaluation.getValuesForQQDiagram(data.toArray(Double[]::new), variance);
+                heading = String.format("# QQ Diagram data for projected data on eigenvector %d", i);
+                fileName = String.format("QQ_diagram_data_projection%d.txt", i);
+            }
+            dataExporter.exportColumnDataToFile("../PCA/" + fileName, heading, qqData);
+        }
+    }
+
     public void exportQQDiagramDataToFiles(boolean detrended) throws IOException {
         List<double[]> pcaInputData = new ArrayList<>(dataPoints.size());
         for (PcaDataPoint point : dataPoints) {

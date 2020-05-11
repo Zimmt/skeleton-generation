@@ -1,0 +1,18 @@
+# Quantile-Quantile-Diagrams
+
+set terminal pdf size 11cm, 10cm
+set size square
+set grid
+
+POINTS = 'notitle pointtype 7 pointsize 0.5 linecolor rgb "red"'
+DIAGONAL = 'notitle linewidth 2 linecolor "grey"'
+
+do for [i=0:2] {
+  
+  set output 'QQ_diagram_projection' .i. '.pdf'
+  plot x @DIAGONAL, \
+       '../input/QQ_diagram_data_projection' .i. '.txt' @POINTS
+       
+
+}
+

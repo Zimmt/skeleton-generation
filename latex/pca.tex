@@ -126,7 +126,6 @@
  
  % Projektion auf Eigenvektoren
  Betrachten wir nun die Projektion der Eingabedaten auf die ersten zwei  Eigenvektoren. In Abbildung \ref{projections_scales} ist gut zu vergleichen was die Effekte der Skalierung der Eingabedaten ist. Ganz links sind die Ergebnisse zusehen, die entstehen, wenn alle Merkmale nur auf das Intervall $[0, 1]$ skaliert werden. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich kleinskaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Anpassungen verringert.
- \todo{Projektion auf Eigenvektoren auf Normalverteilung testen?}
  
  % Projektion unterschiedlich gelabelt
  In Abbildung \ref{projections_tags} ist nocheinmal jeweils die Projektion der skalierten Daten auf die ersten beiden Eigenvektoren zu sehen. Diesmal anhand der verschiedenen diskret erhobenen Daten markiert. Es ist \zb schön zu sehen, dass alle Tiere mit Flügeln auch Vögel sind und dass fast alle Tiere, die zwei Beine haben, Vögel sind. Vier Tiere haben zwei Beine, sind aber keine Vögel: die Ohrenrobbe, der Seehund, der Tyrannosaurus Rex und das Känguru.
@@ -154,7 +153,22 @@
  \end{figure}
  
  
-  % Mittelwert
+ % Ergebnis wieder normalverteilt
+ Auch im neuen Koordinatensystem sollten die Daten wieder normalverteilt sein. Das wurde wiederum mit Quantil-Quantil-Diagrammen untersucht. In Abbildung \ref{qqdiagram_projections} sind die Ergebnisse für die ersten drei Eigenvektoren zu sehen. Es gibt, wie bei den Eingabedaten, keine allzugroßen Abweichungen.
+ 
+ \begin{figure}
+  \subfloat[erster Eigenvektor]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_qqdiagrams/QQ_diagram_projection0.pdf}}
+  \qquad
+  \subfloat[zweiter Eigenvektor]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_qqdiagrams/QQ_diagram_projection1.pdf}}
+  \qquad
+  \subfloat[dritter Eigenvektor]{\includegraphics[width=0.3\textwidth]{../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_qqdiagrams/QQ_diagram_projection2.pdf}}
+  
+  \caption{Quantil-Quantil-Diagramme der Eingabedaten projiziert auf die größten drei Eigenvektoren.}
+  \label{qqdiagram_projections}
+ \end{figure}
+ 
+ 
+ % Mittelwert
  Der Mittelwert der skalierten Eingabedaten ist in Abbildung \ref{mean} visualisiert.
  Wie auch bei der Datenerhebung ist hier die Position der Wirbelsäule in einem $1000 \times 1000$ Pixel Bild gezeigt. Da von den Knochen der Vorder- und Hinterextremitäten nur die Längen erhoben wurden, sind ihre Positionen nicht realistisch. Die restlichen Daten sind nicht visualisiert, sondern nur in Textform angegeben.
  
