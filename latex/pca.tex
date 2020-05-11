@@ -31,7 +31,7 @@
   
   \item Ob \emph{Flügel} vorhanden sind oder nicht.
   
-  \item Die Anzahl der \emph{Beine} mit Bodenkontakt. Hier werden sowohl Vorder- als auch Hinterbeine berücksichtigt.
+  \item Die Anzahl der Paare von \emph{Beinen mit Bodenkontakt}. Hier werden sowohl Vorder- als auch Hinterbeine berücksichtigt.
   
   \item Das ungefähre \emph{Gewicht} eines ausgewachsenen Exemplars des Tieres, zu dem das Skelett gehört, in Kilogramm. Dieses Merkmal wurde mitaufgenommen, da die tatsächliche Größe der Tiere nicht durch die Abbildungen dargestellt wird.\\
   Hier wurden oft Angaben zum maximalen Gewicht der Tiere verwendet, da keine Angaben zum Durchschnittsgewicht zu finden waren. Teilweise gibt es auch verschiedene (Unter-)Arten, die unterschiedlich schwer werden können, deren Skelette aber, bei der Auflösung der hier erhobenen Daten, gleich aussehen. In diesem Fall wurde ein beliebiger Wert gewählt, der zwischen dem Gewicht der leichtesten und dem der schwersten (Unter-)Art liegt. (Die Quellen zu den Gewichten sind im Anhang \ref{appendix_pca_weight} zu finden.)
@@ -220,7 +220,7 @@
   \subfloat[Eingabebild]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Frosch_farbig.png}}
   
   \caption{Frosch, Rekonstruktionen aus den größten $6$, $10$ und $20$ Eigenvektoren und das Eingabebild (d). Nicht visualisierte Dimensionen sind jeweils unter dem entsprechenden Bild angegeben. Zusätzlich zum Eingabebild erhobene Daten sind:
-  \emph{Tierklasse} Amphib, \emph{Flügel} $0$, \emph{Beinen mit Bodenkontakt} $2$, \emph{Gewicht} $0,01$kg.}
+  \emph{Tierklasse} Amphib, \emph{Flügel} $0$, \emph{Beine mit Bodenkontakt} $2$, \emph{Gewicht} $0,01$kg.}
   \label{frosch}
  \end{figure}
 
@@ -259,13 +259,24 @@
  Verwendet man nun $\overline{\Sigma}$ als Eingabe für die PCA, so erhält man nur noch Daten für Skelette mit den vorher festgelegten Bedingungen. Zu beachten ist hier, dass die Eigenvektoren sich im Vergleich zur PCA ohne Bedingungen verändern. Falls man diese also zur Bestimmung eines Datenpunktes verwendet hat (\zb in einer Benutzeroberfläche), so müssen die Werte für die neuen Eigenvektoren neu ausgerechnet werden.
  
  % feste Werte variieren
- Erzeugt man nun in diesem bedingten Raum zufällige Beispiele, zeigt sich sehr deutlich, dass das Festlegen von nur einer Dimension auch die anderen Dimensionen stark einschränkt. Legt man \zb die Anzahl der Beine fest, so haben die Skelette, die dann bedingt zufällig generiert werden, eine sehr geringe Varianz. Das ist deutlich daran zu erkennen, dass der Verlauf der Wirbelsäule immer sehr ähnlich ist. \todo{Beispielbild}\\
+ Erzeugt man nun in diesem bedingten Raum zufällige Beispiele, zeigt sich sehr deutlich, dass das Festlegen von nur einer Dimension auch die anderen Dimensionen stark einschränkt. Legt man \zb die Anzahl der Beine fest, so haben die Skelette, die dann bedingt zufällig generiert werden, eine recht geringe Varianz. Das ist deutlich daran zu erkennen, dass der Verlauf der Wirbelsäule meist sehr ähnlich ist (siehe Abbildung \ref{spine_variance}).\\
  Um das etwas zu umgehen, wird die Eingabe als Intervall aufgefasst, aus dem zufällig ein Wert gezogen wird. Legt \zb der Benutzer einen ganzzahligen Wert fest, so wird ein kleiner zufälliger Wert aufaddiert oder abgezogen. So wird nicht immer genau der gleiche Wert verwendet.
  
+ \begin{figure}
+  \subfloat[$0$ Flügel, ohne Anpassung]{\includegraphics[width=0.3\textwidth]{graphics/0wings_withoutAdditionalVariance.png}}
+  \qquad
+  \subfloat[$0$ Flügel, mit Anpassung]{\includegraphics[width=0.3\textwidth]{graphics/0wings_withAdditionalVariance.png}}
+  \qquad
+  \subfloat[$1$ Paar Beine, mit Anpassung]{\includegraphics[width=0.3\textwidth]{graphics/1leg_withAdditionalVariance.png}}
+  
+  \caption{Jeweils $10$ bedingt zufällig generierte Wirbelsäulen. (a) und (b) ohne Flügel. (c) mit einem Paar Beine. In (b) und (c) wird ein zufälliger Wert aus $[-0.5, 0.5]$ auf die Bedingung (Flügel $= 0$ \bzw Beine $= 1$) aufaddiert.}
+  \label{spine_variance}
+ \end{figure}
+
+ 
  % Übergang Krokodil -> Fisch
- Schaut man sich nun die erzeugten Skelette mit zwei tragenden Beinen an, so sind darunter nicht nur Vögel, sondern auch Skelette, die kurze Extremitäten haben und deren Wirbelsäule sich nahe über dem Boden befindet. \todo{Beispielbild}
- Das liegt daran, dass es einen Übergang von bodennahen Vierbeinern wie Krokodilen oder Fröschen zu Fischen geben muss. Da es hier aber in der Natur eher wenige Beispiele für Zweibeiner gibt (in den erhobenen Daten sind das nur der Seehund und die Ohrenrobbe), wirkten diese Tiere eher ungewöhnlich.
- Da das Problem hier aber inhärent in der Vorgehensweise der PCA ist, lässt es sich nicht wirklich beheben.
+ Schaut man sich nun die erzeugten Wirbelsäulen mit einem Paar tragender Beine an (Abbildung \ref{spine_variance}c), so liegen sie alle recht nah an der mittleren Wirbelsäule (Abbildung \ref{mean}).
+ Das wirkt zunächst überraschend, da die meisten Tiere in den erhobenen Beispielen, die zwei Beine haben, Vögel sind. Sie haben eine Wirbelsäule, die hoch über dem Boden liegt und relativ aufrecht ist. Dann gibt es noch Känguru und Tyrannosaurus Rex. Bei ihnen liegt die Wirbelsäule ähnlich. Es muss aber auch einen Übergang von bodennahen Vierbeinern wie Krokodilen oder Fröschen über Zweibeiner zu Fischen ohne Beine geben. Nur gibt es dafür in der Natur eher wenige Beispiele. In den erhobenen Daten sind das nur der Seehund und die Ohrenrobbe.
  
  % Bedingungen an abgeleitet Werte
  Nun möchte man vielleicht Bedingungen an das zu generierende Skelett stellen, die nicht schon genau so in den erhobenen Daten repräsentiert sind. 
