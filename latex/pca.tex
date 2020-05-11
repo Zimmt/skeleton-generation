@@ -74,7 +74,6 @@
  
  % QQDiagramme
  Die anderen Dimensionen wurden mithilfe eines Quantil-Quantil-Diagramms mit der Normalverteilung verglichen (siehe Abschnitt \ref{qqdiagrams}).
- \todo{Plotstil angleichen}
  Die Diagramme zeigen für alle Merkmale außer dem Gewicht, dass sie mehr oder weniger gut normalverteilt sind (siehe Beispiele in Abbildung \ref{qqdiagram_examples} und eine vollständige Aufzählung im Anhang in den Abbildungen \ref{qq_diagrams_spine} und \ref{qq_diagrams_rest}).
  
  % Probleme mit dem Gewicht
@@ -192,51 +191,50 @@
  \section{Analyse der Ergebnisse}
  \label{section_pca_result_analysis}
  
- \todo{auch hier Plotstile und stroke anpassen}\\
- \todo{Rekonstruktionen ausschneiden}
- 
- Von $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste hat einen Wert von $0,000024$. Von den Eigenwerten sind $7$ größer als $0,01$. Leider reichen diese $7$ Dimensionen aber noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
- \todo{updaten}
- Die Daten konnten somit von der PCA nicht besonders gut komprimiert werden. Trotzdem sind die berechneten Eigenvektoren hilfreich für die (Weiter-)Entwicklung des Algorithmus. \todo{wenn Algo weiterentwickelt, beschreiben}
+ % Eigenvektoren und Rekonstruktionen
+ Zu $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste hat einen Eigenwert von $0,000001$. Von den Eigenwerten sind $6$ größer als $0,01$. Leider reichen diese $6$ Dimensionen noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
+ Die Daten konnten somit von der PCA nicht sehr gut komprimiert werden. Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
  
  \begin{figure}
-  \centering
-  \subfloat[Rekonstruktion]{\includegraphics[width=\textwidth]{../PCA/animal_reconstructions_log_weight/Archaeopteryx.jpg}}
-  \\
+  \subfloat[Rekonstruktion aus 6 Eigenvektoren]{\includegraphics[width=0.5\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/6EV/Archaeopteryx_Ausschnitt.jpg}}
+  \qquad
   \subfloat[Eingabebild]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Archaeopteryx_farbig.png}}
   
-  \caption{Archaeopteryx (a) Rekonstruktion aus den größten $7$ Eigenvektoren, (b) Eingabebild, zusätzlich erhobene Daten sind:
-  Tierklasse: Vogel, Flügel, Paare von Beinen mit Bodenkontakt: $1$, ungefähres Gewicht: $1$kg}
+  \caption{Archaeopteryx (a) Rekonstruktion aus den größten $6$ Eigenvektoren, nicht visualisierte Daten: \emph{Flügel} $0,56$, \emph{Beine mit Bodenkontakt} $1,594$, \emph{Gewicht} $94,1$kg\\ 
+  (b) Eingabebild}
   \label{archaeopteryx}
  \end{figure}
  
 \begin{figure}
-  \centering
-  \subfloat[Rekonstruktion]{\includegraphics[width=\textwidth]{../PCA/animal_reconstructions_log_weight/Frosch.jpg}}
+  \subfloat[$6$ Eigenvektoren,
+  \emph{Flügel} $0,4$, \emph{Beine mit Bodenkontakt} $1,27$, \emph{Gewicht} $90,2$kg]
+  {\includegraphics[width=0.5\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/6EV/Frosch_Ausschnitt.jpg}}
+  \qquad
+  \subfloat[$10$ Eigenvektoren,
+  \emph{Flügel} $0,151$, \emph{Beine mit Bodenkontakt} $1,28$, \emph{Gewicht} $88,7$kg]{\includegraphics[width=0.5\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/10EV/Frosch_Ausschnitt.jpg}}
   \\
+  \subfloat[$20$ Eigenvektoren,
+  \emph{Flügel} $0,217$, \emph{Beine mit Bodenkontakt} $1,7$, \emph{Gewicht} $89,2$kg]
+  {\includegraphics[width=0.5\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/20EV/Frosch_Ausschnitt.jpg}}
+  \qquad
   \subfloat[Eingabebild]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Frosch_farbig.png}}
   
-  \caption{Frosch (a) Rekonstruktion aus den größten $7$ Eigenvektoren, (b) Eingabebild, zusätzlich erhobene Daten sind:
-  Tierklasse: Amphib, keine Flügel, Paare von Beinen mit Bodenkontakt: $2$, ungefähres Gewicht: $0,01$kg}
+  \caption{Frosch, Rekonstruktionen aus den größten $6$, $10$ und $20$ Eigenvektoren und das Eingabebild (d). Nicht visualisierte Dimensionen sind jeweils unter dem entsprechenden Bild angegeben. Zusätzlich zum Eingabebild erhobene Daten sind:
+  \emph{Tierklasse} Amphib, \emph{Flügel} $0$, \emph{Beinen mit Bodenkontakt} $2$, \emph{Gewicht} $0,01$kg.}
   \label{frosch}
  \end{figure}
- 
 
- In den Abbildungen, die die Eingabedaten im transformierten Koordinatensystem der PCA darstellen (Abbildung \ref{projections_tags}) ist gut zu erkennen, dass die Koordinatentransformation der PCA die Daten tatsächlich nach den Hauptachsen des mehrdimensionalen Ellipsoids, den die Datenpunkte bilden, ausrichtet.
-
- Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man sich die Frage stellen, ob sie nötig sind, oder ob sie eher die Ergebnisse der PCA verschlechtern. Es wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich nicht extrem von der PCA mit allen Daten. 
- 
+ Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man die Frage stellen, ob sie nötig sind, oder ob sie die Ergebnisse der PCA eher verschlechtern. Deshalb wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich aber nicht extrem von der PCA mit allen Daten. \\
  Leider gibt es keine gute Möglichkeit die Qualität der Ergebnisse der PCA zu messen. Man könnte den Unterschied zwischen den Eingabedaten und den Rekonstruktionen aus den Linearkombinationen der Eigenvektoren mit den größten Eigenwerten messen. Aber das liefert, durch das Fehlen von verschiedenen Dimensionen kein einheitliches Maß.
+ Da jede Dimension dem Algorithmus, der später Skelette generieren soll, helfen könnte, wurde kein Merkmal verworfen.
  
- Da jede Dimension dem Algorithmus, der später Skelette generieren soll, helfen könnte, haben wir uns dafür entschieden alle Merkmale zu behalten.
+ Außerdem gibt es die Möglichkeit die Eingabedaten in mehrere Mengen aufzuteilen und diese einzeln zu analysieren. Hierbei gibt es zunächst das Problem, dass sich dann die Anzahl der Datenpunkte noch weiter reduziert, was die Ergebnisse nicht mehr repräsentativ macht.
+ Merkmale, die sich zur Unterteilung in Mengen anbieten würden, sind die diskreten, also \emph{Flügel} und \emph{Beine mit Bodenkontakt}. Sie sind auch klar als Cluster im Koordinatensystem der PCA ohne angepasste Skalierung zu erkennen (Abbildung \ref{projections_scales} a und b).
+ Getestet wurde die Aufteilung anhand der Werte für die Flügel, da sich dadurch nur zwei Gruppen ergeben. Tatsächlich liefert sie bessere Rekonstruktionen aus den größten Eigenvektoren. Das liegt aber natürlich in erster Linie daran, dass die zu untersuchende Datenmenge, jeweils verkleinert wurde.
  
- Außerdem gibt es die Möglichkeit die Eingabedaten in mehrere Mengen aufzuteilen und diese von verschiedenen Instanzen der PCA analysieren zu lassen. Hierbei gibt es zunächst das Problem, dass sich dann die Anzahl der Datenpunkte noch weiter reduziert, was die Ergebnisse nicht mehr repräsentativ macht.
- Ein Merkmal, das sich zur Unterteilung in Mengen anbieten würde, ist die Angabe ob das Tier Flügel hat oder nicht, da sich dadurch nur zwei Gruppen ergeben. Außerdem ist die Gruppe der Tiere mit Flügeln in den Eingabedaten bei anderen Skalierungen (siehe Abbildung \ref{projections_scales}) klar als Cluster zu erkennen (siehe auch Abschnitt \ref{pca_input_analysis}). Tatsächlich liefert eine solche Aufteilung bessere Rekonstruktionen aus der größten Eigenvektoren, aber das liegt natürlich vor allem daran, dass die zu untersuchende Datenmenge, jeweils verkleinert wurde.
+ Ein weiteres Problem dabei die Daten in mehrere Mengen aufzuteilen ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen aber die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen.
+ Auch das ist ein Argument dafür keine Aufteilung vorzunehmen.
  
- Ein Problem dabei ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen.
- Das wäre ein Argument dafür keine Aufteilung vorzunehmen. Dasselbe gilt für die Cluster, die durch die Aufteilung anhand der Anzahl der Beine mit Bodenkontakt entstehen.
- 
- \todo{Schaubild mit verschiedenen erzeugten Wirbelsäulen?}
  
  %-------------------------------------------------
  \section{Bedingte Verteilungen}
@@ -244,17 +242,25 @@
  
  
  Aus den Ergebnissen der PCA lassen sich sehr gut zufällige Skelette erzeugen. Es ist aber schwer gezielt Eigenschaften festzulegen.
- Der erste Schritt ist Eigenschaften auf gewählte Werte festzulegen, die so schon in den erhobenen Daten vorkommen. Das können beispielsweise die Anzahl der Beine sein oder ob das Skelett Flügel haben soll.
+ Der erste Schritt dies zu erreichen ist Eigenschaften auf gewählte Werte festzulegen, die so schon in den erhobenen Daten vorkommen. Das können beispielsweise die Anzahl der Beine sein oder ob das Skelett Flügel haben soll.
  
- Dazu kann man, statt die ursprünglichen Daten und deren Verteilung zu verwenden, die bedingten Verteilungen bilden. Dazu muss der bedingte Mittelwert und die bedingte Kovarianzmatrix bestimmt werden.
+ Dazu kann man, statt die ursprünglichen Daten und deren Verteilung zu verwenden, die entsprechenden bedingten Verteilungen bilden. Dazu muss der bedingte Mittelwert und die bedingte Kovarianzmatrix, wie in \cite{conditionalDistribution} (S.\ $116$ f.) beschrieben, bestimmt werden.
  
- \todo{Berechnung beschreiben: \url{https://en.wikipedia.org/wiki/Multivariate_normal_distribution\#Conditional_distributions}}
- Verwendet man nun die bedingte Kovarianzmatrix als Eingabe für die PCA, so erhält man nur noch Daten für Skelette mit den vorher festgelegten Bedingungen. Zu beachten ist hier, dass die Eigenvektoren sich im Vergleich zur PCA ohne Bedingungen verändern. Falls man diese also zur Bestimmung eines Datenpunktes verwendet hat (\zb in einer Benutzeroberfläche), so müssen die Werte für die neuen Eigenvektoren ganz neu ausgerechnet werden. \todo{ist das relevant für mein Benutzerinterface?}
+ Seien 
+ \[x = \begin{pmatrix} x_1 \\ x_2 \end{pmatrix}, 
+  \mu = \begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix} \text{und } 
+  \Sigma = \begin{pmatrix} \Sigma_{11} & \Sigma_{12} \\ \Sigma_{21} & \Sigma_{22} \end{pmatrix} \] 
+ 
+ Der Zufallsvektor $x$ enthält $n$ normalverteilte Zufallsvariablen, $q$ Variablen im Vektor $x_1$ und $n - q$ in $x_2$. Die Einträge in $\mu$ sind die jeweils zugehörigen Mittelwerte und $\Sigma$ ist die Kovarianzmatrix. Die Verteilung für $x_1$ unter der Bedingung, dass $x_2 = a$ hat den Mittelwert $\bar{\mu}$ und Kovarianzmatrix $\overline{\Sigma}$ mit
+ 
+ \[ \bar{\mu} = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1} (a - \mu_2), 
+    \overline{\Sigma} = \Sigma_{11} - \Sigma_{12} \Sigma_{12}^{-1} \Sigma_{21} \]
+ 
+ Verwendet man nun $\overline{\Sigma}$ als Eingabe für die PCA, so erhält man nur noch Daten für Skelette mit den vorher festgelegten Bedingungen. Zu beachten ist hier, dass die Eigenvektoren sich im Vergleich zur PCA ohne Bedingungen verändern. Falls man diese also zur Bestimmung eines Datenpunktes verwendet hat (\zb in einer Benutzeroberfläche), so müssen die Werte für die neuen Eigenvektoren neu ausgerechnet werden.
  
  % feste Werte variieren
- Betrachtet man erzeugte Beispiele aus bedingten Verteilungen, zeigt sich sehr deutlich, dass das Festlegen einer Dimension auch die anderen Dimensionen sehr stark einschränkt. Legt man \zb die Anzahl der Beine fest, so haben die Skelette, die dann bedingt zufällig generiert werden, eine recht geringe Varianz. Das ist deutlich daran zu erkennen, dass der Verlauf der Wirbelsäule immer sehr ähnlich ist.
-
- Um das etwas zu umgehen, wird die Eingabe als Intervall aufgefasst, aus dem zufällig ein Wert gezogen wird. Legt \zb der Benutzer einen ganzzahligen Wert fest, so wird ein kleiner zufälliger Wert aufaddiert oder abgezogen. \todo{welches Intervall?} So wird nicht immer genau der gleiche Wert verwendet.
+ Erzeugt man nun in diesem bedingten Raum zufällige Beispiele, zeigt sich sehr deutlich, dass das Festlegen von nur einer Dimension auch die anderen Dimensionen stark einschränkt. Legt man \zb die Anzahl der Beine fest, so haben die Skelette, die dann bedingt zufällig generiert werden, eine sehr geringe Varianz. Das ist deutlich daran zu erkennen, dass der Verlauf der Wirbelsäule immer sehr ähnlich ist. \todo{Beispielbild}\\
+ Um das etwas zu umgehen, wird die Eingabe als Intervall aufgefasst, aus dem zufällig ein Wert gezogen wird. Legt \zb der Benutzer einen ganzzahligen Wert fest, so wird ein kleiner zufälliger Wert aufaddiert oder abgezogen. So wird nicht immer genau der gleiche Wert verwendet.
  
  % Übergang Krokodil -> Fisch
  Schaut man sich nun die erzeugten Skelette mit zwei tragenden Beinen an, so sind darunter nicht nur Vögel, sondern auch Skelette, die kurze Extremitäten haben und deren Wirbelsäule sich nahe über dem Boden befindet. \todo{Beispielbild}
@@ -262,17 +268,15 @@
  Da das Problem hier aber inhärent in der Vorgehensweise der PCA ist, lässt es sich nicht wirklich beheben.
  
  % Bedingungen an abgeleitet Werte
- Nun möchte man vielleicht Bedingungen an das zu generierende Skelett stellen, die nicht schon genau so in den erhobenen Daten repräsentiert sind. Das könnten beispielsweise die Schwanz- oder Halslänge sein.
- 
+ Nun möchte man vielleicht Bedingungen an das zu generierende Skelett stellen, die nicht schon genau so in den erhobenen Daten repräsentiert sind. 
  Sind es Bedingungen an Dimensionen, die nicht erhoben wurden, können  sie entweder, unabhängig von der PCA, in den Ersetzungsregeln erzwungen werden, wie \zb die Anzahl der Flossen, oder sie müssen in die Erhebung eingefügt werden.
  
- Für Bedingungen, die schon implizit in den erhobenen Daten enthalten sind,
- könnte man es ebenso machen und einfach eine zusätzliche Dimension einfügen, die aus schon bestehenden Dimensionen errechnet wird. Dabei wäre aber das Problem, dass nur die Dimensionalität erhöht wird, nicht aber die eingegebenen Daten. Es wären also mehr Eingabebeispiele nötig, nur dafür, dass die PCA eine offensichtliche Korrelation der Dimensionen erkennt.
+ Bedingungen, die schon implizit in den erhobenen Daten enthalten sind, sind beispielsweise die Schwanz- oder Halslänge. Um an sie Bedingungen zu stellen, könnte man ebenso eine zusätzliche Dimension einfügen, die aus schon bestehenden Dimensionen errechnet wird. Dabei wäre aber das Problem, dass nur die Dimensionalität der Daten erhöht wird, nicht aber die eingegebenen Informationen. Es wären also mehr Eingabebeispiele nötig, nur dafür, dass die PCA eine offensichtliche Korrelation der Dimensionen erkennt.
  
- Die bessere Alternative ist es die Eingabedimensionen der PCA umzuparametrisieren. Die Länge des Schwanzes in x-Richtung, ist \zb implizit in der Differenz der x-Koordinaten des ersten und letzten Kontrollpunktes der Bezièrkurve des Schwanzes enthalten. Ersetzt man nun den absoluten x-Wert des letzten Kontrollpunktes durch den Abstand in x-Richtung zum ersten Kontrollpunkt, so lässt sich die Schwanzlänge in x-Richtung ganz einfach als Bedingung an die PCA stellen. 
+ Die bessere Alternative ist die Eingabedimensionen der PCA umzuparametrisieren. Die Länge des Schwanzes in x-Richtung, ist \zb implizit in der Differenz der x-Koordinaten des ersten und letzten Kontrollpunktes der Bezièrkurve des Schwanzes enthalten. Ersetzt man nun den absoluten x-Wert des letzten Kontrollpunktes durch den Abstand in x-Richtung zum ersten Kontrollpunkt, so lässt sich die Schwanzlänge in x-Richtung ganz einfach als Bedingung an die PCA stellen. 
  
  % Schwanzlänge messen
- Betrachtet man nun konkret den Wunsch die Schwanzlänge festzulegen, ist das nicht ganz so einfach. Die Länge in x- und y-Richtung lässt sich zwar leicht festlegen, diese Länge sagen aber noch nicht unbedingt viel über die tatsächliche Länge der Bezièrkurve aus. Verlangt man \zb eine Länge von null für den Schwanz in x-Richtung, so haben die generierten Skelette einen Schwanz der zwar auf gleicher Höhe beginnt und endet, aber trotzdem vorhanden ist und einen kleinen Bogen beschreibt. \todo{Beispielbild}
+ Betrachtet man nun konkret den Wunsch die Schwanzlänge festzulegen, ist das nicht ganz so einfach. Die Längen in x- und y-Richtung lassen sich zwar leicht festlegen, diese Längen sagen aber im Allgemeinen noch nicht viel über die tatsächliche Länge der Bezièrkurve aus. Verlangt man \zb eine Länge von $0$px für den Schwanz in x-Richtung, so haben die generierten Skelette einen Schwanz der zwar auf gleicher Höhe beginnt und endet, aber trotzdem vorhanden ist und einen kleinen Bogen beschreibt. \todo{Beispielbild}
  Um die wirkliche Länge des Schwanzes zu messen, müsste man also noch mehr Aufwand in die Umparametrisierung stecken oder doch eine zusätzliche Dimension für die PCA in Kauf nehmen.
  
  
