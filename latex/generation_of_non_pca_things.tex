@@ -85,7 +85,7 @@ Hier ist \zb in den allermeisten Fällen klar in welche Richtung ein Gelenk gedr
 Deshalb wurde hier ein eigener, recht simpler Algorithmus entwickelt, der auf dieses spezielle Problem angepasst ist.
 
 %Gelenke
-Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen.\\
+Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen. Der minimale und maximale Winkel für die Gelenke an Schultblatt und Beckenknochen orientieren sich an der Welt-y-Achse, da außerhalb dieses Bereichts keine sinnvollen Ruhepositionen entstehen würden. \\
 % Zweiter Freiheitsgrad
 Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Der Oberschenkel lässt sich nicht nur nach vorne und hinten bewegen, sondern auch seitlich abspreizen. Das lässt sich auch leicht als zweite Art von Gelenk im Code abbilden. Allerdings liefert der Algorithmus dann oft seltsam anmutende breitbeinige Tiere.
 Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
@@ -94,11 +94,11 @@ Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Be
 
 
 \begin{figure}
-  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/oneDimJoints}}
-  \qquad
-  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/twoDimJoints}}
+  \subfloat[Vorderextremität]{\includegraphics[height=0.4\textheight]{graphics/armJoints}}
+  \hfill
+  \subfloat[Hinterextremität]{\includegraphics[height=0.4\textheight]{graphics/legJoints}}
   
-  \caption{Visualisierung der Bewegungsradien für die Gelenke in Extremitäten. Darstellung in Seitenansicht (wie in Abbildung \ref{bauplan_skelett}). Es sind die möglichen Winkel für eine Ruheposition des Skeletts zu sehen. Unterarm, Unterschenkel und Fuß können jeweils maximal die Verlängerung des darüberliegenden Knochens bilden und minimal komplett an ihm anliegen. Oberarm und Oberschenkel können nicht über die Senkrechte hinaus gedreht werden (außer bei Flossen).}
+  \caption{Visualisierung der Bewegungsradien für die Gelenke in Extremitäten mit Bodenkontakt. Darstellung in Seitenansicht (wie in Abbildung \ref{bauplan_skelett}). Die grauen Halbkreise zeigen die möglichen Winkel für eine Ruheposition des Skeletts. Unterarm, Unterschenkel und Fuß können jeweils maximal die Verlängerung des darüberliegenden Knochens bilden und minimal komplett an ihm anliegen. Oberarm und Oberschenkel können nicht über die Senkrechte hinaus gedreht werden.}
   \label{joints}
  \end{figure}
 
@@ -131,11 +131,7 @@ Der Algorithmus geht iterativ vor.
 In jedem Schritt wird für jedes Gelenk berechnet ob sein Winkel vergrößert oder verkleinert werden muss um den dazugehörigen Knochen näher zum Boden zu bewegen.
 Mit dem "`dazugehörigen"' Knochen ist hier derjenige der beiden an das Gelenk anschließenden Knochen gemeint, der das Kindelement des anderen ist.
 Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung des Knochens mit der Welt-y-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
-
-% Einschränkungen der Gelenke
-Zusätzlich gibt es für jedes Gelenk und jeden Freiheitsgrad einen minimalen und einen maximalen Winkel, der eingenommen werden kann. Dieses Intervall hängt von den anatomischen Möglichkeiten des Gelenks ab und von den Winkeln, die in einer "`sinnvollen"' Ruheposition eingenommen werden können. 
-\todo{ist das überhaupt eine Einschränkung?}
-Es gibt also lokale Einschränkungen je nach Gelenk und globale Randbedingungen. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
+Es gibt also globale Randbedingungen und lokale Einschränkungen je nach Gelenk. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
 
 % Startposition, Bewegungseinschränkungen
 Die Startposition der Extremität ist maximal angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den folgenden Iterationen wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. \todo{würde wahrscheinlich auch mit ausgestrecktem Bein als Startpos gehen; was wäre dabei zu beachten}
