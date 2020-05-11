@@ -11,6 +11,8 @@
 \todo{"`Kommunikation"' über SkeletonGenerator}
 
 \begin{itemize}
+ \item Bei echten Wirbeltieren gibt es sehr viele verschiedene Arten von Gelenken (siehe \cite{Vergleichende_Anatomie}, Absatz 21.5.2). Der Einfachheit halber werden hier nur Gelenke betrachtet, deren Winkel schon durch den Grundbauplan festgelegt sind (\zb zwischen Wirbeln), und Gelenke in Extremitätenmit einem Freiheitsgrad (\zb an Ellenbogen oder Knie) (näheres zu Gelenken in Extremitäten weiter unten)
+
  \item Einheiten der PCA für Koordinaten $[0, 1000]$, deshalb sind die Wirbelsäulen der generierten Skelette auch in diesem Rahmen. Blender interpretiert eine Einheit als $1$m. Deshalb wirken sie sehr groß.
  
  \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
@@ -82,6 +84,24 @@ Hier ist \zb in den allermeisten Fällen klar in welche Richtung ein Gelenk gedr
 
 Deshalb wurde hier ein eigener, recht simpler Algorithmus entwickelt, der auf dieses spezielle Problem angepasst ist.
 
+%Gelenke
+Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen.\\
+% Zweiter Freiheitsgrad
+Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Der Oberschenkel lässt sich nicht nur nach vorne und hinten bewegen, sondern auch seitlich abspreizen. Das lässt sich auch leicht als zweite Art von Gelenk im Code abbilden. Allerdings liefert der Algorithmus dann oft seltsam anmutende breitbeinige Tiere.
+Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
+Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Beinen gibt, wie \zb Echsen.
+% + max angewinkelte Pos komisch und Drehrichtung ändert sich je nach anderen Winkel
+
+
+\begin{figure}
+  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/oneDimJoints}}
+  \qquad
+  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/twoDimJoints}}
+  
+  \caption{Visualisierung der Bewegungsradien für die Gelenke in Extremitäten. Darstellung in Seitenansicht (wie in Abbildung \ref{bauplan_skelett}). Es sind die möglichen Winkel für eine Ruheposition des Skeletts zu sehen. Unterarm, Unterschenkel und Fuß können jeweils maximal die Verlängerung des darüberliegenden Knochens bilden und minimal komplett an ihm anliegen. Oberarm und Oberschenkel können nicht über die Senkrechte hinaus gedreht werden (außer bei Flossen).}
+  \label{joints}
+ \end{figure}
+
 
 % \begin{algorithm}
 %  \caption{Beinalgorithmus}
@@ -134,12 +154,6 @@ Durch Ausprobieren wurden folgende Zahlen als sinnvoll erachtet: Startwinkel $40
 Falls sich der Abstand zum Boden kaum verändert, liegt also die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen invalide sind. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration stärker verkleinert (halbiert).
 
 \todo{Wkten für Gelenke, Vorteil?}
-
-% Zweiter Freiheitsgrad
-Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Der Oberschenkel lässt sich nicht nur nach vorne und hinten bewegen, sondern auch seitlich abspreizen. Das lässt sich auch leicht als zweite Art von Gelenk im Code abbilden. Allerdings liefert der Algorithmus dann oft seltsam anmutende breitbeinige Tiere.
-Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
-Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Beinen gibt, wie \zb Echsen.
-% + max angewinkelte Pos komisch und Drehrichtung ändert sich je nach anderen Winkel
 
 % Probleme bei sehr kurzen Beinen
 Treten sehr kurzen Beinen auf, hat der Algorithmus außerdem einige kleine Probleme. Diese werden genauer in Abschnitt \ref{leg_positioning_short_legs} beschrieben. Da die Beine aber in diesen Fällen, wie gesagt, sehr kurz sind, ist es für den Gesamteindruck gar nicht besonders wichtig wie genau sie angeordnet sind.

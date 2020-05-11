@@ -16,8 +16,7 @@ Dieses Kapitel soll einen Überblick über die biologische Beschaffenheit der Wi
 
 % Definition
 Wirbeltiere, oder auch Vertebrata, sind Tiere mit einer skelettartigen Schädelkapsel, einem Cranium. Deshalb werden sie auch Schädeltiere oder Craniota genannt.\\
-Auf den ersten Blick ist diese Definition etwas überraschend, da als  Haupteigenschaft nicht die Wirbelsäule, sondern der Schädel genannt wird. Das liegt daran, dass zu den Wirbeltieren auch einige Tiere gezählt werden, die gar keine Wirbelsäule sondern "`nur"' eine Chorda dorsalis besitzen. Die Chorda dorsalis ist das Achsenskelett der Chordatiere, einem Tierstamm, zu dem auch die Wirbeltiere gehören. (\cite{Vergleichende_Anatomie}, S.27) 
-\todo{etwas mehr Info zur chorda dorsalis}\\ %und Wikipedia zu Wirbeltieren und chorda dorsalis
+Auf den ersten Blick ist diese Definition etwas überraschend, da als  Haupteigenschaft nicht die Wirbelsäule, sondern der Schädel genannt wird. Das liegt daran, dass zu den Wirbeltieren auch einige Tiere gezählt werden, die gar keine Wirbelsäule sondern "`nur"' eine Chorda dorsalis besitzen. Die Chorda dorsalis besteht aus weichem Gewebe, nicht aus Knochen. Sie ist das Achsenskelett der Chordatiere, einem Tierstamm, zu dem auch die Wirbeltiere gehören. (\cite{Vergleichende_Anatomie}, S.27 f.)\\
 Hier in dieser Arbeit soll es aber nur um Wirbeltiere mit Wirbelsäule gehen.
 
 % 5 Klassen
@@ -57,30 +56,27 @@ Ebenso unterscheidet sich die Anzahl der Wirbel in anderen Teilen der Wirbelsäu
 Auch die Form der einzelnen Wirbel unterscheidet sich sowohl zwischen den verschiedenen Tieren als auch entlang der Wirbelsäule einer einzelnen Art (\cite{Vergleichende_Anatomie}, Abschnitt 9.1 und Abbildung 9.2). Diese Vielfalt in ein Regelwerk zu zwängen, um sie automatisch generieren zu können, erscheint aussichtslos. Deshalb wird hier mit einem Platzhaltern gearbeitet, der für alle Arten von Wirbeln steht.
 
 % Extremitäten
-Die \emph{Extremitäten} der Tetrapoden sind nach einem "`Grundbauplan"' aufgebaut (siehe Abbildung \ref{grundbauplan}). \todo{Fachbegriffe abschneiden, Bild einfärben} Dieser wird jedoch vielfach abgewandelt. Einige Beispiele sind in Abbildung \ref{bsp_extremitaeten} zu sehen. (\cite{AllgemeineZoologie}, S.\ 487)\\
+Die \emph{Extremitäten} der Tetrapoden sind nach einem "`Grundbauplan"' aufgebaut (siehe Abbildung \ref{extremities}a). Dieser wird jedoch vielfach abgewandelt. Einige Beispiele sind in Abbildung \ref{extremities}b zu sehen. (\cite{AllgemeineZoologie}, S.\ 487)\\
 Bei Fischen haben die Extremitäten keine Verbindung zur Wirbelsäule. Erst Amphibien bilden Schulter- und Beckengürtel aus, da sie zur Fortbewegung an Land nötig sind. (\cite{Vergleichende_Anatomie}, Abschnitt 9.2.3)
 Der Einfachheit halber wird hier aber nicht weiter beachtet ob eine Verbindung zur Wirbelsäule besteht, oder nicht. 
 
-\begin{figure}
- \centering
- \includegraphics[width=0.8\textwidth]{graphics/GrundbauplanExtremitaet.pdf}
- \caption{\emph{Grundbauplan} der Extremitäten von Tetrapoden: Humerus = Oberarmknochen, Femur = Oberschenkelknochen, Radius = Speiche, Ulna = Elle, Tibia = Schienbein, Fibula = Wadenbein, Metacarpus = Mittelhand, Metatarsus = Mittelfuß. (\cite{AllgemeineZoologie}, S.\ 487; eine ähnliche Abbildung ist auch in \cite{Vergleichende_Anatomie}, S.\ 184, zu finden)}
- \label{grundbauplan}
-\end{figure}
-
-\begin{figure}
- \centering
- \includegraphics[width=0.8\textwidth]{graphics/ExtremitaetenBeispiele2.pdf}
- \caption{Vordergliedmaßen von Mensch (1), Eidechse (2), Wal (3), Maulwurf (4), Pinguin (5), Pferd (6), Flugsaurier (7), Vogel (8) und Fledermaus (9). (\cite{dtvBiologie}, S.\ 474)}
- \label{bsp_extremitaeten}
-\end{figure}
+ \begin{figure}
+  \subfloat[Grundbauplan]{\includegraphics[height=0.35\textheight]{graphics/GrundbauplanExtremitaet_bearbeitet.pdf}} \label{grundbauplan}
+  \qquad
+  \subfloat[Beispiele]{\includegraphics[height=0.35\textheight]{graphics/ExtremitaetenBeispiele2.pdf}} \label{bsp_extremitaeten}
+  
+  \caption{Extremitäten von Tetrapoden, Oberarm rot, Speiche dunkelblau, Elle hellblau, Handwurzelknochen grün, Mittelhandknochen gelb, Finderknochen braun\\
+  (a) Grundbauplan (\cite{AllgemeineZoologie} S.\ 487, vereinfacht und eingefärbt),\\
+  (b) Beispiele für Vordergliedmaßen von Mensch (1), Eidechse (2), Wal (3), Maulwurf (4), Pinguin (5), Pferd (6), Flugsaurier (7), Vogel (8) und Fledermaus (9). \mbox{(\cite{dtvBiologie}, S.\ 474)}}
+  \label{extremities}
+ \end{figure}
 
 % Extremitätengürtel
 Schulter- und Beckengürtel bestehen  jeweils aus mehreren Knochen, die je nach Art mehr oder weniger ausgebildet, unterschiedlich geformt oder sogar komplett zurückgebildet sein können (siehe \cite{Vergleichende_Anatomie}, Absatz 9.7). Um das im Folgenden zu vereinfachen, wird jeder Extremitätengürtel durch einen Knochen repräsentiert. Der Schultergürtel wird durch ein Schulterblatt ersetzt und der Beckengürtel durch einen "`Beckenknochen"'.
 
 % verallgemeinerter und abstrahierter Bauplan
 Das Skelett von Wirbeltieren ist im Allgemeinen also ein kompliziertes Konstrukt aus vielen Einzelteilen, die zwischen verschiedenen Arten stark variieren. Um einen Algorithmus zu entwerfen, der Skeletten nachempfundene Gebilde konstruiert, ist es also notwendig ein erheblich vereinfachtes Modell zu erstellen.\\ 
-In Abbildung \ref{bauplan_skelett} ist ein verallgemeinerter und abstrahierter Bauplan für Wirbeltiere zu sehen. Er ist reduziert auf die Wirbelsäule, Rippen, Schädel, Extremitäten, Hüft- und Schultergürtel. Die Extremitäten bestehen jeweils aus Oberarm/-schenkel, Unterarm/Schienbein und Hand/Fuß. Hände und Füße werden hier jeweils als ein "`Knochen"' betrachtet, obwohl sie natürlich aus vielen Einzelteilen bestehen. Es kann maximal zwei Extremitätenpaare geben, jeweils einer an jedem Extremitätengürtel. Rippen, Hals- und Schwanzwirbelsäule sind optional und auch die Anzahl der Wirbel und Rippen variiert je nach Tier.
+In Abbildung \ref{bauplan_skelett} ist ein verallgemeinerter und abstrahierter Bauplan für Wirbeltiere zu sehen. Er ist reduziert auf die Wirbelsäule, Rippen, Schädel, Extremitäten, Schulterblatt und Beckenknochen. Die Extremitäten bestehen jeweils aus Oberarm/-schenkel, Unterarm/Schienbein und Hand/Fuß. Hände und Füße werden hier jeweils als ein "`Knochen"' betrachtet, obwohl sie natürlich aus vielen Einzelteilen bestehen. Es kann maximal zwei Extremitätenpaare geben, jeweils einer an jedem Extremitätengürtel. Rippen, Hals- und Schwanzwirbelsäule sind optional und auch die Anzahl der Wirbel und Rippen variiert je nach Tier.
 
 \begin{figure}
  \centering
@@ -88,22 +84,6 @@ In Abbildung \ref{bauplan_skelett} ist ein verallgemeinerter und abstrahierter B
  \caption{Verallgemeinerter und abstrahierter Bauplan eines Wirbeltierskeletts. Es sind maximal zwei Extremitätenpaare erlaubt, jeweils eines an jedem Extremitätengürtel. Rippen und Hals- und Schwanzwirbelsäule sind optional. Die Anzahl der Wirbel und Rippen variiert je nach Tier.}
  \label{bauplan_skelett}
 \end{figure}
-
-
-%Gelenke
-Auch bei \emph{Gelenken} gibt es viele verschiedene Ausprägungen (siehe \cite{Vergleichende_Anatomie}, Absatz 21.5.2). Der Einfachheit halber werden hier nur drei Arten von Gelenken betrachtet: unbewegliche Gelenke (\zb zwischen Wirbeln) \todo{ist eigentlich nicht unbeweglich}, Gelenke mit einem Freiheitsgrad (\zb an Ellenbogen oder Knie) und Gelenke mit zwei Freiheitsgraden (\zb an Schulter oder Hüfte).
-Im vereinfachten Modell sind alle Gelenke unbeweglich, bis auf diejenigen in Extremitäten. Außerdem wird angenommen, dass die jeweiligen Bewegungsradien für alle Wirbeltiere gleich sind. 
-
-Im Folgenden sind vor allem die möglichen Winkel der Gelenke in einer Ruheposition des Skeletts von Interesse. Diese sind in Abbildung \ref{joints} visualisiert. \todo{Abb überarbeiten + evtl farbig wie Grundbauplan} Schulter- und Hüftgelenk können eigentlich auch von der Körperachse wegbewegt werden. Diese Bewegungsrichtung wird aber nicht verwendet. Deshalb ist sie hier nicht dargestellt.
-
-\begin{figure}
-  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/oneDimJoints}}
-  \qquad
-  \subfloat{\includegraphics[width=0.5\textwidth]{graphics/twoDimJoints}}
-  
-  \caption{Visualisierung der Bewegungsradien für die Gelenke in Extremitäten. Darstellung in Seitenansicht (wie in Abbildung \ref{bauplan_skelett}). Es sind die möglichen Winkel für eine Ruheposition des Skeletts zu sehen. Unterarm, Unterschenkel und Fuß können jeweils maximal die Verlängerung des darüberliegenden Knochens bilden und minimal komplett an ihm anliegen. Oberarm und Oberschenkel können nicht über die Senkrechte hinaus gedreht werden (außer bei Flossen).}
-  \label{joints}
- \end{figure}
 
 
 %-----------------------------------------------------
@@ -120,7 +100,7 @@ Das größte und schwerste Wirbeltier ist der Blauwal, er kann bis zu $120$ Tonn
 Wenn eine Tierart im Laufe der Evolution wächst, so ändert sich die Größe gleichmäßig. Dieses Wachstum ist aber begrenzt. Der Grund dafür ist, dass die Oberfläche nicht proportional mit dem Volumen mitwächst. Beispielsweise produziert ein Säugetier Wärme proportional zu seinem Volumen. Es kann aber nur Wärme proportional zu seiner Oberfläche abgeben. Dadurch haben große Säugetiere eher Probleme Wärme abzugeben und kleine warm zu bleiben.
 Ein ähnliches Problem tritt bei Knochen auf. Die Last, die ein Knochen tragen kann, ist ungefähr proportional zu seiner Querschnittsfläche. Das Skelett muss aber das komplette Gewicht des Körpers tragen, was wiederum proportional zum Volumen ist.
 % Lösungen für Skalierungen
-Aus diesem Grund ist die Oberfläche sehr großer Tiere oft überproportional vergrößert. \todo{Bsp: Falten, große Ohren} Bei Knochenquerschnitten ist das jedoch nicht unbedingt der Fall. Das Problem an dicken Knochen ist, dass sie den Bewegungsradius, \zb der Extremitäten, stark einschränken. Deshalb passen viele Tiere stattdessen ihre Körperhaltung und Aktivität an, um Spitzenkräfte, wie Stöße oder Oszillationen, auf ihre Knochen zu vermeiden. Deshalb wirken große Tiere auch eher "`behäbiger"' als kleine. (\cite{Vergleichende_Anatomie}, Kapitel 23)
+Aus diesem Grund müssten die Knochen großer Tiere eigentlich überproportional vergrößert sein. Das ist jedoch nicht unbedingt der Fall. Das Problem an dicken Knochen ist, dass sie den Bewegungsradius, \zb der Extremitäten, stark einschränken. Deshalb passen viele Tiere stattdessen ihre Körperhaltung und Aktivität an, um Spitzenkräfte, wie Stöße oder Oszillationen, auf ihre Knochen zu vermeiden. Deshalb wirken große Tiere auch eher "`behäbiger"' als kleine. (\cite{Vergleichende_Anatomie}, Kapitel 23)
 
 Sehr große und sehr kleine Wirbeltiere können also nicht über einfaches Skalieren ineinander überführt werden. Dennoch ähneln sich ihre Skelette sehr.
 
@@ -135,7 +115,8 @@ Einen guten Überblick über solche Tiere, nicht nur aus der Mythologie sondern 
 
 Hier sollen drei Beispiele hervorgehoben werden, die jeweils charakteristische Merkmale besitzen. Sie stammen aus der Mythologie und bilden oft auch die Grundlage für andere fiktive Wirbeltiere.
 
-\emph{Zentauren} haben einen Pferdekörper, aber statt eines Halses setzt ein menschlicher Oberkörper auf dem Schultergürtel auf \cite{centaurs}. Sie haben also zwei Schultergürtel. \todo{Paper zu Mischwesen zitieren?}
+\emph{Zentauren} haben einen Pferdekörper, aber statt eines Halses setzt ein menschlicher Oberkörper auf dem Schultergürtel auf \cite{centaurs}. Sie haben also zwei Schultergürtel. 
+%\todo{Paper zu Mischwesen zitieren?}
 
 Der \emph{Pegasus} hat ebenfalls den Körper eines Pferdes, aber auch Flügel, die zusätzlich zu den Vorderbeinen am Schultergürtel ansetzen \cite{pegasus}. Es ist also "`möglich"' an einem Extremitätengürtel zwei Paare von Extremitäten ansetzen zu lassen.
 
