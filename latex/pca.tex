@@ -237,6 +237,18 @@
   \emph{Tierklasse} Amphibie, \emph{Flügel} $0$, \emph{Beine mit Bodenkontakt} $2$, \emph{Gewicht} $0,01$kg.}
   \label{frosch}
  \end{figure}
+ 
+ 
+ Um zu verstehen in welchem Bereich sich die zufällig generierten Punkte bewegen, ist es sinnvoll sich anzuschauen was die \emph{principal components} "`bedeuten"'. In Abbildung \ref{pca_results_sqrtEV_biggest} sind zwei Datenpunkte zu sehen, bei denen jeweils alle Dimensionen auf null festgelegt sind, nur der Wert für die Dimension des größten Eigenvektors ist die positive \bzw negative Standardabweichung. Die Varianz entlang eines Eigenvektors ist gegeben durch den Eigenwert. Die Standardabweichung ist also die Wurzel des entsprechenden Eigenwerts. Es ist zu sehen wie Punkte entlang des ersten Eigenvektors verändert werden \bzw welchen Einfluss er ausübt. Abbildungen für die sechs größten Eigenvektoren sind im Anhang in Abbildung \ref{pca_results_sqrtEV} zu finden.
+ 
+ \begin{figure}
+   \subfloat[$-\sigma$, \emph{Flügel} $0,38$, \emph{Beine mit Bodenkontakt} $1,6$, \mbox{\emph{Gewicht} $92$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
+   \qquad
+   \subfloat[$+\sigma$, \emph{Flügel} $-0,057$, \emph{Beine mit Bodenkontakt} $1,2$, \mbox{\emph{Gewicht} $94$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
+   
+   \caption{Datenpunkte im PCA-Koordinatensystem. Die Koordinate für den größten Eigenvektor nimmt den Wert der positiven \bzw negativen \mbox{Standardabweichung $\sigma$} an, alle anderen sind null. Für Abbildungen zu den größten sechs Eigenvektoren siehe Abbildung \ref{pca_results_sqrtEV} im Anhang}
+   \label{pca_results_sqrtEV_biggest}
+ \end{figure}
 
  Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man die Frage stellen, ob sie nötig sind, oder ob sie die Ergebnisse der PCA eher verschlechtern. Deshalb wurde ausprobiert verschiedene (Kombinationen von) Merkmalen wegzulassen. Die Ergebnisse unterscheiden sich aber nicht extrem von der PCA mit allen Daten. \\
  Leider gibt es keine gute Möglichkeit die Qualität der Ergebnisse der PCA zu messen. Man könnte den Unterschied zwischen den Eingabedaten und den Rekonstruktionen aus den Linearkombinationen der Eigenvektoren mit den größten Eigenwerten messen. Aber das liefert, durch das Fehlen von verschiedenen Dimensionen kein einheitliches Maß.
@@ -248,8 +260,6 @@
  
  Ein weiteres Problem daran die Daten in mehrere Mengen aufzuteilen ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich scheinen aber die Datenpunkte, die "`zwischen"' den Gruppen erzeugt werden, relativ sinnvoll auszusehen.
  Auch das ist ein Argument dafür keine Aufteilung vorzunehmen.
- 
- \todo{Beispiele für zufällig erzeugte Punkte}
  
  
  %-------------------------------------------------
@@ -303,7 +313,7 @@
  Die bessere Alternative ist die Eingabedimensionen der PCA umzuparametrisieren. Die Länge des Schwanzes in x-Richtung, ist \zb implizit in der Differenz der x-Koordinaten des ersten und letzten Kontrollpunktes der Bezièrkurve des Schwanzes enthalten. Ersetzt man nun den absoluten x-Wert des letzten Kontrollpunktes durch den Abstand in x-Richtung zum ersten Kontrollpunkt, so lässt sich die Schwanzlänge in x-Richtung ganz einfach als Bedingung an die PCA stellen. 
  
  % Schwanzlänge messen
- Betrachtet man nun konkret den Wunsch die Schwanzlänge festzulegen, ist das nicht ganz so einfach. Die Längen in x- und y-Richtung lassen sich zwar leicht festlegen, diese Längen sagen aber im Allgemeinen noch nicht viel über die tatsächliche Länge der Bezièrkurve aus. Verlangt man \zb eine Länge von $0$px für den Schwanz in x-Richtung, so haben die generierten Datenpunkte einen Schwanz der zwar auf gleicher Höhe beginnt und endet, aber trotzdem vorhanden ist und einen kleinen Bogen beschreibt. \todo{Beispielbild}
+ Betrachtet man nun konkret den Wunsch die Schwanzlänge festzulegen, ist das nicht ganz so einfach. Die Längen in x- und y-Richtung lassen sich zwar leicht festlegen, diese Längen sagen aber im Allgemeinen noch nicht viel über die tatsächliche Länge der Bezièrkurve aus. Verlangt man \zb eine Länge von $0$px für den Schwanz in x-Richtung, so haben die generierten Datenpunkte einen Schwanz der zwar auf gleicher Höhe beginnt und endet, aber trotzdem vorhanden ist und einen kleinen Bogen beschreibt.
  Um die wirkliche Länge des Schwanzes zu messen, müsste man also noch mehr Aufwand in die Umparametrisierung stecken oder doch eine zusätzliche Dimension für die PCA in Kauf nehmen.
  
  
