@@ -46,14 +46,21 @@ Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, 
  \begin{itemize}
   \item Iterative Erzeugung eines Skeletts durch eine probabilistische kontextfreie (?) Grammatik, die so erweitert ist, dass sie nicht ein einfaches Wort erzeugt, sondern einen Baum von Zeichen (nötig für Extremitäten). Verwendung von parametrischen L-Systemen \cite{Paramteric_L-Systems} könnte sinnvoll sein.
   
-  \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}\\
-  \todo{Graphen zur Visualisierung der Regeln einfügen}
+  \item Regeln sind nicht wirklich eine Grammatik, da fast jedes nichtterminale Literal nur einmal vorkommt, wenn es für jedes Körperteil andere Regeln gibt. Oder ist es möglich so zu abstrahieren, dass z.B. Arme und Beine den gleichen/ähnlichen Regeln unterliegen? Ist das sinnvoll? \todo{Abstraktionsgrad, Art der Regeln}
   Außerdem ist das Skelett nicht unbedingt zusammenhängend (siehe Biologie). $\rightarrow$ Darauf achten, dass das nicht von Algorithmus verlangt wird
   
   \item Brustbein sorgt dafür, dass Skelett nicht mehr baumartig $\rightarrow$ erstmal weglassen, ist wahrscheinlich auch nicht unglaublich relevant
   
   \item Kindelement erst erzeugen, wenn Elternelement terminal ist und Gelenk hat.
  \end{itemize}
+ 
+ \begin{sidewaysfigure}
+  \centering
+  \includegraphics[height=14cm]{graphics/grammarGraph}
+  \caption{Aufbau der Grammatik}
+  \label{grammar_graph}
+ \end{sidewaysfigure}
+
 
  
 

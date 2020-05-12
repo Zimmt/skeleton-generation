@@ -178,6 +178,7 @@
 %% --- End of captions style ---
 
 \usepackage[format=plain, indention=1cm]{caption}
+\usepackage{rotating}
 
 
 
