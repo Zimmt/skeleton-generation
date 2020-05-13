@@ -6,9 +6,41 @@
 %--------------------------------------------------
 \section{Überblick über den Ablauf der Generierung}
 
-\todo{Überblick über den Ablauf des Algorithmus}\\
 \todo{Koordinatensystem beschreiben, Achsen etc auch für später (zB Beinalgo) festlegen}\\
 \todo{"`Kommunikation"' über SkeletonGenerator}
+
+\fbox{
+ \begin{minipage}{\textwidth}
+  \centering
+  \begin{minipage}{0.9\textwidth}
+    
+    \vspace{0.5cm}
+    {\large Generierung eines Skeletts}
+
+    \begin{enumerate}
+      \item \textbf{PCA}: Lese die Beispielskelette ein und berechne den Basiswechsel (siehe \mbox{Kapitel \ref{chapter:pca}}).
+ 
+      \item \textbf{Punkt im PCA Raum}: Bestimme einen (bedingt) zufälligen Punkt im PCA-Raum oder verwende einen vorgegebenen.
+ 
+      \item \textbf{Weitere Merkmale}: Bestimme aus den "`Wahrscheinlichkeiten"' für \emph{Flügel} und \emph{Beine mit Bodenkontakt} Anzahl, Art und Ansatzpunkte der Extremitäten (Abschnitt \ref{section:extremity_generation}) und lege fest an welchen Wirbeln Rippen ansetzen (Abschnitt \ref{section:vertebrae_ribs}).
+ 
+      \item \textbf{Ersetzungsregeln}: Starte mit dem Nichtterminal \emph{Skelett} und wende so lange Ersetzungsregeln an bis nur noch Terminale übrig sind (\mbox{Abschnitt \ref{section:grammar}}).
+ 
+      \item \textbf{Spiegelung}: Spiegle alle Elemente, die nicht auf der Wirbelsäule liegen. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in Abschnitt \ref{implementation_detail_matrices} zu finden.)
+ 
+      \item \textbf{3D-Modell}: Generiere aus den Abmessungen der terminalen Elemente 3D-Objekte und füge sie zu einem kompletten 3D-Modelle zusammen. Dafür werden bestehende Modelle von echten Knochen oder einfache Quader eingesetzt (siehe Abschnitt \ref{bone_models}).
+ 
+    \end{enumerate}
+    \vspace{0.2cm}
+    
+  \end{minipage}
+ \end{minipage} 
+}
+
+
+
+
+
 
 \begin{itemize}
  \item Bei echten Wirbeltieren gibt es sehr viele verschiedene Arten von Gelenken (siehe \cite{Vergleichende_Anatomie}, Absatz 21.5.2). Der Einfachheit halber werden hier nur Gelenke betrachtet, deren Winkel schon durch den Grundbauplan festgelegt sind (\zb zwischen Wirbeln), und Gelenke in Extremitätenmit einem Freiheitsgrad (\zb an Ellenbogen oder Knie) (näheres zu Gelenken in Extremitäten weiter unten)
@@ -23,7 +55,10 @@
 \section{Extremitäten}
 \label{section:extremity_generation}
 
-Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten.
+Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skeletts vor. Zu den Dingen, die noch festgelegt werden müssen, zählen \zb die Anzahl und Anordnung der Wirbel und Rippen und vor allem die Ausrichtung der Extremitäten. 
+
+% was ist schon vorgegeben
+Die Bestandteile einer Extremität sind durch den Grundbauplan (Abbildung \ref{bauplan_skelett}) vorgegeben und die Länge der Bestandteile durch die Entsprechenden Merkmale des PCA-Datenpunkts. Die Schwierigkeit besteht nun darin in den entsprechenden Ersetzungsregeln (siehe Abbildung \ref{grammar_graph}) auch die Positionierung vorzunehmen.
 
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
 Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer_farbig} am Beispiel des Klippschliefers sehr gut zu sehen.
@@ -213,6 +248,7 @@ Wenn ein Tier also möglichst genau reproduziert werden soll, sollte zumindest d
 
 %---------------------------------------------------
 \section{Wirbel und Rippen}
+\label{section:vertebrae_ribs}
 
 Weitere Dinge, die festgelegt werden müssen, ist die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
 
