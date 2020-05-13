@@ -46,11 +46,18 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
 %--------------------
 \section{Grammatiken}
 
-L-Systeme, Expertensystem?\\
-am Ende gar nicht nötig
+Eine \emph{Grammatik} $G$ \cite[S.\ 3]{tgiScript} ist ein Tupel $G = (\Sigma, V, S, P)$ mit 
+\begin{itemize}
+ \item dem endliches Alphabet $\Sigma$ der Terminalsymbole
+ \item dem endliches Alphabet $V$ der Nichtterminalsymbole
+ \item dem Startsymbol $S \in V$
+ \item der Menge von Produktionen $P \subseteq (V \cup \Sigma)* V (V \cup \Sigma)* \times (V \cup \Sigma)*$\\ der Form $P \subseteq (V \cup \Sigma)* V (V \cup \Sigma)* \rightarrow (V \cup \Sigma)*$
+\end{itemize}
+
 
 \begin{itemize}
- \item architecture shape grammars to generate Skeletons: Ilcik et al 2010 (Grammatik für Skelett und für Pose parallel), verwendet CGA shape grammar (Müller) wie auch thesis zur prozeduralen Städtegenerierung
+ \item Definition + kontextfrei und kontextsensitiv
+ \item L-Systeme (parallele Produktion, auch kontextsensitv/-frei) \cite{Paramteric_L-Systems}, Beispiel Pflanzen in selber Thesis, Städte \cite{cityGeneration}
 \end{itemize}
 
 
@@ -107,6 +114,7 @@ als Alternative zu Variationen mit PCA
     \item relativ simple Regeln, nicht orientiert an spezieller Tierklasse, Einschränkung für Anzahl Beine, für Houdini, kein Skelett sondern 3D-Modell, Rig wird auch generiert
     \item auch Variationen eines Tiers und Crossover zwischen mehreren Exemplaren möglich
    \end{itemize}
+  \item Grammar based genetic programming (a survey) 
 \end{itemize}
 
 
