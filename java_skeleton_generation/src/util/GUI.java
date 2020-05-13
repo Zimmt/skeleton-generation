@@ -364,11 +364,11 @@ public class GUI {
                 if (value < 0) {
                     value = -value;
                 }
+                if (onlyEvenNumbers && value % 2 != 0) {
+                    value += 1;
+                }
                 if (value > max) {
                     value = max;
-                }
-                if (onlyEvenNumbers && value % 2 != 0) {
-                    value -= 1;
                 }
                 return value;
             } catch (NumberFormatException e) {
