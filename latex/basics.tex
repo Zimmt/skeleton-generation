@@ -46,19 +46,23 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
 %--------------------
 \section{Grammatiken}
 
-Eine \emph{Grammatik} $G$ \cite[S.\ 3]{tgiScript} ist ein Tupel $G = (\Sigma, V, S, P)$ mit 
+Eine \emph{Grammatik} ist ein Tupel $G = (\Sigma, V, S, P)$ mit 
 \begin{itemize}
- \item dem endliches Alphabet $\Sigma$ der Terminalsymbole
- \item dem endliches Alphabet $V$ der Nichtterminalsymbole
- \item dem Startsymbol $S \in V$
- \item der Menge von Produktionen $P \subseteq (V \cup \Sigma)* V (V \cup \Sigma)* \times (V \cup \Sigma)*$\\ der Form $P \subseteq (V \cup \Sigma)* V (V \cup \Sigma)* \rightarrow (V \cup \Sigma)*$
+ \item dem endlichen Alphabet $\Sigma$ der Terminalsymbole
+ \item dem endlichen Alphabet $V$ der Nichtterminalsymbole
+ \item dem Startsymbol $S \in V$ und
+ \item der Menge von Produktionen $P \subseteq (V \cup \Sigma)^* V (V \cup \Sigma)^* \times (V \cup \Sigma)^*$\\ der Form $P \subseteq (V \cup \Sigma)^* V (V \cup \Sigma)^* \rightarrow (V \cup \Sigma)^*$
 \end{itemize}
 
+Eine Teilmenge der Grammatiken bilden \emph{kontextsensitive} Grammatiken. Ihre Produktionen haben die Form
+\[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in V,~ \alpha, \beta, \gamma \in ((V \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text{ und dem leeren Wort } \epsilon.\]
 
-\begin{itemize}
- \item Definition + kontextfrei und kontextsensitiv
- \item L-Systeme (parallele Produktion, auch kontextsensitv/-frei) \cite{Paramteric_L-Systems}, Beispiel Pflanzen in selber Thesis, Städte \cite{cityGeneration}
-\end{itemize}
+Wiederum eine Teilmenge davon bilden \emph{kontextfreie} Grammatiken mit Produktionen der Form 
+\[A \rightarrow w \text{ mit } A \in V \text{ und } w \in (\Sigma \cup V)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
+
+\emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen so viele Produktionen wie möglich gleichzeitig angewendet. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.
+Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme.\\
+Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. \cite{Paramteric_L-Systems}
 
 
 
