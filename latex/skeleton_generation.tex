@@ -8,11 +8,12 @@
 
 %------------------------------------
 \section{Bestandteile eines Skeletts}
+\label{skeleton_parts}
 
 Ein Skelett besteht aus Knochen und Gelenken. Zwei Knochen sind jeweils durch ein Gelenk miteinander verbunden. Im Folgenden werden sowohl Knochen als auch Gelenke genauer beschrieben.
 
-% Knochen
-Jeder \emph{Knochen} hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
+\paragraph{Knochen}
+Jeder Knochen hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
 Informationen, die für die Darstellung eines Knochens erforderlich sind, sind also
 seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem.
 
@@ -28,8 +29,8 @@ Da aber nicht jedes Wirbeltier eine Hüfte besitzt und es die Generierung verein
 Es ist sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden. \todo{Verweis auf IK} \\
 Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten verwendet. Genauere Informationen zu diesen Transformationsmatrizen und wie sie in verschiedenen Situationen berechnet werden können sind in Absatz \ref{implementation_detail_matrices} zu finden.
 
-% Gelenke
-Ein \emph{Gelenk} ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
+\paragraph{Gelenke}
+Ein Gelenk ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
 Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. In Abbildung \ref{joints} sind alle Gelenke mit mindestens einem Freiheitsgrad, die im Algorithmus verwendet werden, dargestellt.
 
 % Berechnung Transformationsmatrix des Kindelements
@@ -37,27 +38,40 @@ Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, 
 
 
 %-----------------------------
-\section{Aufbau als Grammatik}
+\section{Aufbau der Regeln zu Generierung}
 \label{section:grammar}
 
+% erweiterte kontextfreie Grammatik
+Um ein Skelett zu generieren ist ein Regelwerk notwendig. Die Grundidee war zunächst dazu eine kontextfreie Grammatik zu verwenden. Jedoch können kontextfreien Grammatiken nur Wörter erzeugen, keine Strukturen, die sich verzweigen. Verzweigungen sind aber nötig um die Baumstruktur des Skeletts, wie im Grundbauplan \ref{bauplan_skelett}, darzustellen.
+
+% Darstellung als Graph
+Um Bäume zu erzeugen, könnten L-Systemen (siehe Abschnitt \ref{grammars}) mit Verzweigungen verwendet werden.
+Letztendlich wären die Produktionen der Grammatik jedoch so aufgebaut, dass jedes Nichtterminalsymbol genau einmal vorkommt und genau einmal die entsprechende Produktionsregel angewandt wird. Deshalb ist es einfacher sich die erzeugte Struktur direkt als Baum, also als gerichteten, zusammenhängenden Graphen ohne Kreise, vorzustellen.
+
+\paragraph{Darstellung als Baum}
+% Definition
+Der Baum $G = (V, E)$ hat die Knotenmenge $V$ und die Kantenmenge $E$. Die Knoten können \emph{terminal} oder \emph{nichtterminal} sein. Nichtterminale Knoten können keine Kindknoten haben, sind also Blätter (dazu weiter unten mehr). Für jeden nichtterminalen Knoten $v$ gibt es genau eine Ersetzungsregel, die $v$ durch einen Baum $B_v$ ersetzt. In diesem Prozess wird $v$ aus $G$ gelöscht und alle Knoten und Kanten von $B_v$ in $G$ eingefügt. Außerdem wird eine Kante zwischen der Wurzel von $B_v$ und dem Elternknoten von $v$ eingefügt, falls $v$ nicht die Wurzel von $G$ war. Wenn $G$ vor der Anwendung der Ersetzungsregel ein Baum war, so ist $G$ nach der Ersetzung also immernoch ein Baum.
+
+% konkreter Aufbau
+Die Skelettgenerierung startet mit einem Graphen $G$, wie oben, der nur aus einem einzelnen initialen nichtterminalen Knoten besteht. Der initiale Graph $G$ ist also ein Baum.
+Die Ersetzungsregeln, die im weiteren Verlauf verwendet werden, sind in Abbildung \ref{grammar_graph} dargestellt. 
+Elliptische Knoten stellen nichtterminale Knoten dar, eckige sind terminale Knoten. Die türkisfarbenen Kanten, die von einem nichtterminalen Knoten $v$ ausgehen, führen zu den Knoten des Baumes $B_v$, durch den $v$ bei Anwendung der Ersetzungsregel ersetzt wird. Die grauen Kanten, die von nichtterminalen Knoten ausgehen, führen zum jeweiligen Elternelement des Knotens. Terminale Knoten liegen auf durchgehenden, gerichteten Kurven. Die Richtung der Kurve gibt jeweils an in welcher Richtung das dazugehörige Elternelement liegt.
+Die vorderen und hinteren Rückenwirbel sind in der Abbildung zu einem Knoten vereinfacht worden. Auch die Rippen sind eigentlich separate Knoten, die jeweils Kindknoten genau eines Rückenwirbels sind.
+
+% Nichtterminale immer Blätter
+Terminale Knoten stehen für die Knochen des Skeletts. Sie haben also, wie in Abschnitt \ref{skeleton_parts} schon beschrieben, eine Position und eine Ausdehnung. Nichtterminale Knoten hingegen haben diese Eigenschaften nicht. Sie sind nur Platzhalter für noch zu generierende Knochen. Deshalb gibt es die Einschränkung, dass nichtterminale Knoten nur Blätter des Baums sein dürfen. Hätten sie nämlich terminale Kindknoten, so wäre nicht klar wie diese positioniert werden sollen.
+
+\paragraph{Variation der Ersetzungsregeln}
+% Randbedingungen für Ersetzungsregeln
+Die Ersetzungsregeln sind zwar für jedes Skelett die gleichen, dennoch berücksichtigen sie bei der Erzeugung der neuen Knoten verschiedene Randbedingungen. Dies sind vor allem die Merkmale des gewählten Punkts im PCA-Raum, \zb der Verlauf der Wirbelsäule oder die Länge der Extremitäten. Andere Bedingungen werden zufällig bestimmt, wie \zb die Anzahl der Wirbel und Rippen auf der Wirbelsäule.
+
+% optionale Elemente
+Außerdem sind, wie auch schon beim Grundbauplan \ref{bauplan_skelett}, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten, nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
+
+\todo{genauere Beschreibung der Regeln nötig?}
 
 
-\begin{itemize}
-  \item verwende kontextfreie Grammatik, kein L-System (aber Baumstruktur)
-  
-  \item Aufbau der (Nicht)terminale als Baum
-  \item nur Terminale (mit Gelenk) können Kinder haben
-  \item Reihenfolge der Anwendung der Regeln sollte beliebig sein
-  
-  \item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\
-  \item Bounding Box für Nichtterminale ist nicht nötig.
-  
-  \item Symmetrie der Skelette (spiegle Elemente zum Schluss)
-  \item Skelett zusammenhängend und ohne Kreise (Brustbein)
-  
-  \item am Ende aber für jedes Nichtterminal genau eine Regel
-  \item Arme und Beine ähnlich, könnten evtl gleiche Regel benutzen
- \end{itemize}
+
  
  \begin{sidewaysfigure}
   \centering
