@@ -1,7 +1,73 @@
 %---------------------------------------------------------------
 %---------------------------------------------------------------
-\chapter{Erzeugung eines Skeletts}
-\label{chapter:non_pca_things}
+\chapter{Generierung von Skeletten}
+\label{chapter:skeleton_generation}
+
+\todo{Einleitung}
+
+
+%------------------------------------
+\section{Bestandteile eines Skeletts}
+
+Ein Skelett besteht aus Knochen und Gelenken. Zwei Knochen sind jeweils durch ein Gelenk miteinander verbunden. Im Folgenden werden sowohl Knochen als auch Gelenke genauer beschrieben.
+
+% Knochen
+Jeder \emph{Knochen} hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
+Informationen, die für die Darstellung eines Knochens erforderlich sind, sind also
+seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem.
+
+% Hierarchie
+Die Knochen sollten eine Hierarchie (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird. \todo{Verweis auf previous work, wenn ausgearbeitet} Da der Wirbeltierbauplan aus Abbildung \ref{bauplan_skelett} verwendet wird, ist das auch möglich. Im Allgemeinen ist ein Skelett aber weder zusammenhängend noch ohne Kreise.
+
+% Wurzel
+Für eine Hierarchie ist ein erstes Element nötig, die Wurzel des Baums.
+Dafür bietet sich ein Knochen in der Nähe des Schwerpunkts an. Oft wird hierfür die Hüfte verwendet. \todo{Beispiel/Quelle}
+Da aber nicht jedes Wirbeltier eine Hüfte besitzt und es die Generierung vereinfacht, wird als Wurzelknochen ein Knochen ohne Ausdehnung in der Mitte der Rückenwirbelsäule verwendet. Dieser Knochen wird im Folgenden als \emph{Wurzelknochen} bezeichnet. Liegt Knochen $B$ in der Hierarchie direkt unter Knochen $A$, so ist $A$ der \emph{Elternknochen} von $B$ und $B$ ein \emph{Kindknochen} von $A$.
+
+% Transformationsmatrizen
+Es ist sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden. \todo{Verweis auf IK} \\
+Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten verwendet. Genauere Informationen zu diesen Transformationsmatrizen und wie sie in verschiedenen Situationen berechnet werden können sind in Absatz \ref{implementation_detail_matrices} zu finden.
+
+% Gelenke
+Ein \emph{Gelenk} ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
+Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. In Abbildung \ref{joints} sind alle Gelenke mit mindestens einem Freiheitsgrad, die im Algorithmus verwendet werden, dargestellt.
+
+% Berechnung Transformationsmatrix des Kindelements
+Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, so lässt sich daraus die Transformationsmatrix des Kindelements berechnen.
+
+
+%-----------------------------
+\section{Aufbau als Grammatik}
+\label{section:grammar}
+
+
+
+\begin{itemize}
+  \item verwende kontextfreie Grammatik, kein L-System (aber Baumstruktur)
+  
+  \item Aufbau der (Nicht)terminale als Baum
+  \item nur Terminale (mit Gelenk) können Kinder haben
+  \item Reihenfolge der Anwendung der Regeln sollte beliebig sein
+  
+  \item Wachstum unter Berücksichtigung verschiedener Randbedingungen wie Bodenposition, Anzahl Extremitäten etc.\
+  \item Bounding Box für Nichtterminale ist nicht nötig.
+  
+  \item Symmetrie der Skelette (spiegle Elemente zum Schluss)
+  \item Skelett zusammenhängend und ohne Kreise (Brustbein)
+  
+  \item am Ende aber für jedes Nichtterminal genau eine Regel
+  \item Arme und Beine ähnlich, könnten evtl gleiche Regel benutzen
+ \end{itemize}
+ 
+ \begin{sidewaysfigure}
+  \centering
+  \includegraphics[height=14cm]{graphics/grammarGraph}
+  \caption{Aufbau der Grammatik}
+  \label{grammar_graph}
+ \end{sidewaysfigure}
+
+
+
 
 %--------------------------------------------------
 \section{Überblick über den Ablauf der Generierung}
