@@ -3,7 +3,7 @@
 \chapter{Generierung von Skeletten}
 \label{chapter:skeleton_generation}
 
-\todo{Einleitung}
+In diesem Kapitel werden die einzelnen Bestandteile zusammengefügt, die zur Generierung eines Skeletts notwendig sind. Zunächst geht es um die Einzelteile aus denen ein fertiges Skelett besteht. Dann wird das Regelwerk zu ihrer Generierung in Abschnitt \ref{section:grammar} vorgestellt. Abschnitt \ref{section:overview} gibt einen Überblick über den Ablauf des kompletten Algorithmus. Die Positionierung der Extremitäten ist mit etwas mehr "`Aufwand"' verbunden und lässt viel Spielraum für Variationen. Deshalb widmet sich Abschnitt \ref{section:extremity_generation} den Extremitäten. Auf Wirbel und Rippen konzentriert sich Abschnitt \ref{section:vertebrae_ribs} und zuletzt geht es in Abschnitt \ref{bone_models} um die Erzeugung eines konkreten 3D-Modells.
 
 
 %------------------------------------
@@ -38,56 +38,71 @@ Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, 
 
 
 %-----------------------------
-\section{Aufbau der Regeln zu Generierung}
+\section{Aufbau als Grammatik}
 \label{section:grammar}
 
-% erweiterte kontextfreie Grammatik
-Um ein Skelett zu generieren ist ein Regelwerk notwendig. Die Grundidee war zunächst dazu eine kontextfreie Grammatik zu verwenden. Jedoch können kontextfreien Grammatiken nur Wörter erzeugen, keine Strukturen, die sich verzweigen. Verzweigungen sind aber nötig um die Baumstruktur des Skeletts, wie im Grundbauplan \ref{bauplan_skelett}, darzustellen.
+Bevor die Generierung eines Skeletts beginnt, wird zunächst ein Punkt im PCA-Raum bestimmt. Dieser Punkt bildet dann die Grundlage für die Generierung. Er legt \zb den Verlauf der Wirbelsäule und die Länge der Extremitäten fest. Das Regelwerk für die Generierung ist durch eine kontextfreie Grammatik gegeben (siehe \ref{grammars}).
 
-% Darstellung als Graph
-Um Bäume zu erzeugen, könnten L-Systemen (siehe Abschnitt \ref{grammars}) mit Verzweigungen verwendet werden.
-Letztendlich wären die Produktionen der Grammatik jedoch so aufgebaut, dass jedes Nichtterminalsymbol genau einmal vorkommt und genau einmal die entsprechende Produktionsregel angewandt wird. Deshalb ist es einfacher sich die erzeugte Struktur direkt als Baum, also als gerichteten, zusammenhängenden Graphen ohne Kreise, vorzustellen.
+\paragraph{Kontextfreie Grammatik}
+% erweiterte kontextfreie Grammatik
+Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (ähnlich wie sie auch bei L-Systemen vewendet werden).
+\begin{alignat*}{2}
+ \Sigma & = \{&&\text{(, ), Wurzelwirbel, Wirbel, Rippe, Schädel, Schulterwirbel,}\\  
+        & &&\text{Schulterblatt, Oberarm, Unterarm, Hand,}\\ 
+        & &&\text{Beckenknochen, Oberschenkel, Unterschenkel, Fuß}\}\\
+ N &= \{&&\text{\emph{Skelett, Vorderteil, Hinterteil, Schultergürtel, Vorderextremität, Hinterextremität}}\}\\
+ S &= &&\text{\emph{Skelett}}
+\end{alignat*}
+
+Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(B)C$ mit $A, B, C \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelemnt von $B$ als auch von $C$ ist.
+Im folgenden sind alle Produktionen aus $P$ aufgeführt.
+
+\begin{align*}
+ \text{\emph{Skelett}} \rightarrow &\text{ Wurzelwirbel ( \emph{Vorderteil} ) \emph{Hinterteil}}\\
+ \text{\emph{Vorderteil}} \rightarrow &\text{ [Wirbel ( Rippe? )]}^x\\
+    &\text{ Schulterwirbel ( Rippe? \emph{Schultergürtel}? )}\\
+    &\text{ [Wirbel]}^x\\
+    &\text{ Schädel}\\
+ \text{\emph{Schultergürtel}} \rightarrow &\text{ Schulterblatt \emph{Vorderextremität}}\\
+ \text{\emph{Vorderextremität}} \rightarrow &\text{ Oberarm Unterarm Hand}\\
+ \text{\emph{Hinterteil}} \rightarrow &\text{ [Wirbel ( Rippe? )]}^x\\
+    &\text{ [Beckenknochen ( \emph{Hinterextremität} )]?}\\
+    &\text{ [Wirbel]}^x\\
+ \text{\emph{Hinterextremität}} \rightarrow &\text{ Oberschenkel Unterschenkel Fuß}
+\end{align*}
+
+Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^*$ bedeutet, dass $A$ mehrfach vorkommen kann. Dies wird für Wirbel und Rippen verwendet. Wie oft diese genau vorkommen können, wird in Abschnitt \ref{section:vertebrae_ribs} genauer erklärt.
+Folgt ein ? auf ein Symbol, so ist es optional \dash es kann null- bis einmal vorkommen. Ob diese Elemente generiert werden oder nicht, hängt von Daten ab, die unabhängig von der Grammatik sind. Ob ein Schultergürtel, und damit auch eine Vorderextremität, und/oder eine Hinterextremität generiert wird, hängt von der "`Wahrscheinlichkeit"' des PCA-Datenpunkt für \emph{Beine mit Bodenkontakt} ab. Wieviele Rippen generiert werden wird zufällig bestimmt (siehe Abschnitt \ref{section:vertebrae_ribs}).
+
+Während die Bestandteile des Skeletts durch die Grammatik $G$ generiert werden, wird auch gleichzeitig Position und Ausdehnung der erzeugten Terminalsymbole festgelegt.  Aus diesem Grund haben Nichtterminalsymbole niemals Kindelemente. Wäre dies erlaubt, könnte es passieren, dass Nichtterminalsymbole terminale Kinder haben. Für diese wäre dann nicht klar wie sie positioniert werden müssen.\\
+Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Kompliziertere Berechnungen werde nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.
+
 
 \paragraph{Darstellung als Baum}
-% Definition
-Der Baum $G = (V, E)$ hat die Knotenmenge $V$ und die Kantenmenge $E$. Die Knoten können \emph{terminal} oder \emph{nichtterminal} sein. Nichtterminale Knoten können keine Kindknoten haben, sind also Blätter (dazu weiter unten mehr). Für jeden nichtterminalen Knoten $v$ gibt es genau eine Ersetzungsregel, die $v$ durch einen Baum $B_v$ ersetzt. In diesem Prozess wird $v$ aus $G$ gelöscht und alle Knoten und Kanten von $B_v$ in $G$ eingefügt. Außerdem wird eine Kante zwischen der Wurzel von $B_v$ und dem Elternknoten von $v$ eingefügt, falls $v$ nicht die Wurzel von $G$ war. Wenn $G$ vor der Anwendung der Ersetzungsregel ein Baum war, so ist $G$ nach der Ersetzung also immernoch ein Baum.
+Um die Baumstruktur besser zu visualisieren, kann das erzeugte Wort $w$ auch als Graph \bzw Baum dargestellt werden.\\
+Der Baum $B = (V, E)$ hat die Knotenmenge $V \subset (\Sigma \cup N)$ und die Kantenmenge $E \subset (\Sigma \cup (N \setminus S)) \times \Sigma$. Nichtterminale Knoten können keine Kindknoten haben, sind also Blätter. Für jeden nichtterminalen Knoten $v$ gibt es mindestens eine Ersetzungsregel aus $P$, die $v$ durch einen Baum $B_v$ ersetzt. In diesem Prozess wird $v$ aus $B$ gelöscht und alle Knoten und Kanten von $B_v$ in $B$ eingefügt. Außerdem wird eine Kante zwischen der Wurzel von $B_v$ und dem Elternknoten von $v$ eingefügt, falls $v$ nicht die Wurzel von $B$ war. Wenn $B$ vor der Anwendung der Ersetzungsregel ein Baum war, so ist $G$ nach der Ersetzung also immernoch ein Baum.
 
 % konkreter Aufbau
-Die Skelettgenerierung startet mit einem Graphen $G$, wie oben, der nur aus einem einzelnen initialen nichtterminalen Knoten besteht. Der initiale Graph $G$ ist also ein Baum.
+Die Skelettgenerierung startet also konkret mit einem Graphen $B$, der nur aus einem einzelnen initialen nichtterminalen Knoten besteht. Der initiale Graph $B$ ist also ein Baum.
 Die Ersetzungsregeln, die im weiteren Verlauf verwendet werden, sind in Abbildung \ref{grammar_graph} dargestellt. 
 Elliptische Knoten stellen nichtterminale Knoten dar, eckige sind terminale Knoten. Die türkisfarbenen Kanten, die von einem nichtterminalen Knoten $v$ ausgehen, führen zu den Knoten des Baumes $B_v$, durch den $v$ bei Anwendung der Ersetzungsregel ersetzt wird. Die grauen Kanten, die von nichtterminalen Knoten ausgehen, führen zum jeweiligen Elternelement des Knotens. Terminale Knoten liegen auf durchgehenden, gerichteten Kurven. Die Richtung der Kurve gibt jeweils an in welcher Richtung das dazugehörige Elternelement liegt.
 Die vorderen und hinteren Rückenwirbel sind in der Abbildung zu einem Knoten vereinfacht worden. Auch die Rippen sind eigentlich separate Knoten, die jeweils Kindknoten genau eines Rückenwirbels sind.
 
-% Nichtterminale immer Blätter
-Terminale Knoten stehen für die Knochen des Skeletts. Sie haben also, wie in Abschnitt \ref{skeleton_parts} schon beschrieben, eine Position und eine Ausdehnung. Nichtterminale Knoten hingegen haben diese Eigenschaften nicht. Sie sind nur Platzhalter für noch zu generierende Knochen. Deshalb gibt es die Einschränkung, dass nichtterminale Knoten nur Blätter des Baums sein dürfen. Hätten sie nämlich terminale Kindknoten, so wäre nicht klar wie diese positioniert werden sollen.
-
-\paragraph{Variation der Ersetzungsregeln}
-% Randbedingungen für Ersetzungsregeln
-Die Ersetzungsregeln sind zwar für jedes Skelett die gleichen, dennoch berücksichtigen sie bei der Erzeugung der neuen Knoten verschiedene Randbedingungen. Dies sind vor allem die Merkmale des gewählten Punkts im PCA-Raum, \zb der Verlauf der Wirbelsäule oder die Länge der Extremitäten. Andere Bedingungen werden zufällig bestimmt, wie \zb die Anzahl der Wirbel und Rippen auf der Wirbelsäule.
-
 % optionale Elemente
-Außerdem sind, wie auch schon beim Grundbauplan \ref{bauplan_skelett}, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten, nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
-
-\todo{genauere Beschreibung der Regeln nötig?}
-
-
+Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten, nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
 
  
- \begin{sidewaysfigure}
+ \begin{figure}
   \centering
-  \includegraphics[height=14cm]{graphics/grammarGraph}
-  \caption{Aufbau der Grammatik}
+  \includegraphics[height=15cm, angle=90, origin=c]{graphics/grammarGraph}
+  \caption{Darstellung der Ersetzungsregeln \bzw Produktionen der Grammatik $G$ als Graph. Elliptische Knoten sind Nichtterminalsymbole, rechteckige Knoten Terminalsymbole. Türkisfarbene Kanten zeigen auf diejenigen Symbole, durch die ein Nichtterminal bei Anwendung der entsprechenden Regel ersetzt wird. Graue Pfeile zeigen auf das Elternelement eines nichtterminalen Knotens und schwarze Kurven zeigen für Terminale in welcher Richtung das jeweilige Elternelement liegt.}
   \label{grammar_graph}
- \end{sidewaysfigure}
-
-
+ \end{figure}
 
 
 %--------------------------------------------------
 \section{Überblick über den Ablauf der Generierung}
-
-\todo{Koordinatensystem beschreiben, Achsen etc auch für später (zB Beinalgo) festlegen}\\
-\todo{"`Kommunikation"' über SkeletonGenerator}
+\label{section:overview}
 
 \fbox{
  \begin{minipage}{\textwidth}
@@ -98,26 +113,27 @@ Außerdem sind, wie auch schon beim Grundbauplan \ref{bauplan_skelett}, manche T
     {\large Generierung eines Skeletts}
 
     \begin{enumerate}
-      \item \textbf{PCA}: Lese die Beispielskelette ein und berechne den Basiswechsel (siehe \mbox{Kapitel \ref{chapter:pca}}).
+      \item Führe eine PCA auf den gegebenen Beispielskeletten durch.
  
-      \item \textbf{Punkt im PCA Raum}: Bestimme einen (bedingt) zufälligen Punkt im PCA-Raum oder verwende einen vorgegebenen.
+      \item Bestimme einen Punkt im PCA-Raum.
  
-      \item \textbf{Weitere Merkmale}: Bestimme aus den "`Wahrscheinlichkeiten"' für \emph{Flügel} und \emph{Beine mit Bodenkontakt} Anzahl, Art und Ansatzpunkte der Extremitäten (Abschnitt \ref{section:extremity_generation}) und lege fest an welchen Wirbeln Rippen ansetzen (Abschnitt \ref{section:vertebrae_ribs}).
+      \item Verwende die Grammatik aus Abschnitt \ref{section:grammar} um die Bestandteile des Skeletts zu erzeugen.
  
-      \item \textbf{Ersetzungsregeln}: Starte mit dem Nichtterminal \emph{Skelett} und wende so lange Ersetzungsregeln an bis nur noch Terminale übrig sind (\mbox{Abschnitt \ref{section:grammar}}).
+      \item Spiegle alle Elemente, die nicht auf der Wirbelsäule liegen.
  
-      \item \textbf{Spiegelung}: Spiegle alle Elemente, die nicht auf der Wirbelsäule liegen. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in Abschnitt \ref{implementation_detail_matrices} zu finden.)
- 
-      \item \textbf{3D-Modell}: Generiere aus den Abmessungen der terminalen Elemente 3D-Objekte und füge sie zu einem kompletten 3D-Modelle zusammen. Dafür werden bestehende Modelle von echten Knochen oder einfache Quader eingesetzt (siehe Abschnitt \ref{bone_models}).
- 
+      \item Generiere ein 3D-Modell, das alle generierten Elemente enthält.
     \end{enumerate}
     \vspace{0.2cm}
     
   \end{minipage}
  \end{minipage} 
 }
+\vspace{0.1cm}
 
-
+Der erste Schritt des Algorithmus ist eine PCA auf den gegebenen Beispieldaten auszuführen (siehe Kapitel \ref{chapter:pca}). Dazu werden zunächst die Beispieldaten eingelesen und dann der Basiswechsel in den PCA-Raum berechnet. Im PCA-Raum kann nun ein Punkt bestimmt werden, der als Grundlage für die weitere Generierung verwendet wird. Dieser Punkt kann entweder (bedingt) zufällig oder auch nach anderen Vorgaben ausgewählt werden.\\
+Im nächsten Schritt kommt die vorgestellt kontextfreie Grammatik zum Einsatz. Sie generiert die Einzelteile des Skeletts und gleichzeitig werden Position und Ausdehnung der terminalen Elemente festgelegt.
+In der Nachbearbeitung werden dann alle Elemente, die nicht auf der Wirbelsäule liegen, gespiegelt. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in \mbox{Abschnitt \ref{implementation_detail_matrices}} zu finden.)\\
+Zum Schluss wird ein 3D-Modell erzeugt. Dazu wird für jedes terminale Element, also jeden Knochen, ein eigenes Modell erzeugt und dann an der richtigen Position in das 3D-Modell des gesamten Skeletts eingefügt (siehe Abschnitt \ref{bone_models}). 
 
 
 
@@ -139,6 +155,7 @@ Ein Punkt im PCA-Raum gibt schon viele Eigenschaften des zu generierenden Skelet
 
 % was ist schon vorgegeben
 Die Bestandteile einer Extremität sind durch den Grundbauplan (Abbildung \ref{bauplan_skelett}) vorgegeben und die Länge der Bestandteile durch die Entsprechenden Merkmale des PCA-Datenpunkts. Die Schwierigkeit besteht nun darin in den entsprechenden Ersetzungsregeln (siehe Abbildung \ref{grammar_graph}) auch die Positionierung vorzunehmen.
+\todo{Wie wird aus Wkten berechnet ob Extremitäten ansetzen?}
 
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
 Das Skelett soll in einer Art Ruheposition dargestellt werden. Im Allgemeinen ist aber nicht klar wie die Ruheposition einer Extremität aussieht. Das ist schon allein daran zu erkennen, dass auf Darstellungen von Wirbeltierskeletten Flügel manchmal ausgestreckt und manchmal eingefaltet sind. Auch Beine sind meist so angeordnet, dass es aussieht als würde das entsprechende Tier gerade laufen. Dies ist auf Abbildung \ref{klippschliefer_farbig} am Beispiel des Klippschliefers sehr gut zu sehen.
@@ -288,18 +305,38 @@ Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als
 
 Ansatzpunkte für Extremitäten sind natürlich zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere (siehe Abschnitt \ref{biology_mythology}) zu ermöglichen, ist es aber möglich dies zu erweitern.
 
-% 2 Extremitäten an einem Gürtel
+\paragraph{Zwei Extremitätenpaare pro Extremitätengürtel}
 Eine einfache Möglichkeit ist hier zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt, an denen Extremitäten ansetzen können. Das ermöglicht beispielsweise Tiere wie den Pegasus.\\
+Um das zu ermöglichen, wird die, in Abschnitt \ref{section:grammar} eingeführte, Grammatik $G$ zu einer Grammatik $G' = (\Sigma', N, S, P')$ mit $\Sigma' = \Sigma \cup \{\text{Schulterblatt2, Beckenknochen2}\}$ erweitert. Die Produktionen $P$ werden durch folgende Regeln zu $P'$ ergänzt.
+
+\begin{align*}
+ \text{\emph{Schultergürtel}} \rightarrow &\text{ Schulterblatt2 ( \emph{Vorderextremität} ) \emph{Vorderextremität}}\\
+ \text{\emph{Hinterteil}} \rightarrow &\text{ [Wirbel ( Rippe? )]}^x\\
+    &\text{ [Beckenknochen2 ( \emph{Hinterextremität} ) ( \emph{Hinterextremität} )}\\
+    &\text{ [Wirbel]}^x
+\end{align*}
+
 % Keine Flügel und Arme an der Hüfte
 Flügel und Arme dürfen hierbei weiterhin nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen. Deshalb wird die Wirbelsäule durch die PCA auch dementsprechend angelegt.
 
-% mehr Extremitätengürtel auf dem Rücken
+\paragraph{Mehrere Extremitätengürtel entlang der Rückenwirbelsäule}
 Eine Überlegung war auch zwischen Schulter und Hüfte weitere Extremitätengürtel anzubringen, um \zb Tiere wie asiatische Drachen erzeugen zu können. Das stellt sich aber als schwierig heraus. Die Wirbelsäule ist zwischen Hüfte und Schulter meist nach oben geschwungen und im Bauchraum befinden sich die meisten Organe des Tieres. Ein zusätzlicher Extremitätengürtel würde den Bauchraum einschränken. Außerdem wirkt dann auch die nach oben geschwungene Wirbelsäule anatomisch seltsam.
 "`Verdoppelt"' man die Schwingung der Wirbelsäule und hängt einfach einen weiteren Rücken hinten oder vorne an, so wirkt es ebenso seltsam, da dann die "`Höcker"' der Wirbelsäule für das Tier wahrscheinlich nicht wirklich ein Vorteil sind und nur die Fortbewegung erschweren.
 Asiatische Drachen sind ein "`Spezialfall"'. Sie besitzen langen, schlangenartigen Körper, bei dem die Wirbelsäule gerade verläuft. Deshalb treten die oben genannten Probleme bei ihnen nicht auf.
 
-% zweiter Schultergürtel
+\paragraph{Zweiter Schultergürtel}
 Eine weitere Idee, die auch umgesetzt wurde, ist, eine Art Zentauren zu ermöglichen. Hat das Tier einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.\\
+Hierfür wird die Grammatik aus Abschnitt \ref{section:grammar} um eine zusätzliche Regel erweitert:
+
+\begin{align*}
+ \text{\emph{Vorderteil}} \rightarrow &\text{ [Wirbel ( Rippe? )]}^x\\
+    &\text{ Schulterwirbel ( Rippe? \emph{Schultergürtel}? )}\\
+    &\text{ [Wirbel]}^x\\
+    &\text{ Schulterwirbel ( \emph{Schultergürtel} )}\\
+    &\text{ [Wirbel]}^x\\
+    &\text{ Schädel}
+\end{align*}
+
 Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn auch der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben. Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
 
 %----------------------------------- 
@@ -330,12 +367,13 @@ Wenn ein Tier also möglichst genau reproduziert werden soll, sollte zumindest d
 \section{Wirbel und Rippen}
 \label{section:vertebrae_ribs}
 
-Weitere Dinge, die festgelegt werden müssen, ist die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
+Weitere Dinge, die festgelegt werden müssen, sind die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen.
 
+\paragraph{Wirbel}
 Die Anzahl der Wirbel orientiert sich an echten Wirbeltierskeletten (siehe Absatz \ref{biology_skeleton}). Auf dem Hals werden $7$ Wirbel generiert, außer das Tier hat Flügel, dann liegt die Anzahl zwischen $10$ und $30$. Auf dem Rücken liegen $25$ Wirbel und auf dem Schwanz $5$ bis $20$.
- Da der "`Wurzelwirbel"' in der Mitte der Rückenwirbelsäule liegt (oder zumindest ungefähr, da Bezierkurve bei $0,5$ ausgewertet bei wird) werden $13$ Wirbel auf der vorderen Hälfte und $12$ hinten generiert.
+Da der "`Wurzelwirbel"' in der Mitte der Rückenwirbelsäule liegt (oder zumindest ungefähr, da Bezierkurve bei $0,5$ ausgewertet bei wird) werden $13$ Wirbel auf der vorderen Hälfte und $12$ auf der hinteren generiert.
 
-Eine Bézierkurve ist ein Weg im $\mathbb{R}^2$. Sie ist parametrisiert auf $[0, 1]$ und im Allgemeinen nicht nach Bogenlänge parametrisiert. Das heißt die Geschwindigkeit, mit der die Kurve durchlaufen wird, ist nicht konstant. Wertet man die Kurve also bei $0.5$ aus, wurde nicht notwendigerweise die Hälfte der Strecke zurückgelegt.\\
+Eine Bézierkurve ist ein Weg im $\mathbb{R}^2$. Sie ist parametrisiert auf $[0, 1]$ und im Allgemeinen nicht nach Bogenlänge parametrisiert. Das heißt die Geschwindigkeit, mit der die Kurve durchlaufen wird, ist nicht konstant. Wertet man die Kurve also bei $0,5$ aus, wurde nicht notwendigerweise die Hälfte der Strecke zurückgelegt.\\
 Für die Generierung von $n$ Wirbeln wurde die Kurve einfach an den Stellen $\frac{i}{n}$ ausgewertet, für $0 \leq i \leq n$. Durch den oben genannten Effekt variiert dann die Länge der Wirbel über den Kurvenverlauf.
 
 Wird die Bézierkurve $B$ nach Bogenlänge umparametrisieren, so erhält man die Kurve $S$ mit:
@@ -344,14 +382,12 @@ Wird die Bézierkurve $B$ nach Bogenlänge umparametrisieren, so erhält man die
 
 Das obenstehende Integral ist jedoch schwer zu berechnen, da im Allgemeinen keine Stammfunktion des Integranden zur Verfügung steht. Es gibt jedoch numerische Methoden, mit denen das Problem gelöst werden kann. \cite{ArcLengthParametrization}
 
-Betrachtet man echte Wirbeltiere, so sind keine einfachen Regeln für die Länge ihrer Wirbel ersichtlich. Es gibt beispielsweise eine Studie, die die Beschaffenheit der  Wirbel von Mäusen untersucht \cite{MouseVertebrae}. In dieser Studie auf Abbildung $5$, Seite $19$, ist sehr gut zu sehen, dass die Länge der Wirbel im Verlauf der Wirbelsäule sehr stark schwankt.
+Betrachtet man echte Wirbeltiere, so sind keine einfachen Regeln für die Länge ihrer Wirbel ersichtlich. Es gibt beispielsweise eine Studie, die die Beschaffenheit der  Wirbel von Mäusen untersucht \cite{MouseVertebrae}. In dieser Studie auf Abbildung $5$, Seite $19$, ist sehr gut zu sehen, dass die Länge der Wirbel allein bei Mäusen im Verlauf der Wirbelsäule sehr stark schwankt.
 
-
-
+\paragraph{Rippen}
 Die Anzahl der Rippen und auch die Ausdehnung des Brustkorbs variiert zwischen Wirbeltieren sehr stark. Es gibt Tiere, die an jedem Wirbel der Rückenwirbelsäule Rippen haben und es gibt Tiere die haben nur ein paar wenige auf dem vorderen Teil.
 \todo{Beispiele}\\
 Deshalb wird ein zufälliges Intervall $[0, x]$ auf der Bézierkurve des Rückens bestimmt. Jeder Wirbel, der in diesem Intervall liegt, bekommt auch eine Rippe.
-\todo{Bestimmung der Rippenlänge beschreiben?}
 
 
 %-----------------------
