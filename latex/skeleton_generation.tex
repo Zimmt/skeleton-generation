@@ -5,7 +5,7 @@
 
 In diesem Kapitel werden die einzelnen Bestandteile zusammengefügt, die zur Generierung eines Skeletts notwendig sind. 
 Abschnitt \ref{section:overview} gibt einen Überblick über den Ablauf des kompletten Algorithmus. Fehlende Details werden in den darauffolgenden Abschnitten beschrieben.
-In Abschnitt \ref{skeleton_parts} werden die Einzelteile aus denen ein fertiges Skelett besteht beschrieben. Dann wird das Regelwerk zu ihrer Generierung in Abschnitt \ref{section:grammar} vorgestellt. Die Positionierung der Extremitäten ist mit etwas mehr "`Aufwand"' verbunden und lässt viel Spielraum für Variationen. Deshalb widmet sich Abschnitt \ref{section:extremity_generation} den Extremitäten. Auf Wirbel und Rippen konzentriert sich Abschnitt \ref{section:vertebrae_ribs} und zuletzt geht es in Abschnitt \ref{bone_models} um die Erzeugung eines konkreten 3D-Modells.
+In Abschnitt \ref{skeleton_parts} geht es um die Einzelteile aus denen ein fertiges Skelett besteht. Dann wird das Regelwerk zu ihrer Generierung in Abschnitt \ref{section:grammar} vorgestellt. Die Positionierung der Extremitäten ist mit etwas mehr "`Aufwand"' verbunden und lässt viel Spielraum für Variationen. Deshalb widmet sich Abschnitt \ref{section:extremity_generation} den Extremitäten. Auf Wirbel und Rippen konzentriert sich Abschnitt \ref{section:vertebrae_ribs} und zuletzt geht es in Abschnitt \ref{bone_models} um die Erzeugung eines konkreten 3D-Modells.
 
 
 %--------------------------------------------------
@@ -38,9 +38,9 @@ In Abschnitt \ref{skeleton_parts} werden die Einzelteile aus denen ein fertiges 
 }
 \vspace{0.1cm}
 
-Der erste Schritt des Algorithmus ist eine PCA auf den gegebenen Beispieldaten auszuführen (siehe Kapitel \ref{chapter:pca}). Dazu werden zunächst die Beispieldaten eingelesen und dann der Basiswechsel in den PCA-Raum berechnet. Im PCA-Raum kann nun ein Punkt bestimmt werden, der als Grundlage für die weitere Generierung verwendet wird. Dieser Punkt kann entweder (bedingt) zufällig oder auch nach anderen Vorgaben ausgewählt werden.\\
+Im ersten Schritt des Algorithmus wird eine PCA auf den gegebenen Beispieldaten auszuführen (siehe Kapitel \ref{chapter:pca}). Dazu werden zunächst die Beispieldaten eingelesen und dann der Basiswechsel in den PCA-Raum berechnet. Im PCA-Raum kann nun ein Punkt bestimmt werden, der als Grundlage für die weitere Generierung verwendet wird. Dieser Punkt kann entweder (bedingt) zufällig oder auch nach anderen Vorgaben ausgewählt werden.\\
 Im nächsten Schritt werden die Einzelteile des Skeletts (siehe Abschnitt \ref{skeleton_parts}) mit der, in Abschnitt \ref{section:grammar} vorgestellten, kontextfreie Grammatik erzeugt. Gleichzeitig werden auch Position und Ausdehnung der terminalen Elemente festgelegt.
-In der Nachbearbeitung werden dann alle Elemente, die nicht auf der Wirbelsäule liegen, gespiegelt. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in \mbox{Abschnitt \ref{implementation_detail_matrices}} zu finden.)\\
+Danach werden alle Elemente, die nicht auf der Wirbelsäule liegen, gespiegelt. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in \mbox{Abschnitt \ref{implementation_detail_matrices}} zu finden.)\\
 Zum Schluss wird ein 3D-Modell erzeugt. Dazu wird für jedes terminale Element, also jeden Knochen, ein eigenes Modell erzeugt und dann an der richtigen Position in das 3D-Modell des gesamten Skeletts eingefügt (siehe Abschnitt \ref{bone_models}). 
 
 
@@ -52,53 +52,53 @@ Ein Skelett besteht aus Knochen und Gelenken. Zwei Knochen sind jeweils durch ei
 
 \paragraph{Knochen}
 Jeder Knochen hat sein eigenes lokales Koordinatensystem und wird zunächst als Quader dargestellt. Der Ursprung des Koordinatensystems befindet sich in einer Ecke des Quaders.
-Informationen, die für die Darstellung eines Knochens erforderlich sind, sind also
-seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem.
+Zur Darstellung eines Knochens sind also
+seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem erforderlich.
 
 % Hierarchie
 Die Knochen sollten eine Hierarchie (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird. \todo{Verweis auf previous work, wenn ausgearbeitet} Da der Wirbeltierbauplan aus Abbildung \ref{bauplan_skelett} verwendet wird, ist das auch möglich. Im Allgemeinen ist ein Skelett aber weder zusammenhängend noch ohne Kreise.
 
 % Wurzel
-Für eine Hierarchie ist ein erstes Element nötig, die Wurzel des Baums.
+Für eine Hierarchie ist ein oberstes Element nötig, die Wurzel des Baums.
 Dafür bietet sich ein Knochen in der Nähe des Schwerpunkts an. Oft wird hierfür die Hüfte verwendet. \todo{Beispiel/Quelle}
 Da aber nicht jedes Wirbeltier eine Hüfte besitzt und es die Generierung vereinfacht, wird als Wurzelknochen ein Knochen ohne Ausdehnung in der Mitte der Rückenwirbelsäule verwendet. Dieser Knochen wird im Folgenden als \emph{Wurzelknochen} bezeichnet. Liegt Knochen $B$ in der Hierarchie direkt unter Knochen $A$, so ist $A$ der \emph{Elternknochen} von $B$ und $B$ ein \emph{Kindknochen} von $A$.
 
 % Transformationsmatrizen
-Es ist sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden. \todo{Verweis auf IK} \\
+Es ist sinnvoll für jeden Knochen nicht die Position im globalen Koordinatensystem anzugeben, sondern seine Position im Koordinatensystem des Elternknochens. Verfolgt man den Pfad von einem Knochen zurück zum Wurzelknochen, so kann die Position im globalen Koordinatensystem trotzdem ausgerechnet werden. \\
 Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten verwendet. Genauere Informationen zu diesen Transformationsmatrizen und wie sie in verschiedenen Situationen berechnet werden können sind in Absatz \ref{implementation_detail_matrices} zu finden.
 
 \paragraph{Gelenke}
 Ein Gelenk ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
-Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. 
-Die meisten Knochen werden aber direkt in ihrer Endposition generiert, sodass zusätzliche Bewegungseinschränkungen gar nicht nötig sind. Nur bei der Positionierung der Extremitäten (siehe Abschnitt \ref{leg_algo}) spielen die Gelenke ein Rolle
-In Abbildung \ref{joints} sind alle Gelenke in den Extremitäten dargestellt. Der Einfachheit halber haben sie alle nur einen Freiheitsgrad.
+Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Haben alle Winkel einen Wert von $0^\circ$, hat das Kindelement die gleiche Ausrichtung wie das Elternelement. 
+Die meisten Knochen werden aber direkt in ihrer Endposition generiert, sodass zusätzliche Bewegungseinschränkungen gar nicht nötig sind. Nur bei der Positionierung der Extremitäten (siehe Abschnitt \ref{leg_algo}) spielen die Gelenke ein Rolle.
+In Abbildung \ref{joints} sind alle Gelenke der Extremitäten dargestellt. Der Einfachheit halber haben sie alle nur einen Freiheitsgrad.
 
 % Berechnung Transformationsmatrix des Kindelements
-Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, so lässt sich daraus die Transformationsmatrix des Kindelements berechnen.
+Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, so lässt sich damit die Transformationsmatrix des Kindelements berechnen.
 
 
 %-----------------------------
 \section{Aufbau als Grammatik}
 \label{section:grammar}
 
-Bevor die Generierung eines Skeletts beginnt, wird zunächst ein Punkt im PCA-Raum bestimmt. Dieser Punkt bildet dann die Grundlage für die Generierung. Er legt \zb den Verlauf der Wirbelsäule und die Länge der Extremitäten fest. Das Regelwerk für die Generierung ist durch eine kontextfreie Grammatik gegeben (siehe \ref{grammars}).
+Das Regelwerk für die Generierung der Knochen des Skeletts ist durch eine kontextfreie Grammatik gegeben (siehe \ref{grammars}).
 
 \paragraph{Kontextfreie Grammatik}
 % erweiterte kontextfreie Grammatik
-Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (ähnlich wie sie auch bei L-Systemen vewendet werden).
+Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (ähnlich wie sie auch bei L-Systemen verwendet werden).
 \begin{alignat*}{2}
- \Sigma & = \{&&\text{(, ), Wurzelwirbel, Wirbel, Rippe, Schädel, Schulterwirbel,}\\  
+ \Sigma & = \{&&\text{(, ), Wurzelknochen, Wirbel, Rippe, Schädel, Schulterwirbel,}\\  
         & &&\text{Schulterblatt, Oberarm, Unterarm, Hand,}\\ 
         & &&\text{Beckenknochen, Oberschenkel, Unterschenkel, Fuß}\}\\
  N &= \{&&\text{\emph{Skelett, Vorderteil, Hinterteil, Schultergürtel, Vorderextremität, Hinterextremität}}\}\\
  S &= &&\text{\emph{Skelett}}
 \end{alignat*}
 
-Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(B)C$ mit $A, B, C \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelemnt von $B$ als auch von $C$ ist.
+Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(BC)D$ mit $A, B, C, D \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelement von $B$ als auch von $D$ ist. Das Elternelement von $C$ ist $B$.
 Im folgenden sind alle Produktionen aus $P$ aufgeführt.
 
 \begin{align*}
- \text{\emph{Skelett}} \rightarrow &\text{ Wurzelwirbel ( \emph{Vorderteil} ) \emph{Hinterteil}}\\
+ \text{\emph{Skelett}} \rightarrow &\text{ Wurzelknochen ( \emph{Vorderteil} ) \emph{Hinterteil}}\\
  \text{\emph{Vorderteil}} \rightarrow &\text{ [Wirbel ( Rippe? )]}^x\\
     &\text{ Schulterwirbel ( Rippe? \emph{Schultergürtel}? )}\\
     &\text{ [Wirbel]}^x\\
@@ -112,24 +112,24 @@ Im folgenden sind alle Produktionen aus $P$ aufgeführt.
 \end{align*}
 
 Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^*$ bedeutet, dass $A$ mehrfach vorkommen kann. Dies wird für Wirbel und Rippen verwendet. Wie oft diese genau vorkommen können, wird in Abschnitt \ref{section:vertebrae_ribs} genauer erklärt.
-Folgt ein ? auf ein Symbol, so ist es optional \dash es kann null- bis einmal vorkommen. Ob diese Elemente generiert werden oder nicht, hängt von Daten ab, die unabhängig von der Grammatik sind. Ob ein Schultergürtel, und damit auch eine Vorderextremität, und/oder eine Hinterextremität generiert wird, hängt von der "`Wahrscheinlichkeit"' des PCA-Datenpunkt für \emph{Beine mit Bodenkontakt} ab. Wieviele Rippen generiert werden wird zufällig bestimmt (siehe Abschnitt \ref{section:vertebrae_ribs}).
+Folgt ein ? auf ein Symbol, so ist es optional \dash es kann null- bis einmal vorkommen. Ob dieses Elemente generiert wird oder nicht, hängt von Daten ab, die unabhängig von der Grammatik generiert werden. Ob ein Schultergürtel, und damit auch eine Vorderextremität, und/oder eine Hinterextremität generiert wird, hängt von der "`Wahrscheinlichkeit"' des PCA-Datenpunkt für \emph{Beine mit Bodenkontakt} und \emph{Flügel} ab (siehe Abschnitt \ref{section:extremity_generation}). Wieviele Rippen generiert werden wird zufällig bestimmt (siehe Abschnitt \ref{section:vertebrae_ribs}).
 
-Während die Bestandteile des Skeletts durch die Grammatik $G$ generiert werden, wird auch gleichzeitig Position und Ausdehnung der erzeugten Terminalsymbole festgelegt.  Aus diesem Grund haben Nichtterminalsymbole niemals Kindelemente. Wäre dies erlaubt, könnte es passieren, dass Nichtterminalsymbole terminale Kinder haben. Für diese wäre dann nicht klar wie sie positioniert werden müssen.\\
-Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Kompliziertere Berechnungen werde nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.
+Während die Bestandteile des Skeletts durch die Grammatik $G$ generiert werden, wird auch gleichzeitig Position und Ausdehnung der erzeugten Terminalsymbole festgelegt.  Aus diesem Grund haben Nichtterminalsymbole niemals Kindelemente. Wäre dies erlaubt, könnte es passieren, dass Nichtterminalsymbole terminale Kinder haben. Für diese wäre dann nicht klar wie sie positioniert werden müssten.\\
+Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Kompliziertere Berechnungen werden nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.
 
 
 \paragraph{Darstellung als Baum}
 Um die Baumstruktur besser zu visualisieren, kann das erzeugte Wort $w$ auch als Graph \bzw Baum dargestellt werden.\\
-Der Baum $B = (V, E)$ hat die Knotenmenge $V \subset (\Sigma \cup N)$ und die Kantenmenge $E \subset (\Sigma \cup (N \setminus S)) \times \Sigma$. Nichtterminale Knoten können keine Kindknoten haben, sind also Blätter. Für jeden nichtterminalen Knoten $v$ gibt es mindestens eine Ersetzungsregel aus $P$, die $v$ durch einen Baum $B_v$ ersetzt. In diesem Prozess wird $v$ aus $B$ gelöscht und alle Knoten und Kanten von $B_v$ in $B$ eingefügt. Außerdem wird eine Kante zwischen der Wurzel von $B_v$ und dem Elternknoten von $v$ eingefügt, falls $v$ nicht die Wurzel von $B$ war. Wenn $B$ vor der Anwendung der Ersetzungsregel ein Baum war, so ist $G$ nach der Ersetzung also immernoch ein Baum.
+Der Baum $B = (V, E)$ hat eine Knotenmenge $V \subset (\Sigma \cup N)$ und eine Kantenmenge $E \subset (\Sigma \cup (N \setminus S)) \times \Sigma$. Nichtterminale Knoten können keine Kindknoten haben, sind also Blätter. Für jeden nichtterminalen Knoten $v$ gibt es mindestens eine Ersetzungsregel aus $P$, die $v$ durch einen Baum $B_v$ ersetzt. In diesem Prozess wird $v$ aus $B$ gelöscht und alle Knoten und Kanten von $B_v$ in $B$ eingefügt. Außerdem wird eine Kante zwischen der Wurzel von $B_v$ und dem Elternknoten von $v$ eingefügt, falls $v$ nicht die Wurzel von $B$ war. Wenn $B$ vor der Anwendung der Ersetzungsregel ein Baum war, so ist $G$ nach der Ersetzung also immer noch ein Baum.
 
 % konkreter Aufbau
-Die Skelettgenerierung startet also konkret mit einem Graphen $B$, der nur aus einem einzelnen initialen nichtterminalen Knoten besteht. Der initiale Graph $B$ ist also ein Baum.
+Die Skelettgenerierung startet konkret mit einem Graphen $B$, der nur aus dem nichtterminalen Knoten \emph{Skelett} besteht. Der initiale Graph $B$ ist also ein Baum.
 Die Ersetzungsregeln, die im weiteren Verlauf verwendet werden, sind in Abbildung \ref{grammar_graph} dargestellt. 
 Elliptische Knoten stellen nichtterminale Knoten dar, eckige sind terminale Knoten. Die türkisfarbenen Kanten, die von einem nichtterminalen Knoten $v$ ausgehen, führen zu den Knoten des Baumes $B_v$, durch den $v$ bei Anwendung der Ersetzungsregel ersetzt wird. Die grauen Kanten, die von nichtterminalen Knoten ausgehen, führen zum jeweiligen Elternelement des Knotens. Terminale Knoten liegen auf durchgehenden, gerichteten Kurven. Die Richtung der Kurve gibt jeweils an in welcher Richtung das dazugehörige Elternelement liegt.
 Die vorderen und hinteren Rückenwirbel sind in der Abbildung zu einem Knoten vereinfacht worden. Auch die Rippen sind eigentlich separate Knoten, die jeweils Kindknoten genau eines Rückenwirbels sind.
 
 % optionale Elemente
-Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten, nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
+Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten, nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielsweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
 
  
  \begin{figure}
@@ -209,7 +209,7 @@ Hier ist \zb in den allermeisten Fällen klar in welche Richtung ein Gelenk gedr
 Deshalb wurde hier ein eigener, recht simpler Algorithmus entwickelt, der auf dieses spezielle Problem angepasst ist.
 
 %Gelenke
-Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen. Der minimale und maximale Winkel für die Gelenke an Schultblatt und Beckenknochen orientieren sich an der Welt-y-Achse, da außerhalb dieses Bereichts keine sinnvollen Ruhepositionen entstehen würden. \\
+Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen. Der minimale und maximale Winkel für die Gelenke an Schulterblatt und Beckenknochen orientieren sich an der Welt-y-Achse, da außerhalb dieses Bereichs keine sinnvollen Ruhepositionen entstehen würden. \\
 % Zweiter Freiheitsgrad
 Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Der Oberschenkel lässt sich nicht nur nach vorne und hinten bewegen, sondern auch seitlich abspreizen. Das lässt sich auch leicht als zweite Art von Gelenk im Code abbilden. Allerdings liefert der Algorithmus dann oft seltsam anmutende breitbeinige Tiere.
 Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
@@ -407,7 +407,7 @@ Setzt man sich dagegen etwas über den Gedanken der "`Bounding Box"' hinweg, so 
 \todo{Schwierigkeit bei stark gebogenen Knochen}
 
 Liegen die Modelle in diesem Format vor, können sie einfach eingelesen werden und anhand der Skalierung der Bounding Box skaliert werden.
-Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren. Das führt \zb bei dem verwendeten Unterarmknochen des Pferdes dazu, dass er etwas überdimensionierte Fortsätze am Ellenbogen bekommen, wenn man ihn großskaliert. Das liegt daran, dass dieser Knochen beim Pferd eigentlich relativ kurz ist.
+Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren. Das führt \zb bei dem verwendeten Unterarmknochen des Pferdes dazu, dass er etwas überdimensionierte Fortsätze am Ellenbogen bekommen, wenn man ihn groß skaliert. Das liegt daran, dass dieser Knochen beim Pferd eigentlich relativ kurz ist.
 
 % Ausrichtung der Knochen
 Eine Schwierigkeit daran Modelle in der oben genannten Form herzustellen ist, dass nicht unbedingt sofort klar ist, wie die Knochen ausgerichtet werden müssen. Die Hüfte muss \zb so ausgerichtet werden, dass der Anfangs- und Endpunkt der durchgehenden Wirbelsäule auf gleicher Höhe liegen, damit nachfolgende Wirbel auch richtig anschließen. (Das funktioniert natürlich nur, weil die Wirbelsäule an der Stelle der Hüfte quasi gerade ist.) \todo{wg Lizenz Pferdehüfte verwendet, die nicht mit Wirbelsäule verwachsen ist}
@@ -429,7 +429,7 @@ Bei Händen und Füßen ist das Problem ebenso, dass es sehr viele verschiedene 
 \todo{Schwanzspitze: ein Modell für drei Wirbel. Das sieht bei wenigen Wirbeln komisch abgeknickt aus}
 
 % mehrere Extremitäten an einer Schulter/Hüfte
-Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein "`normales"' Modell der Schulter/Hüfte nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde an der Schulter so behoben, dass einfach mehrere Schulterblätte mit einem gewissen Abstand generiert wurden. Für die Hüfte wurde ein kombiniertes 3D-Modell aus zwei einzelnen Hüften erstellt, an dem nun zwei Gelenke vorhanden sind.
+Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein "`normales"' Modell der Schulter/Hüfte nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde an der Schulter so behoben, dass einfach mehrere Schulterblätter mit einem gewissen Abstand generiert wurden. Für die Hüfte wurde ein kombiniertes 3D-Modell aus zwei einzelnen Hüften erstellt, an dem nun zwei Gelenke vorhanden sind.
 
 \todo{3D-Modelle leider nicht ganz einfach Austauschbar wegen Offsets -> erkläre wie Offsets eingelesen werden müssten}
 \todo{Wenn Muskeln generiert werden sollen, müssen noch mehr Ansatzpunkte bestimmt werden und Positionierung der Knochen hängt von Muskeln ab -> future work}
