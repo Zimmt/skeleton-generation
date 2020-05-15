@@ -3,7 +3,45 @@
 \chapter{Generierung von Skeletten}
 \label{chapter:skeleton_generation}
 
-In diesem Kapitel werden die einzelnen Bestandteile zusammengefügt, die zur Generierung eines Skeletts notwendig sind. Zunächst geht es um die Einzelteile aus denen ein fertiges Skelett besteht. Dann wird das Regelwerk zu ihrer Generierung in Abschnitt \ref{section:grammar} vorgestellt. Abschnitt \ref{section:overview} gibt einen Überblick über den Ablauf des kompletten Algorithmus. Die Positionierung der Extremitäten ist mit etwas mehr "`Aufwand"' verbunden und lässt viel Spielraum für Variationen. Deshalb widmet sich Abschnitt \ref{section:extremity_generation} den Extremitäten. Auf Wirbel und Rippen konzentriert sich Abschnitt \ref{section:vertebrae_ribs} und zuletzt geht es in Abschnitt \ref{bone_models} um die Erzeugung eines konkreten 3D-Modells.
+In diesem Kapitel werden die einzelnen Bestandteile zusammengefügt, die zur Generierung eines Skeletts notwendig sind. 
+Abschnitt \ref{section:overview} gibt einen Überblick über den Ablauf des kompletten Algorithmus. Fehlende Details werden in den darauffolgenden Abschnitten beschrieben.
+In Abschnitt \ref{skeleton_parts} werden die Einzelteile aus denen ein fertiges Skelett besteht beschrieben. Dann wird das Regelwerk zu ihrer Generierung in Abschnitt \ref{section:grammar} vorgestellt. Die Positionierung der Extremitäten ist mit etwas mehr "`Aufwand"' verbunden und lässt viel Spielraum für Variationen. Deshalb widmet sich Abschnitt \ref{section:extremity_generation} den Extremitäten. Auf Wirbel und Rippen konzentriert sich Abschnitt \ref{section:vertebrae_ribs} und zuletzt geht es in Abschnitt \ref{bone_models} um die Erzeugung eines konkreten 3D-Modells.
+
+
+%--------------------------------------------------
+\section{Überblick über den Ablauf der Generierung}
+\label{section:overview}
+
+\fbox{
+ \begin{minipage}{\textwidth}
+  \centering
+  \begin{minipage}{0.9\textwidth}
+    
+    \vspace{0.5cm}
+    {\large Generierung eines Skeletts}
+
+    \begin{enumerate}
+      \item Führe eine PCA auf den gegebenen Beispielskeletten durch.
+ 
+      \item Bestimme einen Punkt im PCA-Raum.
+ 
+      \item Verwende die Grammatik aus Abschnitt \ref{section:grammar} um die Bestandteile des Skeletts zu erzeugen.
+ 
+      \item Spiegle alle Elemente, die nicht auf der Wirbelsäule liegen.
+ 
+      \item Generiere ein 3D-Modell, das alle generierten Elemente enthält.
+    \end{enumerate}
+    \vspace{0.2cm}
+    
+  \end{minipage}
+ \end{minipage} 
+}
+\vspace{0.1cm}
+
+Der erste Schritt des Algorithmus ist eine PCA auf den gegebenen Beispieldaten auszuführen (siehe Kapitel \ref{chapter:pca}). Dazu werden zunächst die Beispieldaten eingelesen und dann der Basiswechsel in den PCA-Raum berechnet. Im PCA-Raum kann nun ein Punkt bestimmt werden, der als Grundlage für die weitere Generierung verwendet wird. Dieser Punkt kann entweder (bedingt) zufällig oder auch nach anderen Vorgaben ausgewählt werden.\\
+Im nächsten Schritt werden die Einzelteile des Skeletts (siehe Abschnitt \ref{skeleton_parts}) mit der, in Abschnitt \ref{section:grammar} vorgestellten, kontextfreie Grammatik erzeugt. Gleichzeitig werden auch Position und Ausdehnung der terminalen Elemente festgelegt.
+In der Nachbearbeitung werden dann alle Elemente, die nicht auf der Wirbelsäule liegen, gespiegelt. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in \mbox{Abschnitt \ref{implementation_detail_matrices}} zu finden.)\\
+Zum Schluss wird ein 3D-Modell erzeugt. Dazu wird für jedes terminale Element, also jeden Knochen, ein eigenes Modell erzeugt und dann an der richtigen Position in das 3D-Modell des gesamten Skeletts eingefügt (siehe Abschnitt \ref{bone_models}). 
 
 
 %------------------------------------
@@ -31,7 +69,9 @@ Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten ve
 
 \paragraph{Gelenke}
 Ein Gelenk ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
-Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. In Abbildung \ref{joints} sind alle Gelenke mit mindestens einem Freiheitsgrad, die im Algorithmus verwendet werden, dargestellt.
+Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Bei einem Winkel von $0^\circ$ hat das Kindelement die gleiche Ausrichtung wie das Elternelement. 
+Die meisten Knochen werden aber direkt in ihrer Endposition generiert, sodass zusätzliche Bewegungseinschränkungen gar nicht nötig sind. Nur bei der Positionierung der Extremitäten (siehe Abschnitt \ref{leg_algo}) spielen die Gelenke ein Rolle
+In Abbildung \ref{joints} sind alle Gelenke in den Extremitäten dargestellt. Der Einfachheit halber haben sie alle nur einen Freiheitsgrad.
 
 % Berechnung Transformationsmatrix des Kindelements
 Ist ein Elternknochen mit einem Gelenk in einer bestimmten Ausrichtung gegeben, so lässt sich daraus die Transformationsmatrix des Kindelements berechnen.
@@ -98,54 +138,6 @@ Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts
   \caption{Darstellung der Ersetzungsregeln \bzw Produktionen der Grammatik $G$ als Graph. Elliptische Knoten sind Nichtterminalsymbole, rechteckige Knoten Terminalsymbole. Türkisfarbene Kanten zeigen auf diejenigen Symbole, durch die ein Nichtterminal bei Anwendung der entsprechenden Regel ersetzt wird. Graue Pfeile zeigen auf das Elternelement eines nichtterminalen Knotens und schwarze Kurven zeigen für Terminale in welcher Richtung das jeweilige Elternelement liegt.}
   \label{grammar_graph}
  \end{figure}
-
-
-%--------------------------------------------------
-\section{Überblick über den Ablauf der Generierung}
-\label{section:overview}
-
-\fbox{
- \begin{minipage}{\textwidth}
-  \centering
-  \begin{minipage}{0.9\textwidth}
-    
-    \vspace{0.5cm}
-    {\large Generierung eines Skeletts}
-
-    \begin{enumerate}
-      \item Führe eine PCA auf den gegebenen Beispielskeletten durch.
- 
-      \item Bestimme einen Punkt im PCA-Raum.
- 
-      \item Verwende die Grammatik aus Abschnitt \ref{section:grammar} um die Bestandteile des Skeletts zu erzeugen.
- 
-      \item Spiegle alle Elemente, die nicht auf der Wirbelsäule liegen.
- 
-      \item Generiere ein 3D-Modell, das alle generierten Elemente enthält.
-    \end{enumerate}
-    \vspace{0.2cm}
-    
-  \end{minipage}
- \end{minipage} 
-}
-\vspace{0.1cm}
-
-Der erste Schritt des Algorithmus ist eine PCA auf den gegebenen Beispieldaten auszuführen (siehe Kapitel \ref{chapter:pca}). Dazu werden zunächst die Beispieldaten eingelesen und dann der Basiswechsel in den PCA-Raum berechnet. Im PCA-Raum kann nun ein Punkt bestimmt werden, der als Grundlage für die weitere Generierung verwendet wird. Dieser Punkt kann entweder (bedingt) zufällig oder auch nach anderen Vorgaben ausgewählt werden.\\
-Im nächsten Schritt kommt die vorgestellt kontextfreie Grammatik zum Einsatz. Sie generiert die Einzelteile des Skeletts und gleichzeitig werden Position und Ausdehnung der terminalen Elemente festgelegt.
-In der Nachbearbeitung werden dann alle Elemente, die nicht auf der Wirbelsäule liegen, gespiegelt. Das sind Extremitäten, Rippen und Schulterblatt. (Technische Details zur Spiegelung der Transformationsmatrizen sind in \mbox{Abschnitt \ref{implementation_detail_matrices}} zu finden.)\\
-Zum Schluss wird ein 3D-Modell erzeugt. Dazu wird für jedes terminale Element, also jeden Knochen, ein eigenes Modell erzeugt und dann an der richtigen Position in das 3D-Modell des gesamten Skeletts eingefügt (siehe Abschnitt \ref{bone_models}). 
-
-
-
-
-\begin{itemize}
- \item Bei echten Wirbeltieren gibt es sehr viele verschiedene Arten von Gelenken \cite[Absatz 21.5.2]{Vergleichende_Anatomie}. Der Einfachheit halber werden hier nur Gelenke betrachtet, deren Winkel schon durch den Grundbauplan festgelegt sind (\zb zwischen Wirbeln), und Gelenke in Extremitätenmit einem Freiheitsgrad (\zb an Ellenbogen oder Knie) (näheres zu Gelenken in Extremitäten weiter unten)
-
- \item Einheiten der PCA für Koordinaten $[0, 1000]$, deshalb sind die Wirbelsäulen der generierten Skelette auch in diesem Rahmen. Blender interpretiert eine Einheit als $1$m. Deshalb wirken sie sehr groß.
- 
- \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
- \todo{in Implementierungsdetails aufzählen was an Abmessungen alles beliebig (oder auch weniger beliebig) festgelegt wurde.}
-\end{itemize}
 
 %-----------------------------------------------
 \section{Extremitäten}
@@ -441,6 +433,11 @@ Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein
 
 \todo{3D-Modelle leider nicht ganz einfach Austauschbar wegen Offsets -> erkläre wie Offsets eingelesen werden müssten}
 \todo{Wenn Muskeln generiert werden sollen, müssen noch mehr Ansatzpunkte bestimmt werden und Positionierung der Knochen hängt von Muskeln ab -> future work}
+
+\begin{itemize}
+ \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
+ \todo{in Implementierungsdetails aufzählen was an Abmessungen alles beliebig (oder auch weniger beliebig) festgelegt wurde.}
+\end{itemize}
 
 
 
