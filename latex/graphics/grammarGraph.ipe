@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200512152719" modified="D:20200514163525"/>
+<info created="D:20200512152719" modified="D:20200515182036"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -472,7 +472,7 @@ wirbel</text>
 <text matrix="1 0 0 1 0 -9.0457" transformations="translations" pos="448 640" stroke="black" type="minipage" width="64" height="11.924" depth="6.95" valign="top" style="center">Becken-\\
 knochen</text>
 <text matrix="1 0 0 1 -101.896 -46.9773" transformations="translations" pos="368 720" stroke="black" type="minipage" width="64" height="11.924" depth="6.95" valign="top" style="center">Wurzel-\\
-wirbel</text>
+knochen</text>
 <text matrix="1 0 0 1 17.0683 -12.5625" transformations="translations" pos="256 816" stroke="black" type="label" width="29.888" height="6.918" depth="0" valign="top">Skelett</text>
 <text transformations="translations" pos="128 736" stroke="black" type="minipage" width="64" height="5.958" depth="0.96" valign="top" style="center">Vorderteil</text>
 <text transformations="translations" pos="416 736" stroke="black" type="minipage" width="80" height="5.958" depth="0.96" valign="top" style="center">Hinterteil</text>
