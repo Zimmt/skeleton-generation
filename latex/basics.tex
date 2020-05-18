@@ -70,28 +70,23 @@ Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es g
 %------------
 \section{PCA} % a priori algorithmus?
 \label{PCA}
-
- \todo{Pseudocode?}
  
  % Ziel
  \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse \cite{PCA} wird meist mit dem Ziel angewendet die Dimensionalität einer Menge von Datenpunkten zu verringern, dabei aber möglichst wenig Information zu verlieren.
- So wie beispielsweise in \cite{PCA_faces} bei 3D-Modellen von Gesichtern oder in \cite{PCA_bodies} bei 3D-Modellen von menschlichen Körpern. Auch im Zusammenhang mit prozeduraler Generierung wird PCA oft verwendet, \zb zur Generierung von humanoiden Charakteren für Videospiele \cite{ProceduralCharacterGeneration} oder Texturen für Gesichter \cite{GeneratingFacialTextures}.
+ Beispielsweise wird dies in \cite{PCA_faces} bei 3D-Modellen von Gesichtern oder in \cite{PCA_bodies} bei 3D-Modellen von menschlichen Körpern gemacht. Auch im Zusammenhang mit prozeduraler Generierung wird PCA oft verwendet, \zb zur Generierung von humanoiden Charakteren für Videospiele \cite{ProceduralCharacterGeneration} oder Texturen für Gesichter \cite{GeneratingFacialTextures}.
  
- Als Ausgangspunkt für eine PCA dient eine Menge von Datenpunkten (oder Beispielen) mit jeweils $n$ Dimensionen. Voraussetzung ist, dass die Punkte in jeder Dimension normal-/gaußverteilt sind. Dann liegen die Punkte im $n$-dimensionalen Raum in einem Ellipsoid.
+ Als Ausgangspunkt für eine PCA dient eine Menge von Datenpunkten (oder Beispielen) $D$ im $n$-dimensionen Raum. Voraussetzung ist, dass die Punkte in jeder Dimension normalverteilt sind. 
+ Die Datenpunkte $D$ sind dann nach einer $n$-dimensionalen Normalvereiltung verteilt. Betrachtet man nun die Wahrscheinlichkeitsdichte dieser Normalverteilung, so bilden alle Punkte, bei denen die Dichte einen Wert größer als $\epsilon$ annimmt das Innere eines $(n-1)$-dimensionalen Hyperellipsoids. In diesem Volumen liegen die meisten der Datenpunkte $D$. Den Mittelpunkt bildet ihr Mittelwert.
  
- Nun ist das Ziel herauszufinden wo die Achsen des Ellipsoids liegen. Entlang der Richtungen der Achsen sind die Beispiele widerum normalverteilt und die Verteilungen sind jeweils unabhängig voneinander.
- Jetzt können die Datenpunkte vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Ellipsoids aufgespannt wird. Interessant sind dabei die Achsen in deren Richtung die Daten die größe Streuung aufweisen, die "`principal components"'. 
+ Nun ist das Ziel herauszufinden wo die Achsen des Ellipsoids liegen. Betrachtet man die Komponenten der Datenpunkte $D$ in den Richtungen der Achsen, so sind diese wiederum normalverteilt und sind die Verteilungen jeweils unabhängig voneinander.
+ Um die Achsen des Ellipsoids zu berechnen, wird zunächst die Kovarianzmatrix der Datenpunkte $D$ aufgestellt und dann diagonalisiert. In den Spalten der Basiswechselmatrix stehen dann die Eigenvektoren und auf der Diagonalen der diagonalisierten Kovarianzmatrix die Eigenwerte.
+ Die Eigenvektoren sind die Achsen des Ellipsoids und die Eigenwerte geben die Varianz entlang der Achsen an.
  
- Oft ist das Ziel die Dimensionalität der Eingabedaten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch die "`principal components"' dargestellt werden und die anderen Dimensionen weggelassen werden. Je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden, desto weniger Information wird verworfen.
+ Jetzt können die Datenpunkte $D$ vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Ellipsoids aufgespannt wird. Dazu stellt man die Punkte als Linearkombinationen der Eigenvektoren dar. 
+ Oft ist das Ziel die Dimensionalität der Eingabedaten zu reduzieren. Das wird dadurch erreicht, dass die Eingabedaten nur noch durch ihre Hauptkomponenten dargestellt werden und die anderen Dimensionen weggelassen werden. Je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden, desto weniger Information wird verworfen.
  
- Will man stattdessen einen zufälligen Datenpunkt erzeugen, der die gleichen Verteilungen aufweist, wie die Eingabebeispiele, so funktioniert das im transformierten Koordinatensystem ebefalls sehr gut. Da die einzelnen Dimensionen unabhängig voneinander sind, kann man einfach für jede Dimension eine normalverteilte Zufallszahl mit der entsprechenden Varianz ziehen.
+ Will man einen zufälligen Datenpunkt erzeugen, der die gleichen Verteilungen aufweist, wie die Eingabebeispiele, so funktioniert das im transformierten Koordinatensystem sehr gut. Da die einzelnen Dimensionen unabhängig voneinander sind, kann man einfach für jede Dimension eine normalverteilte Zufallszahl mit entsprechender Varianz generieren.
  
- Der Mittelpunkt des Ellipsoids ist der Mittelwert der Daten.
- Um die Achsen des Ellipsoids zu berechnen, wird zunächst eine Kovarianzmatrix aufgestellt. Ihre Einträge sind die Kovarianzen aller möglichen Kombinationen der Eingabedimensionen. Von dieser Matrix werden dann alle Eigenvektoren mit zugehörigen Eigenwerten berechnet.
- Die Eigenvektoren sind die Achsen des Ellipsoids und die Eigenwerte geben an wie groß die Varianz entlang dieser Achse ist.
- 
- Um nun die Haupteigenschaften oder "`principal components"' eines Datenpunktes zu finden, stellt man ihn im Koordinatensystem des Ellipsoids dar, also als gewichtete Summe der Eigenvektoren. Dann betrachtet man die Dimensionen mit den größten Eigenwerten. Dazu zieht man zunächst den Mittelwert vom Datenpunkt ab und multipliziert ihn mit der transponierten Basiswechselmatrix. Das ist diejenige Matrix, in deren Zeilen die Eigenvektoren der Kovarianzmatrix stehen.
-
  
 %---------------------------------- 
 \section{Quantil-Quantil-Diagramme} 
