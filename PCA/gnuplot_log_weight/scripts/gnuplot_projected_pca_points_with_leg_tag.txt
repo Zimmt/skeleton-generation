@@ -19,9 +19,10 @@ set ylabel "zweiter Eigenvektor"
 set output "projection_eigenvectors12.pdf"
 a = 1
 b = 2
-plot "../input/projected_pcaPoints_with_leg_tag.txt" using a:(column(4) == 0.0 ? column(b) : 1/0) title "0 Beine" @NO_LEG, \
-     "../input/projected_pcaPoints_with_leg_tag.txt" using a:(column(4) == 1.0 ? column(b) : 1/0) title "2 Beine" @ONE_LEG, \
-     "../input/projected_pcaPoints_with_leg_tag.txt" using a:(column(4) == 2.0 ? column(b) : 1/0) title "4 Beine" @TWO_LEGS
+# invert columns to get something that looks like the other plots
+plot "../input/projected_pcaPoints_with_leg_tag.txt" using (-1*column(a)):(column(4) == 0.0 ? (-1*column(b)) : 1/0) title "0 Beine" @NO_LEG, \
+     "../input/projected_pcaPoints_with_leg_tag.txt" using (-1*column(a)):(column(4) == 1.0 ? (-1*column(b)) : 1/0) title "2 Beine" @ONE_LEG, \
+     "../input/projected_pcaPoints_with_leg_tag.txt" using (-1*column(a)):(column(4) == 2.0 ? (-1*column(b)) : 1/0) title "4 Beine" @TWO_LEGS
 
 set ylabel "dritter Eigenvektor"
 set output "projection_eigenvectors13.pdf"

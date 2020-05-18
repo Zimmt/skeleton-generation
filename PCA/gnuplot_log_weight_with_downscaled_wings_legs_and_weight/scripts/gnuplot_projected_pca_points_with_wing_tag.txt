@@ -3,6 +3,8 @@
 set terminal pdf size 11cm, 10cm
 set key box opaque
 set key above
+set xlabel font ",20"
+set ylabel font ",20"
 WINGS = 'pointtype 7 pointsize 1 linecolor rgb "blue"'
 OTHER = 'pointtype 7 pointsize 1 linecolor rgb "red"'
 
