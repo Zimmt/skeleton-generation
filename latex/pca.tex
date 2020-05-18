@@ -3,33 +3,38 @@
 \chapter{Beispielanalyse mit Hilfe von PCA}
 \label{chapter:pca}
 
-\todo{sinnvolle Überleitung und Überblick über das Kapitel}
+Das Ziel dieser Arbeit ist es einen Algorithmus zu entwerfen, der in der Lage ist Skelette zu generieren, die denjenigen von Wirbeltieren ähnlich sehen.
+Ein Skelett ist nicht nur eine Ansammlung von Knochen, sondern wirkt auch wesentlich durch seine Haltung. Die Skelette sollen also in einer natürlich wirkenden Haltung dargestellt werden, einer Haltung, die das dargestellte Tier auch einnehmen würde.
+
+Wie solch eine Haltung generiert werden könnte, wird in Abschnitt \ref{pose} erörtert. Das Hilfsmittel, das schließlich für die Generierung verwendet wird, ist die PCA (siehe Abschnitt \ref{PCA}). Wie sie in diesem Zusammenhang verwendet wird, wird in den folgenden Abschnitten genauer erklärt. Abschnitt \ref{pca_input_data} beleuchtet die Datenerhebung. In Abschnitt \ref{pca_input_analysis} werden die Eingabedaten genauer analysiert, \zb darauf ob sie auch, wie von der PCA verlangt, normalverteilt sind. Die Ergebnisse der PCA werden dann in Abschnitt \ref{section_pca_result_analysis} vorgestellt.
+Im letzten Abschnitt wird gezeigt wie die Eingabedaten für die PCA auf Skelette mit gewissen Eigenschaften eingeschränkt werden können.
 
 %---------------------
-\section{Pose des Skeletts}
+\section{Haltung des Skeletts}
+\label{pose}
 
-Ein Skelett ist nicht nur eine Ansammlung von Knochen, sondern wirkt auch wesentlich durch seine Pose. Das Ziel sollte also sein Skelette in einer natürlich wirkenden Pose darzustellen, eine Pose, die das dargestellte Tier auch einnehmen würde.
-
+\paragraph{Gleichgewicht}
 % erster Ansatz: Drehmomente
-Ein erster Ansatz könnte sein in jedem Schritt auszurechnen, ob das Skelett ausbalanciert ist. Dazu benötigt man den Schwerpunkt des Körpers und Position und Gewicht der Knochen.
-Damit kann man dann die Drehmomente der einzelnen Knochen um den Schwerpunkt berechnen. Addieren sie sich alle zu null auf, ist das Skelett im Gleichgewicht.
+Ein erster Ansatz dafür ein Skelett in einer natürlichen Haltung zu erzeugen, könnte sein, in jedem Schritt auszurechnen, ob das Skelett ausbalanciert ist. Dazu benötigt man den Schwerpunkt des Körpers und Position und Gewicht der Knochen.
+Damit können dann die Drehmomente der einzelnen Knochen um den Schwerpunkt berechnet wrden. Addieren sie sich alle zu null auf, ist das Skelett im Gleichgewicht.
 
 % Probleme
 Hierbei tauchen gleich mehrere Fragen auf:
 \begin{description}
- \item[Gewicht] Wie wird das Gewicht der Knochen bestimmt? Es wird das Gewicht aller Elemente, oder zumindest das aller terminalen Elemente, benötigt. Wie wird es festgelegt? Hängt es von der Größe der Knochen ab? Außerdem müsste das ganze Gewicht des Tieres, nicht nur das der Knochen berücksichtigt werden. Wie kann bestimmt werden wieviel anderes Gewebe an einem Knochen hängt?
+ \item[Gewicht] Wie wird das Gewicht der Knochen bestimmt? Hängt es von der Größe der Knochen ab? Außerdem müsste das ganze Gewicht des Tieres, nicht nur das der Knochen berücksichtigt werden. Wie kann bestimmt werden wieviel anderes Gewebe an einem Knochen hängt?
  
- \item[Schwerpunkt] Wo liegt der Schwerpunkt? Wird am Anfang eine große Bounding Box für das Skelett festgelegt, in deren Mitte der Schwerpunkt liegt? Verändert der Schwerpunkt seine Position je nach dem was generiert wird?
+ \item[Schwerpunkt] Wo liegt der Schwerpunkt? Wird am Anfang ein Quader festgelegt, in dem das Skelett liegen muss und dessen Mittelpunkt der Schwerpunkt des Skeletts liegt? Verändert der Schwerpunkt seine Position je nach dem welche Knochen schon generiert wurden?
  
- \item[Gleichgewicht] Wann wird überprüft ob sich das Skelett im Gleichgewicht befindet? Ist das Gleichgewicht eine Invariante, die während der Generierung aufrecht erhalten werden soll? Oder wird es erst am Ende geprüft? Was passiert, wenn sich das Skelett nicht im Gleichgewicht befindet?
+ \item[Gleichgewicht] Wann wird überprüft ob sich das Skelett im Gleichgewicht befindet? Ist das Gleichgewicht eine Invariante, die während der Generierung aufrecht erhalten wird? Oder wird es erst am Ende geprüft? Was passiert, wenn sich das Skelett nicht im Gleichgewicht befindet?
 \end{description}
  
 % Warum wird anderer Ansatz verwendet
-Das Hauptproblem ist, dass nicht klar ist wie das Gewicht der einzelnen Körperteile bestimmt werden soll ohne zusätzlich zu den Knochen auch noch anderes Gewebe wie Muskeln oder Eingeweide zu betrachten. Deshalb wurde ein anderer Ansatz erarbeitet.
- 
+Das Hauptproblem ist, dass nicht klar ist wie das Gewicht der einzelnen Körperteile bestimmt werden soll ohne zusätzlich auch noch anderes Gewebe, wie Muskeln oder Eingeweide, zu betrachten. Da sich diese Arbeit aber nur auf das Skelett beschränken soll, wurde ein anderer Ansatz erarbeitet.
+
+\paragraph{Verlauf der Wirbelsäule}
 % Wirbelsäule als Startpunkt
 Die Wirbelsäule ist ein zentraler Teil des Wirbeltierkörpers und bestimmt wesentlich das Aussehen des Skeletts.
-Ihre Form variiert von relativ gerade, \zb bei Fischen oder Schlangen, bis hin zu stark geschwungenen Hälsen, \va bei Vögeln, und langen Schwänzen, \zb bei Mäusen. Außerdem zeigt sie wie aufrecht ein Tier sich hält. Große Unterschiede sind hier zwischen Fischen und auch Vierbeinern gegenüber Vögeln zu beobachten, da Vögel nur auf ihren Hinterbeinen stehen und deshalb ihr Schwerpunkt nach hinten verschoben ist. Es gibt aber auch aufrechtere Exemplare unter den "`Vierbeinern"' wie beispielsweise das Känguru oder der Tyrannosaurus Rex.\todo{Beispielbilder von Wirbelsäulen} \\
+Ihre Form variiert von relativ gerade, \zb bei Fischen oder Schlangen, bis hin zu stark geschwungenen Hälsen, \va bei Vögeln, und langen Schwänzen, \zb bei Mäusen. Außerdem zeigt sie wie aufrecht ein Tier ist. Große Unterschiede sind hier zwischen Fischen und auch Vierbeinern gegenüber Vögeln zu beobachten, da Vögel nur auf ihren Hinterbeinen stehen und deshalb ihr Schwerpunkt nach hinten verschoben ist. Es gibt aber auch aufrechtere Exemplare unter den "`Vierbeinern"' wie beispielsweise das Känguru oder der Tyrannosaurus Rex.
 Der Mensch ist natürlich auch ein Beispiel für ein sehr aufrechtes Wirbeltier. Seine Haltung unterscheidet sich aber so stark von der der anderen Wirbeltiere, dass er hier außen vor gelassen werden soll.
 
 Viele Knochen setzen direkt an der Wirbelsäule an, wie \zb der Kopf, die Rippen oder die Hüfte. Durch die Wirbelsäule wird also schon sehr viel vorgegeben.
@@ -43,6 +48,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  
  %---------------------- 
  \section{Datenerhebung}
+ \label{pca_input_data}
  
  Die konkret erhobenen Beispiele sind vor allem der Datenlage \bzw der zugänglichen Quellen geschuldet. Trotzdem wurde darauf geachtet möglichst viele unterschiedliche Tierarten mit viel Variation in den erhobenen Merkmalen zu finden.
  
