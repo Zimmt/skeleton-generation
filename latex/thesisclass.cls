@@ -35,7 +35,9 @@
 \usepackage{vmargin}          % Adjust margins in a simple way
 \usepackage{fancyhdr}         % Define simple headings
 \usepackage{subfig} % possibility to use subfloats
-\usepackage{url}
+\usepackage{alphalph}
+\renewcommand*{\thesubfigure}{\alphalph{\value{subfigure}}} % get aa, ab ... for more than 24 subfigures
+\usepackage[hyphens]{url}
 \usepackage[absolute,overlay]{textpos}
 \usepackage{tikz}
 \usepackage[english,ngerman]{babel}
