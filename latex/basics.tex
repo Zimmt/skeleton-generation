@@ -62,9 +62,18 @@ Wiederum eine Teilmenge davon bilden \emph{kontextfreie} Grammatiken mit Produkt
 \[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (\Sigma \cup N)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
 
 \emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen alle Symbole gleichzeitig ersetzt. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.\\
-Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}. Um Verzweigungen zu modellieren, wurden zusätzlich Klammerstrukturen eingeführt. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.\\
-Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. \cite[Kapitel 1]{AlgorithmicBeautyOfPlants}
+Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
+Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. 
 
+Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
+Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(BC)D$ mit $A, B, C, D \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelement von $B$ als auch von $D$ ist. Das Elternelement von $C$ ist $B$. Es können auch Mehrfachverzweigungen auftreten. In $A(B)(C)D$, was gleichbedeutend ist zu $A(B)(C)(D)$, ist $A$ das Elternelement von $B, C$ und $D$. Eine Visualisierung der beiden Beispiele ist in Abbildung \ref{branching_examples} zu finden. \cite[Kapitel 1]{AlgorithmicBeautyOfPlants}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{graphics/branchingExamples}
+ \caption{Visualisierung der Beispielklammerausdrücke,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
+ \label{branching_examples}
+\end{figure}
 
 
 %------------
