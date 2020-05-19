@@ -13,7 +13,7 @@ In Abschnitt \ref{skeleton_parts} geht es um die Einzelteile aus denen ein ferti
 \label{section:overview}
 
 \fbox{
- \begin{minipage}{\textwidth}
+ \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule} % fbox has more width than content
   \centering
   \begin{minipage}{0.9\textwidth}
     
@@ -33,8 +33,8 @@ In Abschnitt \ref{skeleton_parts} geht es um die Einzelteile aus denen ein ferti
     \end{enumerate}
     \vspace{0.2cm}
     
-  \end{minipage}
- \end{minipage} 
+  \end{minipage}%
+ \end{minipage}% 
 }
 \vspace{0.1cm}
 
