@@ -174,8 +174,7 @@ Ein erster Schritt an das Problem heranzugehen ist es in kleinere Unterprobleme 
 Extremitäten können anhand ihrer Funktion in vier Kategorien eingeteilt werden:
 Flügel, Flossen, Extremitäten mit Bodenkontakt (im Folgenden als Beine bezeichnet), und Extremitäten ohne Bodenkontakt, die weder Flügel noch flossen sind, (im Folgenden als Arme bezeichnet).
 
-Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, dass sie als solche zu erkennen sein sollten. Deshalb werden sie nach folgenden simplen Anweisungen orientiert:
-\todo{Beispielbilder}
+Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, dass sie als solche zu erkennen sein sollten. Deshalb werden sie nach folgenden simplen Anweisungen orientiert (siehe auch Abbildung \ref{extremity_orientations}):
 \begin{itemize}
  \item Flossen: Ausrichtung gerade nach hinten (orientiert an Welt-x-Achse)
  \item Arme: Der Oberarm zeigt senkrecht nach unten (orientiert an Welt-y-Achse), im Ellenbogengelenk ist ein $90^{\circ}$ Winkel und die Hand verlängert Unterarm nach vorne.
@@ -183,6 +182,19 @@ Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, da
 \end{itemize}
 
 Nun bleibt nur doch die Ausrichtung der Beine, für die die zusätzliche Anforderung gilt, dass sie den Boden berühren sollen.
+
+\begin{figure}
+ \subfloat[$2$ Beine, $2$ Flügel]{\includegraphics[height=9cm]{../java_skeleton_generation/example_skeletons/bird.jpg}}~
+ \subfloat[Känguru, $2$ Beine, $2$ Arme]{\includegraphics[height=9cm]{../java_skeleton_generation/example_skeletons/kaenguru.jpg}}
+ \\
+ \begin{center}
+  \subfloat[$4$ Flossen]{\includegraphics[width=0.8\textwidth]{../java_skeleton_generation/example_skeletons/fish.jpg}}
+ \end{center}
+ 
+ \caption{Beispiele generierter Skelette mit verschiedenen Arten von Extremitäten. Die Bedingungen, die verwendet wurden, um die Skelette zu generieren, sind jeweils unter den Bildern zu finden. In (b) wurden die Daten verwendet, die für das Känguru erhoben wurden (siehe dazu auch Abschnitt \ref{load_skeletons}), mit den zusätzlichen Bedingungen, dass das Skelett $2$ Beine und $2$ Arme haben soll. Als Hintergrund wurde \cite{background} verwendet.}
+ \label{extremity_orientations}
+\end{figure}
+
 
 
 \paragraph{Bestimmung von Art und Anzahl}
@@ -285,7 +297,16 @@ Treten sehr kurzen Beinen auf, hat der Algorithmus außerdem einige kleine Probl
 % Vergleich echter und generierter Beinstellungen
 Wie in Kapitel \ref{chapter:additional_features} beschrieben, lassen sich auch die Eingabebeispiele der PCA laden. Bei ihnen sind dann alle Attribute, die die PCA liefert, schon festgelegt. Alle anderen müssen jedoch noch generiert werden.
 Dazu gehören auch die Beine.
-Vergleicht man nun die Beinstellung, die der oben beschriebene Algorithmus generiert, mit der Beinstellung auf dem Eingabebild, lassen sich teilweise sehr große Unterschiede feststellen. \todo{gutes und schlechtes Beispiel (schlecht: Brachiosaurus, Elefant)}
+Vergleicht man nun die Beinstellung, die der oben beschriebene Algorithmus generiert, mit der Beinstellung auf dem Eingabebild, lassen sich teilweise sehr große Unterschiede feststellen. In Abbildung \ref{extremity_orientations} b wurde ein Känguru generiert. Hier ist die Beinstellung relativ realistsch. Beim Elefanten in Abbildung \ref{elefant} hingegen weicht die Beinstellung stark vom Eingabebild ab.
+
+\begin{figure}
+ \subfloat[generiertes Skelett]{\includegraphics[height=4.5cm]{../java_skeleton_generation/example_skeletons/elefant.jpg}}~
+ \subfloat[Eingabebild]{\includegraphics[height=4.5cm]{../PCA/Skelettbilder/Afrikanischer_Elefant.jpg}}
+ 
+ \caption{(a) Skelett eines Elefanten, das anhand der erhobenen Daten generiert wurde. (b) Die Abbildung des Skeletts eines Elefanten, die auch als Eingabe für die PCA verwendet wurde.}
+ \label{elefant}
+\end{figure}
+
 
 % Mehr Infos nötig für Verbesserungen
 Um in allen Fällen eine realistisch wirkende Positionierung der Beine zu bekommen, müsste noch sehr viel mehr Arbeit in den Algorithmus gesteckt werden. Außerdem bräuchte der Algorithmus mehr Informationen zum Tier. Solche Zusatzinformationen könnten beispielsweise die Art des Fußes oder die Fortbewegungsart sein. Auch könnte es helfen, wenn es eine sinnvolle Möglichkeit gäbe die Winkel an den Gelenken als Dimension für die PCA mitaufzunehmen. Dafür müsste man sich aber, wie zu Beginn des Kapitels schon erwähnt, auf eine kanonische Ruheposition einigen und dann auch noch Beispiele in genau dieser Position finden.

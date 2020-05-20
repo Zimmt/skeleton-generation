@@ -5,6 +5,7 @@
 
 %------------------------------------------
 \section{Speichern und Laden von Skeletten}
+\label{load_skeletons}
 
 Um ein Skelett zu speichern reicht es jene Metadaten herauszuschreiben, aus denen der Algorithmus das Skelett wieder reproduzieren kann. Zu den benötigten Daten gehören die Daten, die die PCA liefert (Position der Wirbelsäule, Länge der Knochen in den Extremitäten, Gewicht) und Daten, die durch den Algorithmus generiert werden (Anzahl der Wirbel, Intervall auf der Wirbelsäule, in dem sich Rippen befinden, Anzahl und Art der Extremitäten an den jeweiligen Extremitätengürteln und die Winkel an Gelenken der Extremitäten, Art des einzusetzenden Kopfes).
 Das alles wird in ein paar wenigen Java-Klassen gebündelt und über Java-Serialisierung in eine Textdatei geschrieben. Diese Datei kann dann wieder eingelesen werden um die Klassen wieder herzustellen.
