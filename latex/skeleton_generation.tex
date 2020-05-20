@@ -222,7 +222,6 @@ Sind die Beine so lang, dass schon ohne die Bodenhöhe anzupassen die Verse \bzw
 Ansonsten ist die Wahrscheinlichkeit 
 \[\frac{\text{Beinlänge} - \text{Höhe des Extremitätengürtels über }0}{\text{Länge des Fußes}}\]
 
-\newpage
 Wenn es Vorder- und Hinterbeine gibt, so wird für beide diese Wahrscheinlichkeit berechnet und dann der Mittelwert genommen. Denn es ist sinnvoll, dass alle Beine mit dem gleichen Punkt den Boden berühren.
 Deshalb legt auch das erste Bein, das generiert wird, basierend auf der oben berechneten Wahrscheinlichkeit, fest, welcher Punkt gewählt wird.
 
@@ -365,63 +364,67 @@ Betrachtet man echte Wirbeltiere, so sind keine einfachen Regeln für die Länge
 \paragraph{Rippen}
 Die Anzahl der Rippen und auch die Ausdehnung des Brustkorbs variiert zwischen Wirbeltieren sehr stark. Es gibt Tiere, die an jedem Wirbel der Rückenwirbelsäule Rippen haben und es gibt Tiere die haben nur ein paar wenige auf dem vorderen Teil.
 Deshalb wird ein zufälliges Intervall $[0, x]$ auf der Bézierkurve des Rückens bestimmt. Jeder Wirbel, der in diesem Intervall liegt, bekommt auch eine Rippe.
-Einige verschiedene Beispiele sind in den Beispielbildern für die PCA in Abbildung \ref{all_images} im Anhang zu finden.
+Einige verschiedene Beispiele sind auch unter den Beispielbildern für die PCA in Abbildung \ref{all_images} im Anhang zu finden.
 
 
 %-----------------------
 \section{Knochenmodelle}
 \label{bone_models}
 
-Um ein 3D-Modell des gesamten Skeletts zu erstellen, wird zunächst jeder terminale Knochen als Quader dargestellt.
-Diese Quader lassen sich aber leicht durch 3D-Modelle der entsprechenden Knochen ersetzen. Dazu müssen die 3D-Modelle nur im .obj-Format vorliegen und folgenden Bedingungen entsprechen:
+Um ein 3D-Modell des gesamten Skeletts zu erstellen, wird zunächst jeder terminale Knochen als Quader dargestellt. Diese Quader ergeben sich aus Position, Orientierung und Abmessungen des zugehörigen Knochens. Sie ergeben zusammen ein rudimentäres Modell. Jedoch lassen sie sich auch relativ leicht durch feinere 3D-Modelle der entsprechenden Knochen ersetzen. 
 
-Das Modell ist korrekt an den Achsen ausgerichtet und so verzerrt, dass es einen Würfel mit Kantenlänge $1$ in jeder Richtung möglichst gut ausfüllt.\\
-Lässt man es bei dieser Bedingung bewenden, so ist es relativ schwierig herauszufinden wie man die einzelnen Knochen skalieren muss, sodass sie an den Gelenken gut zusammenpassen. Außerdem ist es aufwändig herauszufinden wo die Gelenke an den Knochen ansetzen.
+\paragraph{Vorverarbeitung der Knochenmodelle}
 
-Setzt man sich dagegen etwas über den Gedanken hinweg, dass die Abmessungen des Knochens eine "`Bounding Box"' darstellen, so kann die Positionierung und Skalierung einfacher werden. Hier wurden, je nach Knochen, einige der folgenden Punkte umgesetzt.
+Die Knochenmodelle müssen im .obj-Format vorliegen, da auch das resultierende Modell dieses Format hat. Außerdem muss jedes Modell an den Koordinatenachsen ausgerichtet und so verzerrt sein, dass es einen Würfel mit Kantenlänge $1$ in jeder Richtung möglichst gut ausfüllt. So ist es sehr einfach die Längen der Knochen auf das entsprechende 3D-Modell zu übertragen.
+
+Bei dieser Vorgehensweise treten jedoch einige Schwierigkeiten auf. Es ist \zb  relativ schwierig herauszufinden wie man die einzelnen Knochen skalieren muss, sodass sie an den Gelenken gut zusammenpassen und nicht verzerrt aussehen. Im Folgenden sind einige Anpassungen aufgezählt, die die Positionierung vereinfachen.
 \begin{itemize}
- \item Kleine Fortsätze, die nicht wirklich zur (optischen) Größe des Knochens beitragen, \zb die Fortsätze der Wirbel, ragen aus dem Würfel heraus.
+ \item Kleine Fortsätze, die nicht wirklich zur (optischen) Größe des Knochens beitragen, \zb die Fortsätze der Wirbel, ragen aus dem Würfel heraus. Der Knochen ist somit an manchen Stellen etwas länger als vorgegeben.
  
- \item Kantenlängen, die von außen vorgegeben werden, sind genau auf die Kantenlänge des Würfels abgestimmt. So beispielsweise die Länge der Wirbel entlang der Wirbelsäule. Damit ist es einfach dafür zu sorgen, dass sie genau aneinender stoßen. Dies können aber auch Längen sein, die nur einen Teil des Knochens betreffen. Der Beinabstand an der Hüfte ist \zb kleiner als die komplette Breite der Hüfte. Es ist aber einfacher den Beinabstand anzugeben, als die Hüftbreite. Auch die Skalierung der Hüfte in x-Richtung ist zunächst nicht klar, aber wenn die Breite der zugehörigen Wirbel gegeben ist, ist auch klar, wie breit die Hüfte sein soll. Deshalb ist die Hüfte in x-Richtung so skaliert, dass der Teil, an dem der Wirbel ansetzt, schon die komplette Kantenlänge des Würfels ausfüllt. Bei Gelenken, die von der Breite her zusammenpassen sollen, ist dies auch sehr hilfreich. Aber das führt natürlich auch dazu, dass die "`Bounding Box"' nicht mehr viel mit der resultierenden Größe des Knochens zu tun haben muss.
- \todo{überarbeiten/übersichtlicher}
+ \item Kantenlängen, bei denen es wichtig ist, dass sie eine bestimmte Länge haben, sind genau auf die Kantenlänge des Würfels abgestimmt. So können sie leicht auf die richtige Länge skaliert werden. 
+ Ein Beispiel dafür ist die Länge der Wirbel entlang der Wirbelsäule. Die Wirbel müssen genau aneinander ansetzen. Mit dieser Skalierung lässt sich einfach die Länge des Wirbels auf das Modell übertragen.\\
+ Es kann aber auch um Längen gehen, die nur einen Teil des Knochens betreffen.
+ Rippen müssen \zb mit ihrer Breite in x-Richtung zur Breite des Wirbels passen, an welchem sie ansetzen. Deshalb ist das 3D-Modell der Rippe so skaliert, dass die Kantenlänge des Würfels in x-Richtung genau auf die Breite des Wirbels skaliert werden kann und die resultierende Breite der Rippe dann genau dazu passt.\\
+ Da die Rippe stark gebogen ist, führt das dazu, dass die Gesamtlänge der Rippe in x-Richtung viel länger ist als die Kantenlänge des Würfels. Das Problem daran ist, dass die gegebenen Abmessungen des Knochens dann nicht mehr viel mit der Ausdehnung des eingesetzten 3D-Modells haben. Je nach dem um welchen Knochen es sich handelt, möchte man diesen Effekt evtl.\ vermeiden.
  
- \item Kantenlängen, die nicht vorgegeben werden, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die x- und y-Skalierung eines Knochens vorgegeben, und die Skalierung in z-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die z-Richtung von einer der anderen Richtungen abhängt. Tut man dies nicht, so führt das relativ leicht dazu, dass die Knochen grundlos verzerrt werden.
- 
- \item Längen die variiert werden können sollen \zb die Länge der Wirbel oder der Beinabstand der Hüfte sollten genau eine Kantenlänge des Würfels einnehmen.
+ \item Kantenlängen, die nicht speziell vorgegeben werden, \zb die Dicke der Extermiätenknochen, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die x- und y-Skalierung eines Knochens vorgegeben, und die Skalierung in z-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die z-Richtung relativ zu einer anderen Richtungen angegeben werden kann. Tut man dies nicht, so führt das leicht dazu, dass die Knochen verzerrt aussehen.
 \end{itemize}
-\todo{Schwierigkeit bei stark gebogenen Knochen}
 
-Liegen die Modelle in diesem Format vor, können sie einfach eingelesen werden und anhand der Skalierung der Bounding Box skaliert werden.
-Hier wurden vor allem Modelle von menschlichen Knochen verwendet, da sie leichter verfügbar sind. Manche Knochen sind jedoch auch von anderen Tieren. Das führt \zb bei dem verwendeten Unterarmknochen des Pferdes dazu, dass er etwas überdimensionierte Fortsätze am Ellenbogen bekommen, wenn man ihn groß skaliert. Das liegt daran, dass dieser Knochen beim Pferd eigentlich relativ kurz ist.
 
-% Ausrichtung der Knochen
-Eine Schwierigkeit daran Modelle in der oben genannten Form herzustellen ist, dass nicht unbedingt sofort klar ist, wie die Knochen ausgerichtet werden müssen. Die Hüfte muss \zb so ausgerichtet werden, dass der Anfangs- und Endpunkt der durchgehenden Wirbelsäule auf gleicher Höhe liegen, damit nachfolgende Wirbel auch richtig anschließen. (Das funktioniert natürlich nur, weil die Wirbelsäule an der Stelle der Hüfte quasi gerade ist.) \todo{wg Lizenz Pferdehüfte verwendet, die nicht mit Wirbelsäule verwachsen ist}
-Auch die Positionierung der Rippen und des Oberarms in Kombination mit dem Unterarm ist anspruchsvoll. Dabei hilft es 3D-Modelle zu haben, in denen die anderen Knochen auch schon vorhanden sind, um sich die Ausrichtung abzuschauen. Außerdem können Bilder von Skeletten zu Rate gezogen werden. Und zuletzt muss man die genaue Positionierung einfach testen.
-
+\paragraph{Offsets zwischen Knochen}
 % Gelenke korrekt ausrichten
-Zusätzlich muss beachtet werden wie die Knochen aneinander anschließen \bzw wie sie für die entsprechenden Gelenke korrekt positioniert sind. Das erfordert etwas "`finetuning"'. Für jeden Knochen sind dafür in Abhängigkeit zur Bounding Box zwei Offsets gespeichert: das Offset zu dem Gelenk, das ihn mit seinem Elternknochen verbindet und das Offset zu dem Gelenk, das ihn mit seinem Kindknochen verbindet (oder mehrere, falls vorhanden). Dies sorgt dafür, dass die Positionierung der Knochen stimmt, egal wie groß sie sind. Ist ein Knochen sehr groß und ein anschließender sehr klein (oder anders herum), so kommt es natürlich trotzdem vor, dass die Gelenke nicht wirklich ineinander passen. Für solche Situationen bräuchte man verschiedene 3D-Modelle, die je nach Gegebenheit eingesetzt werden.
+Es ist eventuell nicht ganz leicht zu erkennen wie die Knochen ineinander greifen \bzw wie die Gelenke die Ausrichtung der Knochen beeinflussen. Das erfordert etwas Wissen zur Anatomie und viel "`finetuning"'. 
+
+Für jeden Knochen sind für diese Ausrichtung zwei Offsets gespeichert: das Offset zu dem Gelenk, das ihn mit seinem Elternknochen verbindet und das Offset zu dem Gelenk, das ihn mit seinem Kindknochen verbindet (oder mehrere, falls vorhanden). Dies sorgt dafür, dass die Positionierung der Knochen stimmt, egal wie groß sie sind. Ist ein Knochen sehr groß und ein anschließender sehr klein (oder anders herum), so kommt es natürlich trotzdem vor, dass die Gelenke nicht wirklich ineinander passen. Für solche Situationen bräuchte man verschiedene 3D-Modelle, die je nach Gegebenheit eingesetzt werden.
+
+Es wurden vor allem Modelle von Pferde- und Menschenknochen verwendet, da sie leicht verfügbar waren. Manche Knochen sind jedoch auch von anderen Tieren oder keinem speziellen Tier zugeordnet. Das führt \zb bei dem verwendeten Unterarmknochen vom Pferd dazu, dass er etwas überdimensionierte Fortsätze am Ellenbogen bekommen, wenn man ihn stark verlängert. Das liegt daran, dass dieser Knochen beim Pferd eigentlich relativ kurz ist. Ansonsten passen die Knochen verschiedener Wirbeltiere aber erstaunlich gut ineinander.
+
+Leider unterscheiden sich die Knochen verschiedener Tiere dennoch so stark, dass die Offsets für jeden Knochentyp individuell bestimmt werden müssen. Dies, und die oben genannten Abweichungen von einem Würfel mit Kantenlänge $1$, führt dazu, dass die 3D-Modelle nicht einfach austauschbar sind.
+Um andere 3D-Modelle für Knochen zu verwenden, müsste nicht nur das Modell ausgetauscht werden, sondern eben auch die Offsets angepasst werden. Das ist momentan im Programm nicht möglich ohne den Code zu ändern. Dies ließe sich aber leicht hinzufügen. Die Offsets könnten \zb in einer Textdatei gespeichert werden und zusammen mit den Modellen eingelesen werden. 
+
+
+\paragraph{Spezielle Knochen}
+
+Für die meisten Knochentypen wird genau ein 3D-Modell verwendet. Bei manchen Knochen und in manchen Fällen wirkt das recht seltsam. Man möchte also eigetnlich etwas mehr Variation haben.
 
 % Köpfe
 % Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar oder ineinander überführbar)
-Da der Kopf \bzw der Schädelknochen im Gegensatz zu anderen Knochen bei Wirbeltieren sehr stark variiert, ist es sinnvoll mehrere Schädelknochen zur Auswahl zu haben. Geht die Menge an verfügbaren Schädelknochen über "`Tier mit Flügeln"' und "`Tier ohne Flügel"' hinaus, so ist es außerdem sinnvoll die Auswahl des passenden Schädelknochens dem Nutzer zu überlassen.
-
-
+Besonders stark ist dies am \emph{Schädelknochen} zu beobachten. Er variiert, im Gegensatz zu anderen Knochen, bei Wirbeltieren sehr stark. Hier ist es also ein großer Mehrwert verschiedene Modelle anzubieten. Die Frage ist dann nur wie entschieden wird welcher Schädelknochen wann verwendet wird. Eine Möglichkeit wäre in die Grammatik spezifischere Terminalsymbole für verschiedene Schädel und dazugehörige Regeln einzufügen. Tut man dies nicht, gibt es wenig Anhaltspunkte. Es ist deshalb sinnvoll die Auswahl des passenden Schädelknochens dem Nutzer zu überlassen.\\
+Bezüglich der Offsets ist der Schädelknochen ein recht einfacher Fall. Die verschiedenen Modelle lassen sich leicht alle gleich skalieren, sodass keine verschiedenen Offsets gespeichert werden müssen.
 
 % Hände und Füße
-Bei Händen und Füßen ist das Problem ebenso, dass es sehr viele verschiedene Ausprägungen davon gibt. Hier lassen sie sich jedoch grob nach Extremitätentyp unterscheiden. Diese Unterscheidung kann aber beliebig fein sein. Hier wurde nur nach Flügel, Flosse \todo{?} und Extremität mit Bodenkontakt unterschieden. Und bei Extremitäten mit Bodenkontakt wurde nochmals danach unterschieden wie flach der Fuß oder die Hand auf dem Boden aufkommt (bei weniger als $45^\circ$ ist es eine menschliche Hand, sonst ein Huf). \todo{ggf. an Implementierung anpassen}
-\todo{erwähnen, dass Knochen für Flügel"`hand"' nicht vollständig}
+Bei \emph{Händen und Füßen} ist das Problem ebenso, dass es sehr viele verschiedene Ausprägungen davon gibt (siehe \zb Abbildung \ref{extremities}). Diese lassen sich jedoch gut nach Extremitätentyp unterscheiden, wobei diese Unterscheidung natürlich beliebig fein sein kann. 
+Hier wurde die Unterscheidung verwendet, die auch bei der Positionierung der Extremitäten zum Einsatz kommt (siehe Abschnitt \ref{section:extremity_generation}). \\
+Es gibt also Flügel, Arme, Flossen und Beine mit Bodenkontakt. Wobei bei Beinen mit Bodenkontakt zusätzlich noch nach dem Winkel unterschieden wird mit dem der Fuß auf den Boden aufkommt. Bei weniger als $45^\circ$ wird eine menschliche Hand eingesetzt, sonst ein Pferdehuf. Arme bekommen ebenfalls eine Hand. Für Flossen wurde kein spezielles Modell eingefügt, bei ihnen wird ebenfalls eine Hand eingesetzt. Flügel haben ein eigenes Modell. In Ermangelung gemeinfreier Modelle fehlen hier aber leider einzelne Bestandteile.
 
-\todo{Schwanzspitze: ein Modell für drei Wirbel. Das sieht bei wenigen Wirbeln komisch abgeknickt aus}
+% (Schwanz)Wirbel
+Es gibt ein Modell für \emph{Wirbel}. Aber es gibt bei echten Wirbeltieren sehr viele unterschiedliche Wirbel, die auch in ihrer größe stark variieren. Ein Beispiel ist das Ende der Schwanzwirbelsäule. Hier werden die Wirbel bei echten Tieren kleiner.
+Um das Gesamtmodell realistischer zu machen, lassen sich die Modelle der Wirbel verfeinern. Als Beispiel wurde ein zusätzliches Modell eingeführt, dass die letzten drei Schwanzwirbel ersetzt. Es besteht aus drei aufeinanderfolgenden Wirbeln, die zum Ende hin kleiner werden. Das sieht in den meisten Fällen auch gut aus. Ein Nachteil davon ein Modell mit drei Wirbel zu haben ist aber, dass die Positionierung dann nicht mehr so fein erfolgen kann. Anfangs- und Endpunkt des Modells werden auf der Bézierkurve positioniert. Aber die Anfangs- und Enpunkte der einzelnen Wirbel können teilweise stark vom Verlauf der Kurve abweichen.
+Dies lässt sich natürlich leicht durch eine weitere Verfeinerung der Modelle beheben, indem jeder der drei Wirbel ein eigenes Modell bekommt.
 
-% mehrere Extremitäten an einer Schulter/Hüfte
-Setzten mehrere Extremitäten an einer Schulter oder einer Hüfte an, so ist ein "`normales"' Modell der Schulter/Hüfte nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde an der Schulter so behoben, dass einfach mehrere Schulterblätter mit einem gewissen Abstand generiert wurden. Für die Hüfte wurde ein kombiniertes 3D-Modell aus zwei einzelnen Hüften erstellt, an dem nun zwei Gelenke vorhanden sind.
+% mehrere Extremitäten an einer Hüfte
+Setzten \emph{mehrere Extremitäten} an einer Hüfte an, so ist ein realistisches Modell des Beckenknochens nicht mehr ausreichend, da nicht genug Gelenke vorhanden sind. Dieses Problem wurde so behoben, dass für den Beckenknochen ein kombiniertes 3D-Modell aus zwei einzelnen Beckenknochen erstellt wurde, an dem nun zwei Gelenke vorhanden sind.
 
-\todo{3D-Modelle leider nicht ganz einfach Austauschbar wegen Offsets -> erkläre wie Offsets eingelesen werden müssten}
-
-\begin{itemize}
- \item Die Abmessungen der Knochen in die verschiedenen Richtungen ist bei den meisten Knochen relativ beliebig gewählt und oft auch immer gleich (außer bei Längen, die von PCA vorgegeben sind). Dafür gibt es keine biologische oder anatomische Grundlage. Man könnte hier sicherlich noch mehr machen (mehr Zufall, mehr anatomisch korrekt etc.)
- \todo{in Implementierungsdetails aufzählen was an Abmessungen alles beliebig (oder auch weniger beliebig) festgelegt wurde.}
-\end{itemize}
 
 
 
