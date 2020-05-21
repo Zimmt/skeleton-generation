@@ -58,7 +58,7 @@ Zur Darstellung eines Knochens sind also
 seine Ausdehnung in alle drei Raumrichtungen (die Kantenlängen des Quaders) und die Position und Orientierung des Ursprungs im globalen Koordinatensystem erforderlich.
 
 % Hierarchie
-Die Knochen sollten eine Hierarchie (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird. \todo{Verweis auf previous work, wenn ausgearbeitet} Da der Wirbeltierbauplan aus Abbildung \ref{bauplan_skelett} verwendet wird, ist das auch möglich. Im Allgemeinen ist ein Skelett aber weder zusammenhängend noch ohne Kreise.
+Die Knochen sollten eine Hierarchie (einen Baum) bilden, da das von Algorithmen für Animationen so erwartet wird (siehe Abschnitt \ref{character_animation}). Da der Wirbeltierbauplan aus Abbildung \ref{bauplan_skelett} verwendet wird, ist das auch möglich. Im Allgemeinen ist ein Skelett aber weder zusammenhängend noch ohne Kreise.
 
 % Wurzel
 Für eine Hierarchie ist ein oberstes Element nötig, die Wurzel des Baums.
@@ -313,7 +313,6 @@ Um in allen Fällen eine realistisch wirkende Positionierung der Beine zu bekomm
 
 % für Weiterverwendung werden Beine sowieso angepasst
 Ein fertig generiertes Skelett wird höchstwahrscheinlich auch noch weiterverarbeitet. Soll \zb ein animiertes Tier daraus werden, so müssen Bewegungszyklen geschaffen werden. Dafür muss jedes Gelenk vielfach bewegt werden. Soll ein Tier mit Haut und Muskeln daraus werden, so müssen Muskeln an den Knochen ansetzen, die dann einen nicht unerheblichen Anteil an der Positionierung der Beine haben.
-\todo{Referenz auf Animation wenn ausgearbeitet}
 
 % Beinalgo nicht weiter anpassen
 Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als erster Eindruck dienen muss aber in den meisten Fällen noch angepasst werden. Ausgehend von der gegebenen Datenlagen und von den zu erwartenden Anwendungen ist es aber nicht sinnvoll den Algorithmus weiter zu verfeinern.

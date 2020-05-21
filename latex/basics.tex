@@ -12,36 +12,46 @@ Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt
 
 Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt für \zb PC-Spiele von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, denn der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, ist aufwändig und benötigt viel Zeit. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl verwendet werden um fertige 3D-Modelle zu generieren, als auch um als Inspiration und Hilfe für den Künstler zu dienen. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
 
-Dinge, die oft prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. Das lässt viel Spielraum für diese Arbeit.
+Dinge, die oft prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. \\
+Ein Beispiel, das erst nach Erscheinen dieser Zusammenstellung auf den Markt gekommen ist, ist das Computerspiel "`No Man's Sky"' \cite{NoMansSky}. Darin gibt es viele prozedural generierte fantastische Tiere. Die Generierung dieser Tiere funktioniert so, dass zunächst prozedural ein Modell generiert wird, in welches anschließend ein Skelett eingepasst wird \cite{NoMansSkyDevelopment}.
+Die dort verwendeten Skelette sind nicht wirklichkeitsgetreu, sondern werden nur für die Animation verwendet (siehe Abschnitt \ref{character_animation}).
 
 \todo{perlin noise (nicht ausreichend für Skelette, mehr Einschränkungen nötig sonst würden nur Monster generiert) + weitere Methodenbeispiele}
 
 
-%-------------------------------------------
-\section{Animation, Physiksimulationen, IK}
+%--------------------------
+\section{Inverse Kinematik}
 \label{IK}
 
-\begin{itemize}
- \item Knochen in Hierarchie (Baum)
- \item keyframes, motion capture (traditional keyframed workflow (sporeanim S.3), wo kann hier Algorithmus verwendet werden?)
- \item rag doll
- \item Skelett, Muskeln, Haut, Faszien (für lebensecht wirkende Tiere)
- \item Featherstone Algorithmus
- \item Drehmomente ausrechnen um Gleichgewicht auszurechnen (hier? oder im Kapitel zu ersten Ansätzen lassen?)
- \item Animation von vorher unbekannten Kreaturen (sporeanim)
- \item skeleton-based design tool (Yamamoto et al 2011): rudimentäres Skelett/Rig für schnelle Produktion und leichte Änderung an Charakteren
-        \url{https://dl.acm.org/doi/10.1145/2073304.2073316}, \url{https://www.youtube.com/watch?v=yhq1aUp8QLY}
-\end{itemize}
-
-% IK
 Inverse Kinematik wird unter anderem in der Robotik verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte auf dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Zielpunkte erreicht werden.\\
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden.
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden. 
 
 \begin{itemize}
  \item IK für die Animation von Beinen: Girard and Maciejewski 1985
  \item IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
 \end{itemize}
 
+
+%-------------------------------------------
+\section{Charakteranimation}
+\label{character_animation}
+
+Um Charaktere für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett nötig. Dieses Skelett ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen des Charakters vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Skelett wird ein Knochen nahe des Schwerpunkts des Charakters verwendet. Das ist bei humanoiden Charakteren die Hüfte.\\
+Weit verbreitete Editoren für Animation, Modellierung, Simulation und Rendering sind Maya \cite{Maya} und 3ds Max \cite{3dsMax}. Auch hier werden solche Skelette verwendet \cite{MayaSkeletonHierarchy}. 3ds Max stellt \zb in einer Komponente namens Biped vorgefertigte Skelette für humanoide Charaktere zur Verfügung, die einfach in schon existierende 3D-Modelle eingefügt werden können \cite{3dsMaxBiped}.
+
+Animationen werden dann mit Hilfe sogenannte Keyframes erzeugt. Keyframes sind Positionen, die der Charakter im Laufe der Bewegung einnehmen soll. Interpolation zwischen den einzelnen Keyframes ergibt dann eine flüssige Bewegung. \cite[Kapitel 3]{sporeanim}\\
+Im Computerspiel Spore \cite{Spore} werden sogar zur Laufzeit Animationen für Charaktere erzeugt, deren Aufbau vorher noch nicht bekannt war. Dazu werden vorher abstrakte Animationen, unabhängig vom Aufbau des speziellen Charakters, erzeugt. Diese werden dann zur Laufzeit auf die konkreten Charaktere angewandt. \cite{sporeanim}
+
+Um besonders lebensecht wirkende Tiere zu erzeugen, ist es nötig den Aufbau des entprechenden Tieres möglichst wirklichkeitsgetreu zu modellieren. Dazu sind Modelle für Skelett, Muskeln und Haut nötig. Solche Modelle lassen sich beispielsweise mit dem Maya-Plugin Ziva \cite{Ziva} erzeugen. \cite{ZivaGeneralSetup}
+
+Der Algorithmus, der hier erarbeitet wird, erzeugt Skelette mit lebensechten Knochenmodellen. Er kann als Inspiration zur Erstellung neuer Charaktere dienen oder auch als Grundlage für ein Tier, das ein realitätsnahes Skelett haben soll.
+
+
+% \begin{itemize}
+%  \item Featherstone Algorithmus
+%  \item skeleton-based design tool (Yamamoto et al 2011): rudimentäres Skelett/Rig für schnelle Produktion und leichte Änderung an Charakteren
+%         \url{https://dl.acm.org/doi/10.1145/2073304.2073316}, \url{https://www.youtube.com/watch?v=yhq1aUp8QLY}
+% \end{itemize}
 
 
 %--------------------
