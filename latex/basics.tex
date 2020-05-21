@@ -8,7 +8,7 @@
 
 Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der Ausführung des Algorithmus festgelegt wurden, so wird dies als \emph{prozedurale Generierung} (PG) bezeichnet.
 Ursprünglich wurde PG verwendet, weil der Speicherplatz auf Computern sehr begrenzt war. Große 3D-Landschaften oder andere vorgefertigte künstlerische Werke konnten nicht gespeichert werden.\\
-Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft  \cite{DemoScene}. \todo{mehr beschreiben}
+Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft  \cite{DemoScene}. 
 
 Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt für \zb PC-Spiele von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, denn der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, ist aufwändig und benötigt viel Zeit. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl verwendet werden um fertige 3D-Modelle zu generieren, als auch um als Inspiration und Hilfe für den Künstler zu dienen. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
 
@@ -23,14 +23,10 @@ Die dort verwendeten Skelette sind nicht wirklichkeitsgetreu, sondern werden nur
 \section{Inverse Kinematik}
 \label{IK}
 
-Inverse Kinematik wird unter anderem in der Robotik verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte auf dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Zielpunkte erreicht werden.\\
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden. 
+Inverse Kinematik wird unter anderem in der Robotik zur Bewegung von Robotern verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.\\
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in Zusammenstellung \cite{IKSurvey} zu finden.
 
-\begin{itemize}
- \item IK für die Animation von Beinen: Girard and Maciejewski 1985
- \item IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
-\end{itemize}
-
+% IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
 
 %-------------------------------------------
 \section{Charakteranimation}
