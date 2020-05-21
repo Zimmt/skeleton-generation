@@ -324,7 +324,7 @@ Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als
 Ansatzpunkte für Extremitäten sind zunächst der Hüftgürtel und der Schultergürtel. Um auch die Generierung fantastischer Tiere (siehe Abschnitt \ref{biology_mythology}) zu ermöglichen, ist es aber möglich dies zu erweitern. Um die Anzahl der zusätzlichen Extremitäten zu bestimmen, ist es am einfachsten sich auf Benutzereingaben zu verlassen. Die Beispieldaten für die PCA sind nur echte Wirbeltierskelette. Deshalb lassen sich aus Punkten im PCA-Raum keine Informationen zu zusätzlichen Extremitäten ableiten.
 
 \paragraph{Zwei Extremitätenpaare pro Extremitätengürtel}
-Eine einfache Möglichkeit ist zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt. Das ermöglicht beispielsweise Tiere wie den Pegasus.\\
+Eine einfache Möglichkeit ist zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt. Das ermöglicht beispielsweise Tiere wie den Pegasus (siehe Abbildung \ref{pegasus}).\\
 Um das zu ermöglichen, wird die, in Abschnitt \ref{section:grammar} eingeführte, Grammatik $G = (\Sigma, N, S, P)$ zu einer Grammatik $G' = (\Sigma', N, S, P')$ mit $\Sigma' = \Sigma \cup \{\text{Schulterblatt2, Beckenknochen2}\}$ erweitert. Schulterblatt2 und Beckenknochen2 sind hier die Bezeichnungen für ein Schulterblatt \bzw einen Beckenknochen mit zwei Gelenken für Extremitäten. Die Produktionen $P$ werden durch folgende Regeln zu $P'$ ergänzt.
 
 \begin{align*}
@@ -338,13 +338,21 @@ Um das zu ermöglichen, wird die, in Abschnitt \ref{section:grammar} eingeführt
 % Keine Flügel und Arme an der Hüfte
 Flügel und Arme dürfen hierbei nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen. Deshalb wird die Wirbelsäule durch die PCA auch dementsprechend angelegt.
 
+\begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{../java_skeleton_generation/example_skeletons/pegasus.jpg}
+ \caption{Beispiel für ein Skelett, dass mit folgenden Bedingungen generiert wurde:\\ $4$ Beine, $2$ Flügel. Mehrere Extremitätenpaare pro Extremitätengürtel waren erlaubt.}
+ \label{pegasus}
+\end{figure}
+
+
 \paragraph{Mehrere Extremitätengürtel entlang der Rückenwirbelsäule}
 Eine Überlegung könnte auch sein zwischen Schulter und Hüfte weitere Extremitätengürtel zu erlauben, um \zb Tiere wie den asiatische Drachen erzeugen zu können. Das stellt sich aber als schwierig heraus. Die Wirbelsäule ist zwischen Hüfte und Schulter meist nach oben geschwungen und im Bauchraum befinden sich viele Organe. Ein zusätzlicher Extremitätengürtel würde den Bauchraum einschränken. Außerdem wirkt dann auch die nach oben geschwungene Wirbelsäule anatomisch seltsam.
 Verdoppelt man die Schwingung der Wirbelsäule und hängt einfach einen weiteren Rücken hinten oder vorne an, so wirkt es ebenso seltsam, da dann die "`Höcker"' der Wirbelsäule für das Tier wahrscheinlich nicht wirklich ein Vorteil sind und nur die Fortbewegung erschweren.
 Asiatische Drachen sind ein Spezialfall, bei dem die zusätzlichen Hüften nicht seltsam wirken, denn sie besitzen einen langen, schlangenartigen Körper, bei dem die Wirbelsäule gerade verläuft.
 
 \paragraph{Zweiter Schultergürtel}
-Eine weitere Idee, die auch umgesetzt wurde, ist, Zentauren zu ermöglichen. Hat das Tier, das generiert wird, einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll.\\
+Eine weitere Idee, die auch umgesetzt wurde, ist, Zentauren zu ermöglichen. Hat das Tier, das generiert wird, einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll (siehe Abbildung \ref{zentauren}).\\
 Hierfür wird die Grammatik aus Abschnitt \ref{section:grammar} um eine zusätzliche Produktion für das \emph{Vorderteil} erweitert:
 
 \begin{align*}
@@ -359,6 +367,14 @@ Hierfür wird die Grammatik aus Abschnitt \ref{section:grammar} um eine zusätzl
 Hier gilt $h_1 + 1 + h_2 = h$. Die Anzahl der Halswirbel bleibt also gleich, nur einer der Wirbel wird zum Schulterwirbel.
 
 Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben (siehe Abschnitt \ref{pca_conditions}). Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
+
+\begin{figure}
+ \subfloat[]{\includegraphics[height=5.5cm]{../java_skeleton_generation/example_skeletons/zentaur1.jpg}}~
+ \subfloat[]{\includegraphics[height=5.5cm]{../java_skeleton_generation/example_skeletons/zentaur2.jpg}}
+ 
+ \caption{Zwei Beispiele für Skelette, die mit folgenden Bedingungen generiert wurden: $4$ Beine, $2$ Arme und ein zusätzlicher Schultergürtel. Mehrere Extremitäten pro Extremitätengürtel sind nicht erlaubt.}
+ \label{zentauren}
+\end{figure}
 
 
 %---------------------------------------------------

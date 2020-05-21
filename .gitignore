@@ -61,6 +61,10 @@ java_skeleton_generation/*.obj
 ### temporary PCA visualization exports ###
 PCA/temporary_visualization_exports/*
 
+### Blender ###
+java_skeleton_generation/example_skeletons/*.blend[1-9]
+
+
 ### skeleton meta data files ###
 java_skeleton_generation/skeletonMetaData*
 
