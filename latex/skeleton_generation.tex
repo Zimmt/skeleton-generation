@@ -71,7 +71,7 @@ Für die Darstellung werden Transformationsmatrizen mit homogenen Koordinaten ve
 
 \paragraph{Gelenke}
 Ein Gelenk ist, wie auch in der Natur, ein Verbindungsstück zwischen zwei Knochen. Es legt fest wie die beiden Knochen sich relativ zueinander bewegen können. Im Gegensatz zu echten Gelenken haben Gelenke hier aber keine Ausdehnung. Sie werden am Ende im 3D-Modell nicht dargestellt.\\
-Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seinen Abstand zum Ursprung des Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Haben alle Winkel einen Wert von $0^\circ$, hat das Kindelement die gleiche Ausrichtung wie das Elternelement. 
+Ein Gelenk wird im Koordinatensystem des Elternknochens dargestellt. Es wird beschrieben durch seine Position im Elternkoordinatensystems und Bewegungseinschränkungen für den Kindknochen. Ein Gelenk kann null bis zwei Freiheitsgrade haben. Haben alle Winkel einen Wert von $0^\circ$, hat das Kindelement die gleiche Ausrichtung wie das Elternelement. 
 Die meisten Knochen werden aber direkt in ihrer Endposition generiert, sodass zusätzliche Bewegungseinschränkungen gar nicht nötig sind. Nur bei der Positionierung der Extremitäten (siehe Abschnitt \ref{leg_algo}) spielen die Gelenke ein Rolle.
 In Abbildung \ref{joints} sind alle Gelenke der Extremitäten dargestellt. Der Einfachheit halber haben sie alle nur einen Freiheitsgrad.
 
@@ -87,35 +87,53 @@ Das Regelwerk für die Generierung der Knochen des Skeletts ist durch eine konte
 
 \paragraph{Kontextfreie Grammatik}
 % erweiterte kontextfreie Grammatik
-Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (so wie sie auch bei L-Systemen verwendet werden, siehe dazu Abschnitt \ref{grammars}).
+Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P, p)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (so wie sie auch bei L-Systemen verwendet werden, siehe dazu Abschnitt \ref{grammars}). Außerdem bekommt sie als zusätzliche Eingabe eine Menge von Parametern $p$ aus $\mathbb{N}_0$, die in den Produktionen $P$ verwendet werden.
 \begin{alignat*}{2}
- \Sigma & = \{&&\text{(, ), Wurzelknochen, Wirbel, Rippe, Schädel, Schulterwirbel,}\\  
+ \Sigma & = \{&&\text{(, ), Wurzelknochen, Wirbel, Rippe, Schädel,}\\  
         & &&\text{Schulterblatt, Oberarm, Unterarm, Hand,}\\ 
         & &&\text{Beckenknochen, Oberschenkel, Unterschenkel, Fuß}\}\\
- N &= \{&&\text{\emph{Skelett, Vorderteil, Hinterteil, Schultergürtel, Vorderextremität, Hinterextremität}}\}\\
- S &= &&\text{\emph{Skelett}}
+ N &= \{&&\text{\emph{Skelett, Vorderteil, Hinterteil, Schulterpartie, Schultergürtel, Hüftgürtel}}\\
+        & &&\text{\emph{Halswirbelsäule, Schwanzwirbelsäule, Vorderextremität, Hinterextremität}}\}\\
+ S &= &&\text{\emph{Skelett}}\\
+ p &= \{&&w_{rv}, w_{rh}, w_h, w_s, r, s, b \}
 \end{alignat*}
 
 Im folgenden sind alle Produktionen aus $P$ aufgeführt.
-
 \begin{align*}
  \text{\emph{Skelett}} \rightarrow &\text{ Wurzelknochen ( \emph{Vorderteil} ) \emph{Hinterteil}}\\
- \text{\emph{Vorderteil}} \rightarrow &\text{ Wirbel}^{w_v}\\
-    &\text{ [Wirbel ( Rippe )]}^{r_v}\\
-    &\text{ [Schulterwirbel ( Rippe \emph{Schultergürtel} )]?}\\
-    &\text{ [Wirbel]}^h\\
+ \text{\emph{Vorderteil}} \rightarrow &\text{ Wirbel}^{(w_{rv} - r)^+}\\
+    &\text{ [Wirbel ( Rippe )]}^{(\text{min}(w_{rv}-1, r-1))^+}\\
+    &\text{ \emph{Schulterpartie}}\\
+    &\text{ \emph{Halswirbelsäule}}^h\\
     &\text{ Schädel}\\
+ \text{\emph{Schulterpartie}} \rightarrow &\text{ [Wirbel ( Rippe$^{\text{min}(1,r)}$ \emph{Schultergürtel}$^{e_v}$ )}\\ 
  \text{\emph{Schultergürtel}} \rightarrow &\text{ Schulterblatt \emph{Vorderextremität}}\\
  \text{\emph{Vorderextremität}} \rightarrow &\text{ Oberarm Unterarm Hand}\\
- \text{\emph{Hinterteil}} \rightarrow &\text{ [Wirbel ( Rippe )]}^{r_h}\\
-    &\text{ Wirbel}^{w_h}\\
-    &\text{ [Beckenknochen ( \emph{Hinterextremität} )]?}\\
-    &\text{ [Wirbel]}^s\\
- \text{\emph{Hinterextremität}} \rightarrow &\text{ Oberschenkel Unterschenkel Fuß}
+ \text{\emph{Halswirbelsäule}} \rightarrow &\text{ Wirbel}^{w_h}\\
+ \text{\emph{Hinterteil}} \rightarrow &\text{ [Wirbel ( Rippe )]}^{(r-w_{rv})^+}\\
+    &\text{ Wirbel}^{(w_{rh} - (r-w_{rv})^+ - 1)^+}\\
+    &\text{ Wirbel ( \emph{Hüftgürtel} )}\\
+    &\text{ \emph{Schwanzwirbelsäule}}^s\\
+ \text{\emph{Hüftgürtel}} \rightarrow &\text{ [Beckenknochen \emph{Hinterextremität} ]$^{e_h}$}\\
+ \text{\emph{Hinterextremität}} \rightarrow &\text{ Oberschenkel Unterschenkel Fuß}\\
+ \text{\emph{Schwanzwirbelsäule}} \rightarrow &\text{ [Wirbel]}^{w_s}\\
 \end{align*}
 
-Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^*$ bedeutet, dass $A$ $x$-mal hintereinander vorkommt. Dies wird für Wirbel und Rippen verwendet. Wie oft diese genau vorkommen wird vorher festgelegt (siehe Abschnitt \ref{section:vertebrae_ribs}).
-Folgt ein ? auf ein Symbol, so ist es optional \dash es kann null- bis einmal vorkommen. Ob dieses Elemente generiert wird oder nicht, wird ebenfalls, unabhängig von der Grammatik, vorher festgelegt. Wie das genau funktioniert wird weiter unten im Absatz \emph{Berechnung der Zusatzbedingungen} erklärt.
+Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^*$ bedeutet, dass $A$ genau $x$-mal hintereinander vorkommt. Der Ausdruck $A^{(x)^+}$ kann ersetzt werden durch $A^{\text{max}(0, x)}$. Die angegebene Anzahl $x$ wird also nur verwendet, wenn sie positiv ist. Sonst wird $x$ durch $0$ ersetzt.
+
+Die Parameter haben folgende Bedeutungen:
+\begin{itemize}
+ \item $w_{rv}$: Anzahl der Wirbel auf der vorderen Hälfte der Rückenwirbelsäule, mit $w_{rv} \geq 3$
+ \item $w_{rh}$: Anzahl der Wirbel auf der hinteren Hälfte der Rückenwirbelsäule
+ \item $h \in \{0,1\}$ gibt an, ob es eine Halswirbelsäule gibt
+ \item $s \in \{0,1\}$ gibt an, ob es eine Schwanzwirbelsäule gibt
+ \item $w_h$: Anzahl der Wirbel auf der Halswirbelsäule
+ \item $w_s$: Anzahl der Wirbel auf der Schwanzwirbelsäule
+ \item $r$: Anzahl der Rippen, mit $r \leq w_{rv} + w_{rh}$
+ \item $e_v$: Anzahl der Vorderextremitäten, mit $e_v \in \{0, 1\}$
+ \item $e_h$: Anzahl der Hinterextremitäten, mit $e_h \in \{0, 1\}$
+\end{itemize}
+\todo{wie werden Parameter bestimmt}
 
 Während die Bestandteile des Skeletts durch die Grammatik $G$ generiert werden, wird auch gleichzeitig Position und Ausdehnung der erzeugten Terminalsymbole festgelegt. Nichtterminale haben weder Position noch Ausdehnung. Aus diesem Grund haben Nichtterminale niemals Kindelemente. Wäre dies erlaubt, könnte es passieren, dass Nichtterminalsymbole terminale Kinder haben. Für diese wäre dann nicht klar wie sie positioniert werden müssten, da ihre Position von der ihrer Eltern abhängig ist.\\
 Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Kompliziertere Berechnungen werden nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.
@@ -227,10 +245,10 @@ Das führt aber zu unnatürlich aussehenden Beinen, da das kürzeste Bein dann g
 Deshalb wird nur ein bestimmter Anteil\footnote{Dieser Anteil ist in der Implementierung mit $0.8$ festgelegt, lässt sich aber natürlich auch variieren.} der Länge der Beine betrachtet. So wird erzwungen, dass die Beine, wenn sie auf dem neu definierten Boden stehen, auch etwas gekrümmt sind.
 
 Wie in Kapitel \ref{chapter:biology} beschrieben, gibt es verschiedene Arten von Füßen \bzw Händen. Die oben beschriebene Berechnung geht davon aus, dass der Boden mit der Fußspitze berührt wird. Aber natürlich gibt es auch Wirbeltiere, die mit dem flachen Fuß auf der Erde stehen.
-Deshalb wird zusätzlich zur Bodenhöhe noch eine Wahrscheinlichkeit berechnet, dass Verse \bzw Handgelenk den Boden berühren.
+Deshalb wird zusätzlich zur Bodenhöhe noch eine Wahrscheinlichkeit berechnet, dass Ferse \bzw Handgelenk den Boden berühren.
 
 Wird die Bodenhöhe nach oben verschoben, weil die Beine insgesamt zu kurz sind, ist diese Wahrscheinlichkeit null.
-Sind die Beine so lang, dass schon ohne die Bodenhöhe anzupassen die Verse \bzw das Handgelenk auf den Boden reicht, so ist sie eins.
+Sind die Beine so lang, dass schon ohne die Bodenhöhe anzupassen die Ferse \bzw das Handgelenk auf den Boden reicht, so ist sie eins.
 Ansonsten ist die Wahrscheinlichkeit 
 \[\frac{\text{Beinlänge} - \text{Höhe des Extremitätengürtels über }0}{\text{Länge des Fußes}}\]
 
@@ -303,7 +321,7 @@ Vergleicht man nun die Beinstellung, die der oben beschriebene Algorithmus gener
  \subfloat[generiertes Skelett]{\includegraphics[height=4.5cm]{../java_skeleton_generation/example_skeletons/elefant.jpg}}~
  \subfloat[Eingabebild]{\includegraphics[height=4.5cm]{../PCA/Skelettbilder/Afrikanischer_Elefant.jpg}}
  
- \caption{(a) Skelett eines Elefanten, das anhand der erhobenen Daten generiert wurde. (b) Die Abbildung des Skeletts eines Elefanten, die auch als Eingabe für die PCA verwendet wurde.}
+ \caption{(a) Skelett eines Elefanten, das anhand der erhobenen Daten generiert wurde. Als Hintergrund wurde \cite{background} verwendet. (b) Die Abbildung des Skeletts eines Elefanten, die auch als Eingabe für die PCA verwendet wurde.}
  \label{elefant}
 \end{figure}
 
@@ -324,15 +342,21 @@ Ansatzpunkte für Extremitäten sind zunächst der Hüftgürtel und der Schulter
 
 \paragraph{Zwei Extremitätenpaare pro Extremitätengürtel}
 Eine einfache Möglichkeit ist zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt. Das ermöglicht beispielsweise Tiere wie den Pegasus (siehe Abbildung \ref{pegasus}).\\
-Um das zu ermöglichen, wird die, in Abschnitt \ref{section:grammar} eingeführte, Grammatik $G = (\Sigma, N, S, P)$ zu einer Grammatik $G' = (\Sigma', N, S, P')$ mit $\Sigma' = \Sigma \cup \{\text{Schulterblatt2, Beckenknochen2}\}$ erweitert. Schulterblatt2 und Beckenknochen2 sind hier die Bezeichnungen für ein Schulterblatt \bzw einen Beckenknochen mit zwei Gelenken für Extremitäten. Die Produktionen $P$ werden durch folgende Regeln zu $P'$ ergänzt.
+Um das zu ermöglichen, wird die, in Abschnitt \ref{section:grammar} eingeführte, Grammatik $G = (\Sigma, N, S, P, p)$ zu einer Grammatik $G' = (\Sigma', N, S, P', p')$ mit $\Sigma' = \Sigma \cup \{\text{Beckenknochen2}\}$ erweitert. Das Terminal Beckenknochen2 steht hier für einen Beckenknochen mit zwei Gelenken für Extremitäten. Die Produktionen in $P$ für \emph{Vorderteil, Schulterpartie} und \emph{Beckengürtel} werden in $P'$ durch folgende Produktionen ersetzt. Außerdem können die Parameter $e_v$ und $e_h$ (die Anzahl der Vorder- \bzw Hinterextremitäten) in $p'$ jetzt auch den Wert $2$ annehmen.
 
 \begin{align*}
- \text{\emph{Schultergürtel}} \rightarrow &\text{ Schulterblatt2 ( \emph{Vorderextremität} ) \emph{Vorderextremität}}\\
- \text{\emph{Hinterteil}} \rightarrow &\text{ [Wirbel ( Rippe )]}^{r_h}\\
-    &\text{ Wirbel}^{w_h}\\
-    &\text{ Beckenknochen2 ( \emph{Hinterextremität} ) ( \emph{Hinterextremität} )}\\
-    &\text{ [Wirbel]}^s
+ \text{\emph{Vorderteil}} \rightarrow &\text{ Wirbel}^{(w_{rv} - r)^+}\\
+    &\text{ [Wirbel ( Rippe )]}^{(\text{min}(w_{rv}-\mathbf{3}, r-\mathbf{3}))^+}\\
+    &\text{ \emph{Schulterpartie}}\\
+    &\text{ \emph{Halswirbelsäule}}^h\\
+    &\text{ Schädel}\\
+ \text{\emph{Schulterpartie}} \rightarrow &\text{ [Wirbel ( Rippe$^{\text{min}(1,r-2)}$ \emph{Schultergürtel}$^{(e_v-1)^+}$ )}\\
+    &\text{ Wirbel ( Rippe$^{(\text{min}(1, r-1))^+}$ )}\\
+    &\text{ Wirbel ( Rippe$^{\text{min}(1,r)}$ \emph{Schultergürtel}$^{\text{min}(1, e_v)}$ )}\\   
+ \text{\emph{Hüftgürtel}} \rightarrow &\text{ [Beckenknochen \emph{Hinterextremität}]$^{\text{min}(1, e_h) \cdot |e_h - 2|}$}\\
+    &\text{ [Beckenknochen2 ( \emph{Hinterextremität} ) \emph{Hinterextremität}]$^{(e_h - 1)^+}$}
 \end{align*}
+\todo{Regeln nochmal textuell erklären}
 
 % Keine Flügel und Arme an der Hüfte
 Flügel und Arme dürfen hierbei nur an der Schulter ansetzen, Beine und Flossen an beiden Stellen. Der Grund dafür ist, dass die meisten generierten Skelette seltsam wirken, wenn an der Hüfte Flügel oder Arme ansetzen und dafür an der Schulter Beine beginnen. Das liegt daran, dass existierende Tiere mit Flügeln oder Armen ihren Schwerpunkt im hinteren Bereich haben und sie auf den Hinterbeinen stehen. Deshalb wird die Wirbelsäule durch die PCA auch dementsprechend angelegt.
@@ -340,7 +364,7 @@ Flügel und Arme dürfen hierbei nur an der Schulter ansetzen, Beine und Flossen
 \begin{figure}
  \centering
  \includegraphics[width=0.6\textwidth]{../java_skeleton_generation/example_skeletons/pegasus.jpg}
- \caption{Beispiel für ein Skelett, dass mit folgenden Bedingungen generiert wurde:\\ $4$ Beine, $2$ Flügel. Mehrere Extremitätenpaare pro Extremitätengürtel waren erlaubt.}
+ \caption{Beispiel für ein Skelett, dass mit folgenden Bedingungen generiert wurde:\\ $4$ Beine, $2$ Flügel. Mehrere Extremitätenpaare pro Extremitätengürtel waren erlaubt. Als Hintergrund wurde \cite{background} verwendet.}
  \label{pegasus}
 \end{figure}
 
@@ -352,18 +376,17 @@ Asiatische Drachen sind ein Spezialfall, bei dem die zusätzlichen Hüften nicht
 
 \paragraph{Zweiter Schultergürtel}
 Eine weitere Idee, die auch umgesetzt wurde, ist, Zentauren zu ermöglichen. Hat das Tier, das generiert wird, einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll (siehe Abbildung \ref{zentauren}).\\
-Hierfür wird die Grammatik aus Abschnitt \ref{section:grammar} um eine zusätzliche Produktion für das \emph{Vorderteil} erweitert:
+Hierfür wird die Grammatik $G' = (\Sigma', N, S, P', p')$ zu einer Grammatik $G'' = (\Sigma', N, S, P'', p'')$ mit $p'' = p' \cup \{e_{v2}\}$ erweitert. Der Parameter $e_{v2} \in \{0, 1, 2\}$ steht für die Anzahl der  Vorderextremitäten am zweiten Schultergürtel.
+Die Produktion in $P'$ \bzw $P$ für die \emph{Halswirbelsäule} wird in $P''$ durch folgende Produktion ersetzt.
 
 \begin{align*}
- \text{\emph{Vorderteil}} \rightarrow &\text{ Wirbel}^{w_v}\\
-    &\text{ [Wirbel ( Rippe )]}^{r_v}\\
-    &\text{ [Schulterwirbel ( Rippe \emph{Schultergürtel} )]?}\\
-    &\text{ [Wirbel]}^{h_1}\\
-    &\text{ Schulterwirbel ( \emph{Schultergürtel} )}\\
-    &\text{ [Wirbel]}^{h_2}\\
-    &\text{ Schädel}\\ 
+ \text{\emph{Halswirbelsäule}} \rightarrow &\text{ Wirbel}^{(w_h - 5)^+}\\
+    &\text{ Wirbel ( \emph{Schultergürtel}$^{(e_{v2}-1)^+}$ )}\\
+    &\text{ Wirbel}\\
+    &\text{ Wirbel ( \emph{Schultergürtel}$^{\text{min}(1, e_{v2})}$ )}\\
+    &\text{ Wirbel$^2$}\\
 \end{align*}
-Hier gilt $h_1 + 1 + h_2 = h$. Die Anzahl der Halswirbel bleibt also gleich, nur einer der Wirbel wird zum Schulterwirbel.
+\todo{Regel nochmal textuell erklären}
 
 Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben (siehe Abschnitt \ref{pca_conditions}). Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
 
@@ -371,7 +394,7 @@ Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug is
  \subfloat[]{\includegraphics[height=5.5cm]{../java_skeleton_generation/example_skeletons/zentaur1.jpg}}~
  \subfloat[]{\includegraphics[height=5.5cm]{../java_skeleton_generation/example_skeletons/zentaur2.jpg}}
  
- \caption{Zwei Beispiele für Skelette, die mit folgenden Bedingungen generiert wurden: $4$ Beine, $2$ Arme und ein zusätzlicher Schultergürtel. Mehrere Extremitäten pro Extremitätengürtel sind nicht erlaubt.}
+ \caption{Zwei Beispiele für Skelette, die mit folgenden Bedingungen generiert wurden: $4$ Beine, $2$ Arme und ein zusätzlicher Schultergürtel. Mehrere Extremitäten pro Extremitätengürtel sind nicht erlaubt. Als Hintergrund wurde \cite{background} verwendet.}
  \label{zentauren}
 \end{figure}
 
