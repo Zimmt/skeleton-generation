@@ -45,7 +45,7 @@ public class StatisticalEvaluation {
         return Arrays.asList(new ArrayRealVector(sortedData), new ArrayRealVector(quantiles));
     }
 
-    // todo: which possibility?
+    // Rankit method (see https://de.wikipedia.org/wiki/Quantil-Quantil-Diagramm)
     private static double getPQuantileFromRank(int rank, int count) {
         return ((double) rank - 0.5) / (double) count;
     }
