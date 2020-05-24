@@ -94,11 +94,11 @@ Das Regelwerk für die Generierung der Knochen des Skeletts ist durch eine konte
 % erweiterte kontextfreie Grammatik
 Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P, p)$ unterstützt Klammerausdrücke, um die Baumstruktur des Skeletts darzustellen (so wie sie auch bei L-Systemen verwendet werden, siehe dazu Abschnitt \ref{grammars}). Außerdem bekommt sie als zusätzliche Eingabe eine Menge von Parametern $p$ aus $\mathbb{N}_0$, die in den Produktionen $P$ verwendet werden.
 \begin{alignat*}{2}
- \Sigma & = \{&&\text{(, ), Wurzelknochen, Wirbel, Rippe, Schädel,}\\  
+ \Sigma & = \{&&(, ), \text{Wurzelknochen, Wirbel, Rippe, Schädel,}\\  
         & &&\text{Schulterblatt, Oberarm, Unterarm, Hand,}\\ 
         & &&\text{Beckenknochen, Oberschenkel, Unterschenkel, Fuß}\}\\
- N &= \{&&\text{\emph{Skelett, Vorderteil, Hinterteil, Schulterpartie, Schultergürtel, Beckengürtel}}\\
-        & &&\text{\emph{Hals, Vorderextremität, Hinterextremität}}\}\\
+ N &= \{&&\text{\emph{Skelett}, \emph{Vorderteil}, \emph{Hinterteil}, \emph{Schulterpartie}, \emph{Schultergürtel}, \emph{Beckengürtel}}\\
+        & &&\text{\emph{Hals}, \emph{Vorderextremität}, \emph{Hinterextremität}}\}\\
  S &= &&\text{\emph{Skelett}}\\
  p &= \{&&w_{rv}, w_{rh}, h, s, w_h, w_s, r, e_v, e_h \}
 \end{alignat*}
@@ -133,7 +133,7 @@ Im folgenden sind alle Produktionen aus $P$ aufgeführt.
     &\text{ Wirbel}^{(w_{rh} - (r-w_{rv})^+ - 1)^+}\\
     &\text{ Wirbel ( \emph{Beckengürtel} )}\\
     &\text{ [Wirbel$^{w_s}$]}^s\\
- \text{\emph{Beckengürtel}} \rightarrow &\text{ [Beckenknochen \emph{Hinterextremität} ]$^{e_h}$}\\
+ \text{\emph{Beckengürtel}} \rightarrow &\text{ [Beckenknochen \emph{Hinterextremität}]$^{e_h}$}\\
  \text{\emph{Hinterextremität}} \rightarrow &\text{ Oberschenkel Unterschenkel Fuß}\\
 \end{align*}
 
@@ -207,8 +207,8 @@ Flügel, Flossen, Extremitäten mit Bodenkontakt (im Folgenden als Beine bezeich
 
 Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, dass sie als solche zu erkennen sein sollten. Deshalb werden sie nach folgenden simplen Anweisungen orientiert (siehe auch Abbildung \ref{extremity_orientations}):
 \begin{itemize}
- \item Flossen: Ausrichtung gerade nach hinten (orientiert an Welt-x-Achse)
- \item Arme: Der Oberarm zeigt senkrecht nach unten (orientiert an Welt-y-Achse), im Ellenbogengelenk ist ein $90^{\circ}$ Winkel und die Hand verlängert Unterarm nach vorne.
+ \item Flossen: Ausrichtung gerade nach hinten (orientiert an Welt-$x$-Achse)
+ \item Arme: Der Oberarm zeigt senkrecht nach unten (orientiert an Welt-$y$-Achse), im Ellenbogengelenk ist ein $90^{\circ}$ Winkel und die Hand verlängert Unterarm nach vorne.
  \item Flügel: Jedes beteiligte Gelenk hat ein Intervall mit festen Grenzen speziell für Flügel, aus dem zufällig ein Winkel gewählt wird.
 \end{itemize}
 
@@ -279,7 +279,7 @@ Hier ist \zb in den allermeisten Fällen klar in welche Richtung ein Gelenk gedr
 Deshalb wurde hier ein eigener, recht simpler Algorithmus entwickelt, der auf dieses spezielle Problem angepasst ist.
 
 %Gelenke
-Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen. Der minimale und maximale Winkel für die Gelenke an Schulterblatt und Beckenknochen orientieren sich an der Welt-y-Achse, da außerhalb dieses Bereichs keine sinnvollen Ruhepositionen entstehen würden. \\
+Die Gelenke in den Extremitäten werden hier so vereinfacht, dass genau einen Freiheitsgrad haben. Eltern- und Kindknochen sind also auf einer gemeinsamen Ebene festgelegt. Die verwendeten Gelenke mit ihren Einschränkungen sind in Abbildung \ref{joints} zu sehen. Der minimale und maximale Winkel für die Gelenke an Schulterblatt und Beckenknochen orientieren sich an der Welt-$y$-Achse, da außerhalb dieses Bereichs keine sinnvollen Ruhepositionen entstehen würden. \\
 % Zweiter Freiheitsgrad
 Theoretisch haben das Hüft- und das Schultergelenk nicht nur einen, sonder zwei Freiheitsgrade. Sie lassen sich nicht nur nach vorne und hinten bewegen, sondern auch seitlich abspreizen. Das lässt sich auch leicht als zweite Art von Gelenk im Code abbilden. Allerdings macht es den Algorithmus komplizierter und liefert oft seltsam anmutende breitbeinige Tiere.
 Deshalb wurde der zweite Freiheitsgrad hier außen vor gelassen.
@@ -301,7 +301,7 @@ Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Be
 Der Algorithmus geht iterativ vor.
 In jedem Schritt wird für jedes Gelenk berechnet ob sein Winkel vergrößert oder verkleinert werden muss, um den dazugehörigen Knochen näher zum Boden zu bewegen.
 Mit dem "`dazugehörigen"' Knochen ist hier derjenige der beiden an das Gelenk anschließenden Knochen gemeint, der das Kindelement des anderen ist.
-Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung des Knochens mit der Welt-y-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
+Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung des Knochens mit der Welt-$y$-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
 Es gibt also globale Randbedingungen und lokale Einschränkungen je nach Gelenk. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
 
 % Startposition, Bewegungseinschränkungen
@@ -309,9 +309,9 @@ Die Startposition der Extremität ist maximal angewinkelt. Die Gelenke beginnen 
 Eine andere Möglichkeit wäre mit einer komplett ausgestreckten Extremität zu beginnen und den Fuß von unten der Bodenhöhe anzunähern. Das würde wahrscheinlich genauso gut funktionieren.
 
 Ohne weitere Einschränkungen kann es nun passieren, dass unnatürliche Positionen auftreten, in denen sich \zb der Fußspann näher am Boden befindet als die Fußsohle.
-Oder es kann passieren, dass ein Knochen über die positive Welt-y-Achse hinaus gedreht wird. Das Problem dabei ist, dass die Einschränkungen an den Gelenken nicht zulassen, dass der Knochen sich unbegrenzt in diese Richtung weiterdreht und der Knochen dann "`feststeckt"'. Deshalb wird nach jeder Drehung festgestellt ob solch eine Situation eingetreten ist und wenn ja, wird die Drehung rückgängig gemacht.
+Oder es kann passieren, dass ein Knochen über die positive Welt-$y$-Achse hinaus gedreht wird. Das Problem dabei ist, dass die Einschränkungen an den Gelenken nicht zulassen, dass der Knochen sich unbegrenzt in diese Richtung weiterdreht und der Knochen dann "`feststeckt"'. Deshalb wird nach jeder Drehung festgestellt ob solch eine Situation eingetreten ist und wenn ja, wird die Drehung rückgängig gemacht.
 Die Drehung wird ebenfalls rückgängig gemacht, falls sie bewirkt, dass ein Knochen unterhalb der Bodenhöhe liegt.
-So ist zu jeder Zeit durch Invarianten garantiert, dass die Knochen auf der "`richtigen"' Seite der y-Achse und nicht unterhalb der Bodenhöhe liegen.
+So ist zu jeder Zeit durch Invarianten garantiert, dass die Knochen auf der "`richtigen"' Seite der $y$-Achse und nicht unterhalb der Bodenhöhe liegen.
 
 % Verkleinerung der Größe der Drehwinkel
 In jeder Iteration werden die Winkel, um den die Gelenke gedreht werden, um einen bestimmten Anteil verkleinert. Zu Beginn soll mit großen Veränderungen eine grobe Ausrichtung der Gelenke vorgenommen werden, die dann immer weiter verfeinert wird.
@@ -459,10 +459,10 @@ Bei dieser Vorgehensweise treten jedoch einige Schwierigkeiten auf. Es ist \zb  
  \item Kantenlängen, bei denen es wichtig ist, dass sie eine bestimmte Länge haben, sind genau auf die Kantenlänge des Würfels abgestimmt. So können sie leicht auf die richtige Länge skaliert werden. 
  Ein Beispiel dafür ist die Länge der Wirbel entlang der Wirbelsäule. Die Wirbel müssen genau aneinander ansetzen. Mit dieser Skalierung lässt sich einfach die Länge des Wirbels auf das Modell übertragen.\\
  Es kann aber auch um Längen gehen, die nur einen Teil des Knochens betreffen.
- Rippen müssen \zb mit ihrer Breite in x-Richtung zur Breite des Wirbels passen, an welchem sie ansetzen. Deshalb ist das 3D-Modell der Rippe so skaliert, dass die Kantenlänge des Würfels in x-Richtung genau auf die Breite des Wirbels skaliert werden kann und die resultierende Breite der Rippe dann genau dazu passt.\\
- Da die Rippe stark gebogen ist, führt das dazu, dass die Gesamtlänge der Rippe in x-Richtung viel länger ist als die Kantenlänge des Würfels. Das Problem daran ist, dass die gegebenen Abmessungen des Knochens dann nicht mehr viel mit der Ausdehnung des eingesetzten 3D-Modells haben. Je nach dem um welchen Knochen es sich handelt, möchte man diesen Effekt evtl.\ vermeiden.
+ Rippen müssen \zb mit ihrer Breite in $x$-Richtung zur Breite des Wirbels passen, an welchem sie ansetzen. Deshalb ist das 3D-Modell der Rippe so skaliert, dass die Kantenlänge des Würfels in $x$-Richtung genau auf die Breite des Wirbels skaliert werden kann und die resultierende Breite der Rippe dann genau dazu passt.\\
+ Da die Rippe stark gebogen ist, führt das dazu, dass die Gesamtlänge der Rippe in $x$-Richtung viel länger ist als die Kantenlänge des Würfels. Das Problem daran ist, dass die gegebenen Abmessungen des Knochens dann nicht mehr viel mit der Ausdehnung des eingesetzten 3D-Modells haben. Je nach dem um welchen Knochen es sich handelt, möchte man diesen Effekt evtl.\ vermeiden.
  
- \item Kantenlängen, die nicht speziell vorgegeben werden, \zb die Dicke der Extermiätenknochen, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die x- und y-Skalierung eines Knochens vorgegeben, und die Skalierung in z-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die z-Richtung relativ zu einer anderen Richtungen angegeben werden kann. Tut man dies nicht, so führt das leicht dazu, dass die Knochen verzerrt aussehen.
+ \item Kantenlängen, die nicht speziell vorgegeben werden, \zb die Dicke der Extermiätenknochen, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die $x$- und $y$-Skalierung eines Knochens vorgegeben, und die Skalierung in $z$-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die $z$-Richtung relativ zu einer anderen Richtungen angegeben werden kann. Tut man dies nicht, so führt das leicht dazu, dass die Knochen verzerrt aussehen.
 \end{itemize}
 
 
