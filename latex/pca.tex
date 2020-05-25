@@ -1,6 +1,6 @@
-%------------------------------------------
-%------------------------------------------
-\chapter{Beispielanalyse mit Hilfe von PCA}
+%---------------------------------------------------
+%---------------------------------------------------
+\chapter{Analyse von Skelettdaten mit Hilfe von PCA}
 \label{chapter:pca}
 
 Das Ziel dieser Arbeit ist es einen Algorithmus zu entwerfen, der in der Lage ist Skelette zu generieren, die denjenigen von Wirbeltieren ähnlich sehen.
@@ -50,10 +50,10 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \section{Datenerhebung}
  \label{pca_input_data}
  
- Die Beispiele, die erhoben werden konnten, sind vor allem durch die Datenlage \bzw die zugänglichen Quellen eingeschränkt. Trotzdem wurde darauf geachtet möglichst viele unterschiedliche Tierarten mit viel Variation in den erhobenen Merkmalen zu finden.
+ Die Beispiele, die erhoben werden konnten, sind vor allem durch die Datenlage \bzw die zugänglichen Quellen eingeschränkt. Trotzdem wurde darauf geachtet, möglichst viele unterschiedliche Tierarten mit viel Variation in den erhobenen Merkmalen zu finden.
  
  % welche Beispiele
- Viele Beispiele entstammen Zoologiebüchern, in denen sie als Beispiele für Erklärungen angegeben waren (Bildquellen siehe Anhang \ref{appendix_pca_skeletons}). Dem ist auch geschuldet, dass recht viele Dinosaurierskelette dabei sind. Denn von anderen Tieren gibt es als alternative Darstellungsmöglichkeit eine Außenansicht des lebenden Tieres. Das geht bei ausgestorbenen Tieren im Allgemeinen nicht.
+ Viele Beispiele entstammen Zoologiebüchern, in denen sie als Beispiele für Erklärungen angegeben waren (Bildquellen siehe Anhang \ref{picture_sources}). Dem ist auch geschuldet, dass recht viele Dinosaurierskelette dabei sind, denn von anderen Tieren gibt es als alternative Darstellungsmöglichkeit eine Außenansicht des lebenden Tieres. Das geht bei ausgestorbenen Tieren im Allgemeinen nicht.
  
  \paragraph{Erhobene Merkmale}
  % welche Merkmale
@@ -97,9 +97,9 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \begin{itemize}
   \item Bei Fischen ist nicht klar wo der Rücken in den Schwanz übergeht, da der Beckengürtel sich teilweise am Kopf befindet oder gar nicht vorhanden ist (siehe auch Abschnitt \ref{biology_skeleton}). Bei der Datenerhebung wurde der Übergang ungefähr bei der Rücken- oder der Afterflosse festgelegt. Alternativ hätte man auch die komplette Wirbelsäule als Rücken klassifizieren können.
   
-  \item Manche Hälse und Schwänze sind mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und Schwan und der Schwanz von Ichthyosaurus und Koboldmaki. In diesen Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) einfach wegzulassen.
+  \item Manche Hälse und Schwänze sind mit einer kubischen Bézierkurve nicht darstellbar. Das ist unter den verwendeten Beispielen der Hals von Ichthyornis und Schwan und der Schwanz von Ichthyosaurus und Koboldmaki (siehe Abbildungen \ref{all_images} p, ag, q und w). In diesen Fällen wurde versucht die Form möglichst gut anzunähern oder Fortsätze (wie am Schwanz vom Ichthyosaurus) einfach wegzulassen.
   
-  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild eine andere Position hat.
+  \item Die Schwanzposition bei Tieren mit sehr langen Schwänzen ist auf den Bildern relativ beliebig. Hier wurde versucht, den Schwanz möglichst gerade nach hinten fortzusetzen, auch wenn er auf dem Bild eine andere Position hat.
  \end{itemize}
  
  
@@ -172,7 +172,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Obwohl die Merkmale nun sehr kleine Werte annehmen, sind ihre Korrelationen mit anderen Merkmalen trotzdem noch vorhanden. Wird ein zufälliger $n$-dimensionaler \mbox{Punkt $p$} mit der gegebenen Normalverteilung generiert, so enthält er also trotzdem Informationen zu \emph{Flügeln} und \emph{Beinen mit Bodenkontakt}. Erst wenn $p$ auf seine Hauptkomponenten reduziert wird, fallen die meisten Informationen dazu weg.
  
  % Projektion auf Eigenvektoren
- Interessant ist die Projektion der Eingabedaten auf die größten beiden  Eigenvektoren. In Abbildung \ref{projections_scales} ist gut zu vergleichen was die Effekte der Skalierung der Eingabedaten sind. Ganz links sind die Ergebnisse zu sehen, die entstehen, wenn alle Merkmale nur auf das Intervall $[0, 1]$ skaliert werden. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich klein skaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Skalierung verringert.
+ Interessant ist die Projektion der Eingabedaten auf die größten beiden  Eigenvektoren. In Abbildung \ref{projections_scales} ist gut zu vergleichen was die Effekte der Skalierung der Eingabedaten sind. Ganz links sind die Ergebnisse zu sehen, die entstehen, wenn alle Merkmale nur auf das Intervall $[0, 1]$ skaliert werden. In der Mitte geht das Gewicht nicht mehr linear, sondern logarithmisch ein und ganz rechts sind \emph{Flügel}, \emph{Anzahl Beine} und \emph{Gewicht} zusätzlich klein skaliert. Gut zu sehen ist, wie sich die Clusterbildung durch die Skalierung verringert. Gibt es weniger Cluster, ist die Verteilung der Daten näher an einer Normalverteilung.
  
  % Projektion unterschiedlich gelabelt
  In Abbildung \ref{projections_tags} ist noch einmal jeweils die Projektion der skalierten Daten auf die ersten beiden Eigenvektoren zu sehen. Diesmal sind die Daten anhand der verschiedenen diskret erhobenen Merkmale markiert. Es ist \zb schön zu sehen, dass alle Tiere mit Flügeln auch Vögel sind und dass fast alle Tiere, die zwei Beine haben, Vögel sind. Vier Tiere haben zwei Beine, sind aber keine Vögel: Ohrenrobbe, Seehund, Tyrannosaurus Rex und Känguru.
@@ -235,7 +235,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Den maximalen Abstand hat die Schlange. Die erhobenen Daten sind hier:
  \emph{Tierklasse} Reptil, \emph{Flügel} nein, \emph{Beine mit Bodenkontakt} $0$, \emph{Gewicht} $50$kg.
  Die Schlange ist allerdings das einzige Tier zu dem es kein "`echtes"' Bild des Skeletts gibt. Das liegt daran, dass es keine seitlichen Abbildungen von ausgestreckten Schlangen gibt. Sie werden eigentlich immer gekrümmt dargestellt, da sonst das Bild sehr lang und schmal werden würde. 
- Da aber versucht wurde eine möglichst große Variation an Skeletten zu erheben und ein Schlangenskelett, in der hier nötigen Auflösung, sehr einfach darzustellen ist, wurde trotzdem ein Bild erstellt. Dieses Bild enthält nur eine horizontale Linie knapp über dem unteren Bildrand, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte an denen der Rücken in Hals oder Schwanz übergeht gibt es bei Schlangen nicht.
+ Da aber versucht wurde eine möglichst große Variation an Skeletten zu erheben und ein Schlangenskelett, in der hier nötigen Auflösung, sehr einfach darzustellen ist, wurde trotzdem ein Bild erstellt. Dieses Bild enthält nur eine horizontale Linie knapp über dem unteren Bildrand, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte, an denen der Rücken in Hals oder Schwanz übergeht, gibt es bei Schlangen nicht.
  
  % zweitgrößter Abstand (da max Schlange)
  Der Punkt mit dem zweitgrößten Abstand zum Mittelwert ist das Känguru (siehe Abbildung \ref{kaenguru_farbig}). Zusätzlich zum Bild gibt es hier folgende Daten:
@@ -308,7 +308,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Merkmale, die sich zur Unterteilung in Mengen anbieten würden, sind die diskreten, also \emph{Flügel} und \emph{Beine mit Bodenkontakt}. Sie sind auch klar als Cluster im Koordinatensystem der PCA ohne angepasste Skalierung zu erkennen (Abbildung \ref{projections_scales} a).
  Getestet wurde die Aufteilung anhand der Werte für die Flügel, da sich dadurch nur zwei Gruppen ergeben. Tatsächlich liefert sie bessere Rekonstruktionen aus den größten Eigenvektoren. Das liegt aber natürlich in erster Linie daran, dass die zu untersuchende Datenmenge jeweils verkleinert wurde.
  
- Ein weiteres Problem daran die Daten in mehrere Mengen aufzuteilen ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich sehen die Datenpunkte, die zwischen den Gruppen erzeugt werden, aber relativ sinnvoll aus (siehe Abbildung \ref{between_clusters}).
+ Ein weiteres Problem daran, die Daten in mehrere Mengen aufzuteilen, ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich sehen die Datenpunkte, die zwischen den Gruppen erzeugt werden, aber relativ sinnvoll aus (siehe Abbildung \ref{between_clusters}).
  Auch das ist ein Argument dafür keine Aufteilung vorzunehmen.
  
  \begin{figure}
