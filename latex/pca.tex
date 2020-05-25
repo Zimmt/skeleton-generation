@@ -223,7 +223,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{../PCA/mean_log_weight_downscaled_wings_legs_and_weight(onlyBox,stroke4).jpg}
-  \caption{Visualisierung des Mittelwerts der skalierten Eingabedaten. Die Werte, die nicht grafisch visualisiert sind, sind folgende: \emph{Flügel} $0,159$, \emph{Beine mit Bodenkontakt} $1,39$, \emph{Gewicht} $93$kg.}
+  \caption{Visualisierung des Mittelwerts der skalierten Eingabedaten. Die Werte, die nicht grafisch visualisiert sind, sind folgende: \emph{Flügel} $0{,}159$, \emph{Beine mit Bodenkontakt} $1{,}39$, \emph{Gewicht} $93$kg.}
   \label{mean}
  \end{figure}
  
@@ -255,7 +255,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \label{section_pca_result_analysis}
  
  % Eigenvektoren und Rekonstruktionen
- Zu $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste Eigenwert ist $0,000001$. Von den Eigenwerten sind $6$ größer als $0,01$. Leider reichen diese $6$ Dimensionen noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das zwar ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
+ Zu $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste Eigenwert ist $0{,}000001$. Von den Eigenwerten sind $6$ größer als $0{,}01$. Leider reichen diese $6$ Dimensionen noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das zwar ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
  Die Daten konnten somit von der PCA nicht sehr gut komprimiert werden. Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
  
  \begin{figure}
@@ -264,26 +264,26 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
   \qquad
   \subfloat[Eingabebild]{\includegraphics[width=0.4\textwidth]{../PCA/Skelettbilder/Archaeopteryx_farbig.png}}
   
-  \caption{Archaeopteryx nicht visualisierte Daten der Rekonstruktion: \emph{Flügel} $0,56$, \emph{Beine mit Bodenkontakt} $1,594$, \emph{Gewicht} $94,1$kg, Originalwert für das \emph{Gewicht}: $1$kg}
+  \caption{Archaeopteryx nicht visualisierte Daten der Rekonstruktion: \emph{Flügel} $0{,}56$, \emph{Beine mit Bodenkontakt} $1{,}594$, \emph{Gewicht} $94{,}1$kg, Originalwert für das \emph{Gewicht}: $1$kg}
   \label{archaeopteryx}
  \end{figure}
  
 \begin{figure}[H]
   \centering
   \subfloat[$6$ Eigenvektoren,
-  \emph{Flügel} $0,4$, \emph{Beine mit Bodenkontakt} $1,27$, \emph{Gewicht} $90,2$kg]
+  \emph{Flügel} $0{,}4$, \emph{Beine mit Bodenkontakt} $1{,}27$, \emph{Gewicht} $90{,}2$kg]
   {\includegraphics[width=0.4\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/6EV/Frosch_Ausschnitt.jpg}}
   \qquad
   \subfloat[$10$ Eigenvektoren,
-  \emph{Flügel} $0,151$, \emph{Beine mit Bodenkontakt} $1,28$, \emph{Gewicht} $88,7$kg]{\includegraphics[width=0.4\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/10EV/Frosch_Ausschnitt.jpg}}
+  \emph{Flügel} $0{,}151$, \emph{Beine mit Bodenkontakt} $1{,}28$, \emph{Gewicht} $88{,}7$kg]{\includegraphics[width=0.4\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/10EV/Frosch_Ausschnitt.jpg}}
   \\
   \subfloat[$20$ Eigenvektoren,
-  \emph{Flügel} $0,217$, \emph{Beine mit Bodenkontakt} $1,7$, \emph{Gewicht} $89,2$kg]
+  \emph{Flügel} $0{,}217$, \emph{Beine mit Bodenkontakt} $1{,}7$, \emph{Gewicht} $89{,}2$kg]
   {\includegraphics[width=0.4\textwidth]{../PCA/animal_reconstructions_log_weight_downscaled_wings_legs_and_weight/20EV/Frosch_Ausschnitt.jpg}}
   \qquad
   \subfloat[Eingabebild]{\includegraphics[width=0.4\textwidth]{../PCA/Skelettbilder/Frosch_farbig.png}}
   
-  \caption{Frosch, Rekonstruktionen aus den größten $6$, $10$ und $20$ Eigenvektoren und das Eingabebild (d). Der Originalwert für das \emph{Gewicht} ist $0,01$kg.}
+  \caption{Frosch, Rekonstruktionen aus den größten $6$, $10$ und $20$ Eigenvektoren und das Eingabebild (d). Der Originalwert für das \emph{Gewicht} ist $0{,}01$kg.}
   \label{frosch}
  \end{figure}
  
@@ -291,9 +291,9 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Um zu verstehen in welchem Bereich sich die zufällig generierten Punkte bewegen, ist es sinnvoll sich anzuschauen was die Hauptkomponenten "`bedeuten"'. In Abbildung \ref{pca_results_sqrtEV_biggest} sind zwei Datenpunkte zu sehen, die auf der Koordinatenachse liegen, die zum Eigenvektor mit dem größten Eigenwert gehört. Ihr Wert in dieser Dimension ist jeweils die positive \bzw negative Standardabweichung. Die Varianz entlang eines Eigenvektors ist gegeben durch den Eigenwert. Die Standardabweichung ist also die Wurzel des entsprechenden Eigenwerts. Es ist zu sehen wie sich die Punkte verändern, wenn sie sich entlang dieser Achse bewegen \bzw welchen Einfluss der Eigenvektor ausübt. Abbildungen nach dem gleichen Schema für die sechs größten Eigenvektoren sind im Anhang in Abbildung \ref{pca_results_sqrtEV} zu finden.
  
  \begin{figure}
-   \subfloat[$-\sigma$, \emph{Flügel} $0,38$, \emph{Beine mit Bodenkontakt} $1,6$, \mbox{\emph{Gewicht} $92$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
+   \subfloat[$-\sigma$, \emph{Flügel} $0{,}38$, \emph{Beine mit Bodenkontakt} $1{,}6$, \mbox{\emph{Gewicht} $92$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
    \qquad
-   \subfloat[$+\sigma$, \emph{Flügel} $-0,057$, \emph{Beine mit Bodenkontakt} $1,2$, \mbox{\emph{Gewicht} $94$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
+   \subfloat[$+\sigma$, \emph{Flügel} $-0{,}057$, \emph{Beine mit Bodenkontakt} $1{,}2$, \mbox{\emph{Gewicht} $94$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
    
    \caption{Datenpunkte im PCA-Koordinatensystem. Die Koordinate für den Eigenvektor zum größten Eigenwert nimmt den Wert der positiven \bzw negativen \mbox{Standardabweichung $\sigma$} an, alle anderen sind null. Für Abbildungen zu den größten sechs Eigenvektoren siehe Abbildung \ref{pca_results_sqrtEV} im Anhang}
    \label{pca_results_sqrtEV_biggest}
@@ -314,7 +314,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{graphics/betweenClusters.jpg}
-  \caption{Visualisierung eines Punktes, der, projiziert auf die ersten beiden Eigenvektoren, zwischen den Eingabedaten mit Flügeln und jenen ohne Flügel liegt. Die Werte, die auf den jeweiligen Achsen angenommen werden, sind $-0,4$ für den ersten Eigenvektor und $0,2$ für den zweiten. Werte für die ursprünglichen Merkmale, die nicht visualisiert sind, sind folgende: \emph{Flügel} $0,402$, \emph{Beine mit Bodenkontakt} $1,46$ und \emph{Gewicht} $92,2$kg.}
+  \caption{Visualisierung eines Punktes, der, projiziert auf die ersten beiden Eigenvektoren, zwischen den Eingabedaten mit Flügeln und jenen ohne Flügel liegt. Die Werte, die auf den jeweiligen Achsen angenommen werden, sind $-0{,}4$ für den ersten Eigenvektor und $0{,}2$ für den zweiten. Werte für die ursprünglichen Merkmale, die nicht visualisiert sind, sind folgende: \emph{Flügel} $0{,}402$, \emph{Beine mit Bodenkontakt} $1{,}46$ und \emph{Gewicht} $92{,}2$kg.}
   \label{between_clusters}
  \end{figure}
 
@@ -354,7 +354,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
   \qquad
   \subfloat[$1$ Paar Beine, mit Anpassung]{\includegraphics[width=0.3\textwidth]{graphics/1leg_withAdditionalVariance.png}}
   
-  \caption{Jeweils $10$ bedingt zufällig generierte Wirbelsäulen. (a) und (b) ohne Flügel, (c) mit einem Paar Beine. In (b) und (c) wird ein zufälliger Wert aus $[-0.5, 0.5]$ auf die Bedingung (Flügel $= 0$ \bzw Beine $= 1$) aufaddiert.}
+  \caption{Jeweils $10$ bedingt zufällig generierte Wirbelsäulen. (a) und (b) ohne Flügel, (c) mit einem Paar Beine. In (b) und (c) wird ein zufälliger Wert aus $[-0{,}5, 0{,}5]$ auf die Bedingung (Flügel $= 0$ \bzw Beine $= 1$) aufaddiert.}
   \label{spine_variance}
  \end{figure}
 

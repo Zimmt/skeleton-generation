@@ -254,7 +254,7 @@ Zunächst könnte man davon ausgehen, dass die Bodenhöhe einfach auf null festg
 Die Höhe des Bodens wird also nachträglich anhand der vorgegebenen Längen der Extremitäten festgelegt.
 Theoretisch würde es reichen einfach das kürzeste Bein im komplett ausgestreckten Zustand zu betrachten und den Boden auf die Höhe seines Endpunkts festzulegen.
 Das führt aber zu unnatürlich aussehenden Beinen, da das kürzeste Bein dann genau senkrecht nach unten führen muss um den Boden zu erreichen.
-Deshalb wird nur ein bestimmter Anteil\footnote{Dieser Anteil ist in der Implementierung mit $0,8$ festgelegt, lässt sich aber natürlich auch variieren.} der Länge der Beine betrachtet. So wird erzwungen, dass die Beine, wenn sie auf dem neu definierten Boden stehen, auch etwas gekrümmt sind.
+Deshalb wird nur ein bestimmter Anteil\footnote{Dieser Anteil ist in der Implementierung mit $0{,}8$ festgelegt, lässt sich aber natürlich auch variieren.} der Länge der Beine betrachtet. So wird erzwungen, dass die Beine, wenn sie auf dem neu definierten Boden stehen, auch etwas gekrümmt sind.
 
 Wie in Kapitel \ref{chapter:biology} beschrieben, gibt es verschiedene Arten von Füßen \bzw Händen. Die oben beschriebene Berechnung geht davon aus, dass der Boden mit der Fußspitze berührt wird. Aber natürlich gibt es auch Wirbeltiere, die mit dem flachen Fuß auf der Erde stehen.
 Deshalb wird zusätzlich zur Bodenhöhe noch eine Wahrscheinlichkeit berechnet, dass die Ferse \bzw das Handgelenk den Boden berühren.
