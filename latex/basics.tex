@@ -19,21 +19,12 @@ Die dort verwendeten Skelette sind nicht wirklichkeitsgetreu, sondern werden nur
 \todo{perlin noise (nicht ausreichend für Skelette, mehr Einschränkungen nötig sonst würden nur Monster generiert) + weitere Methodenbeispiele}
 
 
-%--------------------------
-\section{Inverse Kinematik}
-\label{IK}
-
-Inverse Kinematik wird unter anderem in der Robotik zur Bewegung von Robotern verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.\\
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
-
-% IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
-
 %-------------------------------------------
 \section{Animation von Figuren}
 \label{character_animation}
 
-Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett nötig. Dieses Skelett ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Skelett wird ein Knochen nahe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
-Weit verbreitete Editoren für Animation, Modellierung, Simulation und Rendering sind Maya \cite{Maya} und 3ds Max \cite{3dsMax}. Auch hier werden solche Skelette verwendet \cite{MayaSkeletonHierarchy}. 3ds Max stellt \zb in einer Komponente namens Biped vorgefertigte Skelette für humanoide Figuren zur Verfügung, die einfach in schon existierende 3D-Modelle eingefügt werden können \cite{3dsMaxBiped}.
+Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett \bzw Rig nötig. Dieses Rig ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Rig wird ein Knochen nahe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
+Weit verbreitete Editoren für Animation, Modellierung, Simulation und Rendering sind Maya \cite{Maya} und 3ds Max \cite{3dsMax}. Auch hier werden solche Rigs verwendet \cite{MayaSkeletonHierarchy}. 3ds Max stellt \zb in einer Komponente namens Biped vorgefertigte Rigs für humanoide Figuren zur Verfügung, die einfach in schon existierende 3D-Modelle eingefügt werden können \cite{3dsMaxBiped}.
 
 Animationen werden dann mit Hilfe sogenannte Keyframes erzeugt. Keyframes sind Positionen, die die Figur im Laufe der Bewegung einnehmen soll. Interpolation zwischen den einzelnen Keyframes ergibt dann eine flüssige Bewegung. \cite[Kapitel 3]{sporeanim}\\
 Im Computerspiel Spore \cite{Spore} werden sogar zur Laufzeit Animationen für Figuren erzeugt, deren Aufbau vorher noch nicht bekannt war. Dazu werden vorher abstrakte Animationen, unabhängig vom Aufbau der speziellen Figur, erzeugt. Diese werden dann zur Laufzeit auf die konkreten Figuren angewandt. \cite{sporeanim}
@@ -120,21 +111,24 @@ Den Werten $x_{(i)}$ einfach das $\frac{i}{n}$-Quantil zuzuordnen ist aber insof
 Diese Zuordnung wird auch in dieser Arbeit verwendet.
 
 
+%--------------------------
+\section{Inverse Kinematik}
+\label{IK}
+
+Inverse Kinematik wird unter anderem in der Robotik zur Bewegung von Robotern verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.\\
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
+
+% IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
+
 %-------------------------------
 \section{Genetische Algorithmen}
+\label{genetic_algorithms}
 
-als Alternative zu Variationen mit PCA
+Ein sehr bekannter Zweig der evolutionären Algorithmen sind die genetischen Algorithmen.
+Die Grundprinzipien, die von genetischen Algorithmen verwendet werden, sind von Evolution und natürlicher Auslese abgeschaut. Im einfachsten Fall ist eine Menge von Individuen (oder Population) gegeben, die durch "`Gene"' kodiert sind, und eine Fitnessfunktion. Die Fitnessfunktion bewertet die Individuen. Das Ziel ist Individuen zu entwickeln, die möglichst gut bewertet werden. 
+Dazu werden aus der aktuellen Population zufällig, aber nach Fitness priorisiert Individuen ausgewählt. Diese produzieren dann "`Nachkommen"' indem sie ihre Gene nach einer bestimmten Vorschrift vermischen.
+Die "`Nachkommen"' bilden nun eine neue Population, die wiederum anhand der Fitnessfunktion bewertet wird und es startet eine neue Iteration.
+Dies wird so lange gemacht bis ein Individuum gefunden wurde, das die Fitnessfunktion gut genug erfüllt. \cite{Holland} \cite[Abschnitt 1.3.1]{EvolutionaryDesign_Introduction}\\
+In interaktiven Versionen evolutionärer Algorithmen können sogar Benutzer die Fitnessfunktion ersetzen, indem sie selbst die erzeugten Individuen bewerten. \cite{InteractiveEvolutionaryComputation}
 
-\begin{itemize}
- \item introduction to evolutionary design (bently)
- \item basics on genetic algorithms (Holland 1992) -> bei Bib bestellt
- \item interactive evolutionary computation (Takagi 2001) (fitness function = human evaluation)
- \item jon hudson thesis: creature generation using genetic algorithms \cite{JonHudson}
-   \begin{itemize}
-    \item relativ simple Regeln, nicht orientiert an spezieller Tierklasse, Einschränkung für Anzahl Beine, für Houdini, kein Skelett sondern 3D-Modell, Rig wird auch generiert
-    \item auch Variationen eines Tiers und Crossover zwischen mehreren Exemplaren möglich
-   \end{itemize}
-  \item Grammar based genetic programming (a survey) 
-\end{itemize}
-
-
+In der Masterarbeit \cite{JonHudson} werden 3D-Modelle von Lebewesen und ein passendes Rig mit Hilfe von genetischen Algorithmen generiert. Das Augenmerk liegt dort aber, im Gegensatz zu dieser Arbeit, nicht auf realistischen Tieren oder realistischen Skeletten.
