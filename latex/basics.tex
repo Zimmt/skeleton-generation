@@ -10,26 +10,26 @@ Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der
 Ursprünglich wurde PG verwendet, weil der Speicherplatz auf Computern sehr begrenzt war. Große 3D-Landschaften oder andere vorgefertigte künstlerische Werke konnten nicht gespeichert werden.\\
 Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt mit künstlerischen Inhalten, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft  \cite{DemoScene}. 
 
-Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt für \zb PC-Spiele von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, denn der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, ist aufwändig und benötigt viel Zeit. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl verwendet werden um fertige 3D-Modelle zu generieren, als auch um als Inspiration und Hilfe für den Künstler zu dienen. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
+Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt, \zb für PC-Spiele, von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, da der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, aufwändig ist und viel Zeit benötigt. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl fertige 3D-Modelle generieren, als auch Inspiration und Hilfe für den Künstler sein. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
 
-Dinge, die oft prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. \\
-Ein Beispiel, das erst nach Erscheinen dieser Zusammenstellung auf den Markt gekommen ist, ist das Computerspiel "`No Man's Sky"' \cite{NoMansSky}. Darin gibt es viele prozedural generierte fantastische Tiere. Die Generierung dieser Tiere funktioniert so, dass zunächst prozedural ein Modell generiert wird, in welches anschließend ein Skelett eingepasst wird \cite{NoMansSkyDevelopment}.
-Die dort verwendeten Skelette sind nicht wirklichkeitsgetreu, sondern werden nur für die Animation verwendet (siehe Abschnitt \ref{character_animation}).
+Dinge, die prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. \\
+Ein Beispiel, das erst nach Erscheinen dieser Zusammenstellung auf den Markt gekommen ist, ist das Computerspiel "`No Man's Sky"' \cite{NoMansSky}. Darin gibt es viele prozedural generierte fantastische Tiere. Die Generierung dieser Tiere funktioniert so, dass zunächst prozedural ein 3D-Modell generiert wird, in welches anschließend ein Rig eingepasst wird \cite{NoMansSkyDevelopment}.
+Die dort verwendeten Rigs sind keine wirklichkeitsgetreuen Skelette, sondern werden nur für die Animation verwendet (siehe Abschnitt \ref{character_animation}).
 
-\todo{perlin noise (nicht ausreichend für Skelette, mehr Einschränkungen nötig sonst würden nur Monster generiert) + weitere Methodenbeispiele}
+\todo{Beispiele für Methoden der prozeduralen Generierung angeben, \zb perlin noise}
 
 
 %-------------------------------------------
 \section{Animation von Figuren}
 \label{character_animation}
 
-Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett \bzw Rig nötig. Dieses Rig ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Rig wird ein Knochen nahe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
+Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett \bzw Rig nötig. Dieses Rig ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Rig wird meist ein Knochen nahe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
 Weit verbreitete Editoren für Animation, Modellierung, Simulation und Rendering sind Maya \cite{Maya} und 3ds Max \cite{3dsMax}. Auch hier werden solche Rigs verwendet \cite{MayaSkeletonHierarchy}. 3ds Max stellt \zb in einer Komponente namens Biped vorgefertigte Rigs für humanoide Figuren zur Verfügung, die einfach in schon existierende 3D-Modelle eingefügt werden können \cite{3dsMaxBiped}.
 
 Animationen werden dann mit Hilfe sogenannte Keyframes erzeugt. Keyframes sind Positionen, die die Figur im Laufe der Bewegung einnehmen soll. Interpolation zwischen den einzelnen Keyframes ergibt dann eine flüssige Bewegung. \cite[Kapitel 3]{sporeanim}\\
-Im Computerspiel Spore \cite{Spore} werden sogar zur Laufzeit Animationen für Figuren erzeugt, deren Aufbau vorher noch nicht bekannt war. Dazu werden vorher abstrakte Animationen, unabhängig vom Aufbau der speziellen Figur, erzeugt. Diese werden dann zur Laufzeit auf die konkreten Figuren angewandt. \cite{sporeanim}
+Im Computerspiel Spore \cite{Spore} werden sogar zur Laufzeit Animationen für Figuren erzeugt, deren Aufbau vorher noch nicht bekannt war. Dazu werden vorher abstrakte Animationen, unabhängig vom Aufbau der speziellen Figur, erstellt. Diese werden dann zur Laufzeit auf die konkreten Figuren angewandt. \cite{sporeanim}
 
-Um besonders lebensecht wirkende Tiere zu erzeugen, ist es nötig den Aufbau des entprechenden Tieres möglichst wirklichkeitsgetreu zu modellieren. Dazu sind Modelle für Skelett, Muskeln und Haut nötig. Solche Modelle lassen sich beispielsweise mit dem Maya-Plugin Ziva \cite{Ziva} erzeugen. \cite{ZivaGeneralSetup}
+Um besonders lebensecht wirkende Tiere zu erzeugen, ist es nötig den Aufbau des entprechenden Tieres möglichst wirklichkeitsgetreu zu modellieren. Dazu sind Modelle für Skelett, Muskeln und Haut nötig. Solche Modelle lassen sich beispielsweise mit dem Maya-Plugin Ziva \cite{Ziva} gestalten. \cite{ZivaGeneralSetup}
 
 Der Algorithmus, der hier erarbeitet wird, erzeugt Skelette mit lebensechten Knochenmodellen. Er kann als Inspiration zur Erstellung neuer Charaktere dienen oder auch als Grundlage für ein Tier, das ein realitätsnahes Skelett haben soll.
 
@@ -39,6 +39,17 @@ Der Algorithmus, der hier erarbeitet wird, erzeugt Skelette mit lebensechten Kno
 %  \item skeleton-based design tool (Yamamoto et al 2011): rudimentäres Skelett/Rig für schnelle Produktion und leichte Änderung an Charakteren
 %         \url{https://dl.acm.org/doi/10.1145/2073304.2073316}, \url{https://www.youtube.com/watch?v=yhq1aUp8QLY}
 % \end{itemize}
+
+
+%--------------------------
+\section{Inverse Kinematik}
+\label{IK}
+
+Inverse Kinematik wird beispielsweise in der Robotik zur Bewegung von Roboterarmen verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.
+
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
+
+% IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
 
 
 %--------------------
@@ -53,23 +64,23 @@ Eine \emph{Grammatik} ist ein Tupel $G = (\Sigma, N, S, P)$ mit
  \item der Menge von Produktionen $P \subseteq (N \cup \Sigma)^* N (N \cup \Sigma)^* \rightarrow (N \cup \Sigma)^*$
 \end{itemize}
 
-Eine Teilmenge der Grammatiken bilden \emph{kontextsensitive} Grammatiken. Ihre Produktionen haben die Form
+Eine Teilmenge der Grammatiken bilden die \emph{kontextsensitiven} Grammatiken. Ihre Produktionen haben die Form
 \[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in N,~ \alpha, \beta, \gamma \in ((N \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text{ und dem leeren Wort } \epsilon.\]
 
-Wiederum eine Teilmenge davon bilden \emph{kontextfreie} Grammatiken mit Produktionen der Form 
+Wiederum eine Teilmenge davon bilden die \emph{kontextfreien} Grammatiken mit Produktionen der Form 
 \[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (\Sigma \cup N)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
 
 \emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen alle Symbole gleichzeitig ersetzt. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.\\
 Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
 Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. 
 
-Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
+Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden in L-Systemen Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
 Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(BC)D$ mit $A, B, C, D \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelement von $B$ als auch von $D$ ist. Das Elternelement von $C$ ist $B$. Es können auch Mehrfachverzweigungen auftreten. In $A(B)(C)D$, was gleichbedeutend ist zu $A(B)(C)(D)$, ist $A$ das Elternelement von $B, C$ und $D$. Eine Visualisierung der beiden Beispiele ist in Abbildung \ref{branching_examples} zu finden. \cite[Kapitel 1]{AlgorithmicBeautyOfPlants}
 
 \begin{figure}
  \centering
  \includegraphics[width=0.6\textwidth]{graphics/branchingExamples}
- \caption{Visualisierung der Beispielklammerausdrücke,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
+ \caption{Visualisierung der Beispiele für Klammerausdrücke aus dem Text,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
  \label{branching_examples}
 \end{figure}
 
@@ -85,11 +96,11 @@ Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Ele
  Als Ausgangspunkt für eine PCA dient eine Menge von Datenpunkten (oder Beispielen) $D$ im $n$-dimensionalen Raum. Voraussetzung ist, dass die Punkte in jeder Dimension normalverteilt sind. 
  Die Datenpunkte $D$ sind dann nach einer $n$-dimensionalen Normalverteilung verteilt. Betrachtet man nun die Wahrscheinlichkeitsdichte dieser Normalverteilung, so bilden alle Punkte, bei denen die Dichte einen Wert größer als $\epsilon$ annimmt das Innere eines $(n-1)$-dimensionalen Hyperellipsoids. In diesem Volumen liegen die meisten der Datenpunkte $D$. Den Mittelpunkt bildet ihr Mittelwert.
  
- Nun ist das Ziel herauszufinden wo die Achsen des Ellipsoids liegen. Betrachtet man die Komponenten der Datenpunkte $D$ in den Richtungen der Achsen, so sind diese wiederum normalverteilt und die Verteilungen sind jeweils unabhängig voneinander.
- Um die Achsen des Ellipsoids zu berechnen, wird zunächst die Kovarianzmatrix der Datenpunkte $D$ aufgestellt und dann diagonalisiert. In den Spalten der Basiswechselmatrix stehen dann die Eigenvektoren und auf der Diagonalen der diagonalisierten Kovarianzmatrix die Eigenwerte.
- Die Eigenvektoren sind die Achsen des Ellipsoids und die Eigenwerte geben die Varianz der Normalverteilung entlang der Achsen an.
+ Nun ist das Ziel herauszufinden wo die Achsen des Hyperellipsoids liegen. Betrachtet man die Komponenten der Datenpunkte $D$ in den Richtungen der Achsen, so sind diese wiederum normalverteilt und die Verteilungen sind jeweils unabhängig voneinander.
+ Um die Achsen des Hyperellipsoids zu berechnen, wird zunächst die Kovarianzmatrix der Datenpunkte $D$ aufgestellt und dann diagonalisiert. In den Spalten der damit berechneten Basiswechselmatrix stehen dann die Eigenvektoren und auf der Diagonalen der diagonalisierten Kovarianzmatrix die Eigenwerte.
+ Die Eigenvektoren sind die Achsen des Hyperellipsoids und die Eigenwerte geben die Varianz der Normalverteilung entlang der Achsen an.
  
- Jetzt können die Datenpunkte $D$ vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Ellipsoids aufgespannt wird. Dazu stellt man die Punkte als Linearkombinationen der Eigenvektoren dar. 
+ Jetzt können die Datenpunkte $D$ vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Hyperellipsoids aufgespannt wird. Dazu stellt man die Punkte als Linearkombinationen der Eigenvektoren dar. 
  Um nun die Dimensionalität der Eingabedaten zu reduzieren, werden alle Dimensionen weggelassen, die nicht zu den Hauptkomponenten gehören. Je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden, desto weniger Information wird verworfen.
  
  Will man einen zufälligen Datenpunkt erzeugen, der die gleichen Verteilungen aufweist, wie die Eingabebeispiele, so funktioniert das im transformierten Koordinatensystem sehr gut. Da die einzelnen Dimensionen unabhängig voneinander sind, kann man einfach für jede Dimension eine normalverteilte Zufallszahl mit entsprechender Varianz generieren.
@@ -111,24 +122,15 @@ Den Werten $x_{(i)}$ einfach das $\frac{i}{n}$-Quantil zuzuordnen ist aber insof
 Diese Zuordnung wird auch in dieser Arbeit verwendet.
 
 
-%--------------------------
-\section{Inverse Kinematik}
-\label{IK}
-
-Inverse Kinematik wird unter anderem in der Robotik zur Bewegung von Robotern verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.\\
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
-
-% IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
-
 %-------------------------------
 \section{Genetische Algorithmen}
 \label{genetic_algorithms}
 
 Ein sehr bekannter Zweig der evolutionären Algorithmen sind die genetischen Algorithmen.
-Die Grundprinzipien, die von genetischen Algorithmen verwendet werden, sind von Evolution und natürlicher Auslese abgeschaut. Im einfachsten Fall ist eine Menge von Individuen (oder Population) gegeben, die durch "`Gene"' kodiert sind, und eine Fitnessfunktion. Die Fitnessfunktion bewertet die Individuen. Das Ziel ist Individuen zu entwickeln, die möglichst gut bewertet werden. 
-Dazu werden aus der aktuellen Population zufällig, aber nach Fitness priorisiert Individuen ausgewählt. Diese produzieren dann "`Nachkommen"' indem sie ihre Gene nach einer bestimmten Vorschrift vermischen.
-Die "`Nachkommen"' bilden nun eine neue Population, die wiederum anhand der Fitnessfunktion bewertet wird und es startet eine neue Iteration.
+Die Grundprinzipien, die von genetischen Algorithmen verwendet werden, sind von Evolution und natürlicher Auslese abgeschaut. Im einfachsten Fall ist eine Menge von Individuen (oder eine Population) gegeben, die durch "`Gene"' kodiert sind, und eine Fitnessfunktion. Die Fitnessfunktion bewertet die Individuen. Das Ziel ist Individuen zu entwickeln, die möglichst gut bewertet werden. 
+Dazu werden aus der aktuellen Population zufällig, aber nach Fitness priorisiert, Individuen ausgewählt. Diese produzieren dann "`Nachkommen"' indem sie ihre Gene nach einer bestimmten Vorschrift vermischen.
+Diese "`Nachkommen"' bilden dann eine neue Population, die wiederum anhand der Fitnessfunktion bewertet wird. Damit startet eine neue Iteration.
 Dies wird so lange gemacht bis ein Individuum gefunden wurde, das die Fitnessfunktion gut genug erfüllt. \cite{Holland} \cite[Abschnitt 1.3.1]{EvolutionaryDesign_Introduction}\\
 In interaktiven Versionen evolutionärer Algorithmen können sogar Benutzer die Fitnessfunktion ersetzen, indem sie selbst die erzeugten Individuen bewerten. \cite{InteractiveEvolutionaryComputation}
 
-In der Masterarbeit \cite{JonHudson} werden 3D-Modelle von Lebewesen und ein passendes Rig mit Hilfe von genetischen Algorithmen generiert. Das Augenmerk liegt dort aber, im Gegensatz zu dieser Arbeit, nicht auf realistischen Tieren oder realistischen Skeletten.
+In der Masterarbeit \cite{JonHudson} werden 3D-Modelle von Lebewesen und ein passendes Rig mit Hilfe von genetischen Algorithmen generiert. Das Augenmerk liegt dort aber nicht auf realistischen Tieren oder realistischen Skeletten, im Gegensatz zu dieser Arbeit.
