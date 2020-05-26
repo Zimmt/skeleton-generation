@@ -144,7 +144,7 @@ public class GUI {
     }
 
     public boolean getAllCubes() {
-        return resolution.getSelectedItem().equals("only bounding boxes");
+        return resolution.getSelectedItem().equals("only boxes");
     }
 
     public boolean getLowResoultion() {
@@ -265,7 +265,7 @@ public class GUI {
         this.skeletonCount = constructIntTextField(1000, false);
         skeletonCount.setValue(1);
         this.skeletonFileName = new JTextField("skeleton");
-        this.resolution = new JComboBox<>(new String[] {"only bounding boxes", "low", "high"});
+        this.resolution = new JComboBox<>(new String[] {"only boxes", "low", "high"});
         this.saveToFile = new JCheckBox();
         this.metaDataFileName = new JTextField();
         JButton chooseSkeletonButton = new JButton("choose skeleton");
