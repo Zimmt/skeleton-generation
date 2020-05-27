@@ -24,59 +24,17 @@ Sind alle Einzelteile generiert, werden alle zu spiegelnden Elemente mit der Met
 %------------------------------------
 \section{Dateiformate für 3D-Modelle}
 
-\begin{itemize}
- \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
- \item Erster Schritt: einfaches .obj erzeugen und mit Blender darstellen; einfach Knochen als Bounding Box darstellen, später Verwendung von OpenGL mit vertex shadern \etc (Plan erwähnen? wurde ja doch nicht gemacht\dots)
- \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
- \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
-\item Vorschlag von Jo: "`Memory dumps"', also direkt die structs aus dem speicher auf platte rausschreiben. Am besten wenn sie am Stueck liegen mit einem fwrite() und zurücklesen mit einem fread(). Es ist nuetzlich dazu am Anfang der Datei ein bisschen Metadaten zu speichern (magic number, version, array size etc).
-\end{itemize}
+Das einfachste Format zur Darstellung von 3D-Objekten ist das offene Dateiformat Wavefront OBJ \cite{obj}. Es kann nur geometrische Formen speichern, keine zusätzlichen Informationen wie \zb Gelenke und deren Einschränkungen.\\
+Andere weit verbreitete Formate sind FBX von Autodesk \cite{fbx} und Alembic \cite{alembic}. Sie bieten mehr Möglichkeiten als OBJ, sind aber auch ungleich aufwändiger programmatisch zu erzeugen.
 
-%- - - - - - - - - -
-\subsection{OpenSim}
-
-\begin{itemize}
- \item \url{https://simtk-confluence.stanford.edu:8443/display/OpenSim/OpenSim+Documentation}
- \item Open Source Software Platform für die Modellierung und Simulation von Menschen, Tieren, etc.\\
- aber vor allem gedacht zur Auswertung von experimentellen Daten
- \item Import von .obj Dateien möglich. Außerdem zusätzliche Daten wie Winkel von Gelenken über .mot oder .sto Dateien (eigenes Format von OpenSim, siehe \url{https://simtk-confluence.stanford.edu:8443/display/OpenSim/Preparing+Your+Data})
- \item Export in andere Dateiformate nicht möglich (?)
- \item für Download und Zugang zur "`Community"' Account nötig
- \item für Windows und Mac OS (Linux Support gibt es auch, ist aber schwieriger: \url{https://simtk-confluence.stanford.edu:8443/display/OpenSim/Linux+Support})
-\end{itemize}
+Um das 3D-Modell des erzeugten Skeletts zu speichern reicht das OBJ-Format aus. Zur Weiterverarbeitung, \zb für Animationen, können die Daten dann leicht in das benötigte Dateiformat umgewandelt werden. Für das Laden und Schreiben von OBJ-Dateien wird die Java-Bibliothek Obj \cite{ObjLoader} verwendet.
+Sollten in Zukunft zusätzliche Daten exportiert werden können, müsste neu evaluiert werden welches Dateiformat am besten geeignet ist.
 
 
-%- - - - - - - -
-\subsection{OBJ}
-
-\begin{itemize}
- \item Beschreibung des Formats: \url{https://www.fileformat.info/format/wavefrontobj/egff.htm}
- \item Erzeugung mit Rust: obj\_exporter \url{https://docs.rs/obj-exporter/0.2.0/obj_exporter/index.html}
- \item Erzeugung mit Java: javagl Obj \url{https://github.com/javagl/Obj}, unterstützt auch Umwandlung von obj-Daten in Daten, die direkt für vertex buffer objects in OpenGL verwendet werden können
- \item Reicht wahrscheinlich für die ersten Dinge aus. Finetuning wird sowieso mit anderer Software gemacht
-\end{itemize}
-
-%- - - - - - - -
-\subsection{FBX}
-
-\begin{itemize}
- \item Verwendung am besten über Autodesk FBX SDK für C++. 
- \item Dokumentation: \url{http://help.autodesk.com/view/FBX/2019/ENU/} und \url{http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html}
- \item Es gibt auch fbxcel, eine FBX library für Rust. Ist aber relativ low level und nicht ganz offensichtlich wie zu verwenden.
- \item Einschränkungen für Gelenke können in FBX nicht gespeichert werden \url{http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_constraint.html,topicNumber=cpp_ref_class_fbx_constraint_htmlc57a3f99-513a-44a0-a24f-445e9077c99f}
-\end{itemize}
-
-%- - - - - - - - - -
-\subsection{Alembic}
-
-\begin{itemize}
- \item \url{www.alembic.io}
- \item Wird u.a. dafür verwendet Knochen (+ Animationen) in Ziva zu importieren
- \item Es kann mit Python (PyAlembic) und C++ verwendet werden.\\
- PyAlembic Doku: \url{http://docs.alembic.io/python/examples.html#pyalembic-intro}\\
- C++ API Refernce (enthält sehr wenig Infos): \url{http://docs.alembic.io/reference/index.html}
- \item Für Rust gibt es keine Bibliothek (?)
-\end{itemize}
+% \begin{itemize}
+%  \item Jeder Editor geht mit Muskeln und Gelenken anders um. Gibt es ein Dateiformat, das nicht speziell zu einem Editor gehört, dass Bedingungen an die Rotation von Gelenken speichern kann?
+%  \item Eigenes Format erzeugen? Dann bräuchte man Plugins um es in verschiedenen Editoren laden zu können. Viel verwendeter Editor: Houdini (kostenlos für Studenten aber nicht Open Source). Oder selbst darstellen (siehe Interaktivität).
+% \end{itemize}
 
 
 %--------------------------------
@@ -92,7 +50,7 @@ Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Positio
  \centering
  \includegraphics[width=0.6\textwidth]{graphics/transformation_matrices.eps}
  \caption{Gegeben sei das Element $e$. Die Abbildung, die die lokalen Koordinaten von $e$ in globale Koordinaten umrechnet sei $T_1$.
- Jedes Kindelement $k$ von $e$ speichert eine Transformationsmatrix $T_2$, die angibt wo der Ursprung des Koordinatensystems von $k$ relativ zum Koordinatensystem von $e$ liegt. Will mann nun Koordinaten von $k$ in globale Koordinaten umrechnen, benötigt man die Abbildung $T_1 \cdot T_2$.}
+ Jedes Kindelement $k$ von $e$ speichert eine Transformationsmatrix $T_2$, die angibt wo der Ursprung des Koordinatensystems von $k$ relativ zum Koordinatensystem von $e$ liegt. Will man nun Koordinaten von $k$ in globale Koordinaten umrechnen, benötigt man die Abbildung $T_1 \cdot T_2$.}
 \end{figure}
 
 \begin{figure}
