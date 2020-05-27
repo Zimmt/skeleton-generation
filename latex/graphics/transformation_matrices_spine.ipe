@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200107115352" modified="D:20200107123903"/>
+<info created="D:20200107115352" modified="D:20200527163314"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -270,8 +270,8 @@ h
 160 672 l
 </path>
 <use name="mark/disk(sx)" pos="256 704" size="normal" stroke="darkred"/>
-<use name="mark/disk(sx)" pos="128 640" size="normal" stroke="darkgreen"/>
-<use name="mark/disk(sx)" pos="64 512" size="normal" stroke="black"/>
+<use name="mark/disk(sx)" pos="128 640" size="normal" stroke="darkred"/>
+<use name="mark/disk(sx)" pos="64 512" size="normal" stroke="darkgreen"/>
 <path stroke="black" dash="dashed" pen="heavier" arrow="normal/normal">
 250.455 706.84 m
 169.616 754.548
@@ -288,15 +288,9 @@ h
 245.154 555.764
 85.4646 516.008 c
 </path>
-<text matrix="1 0 0 1 17.2279 -0.662611" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="13.713" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">T_1</text>
-<text matrix="1 0 0 1 80.1757 155.051" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="47.486" height="12.195" depth="3.07" valign="baseline" size="Large" style="math">T_1^{-1} \cdot T_2</text>
-<text matrix="1 0 0 1 134.863 1.53053" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="109.675" height="9.806" depth="3.88" valign="baseline" size="Large" style="math">T_2 = T_{
-\textrm{trans}
-}
- \cdot 
-T_{
-\textrm{rot}
-}
+<text matrix="1 0 0 1 14.4915 5.26629" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="18.479" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{eg}</text>
+<text matrix="1 0 0 1 68.3179 156.875" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="86.241" height="11.62" depth="5.49" valign="baseline" size="Large" style="math">T_k = T^{-1}_{eg} \cdot T_{kg}</text>
+<text matrix="1 0 0 1 134.863 1.53053" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="19.341" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{kg}
 </text>
 <text transformations="translations" pos="64 496" stroke="darkgreen" type="label" width="171.916" height="9.962" depth="2.79" valign="baseline" size="Large">globales Koordinatensystem</text>
 <text matrix="1 0 0 1 -4.25657 -0.978596" transformations="translations" pos="144 640" stroke="darkred" type="label" width="96.839" height="9.963" depth="0" valign="baseline" size="Large">Elternelement $e$</text>

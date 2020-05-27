@@ -43,22 +43,42 @@ Sollten in Zukunft zusätzliche Daten exportiert werden können, müsste neu eva
 
 \todo{Recherchiere warum rechtshändige Koordinatensysteme bzw. konsistene Koordinatensysteme wichtig sind (back face culling, Rotationsrichtung der Matrizen bei positiven Winkeln)}
 
-Jedes Element im Skelett speichert, relativ zu seinem Elternelement, die Position des Ursprungs seines Koordinatensystems. Um den Überblick über die Transformationsmatrizen bzw. Abbildungen behalten, die vom einen ins andere Koordinatensystem umwandeln, hier zwei Übersichtsgrafiken:
-\todo{Erzeugung von Elementen auf der Wirbelsäule mit gegebener Weltposition + gespiegelte Elemente}
+Jedes Kindelement $k$ im Skelett speichert eine Transformationsmatrix $T_k$, die seine lokalen Koordinaten in das Koordinatensystem des Elternelements $e$ umrechnet (siehe Abbildung \ref{transformation_matrices_normal}a).
+Es treten verschiedene Situationen auf, in denen unterschiedliche Transformationsmatrizen berechnet werden müssen.
+Um den Überblick über die Reihenfolge der Multiplikationen zu behalten, wurden vier Übersichtsgrafiken erstellt (Abbildungen \mbox{\ref{transformation_matrices_normal} a und b}, Abbildung \ref{transformation_matrix_non_mirrored_parent} und Abbildung \ref{transformation_matrix_mirrored_parent}). Im Folgenden wird jeweils erklärt welche Situationen sie beschreiben, wann diese auftreten und wie die Transformationsmatrizen berechnet werden.
 
 \begin{figure}
  \centering
- \includegraphics[width=0.6\textwidth]{graphics/transformation_matrices.eps}
- \caption{Gegeben sei das Element $e$. Die Abbildung, die die lokalen Koordinaten von $e$ in globale Koordinaten umrechnet sei $T_1$.
- Jedes Kindelement $k$ von $e$ speichert eine Transformationsmatrix $T_2$, die angibt wo der Ursprung des Koordinatensystems von $k$ relativ zum Koordinatensystem von $e$ liegt. Will man nun Koordinaten von $k$ in globale Koordinaten umrechnen, benötigt man die Abbildung $T_1 \cdot T_2$.}
+ \subfloat[Transformation ins globale Koordinatensystem]{\includegraphics[width=0.5\textwidth]{graphics/transformation_matrices}}~
+ \subfloat[vorgegebene globale Position]
+ {\includegraphics[width=0.5\textwidth]{graphics/transformation_matrices_spine}}
+ 
+ \caption{Jedes Kindelement $k$ speichert eine Transformation $T_k$ ins lokale Koordinatensystem seines Elternelements $e$. (a) Ist $T_k$ gegeben, so lässt sich die Transformation $T_{kg}$ des lokalen Koordinatensystems von $k$ ins globale Koordinatensystem durch $T_{kg} = T_{eg} \cdot T_k$ berechnen. (b) Ist $T_{kg}$ gegeben, so lässt sich $T_k = T^{-1}_{eg} \cdot T_{kg}$ berechnen.} 
+ \label{transformation_matrices_normal}
+\end{figure}
+
+\begin{itemize}
+ \item In Abbildung \ref{transformation_matrices_normal} b ist die Sitation dargestellt, die \ua dann auftritt, wenn die Position der Wirbel auf der Wirbelsäule berechnet werden soll. Die Position der Wirbel im globalen Koordinatensystem ist bekannt, ihre Position soll aber im lokalen Koordinatensystem des Elternelements angegeben werden. Es ist also ein Elternelement $e$ mit zugehörigem Kindelement $k$ gegeben. Für beide Elemente ist die Transformation ins globale Koordinatensystem $T_{eg}$ \bzw $T_{kg}$ bekannt. Die lokale Transformationsmatrix von $k$ ist dann $T_k = T^{-1}_{eg} \cdot T_{kg}$.
+ 
+ \item In Abbildung \ref{transformation_matrix_non_mirrored_parent} ist die Situation dargestellt, die entsteht, wenn das \mbox{Kindelement $k$} eines Elements $e$ auf der Wirbelsäule gespiegelt werden soll. Gesucht ist dann die Transformationsmatrix $T_{k_r}$ des gespiegelten Kindelements $k_r$. Das Element $k_l$ entsteht, wenn $k$ einfach an der $xy$-Ebene gespiegelt wird. Dieses Element hat aber kein rechtshändiges Koordinatensystem mehr, sondern ein linkshändiges. Die Grafik macht deutlich, dass $T_{k_r} = T_{eg}^{-1} \cdot T_r \cdot T_{k_lg} \cdot T_{kx}$. Die Matrix $T_r$ spiegelt die $z$-Koordinate und $T_{kx}$ wandelt das linkshändige Koordinatensystem von $k_l$ in das rechtshändige von $k_r$ um. Die Abbildung $T_{kx}$ besteht aus einer Verschiebung in $z$-Richtung um die Länge von $k$ in $z$-Richtung und einer Spiegelung an der $xy$-Ebene.
+ 
+ \item Abbildung \ref{transformation_matrix_mirrored_parent} zeigt die Situation, die entsteht, wenn die Position des gespiegelten Kindelement $k_r$ eines, selbst schon gespiegelten, Elternelements $e_r$ berechnet werden soll. Wie in Abbildung \ref{transformation_matrix_non_mirrored_parent} sind die linkshändigen Koordinatensysteme der gespiegelten Elemente $e_l$ und $k_l$ gepunktet dargestellt. Es sollen die Elemente $e_r$ und $k_r$ mit rechtshändigen Koordinatensystemen verwendet werden. Um die Transformationsmatrix $T_{k_r}$ zu berechnen, sind wieder Transformationen $T_{ex}$ und $T_{kx}$ zwischen links- und rechthändigen Systemen nötig. Dann ergibt sich $T_{k_r} = T_{ex} \cdot T_k \cdot T_{kx}$, da $T_k = T_{k_l}$.
+\end{itemize}
+
+
+\begin{figure}
+ \centering
+ \includegraphics[width=\textwidth]{graphics/transformation_matrices_non_mirrored_parent}
+ \caption{Die Transformationsmatrix $T_{k_r}$ des gespiegelten Kindelements $k_r$ lässt sich berechnen durch $T_{k_r} = T_{eg}^{-1} \cdot T_r \cdot T_{k_lg} \cdot T_{kx}$. Die Matrix $T_r$ spiegelt die $z$-Koordinate und $T_{kx}$ wandelt das linkshändige Koordinatensystem von $k_l$ in das rechtshändige von $k_r$ um.}
+ \label{transformation_matrix_non_mirrored_parent}
 \end{figure}
 
 \begin{figure}
  \centering
- \includegraphics[width=0.6\textwidth]{graphics/transformation_matrices_spine.eps}
- \caption{Will man ein Element $k$ erzeugen, das Kindelement von $e$ ist und dessen globale Koordinaten bekannt sind, muss man die Abbildung berechnen, die die relative Position von $k$ angibt. Seien $T_1$ und $T_2$ jeweils die Transformationen in das globale Koordinatensystem von $e$ \bzw $k$. Dann ist die gesuchte Abbildung $T_1^{-1} \cdot T_2$.}
+ \includegraphics[width=\textwidth]{graphics/transformation_matrices_mirrored_parent}
+ \caption{}
+ \label{transformation_matrix_mirrored_parent}
 \end{figure}
-
 
 %------------
 \section{PCA}
