@@ -3,19 +3,26 @@
 \chapter{Implementierungsdetails}
 \label{chapter:implementation_detail}
 
-%---------------------------
-\section{Programmiersprache}
-\label{programming_language}
 
-\begin{itemize}
- \item Rust: nicht geeignet, da Datenstrukturen die zyklische Referenzen auf veränderbare Objekte verwenden nicht oder nur kompliziert umsetzbar sind.
- \item Java: scheint gut zu funktionieren. Es gibt Bibliotheken zum im-/exportieren von obj-Dateien und Unterstützung für OpenGL\\
- Außerdem gibt es Bibliotheken, die PCA (\bzw Kovarianzmatrizen \etc) unterstützen und JavaView um objs darzustellen
-\end{itemize}
+%----------------------------
+\section{Aufbau der Software}
+% Erweiterbarkeit?
+
+Die Implementierung wurde mit der Programmiersprache Java durchgeführt. In Abbildung \ref{classDiagram} ist der Programmaufbau stark vereinfacht dargestellt. Das Diagramm ist an UML-Klassendiagramme angelehnt. Pfeile stehen jedoch nicht für Teilbeziehungen oder Vererbung, sondern für den Datenfluss.\\
+Aus der Benutzeroberfläche (GUI) werden die Benutzereingaben ausgelesen. Diese gehen dann einerseits als Bedingungen in die PCA ein und andererseits sind sie Zusatzeingaben für die Skelettgenerierung (\zb die Anzahl der Flossen). 
+Über den "`PcaDataReader"' werden die Beispiele für die PCA eingelesen und der "`PcaHandler"' verwaltet alles was mit der PCA zu tun hat.\\
+Die zentrale Komponente ist der "`SkeletonGenerator"'. Er ist dafür verantwortlich die Einzelteile des Skeletts zu generieren. Zu jedem Zeitpunkt hält er alle terminalen und nichtterminalen Elemente. Die Ersetzungsregeln der Grammatik sind im "`RuleDictionary"' und die Parameter für die Grammatik in "`SkeletonMetaData"' gespeichert. Die Klasse "`SkeletonMetaData"' implementiert das "`Serializable"' Interface \cite{JavaSerialization} und wird, wenn ein Skelett gespeichert werden soll, als Textdatei herausgeschrieben (siehe Abschnitt \ref{load_skeletons}).\\
+Sind alle Einzelteile generiert, werden alle zu spiegelnden Elemente mit der Methode "`calculuateMirroredElements()"' gespiegelt. Das fertige Skelett geht dann an den "`ObjGenerator"', der ein 3D-Modell mit Hilfe der 3D-Modelle aus der "`BoneLibrary"' erstellt.
+
+\begin{figure}
+ \includegraphics[width=\textwidth]{graphics/classDiagram}
+ \caption{Stark vereinfachte Darstellung der Softwarearchitektur. Jeder Kasten steht für eine Klasse, wie in UML-Klassendiagrammen. Pfeile sollen den Datenfluss darstellen.}
+ \label{classDiagram}
+\end{figure}
 
 
-%---------------------
-\section{Dateiformate}
+%------------------------------------
+\section{Dateiformate für 3D-Modelle}
 
 \begin{itemize}
  \item Einfachstes Format (nur für die Darstellung von 3D-Objekten ohne Zusatzinformationen): obj
@@ -30,7 +37,7 @@
 
 \begin{itemize}
  \item \url{https://simtk-confluence.stanford.edu:8443/display/OpenSim/OpenSim+Documentation}
- \item Open Source Software Platform für die Modellierung uns Simulation von Menschen, Tieren, etc.\\
+ \item Open Source Software Platform für die Modellierung und Simulation von Menschen, Tieren, etc.\\
  aber vor allem gedacht zur Auswertung von experimentellen Daten
  \item Import von .obj Dateien möglich. Außerdem zusätzliche Daten wie Winkel von Gelenken über .mot oder .sto Dateien (eigenes Format von OpenSim, siehe \url{https://simtk-confluence.stanford.edu:8443/display/OpenSim/Preparing+Your+Data})
  \item Export in andere Dateiformate nicht möglich (?)
@@ -70,21 +77,6 @@
  C++ API Refernce (enthält sehr wenig Infos): \url{http://docs.alembic.io/reference/index.html}
  \item Für Rust gibt es keine Bibliothek (?)
 \end{itemize}
-
-
-%----------------------------
-\section{Aufbau der Software}
-
-\begin{itemize}
- \item ein Wort zur Softwarearchitektur?
- \item Erweiterbarkeit der Software?
-\end{itemize}
-
-
-%-----------------------------
-\section{Zufall}
-
-Linearer Kongruenzgenerator reicht für Zufallszahlen aus, da nur wenige erzeugt werden (erkennbare Muster entstehen erst bei mehr Zufallszahlen) \todo{erwähnen?}
 
 
 %--------------------------------
@@ -152,11 +144,6 @@ Folgende Details sind wichtig zu beachten, damit dieser Vorgang reibungslos abl�
  \label{smooth_spine}
 \end{figure}
 
-
-%----------------
-\section{Gelenke}
-
-\todo{Für jede Art von Extremität und jede Position ein anderes Gelenk mit anderen Einschränkungen (nicht alle Möglichkeiten in einem)}
 
 %----------------------------------------------------------
 \section{Probleme der Beinpositionierung bei kurzen Beinen}
