@@ -8,7 +8,7 @@
 \section{Benutzeroberfläche}
 \label{gui}
 
-Mit dem, in Kapitel \ref{chapter:skeleton_generation} vorgestellten, Algorithmus können nicht nur zufällige Skelette generiert werden. Über eine Benutzeroberfläche ist es auch möglich dem Algorithmus zusätzliche Eingaben zu geben. Die Benutzeroberfläche ist in Abbildung \ref{gui_screenshot} zu sehen.
+Mit dem in Kapitel \ref{chapter:skeleton_generation} vorgestellten Algorithmus können nicht nur zufällige Skelette generiert werden. Über eine Benutzeroberfläche ist es auch möglich dem Algorithmus zusätzliche Eingaben zu geben. Die Benutzeroberfläche ist in Abbildung \ref{gui_screenshot} zu sehen.
 
 \begin{figure}
  \centering
@@ -39,7 +39,7 @@ Ist in Zahlenfeldern nichts eingegeben, haben diese keinen Einfluss auf den Abla
  \item Die $y$-Komponente des Abstands zwischen Kopf und Schultergürtel (neck $y$ length) und die $x$-Komponente des Abstands zwischen Hüfte und Schwanzspitze (tail $x$ length) können wiederum direkt als Bedingung an die PCA weitergegeben werden.
 \end{itemize}
 
-Die Anzahlen der verschiedenen Extremitätentypen werden außerdem verwendet um die Parameter $e_v, e_h$ und $e_{v2}$ für die Anzahl der Vorder- und Hinterextremitäten der Grammatik (siehe Abschnitte \ref{section:grammar} und \ref{additional_extremities}) zu bestimmen und um den Typ und damit die Positionierung der verschiedenen generierten Extremitäten festzulegen (siehe Anfang Abschnitt \ref{section:extremity_generation}). Zusätzlich muss mit einberechnet werden ob zwei Extremitätenpaare pro Extremitätengürtel erlaubt sind ($2$ extremities per girdle allowed?) und ob ein zweiter Schultergürtel auf dem Hals erlaubt, erzwungen oder verboten ist (second shoulder on neck?) (siehe auch Abschnitt \ref{additional_extremities}).
+Die Anzahlen der verschiedenen Extremitätentypen werden außerdem verwendet um die Parameter $e_v, e_h$ und $e_{v2}$ für die Anzahl der Vorder- und Hinterextremitäten der Grammatik (siehe Abschnitte \ref{section:grammar} und \ref{additional_extremities}) zu bestimmen und um den Typ und damit die Positionierung der verschiedenen generierten Extremitäten festzulegen (siehe Anfang Abschnitt \ref{section:extremity_generation}). Zusätzlich muss mit einberechnet werden, ob zwei Extremitätenpaare pro Extremitätengürtel erlaubt sind ($2$ extremities per girdle allowed?) und ob ein zweiter Schultergürtel auf dem Hals erlaubt, erzwungen oder verboten ist (second shoulder on neck?) (siehe auch Abschnitt \ref{additional_extremities}).
 
 % Modell für Kopf
 Außerdem gibt es theoretisch noch die Möglichkeit anzugeben welches 3D-Modell für den Kopf verwendet werden soll (head kind). Leider gibt es hier, Stand Abschluss der Arbeit, nur eines zu Auswahl. Dies ließe sich aber leicht anpassen (siehe Abschnitt \ref{bone_models}).
@@ -72,9 +72,9 @@ Zusätzlich gibt es die Funktion konkrete PCA-Eingabebeispiele auszuwählen (con
 
 Sucht man Inspiration zu einem bestimmten Typ von Skelett oder Tier, so kann es hilfreich sein Variationen zu einem vorgegebenen Skelett generieren zu können. 
 Vielleicht wurde ein interessantes Skelett generiert und man möchte dazu schnell viele ähnliche Skelette finden.
-Dies ist mit dem hier vorgestellten Algorithmus relativ leicht möglich. In der Benutzeroberfläche muss "`create variations"' ausgewählt werden.
+Dies ist mit dem hier vorgestellten Algorithmus relativ leicht möglich. In der Benutzer"-oberfläche muss "`create variations"' ausgewählt werden.
 
-Ein möglicher Ansatz wäre zur Erzeugung von Variationen genetische Algorithmen (siehe Abschnitt \ref{genetic_algorithms}) zu verwenden. Die PCA gibt aber schon ein Raum vor, in dem relativ leicht zufällige Punkte erzeugt werden können. Das lässt sich zur Erzeugung von Variationen gut ausnutzen. Deshalb wurden hier keine genetischen Algorithmen verwendet. 
+Ein möglicher Ansatz wäre zur Erzeugung von Variationen genetische Algorithmen (siehe Abschnitt \ref{genetic_algorithms}) zu verwenden. Die PCA gibt aber schon einen Raum vor, in dem relativ leicht zufällige Punkte erzeugt werden können. Das lässt sich zur Erzeugung von Variationen gut ausnutzen. Deshalb wurden hier keine genetischen Algorithmen verwendet. 
 
 % was ist gegeben
 Als Grundlage für Variationen kann ein gespeichertes Skelett oder ein Eingabebeispiel der PCA dienen (siehe Abschnitt \ref{load_skeletons}). Es ist also mindestens ein Punkt mit den erhobenen Merkmalen für die PCA gegeben. Bei einem gespeicherten Skelett ist zusätzlich noch gegeben wieviele Wirbel, Rippen und Extremitäten generiert werden und welche Art von Extremität an welchem Ansatzpunkt beginnt.
