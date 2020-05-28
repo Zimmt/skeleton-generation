@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200107115352" modified="D:20200527161432"/>
+<info created="D:20200107115352" modified="D:20200528155258"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -303,7 +303,7 @@ h
 245.154 555.764
 85.4646 516.008 c
 </path>
-<text matrix="1 0 0 1 209.228 -0.662611" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="18.479" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{eg}</text>
+<text matrix="1 0 0 1 206.392 0.47181" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="18.479" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{eg}</text>
 <text matrix="1 0 0 1 287.416 155.714" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="14.232" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">T_k</text>
 <text matrix="1 0 0 1 332.473 0.00041555" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="84.185" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{kg} = T_r \cdot T_{k_lg}</text>
 <text matrix="1 0 0 1 216.885 -0.592498" transformations="translations" pos="64 496" stroke="darkgreen" type="label" width="171.916" height="9.962" depth="2.79" valign="baseline" size="Large">globales Koordinatensystem</text>
@@ -324,7 +324,7 @@ h
 <text matrix="1 0 0 1 -19.1549 -79.8872" transformations="translations" pos="96 800" stroke="darkred" type="minipage" width="96" height="8.545" depth="3.57" valign="baseline" size="Large" style="center">$k_r$ </text>
 <text matrix="1 0 0 1 -93.6819 -194.924" transformations="translations" pos="96 800" stroke="darkred" type="minipage" width="144" height="8.545" depth="3.57" valign="baseline" size="Large" style="center">$k_l$ </text>
 <text matrix="1 0 0 1 131.001 153.426" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="18.33" height="9.8" depth="3.65" valign="baseline" size="Large" style="math">T_{k_r}</text>
-<text matrix="1 0 0 1 -17.4011 87.2384" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="19.925" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">T_{kx}</text>
+<text matrix="1 0 0 1 -20.2372 87.2384" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="19.925" height="9.805" depth="2.15" valign="baseline" size="Large" style="math">T_{kx}</text>
 <text matrix="1 0 0 1 83.7296 -43.0075" transformations="translations" pos="87.4524 579.618" stroke="black" type="label" width="22.085" height="9.802" depth="4.09" valign="baseline" size="Large" style="math">T_{k_lg}</text>
 <path stroke="black" dash="dashed" pen="heavier" arrow="normal/normal">
 264.276 508.745 m

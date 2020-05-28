@@ -144,8 +144,10 @@ Auch im Programmcode gibt es nichtterminale Elemente, die im Wesentlichen anhand
 
 Während die Bestandteile des Skeletts durch die Grammatik $G$ generiert werden, wird auch gleichzeitig Position und Ausdehnung der erzeugten Terminalsymbole festgelegt. Nichtterminale haben weder Position noch Ausdehnung. Aus diesem Grund haben Nichtterminale niemals Kindelemente. Wäre dies erlaubt, könnte es passieren, dass Nichtterminalsymbole terminale Kinder haben. Für diese wäre dann nicht klar wie sie positioniert werden müssten, da ihre Position von der ihrer Eltern abhängig ist.
 
-Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Wirbel werden beispielsweise entlang der Wirbelsäule positioniert (näheres dazu in Abschnitt \ref{section:vertebrae_ribs}) und Rippen, Schulterblätter und Beckenknochen so, dass sie an den zugehörigen Wirbeln ansetzen. Der Schädel befindet sich Ende der Halswirbelsäule. Kompliziertere Berechnungen werden nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.\\
-Die Länge der Knochen der Extremitäten ist durch den Punkt im PCA-Raum festgelegt und die Länge der Wirbel ergibt sich durch ihre Positionierung auf der Wirbelsäule. Alle anderen Ausdehungen von terminalen Elementen sind relativ beliebig im Code festgelegt und sind bei jedem erzeugten Skelett gleich.
+Die Positionen der meisten terminalen Bestandteile sind durch den Verlauf der Wirbelsäule festgelegt. Dieser Verlauf wird im Wesentlichen durch den gewählten Punkt $q$ im PCA-Raum bestimmt. Es kann jedoch sein, dass die Wirbelsäule, an den Punkten, an denen ihre Teile zusammenstoßen, nicht differenzierbar ist. In diesem Fall wird der Verlauf etwas angepasst (siehe Abschnitt \ref{smooth_spine}).\\
+Wirbel werden entlang der Wirbelsäule positioniert (näheres dazu in Abschnitt \ref{section:vertebrae_ribs}) und Rippen, Schulterblätter und Beckenknochen so, dass sie an den zugehörigen Wirbeln ansetzen. Der Schädel befindet sich Ende der Halswirbelsäule. Kompliziertere Berechnungen werden nur zur Positionierung der Extremitäten gebraucht. Diese werden in Abschnitt \ref{section:extremity_generation} genauer ausgeführt.
+
+Die Länge der Knochen der Extremitäten ist durch $q$ festgelegt und die Länge der Wirbel ergibt sich durch ihre Positionierung auf der Wirbelsäule. Alle anderen Ausdehungen von terminalen Elementen sind relativ beliebig im Code festgelegt und sind bei jedem erzeugten Skelett gleich.
 
 
 \paragraph{Darstellung als Baum}
