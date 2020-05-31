@@ -65,10 +65,10 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
   
  \begin{itemize}
   \item Ein Bild mit der Seitenansicht des Skeletts.
-  Darin wurde die Lage der \emph{Wirbelsäule} und die Länge der Knochen der \emph{Vorder- und Hintergliedmaßen} markiert, falls vorhanden.\\
+  Darin wurde die Lage der \emph{Wirbelsäule} und die Länge der Knochen der \emph{Vorder- und Hinterextremitäten} markiert, falls vorhanden. Konkret wird für die Extremitäten die Länge des Oberschenkels/-arms, des Unterschenkels-/arms, des Fußes und der Hand erhoben.\\
   Hier hätte man zusätzlich auch die Positionen der Knochen und damit auch die Winkel an den Gelenken erheben können. Da die Position der Extremitäten auf den Abbildungen aber wenig vergleichbar und relativ beliebig ist, ist das nicht sinnvoll.
   
-  \item Die \emph{Tierklasse}, also ob das Tier ein Fisch, eine Amphibie, ein Reptil oder ein Säugetier ist. Dieses Merkmal lässt sich nicht auf einer kontinuierlichen Skala abbilden und ist deshalb nicht als Eingabedimension für die PCA geeignet. Es wurde trotzdem erhoben, da es für eine anderweitige Auswertung hilfreich sein könnte.\\
+  \item Die \emph{Tierklasse}, also ob das Tier ein Fisch, eine Amphibie, ein Reptil, ein Säugetier oder ein Vogel ist. Dieses Merkmal lässt sich nicht auf einer kontinuierlichen Skala abbilden und ist deshalb nicht als Eingabedimension für die PCA geeignet. Es wurde trotzdem erhoben, da es für eine anderweitige Auswertung hilfreich sein könnte.\\
   Auch andere Merkmale wie etwa der Lebensraum könnten für weitere Analysen interessant sein. Man könnte sie, je nach Ziel, in zukünftigen Analysen mit aufnehmen.
   
   \item Ob \emph{Flügel} vorhanden sind oder nicht. Dieses Merkmal kann in den erhobenen Beispielen nur zwei Werte annehmen. Flügel sind entweder vorhanden ($1$) oder nicht ($0$). Betrachtet man die Werte aber auf einer kontinuierlichen Skala, so lassen sie sich als Wahrscheinlichkeit dafür betrachten, dass das Tier Flügel hat.
@@ -91,7 +91,9 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  % warum Bézierkurven
  Bézierkurven wurden aufgrund ihrer einfachen Handhabung verwendet. Sie werden von Programmen unterstützt, mit denen Vektorgrafiken erstellt werden können, sind leicht in die Beispielbilder einzutragen und leicht zu interpretieren. Es könnten aber natürlich auch andere Repräsentationen, wie B-Splines, verwendet werden. B-Splines und Bézierkurven können sogar ineinander umgewandelt werden \cite{BezierAndBSplineTechniques}.
  
- \newpage
+ Insgesamt gehen also folgende Merkmale als Eingabedimensionen in die PCA ein:
+ die Lage der \emph{Wirbelsäule} ($20$ Dimensionen), die Länge der der Knochen der \emph{Vorder- und Hintergliedmaßen} ($6$ Dimensionen), die Anzahl der Paare von \emph{Flügeln} ($1$ Dimension), die Anzahl der Paare von \emph{Beinen mit Bodenkontakt} ($1$ Dimension) und das \emph{Gewicht} ($1$ Dimension). Die \emph{Tierklasse} wird zwar erhoben, geht aber nicht in die PCA ein.
+ 
  % Schwierigkeiten
  Bei der Annotation der Bilder sind folgende Schwierigkeiten aufgetreten:
  \begin{itemize}
@@ -235,13 +237,13 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Den maximalen Abstand hat die Schlange. Die erhobenen Daten sind hier:
  \emph{Tierklasse} Reptil, \emph{Flügel} nein, \emph{Beine mit Bodenkontakt} $0$, \emph{Gewicht} $50$kg.
  Die Schlange ist allerdings das einzige Tier zu dem es kein "`echtes"' Bild des Skeletts gibt. Das liegt daran, dass es keine seitlichen Abbildungen von ausgestreckten Schlangen gibt. Sie werden eigentlich immer gekrümmt dargestellt, da sonst das Bild sehr lang und schmal werden würde. 
- Da aber versucht wurde eine möglichst große Variation an Skeletten zu erheben und ein Schlangenskelett, in der hier nötigen Auflösung, sehr einfach darzustellen ist, wurde trotzdem ein Bild erstellt. Dieses Bild enthält nur eine horizontale Linie knapp über dem unteren Bildrand, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte, an denen der Rücken in Hals oder Schwanz übergeht, gibt es bei Schlangen nicht.
+ Da aber versucht wurde, eine möglichst große Variation an Skeletten zu erheben, und ein Schlangenskelett, in der hier nötigen Auflösung, sehr einfach darzustellen ist, wurde trotzdem ein Bild erstellt. Dieses Bild enthält nur eine horizontale Linie knapp über dem unteren Bildrand, die den Rücken darstellen soll. Extremitäten und ersichtliche Punkte, an denen der Rücken in Hals oder Schwanz übergeht, gibt es bei Schlangen nicht.
  
  % zweitgrößter Abstand (da max Schlange)
  Der Punkt mit dem zweitgrößten Abstand zum Mittelwert ist das Känguru (siehe Abbildung \ref{kaenguru_farbig}). Zusätzlich zum Bild gibt es hier folgende Daten:
   \emph{Tierklasse} Säugetier, \emph{Flügel} nein, \emph{Beine mit Bodenkontakt} $1$, \emph{Gewicht} $50$kg
   
- \begin{figure}
+ \begin{figure}[ht]
   \subfloat[Klippschliefer]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Klippschliefer_farbig.png} \label{klippschliefer_farbig}}
   \qquad
   \subfloat[Känguru]{\includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Kaenguru_farbig.png}\label{kaenguru_farbig}}
@@ -250,13 +252,19 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{figure}
  
 
+ \newpage
  %-----------------------------------
  \section{Analyse der Ergebnisse}
  \label{section_pca_result_analysis}
  
  % Eigenvektoren und Rekonstruktionen
- Zu $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste Eigenwert ist $0{,}000001$. Von den Eigenwerten sind $6$ größer als $0{,}01$. Leider reichen diese $6$ Dimensionen noch nicht aus, um die Eingabedaten hinreichend anzunähern. Bei manchen Tieren funktioniert das zwar ganz gut (siehe Archaeopteryx, Abbildung \ref{archaeopteryx}), bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).
- Die Daten konnten somit von der PCA nicht sehr gut komprimiert werden. Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
+ Zu $29$ Eingabedimensionen gibt es auch $29$ Eigenvektoren mit Eigenwerten größer $0$. Der kleinste Eigenwert ist $0{,}000001$. Von den Eigenwerten sind $7$ größer als $0{,}01$. 
+ 
+ Die Eigenwerte $\lambda_i$ geben die Varianz der Normalverteilung entlang der Achse des zugehörigen Eigenvektors $v_i$ an. Die Summe aller Varianzen $\Sigma_{i=0}^n \lambda_i$ ist ein Maß für den Informationsgehalt. Werden alle Eigenvektoren verwendet um die Daten darzustellen, so ist $100\%$ der Information vorhanden, bei $m \le n$ Eigenvektoren jeweils der Anteil $\Sigma_{i=0}^m \lambda_i / \Sigma_{i=0}^n \lambda_i$.\\
+ Die ersten $6$ Eigenvektoren enthalten $92{,}2\%$ der Informationen, die ersten $10$ enthalten $96{,}9\%$ und die ersten $20$ enthalten $99{,}8\%$.
+ 
+ Versucht man die Eingabedaten durch die Eigenvektoren mit den größten Eigenwerten anzunähern, so funktioniert das bei manchen Tieren ganz gut, wie \zb beim Archaeopteryx (siehe Abbildung \ref{archaeopteryx}) schon mit den größten $6$ Eigenvektoren, bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).\\
+ Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
  
  \begin{figure}
   \centering
@@ -268,7 +276,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
   \label{archaeopteryx}
  \end{figure}
  
-\begin{figure}[H]
+\begin{figure}
   \centering
   \subfloat[$6$ Eigenvektoren,
   \emph{Flügel} $0{,}4$, \emph{Beine mit Bodenkontakt} $1{,}27$, \emph{Gewicht} $90{,}2$kg]
@@ -288,9 +296,11 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{figure}
  
  
- Um zu verstehen in welchem Bereich sich die zufällig generierten Punkte bewegen, ist es sinnvoll sich anzuschauen was die Hauptkomponenten "`bedeuten"'. In Abbildung \ref{pca_results_sqrtEV_biggest} sind zwei Datenpunkte zu sehen, die auf der Koordinatenachse liegen, die zum Eigenvektor mit dem größten Eigenwert gehört. Ihr Wert in dieser Dimension ist jeweils die positive \bzw negative Standardabweichung. Die Varianz entlang eines Eigenvektors ist gegeben durch den Eigenwert. Die Standardabweichung ist also die Wurzel des entsprechenden Eigenwerts. Es ist zu sehen wie sich die Punkte verändern, wenn sie sich entlang dieser Achse bewegen \bzw welchen Einfluss der Eigenvektor ausübt. Abbildungen nach dem gleichen Schema für die sechs größten Eigenvektoren sind im Anhang in Abbildung \ref{pca_results_sqrtEV} zu finden.
+ Um zu verstehen in welchem Bereich sich die zufällig generierten Punkte bewegen, ist es sinnvoll sich anzuschauen was die Hauptkomponenten "`bedeuten"'. In Abbildung \ref{pca_results_sqrtEV_biggest} sind zwei Datenpunkte zu sehen, die auf der Koordinatenachse liegen, die zum Eigenvektor mit dem größten Eigenwert gehört. Ihr Wert in dieser Dimension ist jeweils die positive \bzw negative Standardabweichung. Die Varianz entlang eines Eigenvektors ist gegeben durch den Eigenwert. Die Standardabweichung ist also die Wurzel des entsprechenden Eigenwerts. Es ist zu sehen wie sich die Punkte verändern, wenn sie sich entlang dieser Achse bewegen \bzw welchen Einfluss der Eigenvektor ausübt.\\
+ Die Abbildung \ref{pca_results_sqrtEV_biggest} zeigt, dass der Eigenvektor zum größten Eigenwert einen großen Einfluss auf die Halswirbelsäule hat. Bestätigt wird dies dadurch, dass die größten Einträge des Eigenvektors die $y$-Koordinaten des ersten, zweiten und dritten Kontrollpunkts der Bézierkurve der Halswirbelsäule sind.\\
+ Abbildungen nach dem gleichen Schema für die sechs größten Eigenvektoren sind im Anhang in Abbildung \ref{pca_results_sqrtEV} zu finden.
  
- \begin{figure}
+ \begin{figure}[h]
    \subfloat[$-\sigma$, \emph{Flügel} $0{,}38$, \emph{Beine mit Bodenkontakt} $1{,}6$, \mbox{\emph{Gewicht} $92$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
    \qquad
    \subfloat[$+\sigma$, \emph{Flügel} $-0{,}057$, \emph{Beine mit Bodenkontakt} $1{,}2$, \mbox{\emph{Gewicht} $94$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
@@ -302,7 +312,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \paragraph{Auswirkungen von Veränderungen auf den Eingabedaten}
  Bei allen Eingabedimension, außer der Position der Wirbelsäule, kann man die Frage stellen, ob sie nötig sind, oder ob sie die Ergebnisse der PCA eher verschlechtern. Deshalb wurden versuchsweise verschiedene (Kombinationen von) Merkmalen weggelassen. Die Ergebnisse unterscheiden sich aber kaum von der PCA mit allen Daten. \\
  Leider gibt es keine gute Möglichkeit die Qualität der Ergebnisse der PCA zu messen. Man könnte den Unterschied zwischen den Eingabedaten und den Rekonstruktionen aus den Linearkombinationen der Eigenvektoren mit den größten Eigenwerten messen. Da aber verschiedene Dimensionen fehlen, ist nicht klar wie dieser Unterschied einheitlich gemessen werden soll.
- Jedes Merkmal, das nicht verworfen wird liefert dem Algorithmus, der später Skelette generieren soll, mehr Informationen. Deshalb wurde kein Merkmal verworfen.
+ Jedes Merkmal, das nicht verworfen wird, liefert dem Algorithmus, der später Skelette generieren soll, mehr Informationen. Deshalb wurde kein Merkmal verworfen.
  
  Außerdem gibt es die Möglichkeit die Eingabedaten in mehrere Mengen aufzuteilen und diese einzeln zu analysieren. Hierbei gibt es zunächst das Problem, dass sich dann die Anzahl der Datenpunkte noch weiter reduziert, was die Ergebnisse nicht mehr repräsentativ macht.\\
  Merkmale, die sich zur Unterteilung in Mengen anbieten würden, sind die diskreten, also \emph{Flügel} und \emph{Beine mit Bodenkontakt}. Sie sind auch klar als Cluster im Koordinatensystem der PCA ohne angepasste Skalierung zu erkennen (Abbildung \ref{projections_scales} a).
@@ -311,7 +321,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Ein weiteres Problem daran, die Daten in mehrere Mengen aufzuteilen, ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich sehen die Datenpunkte, die zwischen den Gruppen erzeugt werden, aber relativ sinnvoll aus (siehe Abbildung \ref{between_clusters}).
  Auch das ist ein Argument dafür keine Aufteilung vorzunehmen.
  
- \begin{figure}
+ \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{graphics/betweenClusters.jpg}
   \caption{Visualisierung eines Punktes, der, projiziert auf die ersten beiden Eigenvektoren, zwischen den Eingabedaten mit Flügeln und jenen ohne Flügel liegt. Die Werte, die auf den jeweiligen Achsen angenommen werden, sind $-0{,}4$ für den ersten Eigenvektor und $0{,}2$ für den zweiten. Werte für die ursprünglichen Merkmale, die nicht visualisiert sind, sind folgende: \emph{Flügel} $0{,}402$, \emph{Beine mit Bodenkontakt} $1{,}46$ und \emph{Gewicht} $92{,}2$kg.}
@@ -319,7 +329,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{figure}
 
  
- 
+ \newpage
  %-------------------------------------------------
  \section{Bedingte Verteilungen}
  \label{pca_conditions}

@@ -80,6 +80,20 @@ public class DataExporter {
         }
         writer.newLine();
 
+        sortedEigenvalues = pcaHandler.getEigenvalues(0.0);
+        double totalVariance = sortedEigenvalues.stream().reduce(Double::sum).get();
+        sortedEigenvalues = sortedEigenvalues.subList(0, 20);
+        double varianceFirst20 = sortedEigenvalues.stream().reduce(Double::sum).get();
+        sortedEigenvalues = sortedEigenvalues.subList(0, 10);
+        double varianceFirst10 = sortedEigenvalues.stream().reduce(Double::sum).get();
+        sortedEigenvalues = sortedEigenvalues.subList(0, 6);
+        double varianceFirst6 = sortedEigenvalues.stream().reduce(Double::sum).get();
+        writer.write(String.format("Total variance is: %f\nVariance of the first 20, 10 and 6 eigenvektors is: %f, %f, %f\n" +
+                        "Which is in percent of the total variance: %f, %f, %f\n",
+                totalVariance, varianceFirst20, varianceFirst10, varianceFirst6,
+                varianceFirst20/totalVariance*100.0, varianceFirst10/totalVariance*100.0, varianceFirst6/totalVariance*100.0));
+        writer.newLine();
+
         writer.write(String.format("The biggest 4 and the smallest 3 entries of the first %d eigenvectors are:\n", biggestEigenvalueCount));
         for (int i = 0;  i < biggestEigenvalueCount; i++) {
             writer.write(String.format("%d. ", i+1));
