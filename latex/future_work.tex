@@ -1,36 +1,44 @@
-%-----------------------------------------------------
-%-----------------------------------------------------
+%---------------------------
+%---------------------------
 \chapter{Fazit und Ausblick}
 \label{chapter:conclusion}
 
+% 1. Zusammenfassung: Was wurde in dieser Arbeit gemacht? Was waren die Schlüsselergebnisse? Diesmal jedoch zusammengefasst nochmals für einen Leser, der die vorherigen Seiten mit allen Details bereits gelesen hat.
+% 
+% 2. Adressaten der Verbesserung: Wem nützen die Verbesserungen/Beiträge der Arbeit? Inwieweit wird die Software-Technik durch die Arbeit verbessert?
+% 
+% 3. Aufbauende/Zukünftige Arbeiten: Welche nächsten Schritte sind geplant (erst kurzfristige, dann längerfristige)? Welche möglichen Lösungsansätze für noch bestehende Probleme sind denkbar? Wie könnten Folgearbeiten aussehen?
+
+\paragraph{Zusammenfassung}
+
+Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generieren kann, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern zur Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten (siehe Kapitel \ref{chapter:pca}) erhält man eine Möglichkeit zufällig normalverteilte Punkte, mit dem Mittelpunkt der Datenpunkte als Erwartungswert, zu erzeugen. Ein so erzeugter Punkt liefert alle Informationen, die nötig sind um ein Skelett zu generieren.
+Diese Technik liefert ohne weitere Einschränkungen viele unterschiedliche Skelette, die in den allermeisten Fällen auch gut aussehen.\\
+Außerdem können gezielt Skelette mit bestimmten Eigenschaften generiert werden, indem die \emph{Principal Component Analysis} auf bedingten Verteilungen ausgeführt wird oder Variationen zu schon generierten Skeletten erzeugt werden. Dies ist sehr hilfreich, wenn man schon eine Vorstellung davon hat, wie das zu generierende Skelett ungefähr aussehen soll.
+
+Zusätzlich zu "`realistischen"' Wirbeltierskeletten lassen sich mit dem Algorithmus auch fantastische Skelette generieren. Es können zusätzliche Extremitäten und ein zusätzlicher Schultergürtel erzeugt werden. Als Datengrundlage werden dafür die gleichen Skelettbilder verwendet wie für die anderen Skelette auch. Deshalb wurde darauf geachtet, dass sich die generierten Skelette durch die genannten Veränderungen nicht zu stark von echten Wirbeltierskeletten entfernen.  
+
+Die Vorschrift zur Generierung der Knochen und einer Baumstruktur auf ihnen ist durch eine kontextfreie Grammatik festgelegt. Diese Grammatik sorgt dafür, dass die Ersetzungsregeln relativ übersichtlich dargestellt und leicht erweiterbar sind. Aber da die Grammatik im Voraus, durch den zufällig erzeugten Punkt, schon so stark festgelegt wird, dass immer genau ein Wort generiert wird, ist sie nicht unbedingt notwendig.
+
+Die Positionierung der Beine liefert in vielen Fällen keine schönen Ergebnisse, da hierzu keine Informationen aus den 2D-Skelettbildern erhoben werden. Trotzdem kann das generierte Skelett als erster Eindruck \bzw Inspiration für ein Modell dienen. Wenn das erzeugte Skelett als Grundlage für ein animiertes Wesen dienen soll, muss die Positionierung der Knochen sowieso noch öfter angepasst werden.
+
+
+\paragraph{Zukünftige Arbeiten}
+
+
+
+
+
 \begin{itemize}
- \item Muskeln, Haut \etc anbauen
- \item austauschbare 3D-Modelle
- \item mehr verschiedene 3D-Modelle
- \item Beinalgo verbessern / IK
+ \item schnell viele verschiedene Skelette generierbar, Variationen zu einem vorgegebenen Skelett, leicht bedienbar
+
  \item mehr Daten für PCA sammeln
- \item Gewicht in Algo verwenden
  \item Erweiterung auf Mensch? Mensch auch als PCA Datenpunkt?
- \item Interaktivität: Teile, die einem nicht gefallen, sollten geändert werden können
- \item Eine Anwendung, bei der nach Eingabe von Parametern sofort das komplette Tier generiert wird, ist weniger hilfreich als eine, bei der schrittweise Teile davon generiert werden können (und auch rückgängig gemacht werden können)
+ \item austauschbare 3D-Modelle,  mehr verschiedene 3D-Modelle
+ \item Gewicht in Algo verwenden
+ 
+ \item Interaktivität: Teile, die einem nicht gefallen, sollten geändert werden können (Eine Anwendung, bei der nach Eingabe von Parametern sofort das komplette Tier generiert wird, ist weniger hilfreich als eine, bei der schrittweise Teile davon generiert werden können (und auch rückgängig gemacht werden können))
+ 
+ \item Muskeln, Haut \etc anbauen (an 3D-Modell oder auch Algo erweitern)
 \end{itemize}
 
 
-%----------------
-\section{Muskeln}
-
-\begin{itemize}
- \item Die "`Hauptmuskeln"' verlaufen bei Wirbeltieren wahrscheinlich ähnlich, relativ zu den Knochen. Trotzdem unterscheiden sie sich recht stark.
- \item Knochen/Gelenke bekommen Zusatzattribute für Start- und Zielpunkte der Muskeln.
- \item Muskeln haben eine "`Dicke"' und aus Start- und Zielpunkt muss Kurve des Muskels generiert werden.
- \item Wie wird die genaue Form festgelegt? Muskeln irgendwie auf ihre "`Dicke"' aufblähen + Interaktion mit vorhandenen Elementen (andere Muskeln und Knochen) $\rightarrow$ future work
-\end{itemize}
-
-%-------------
-\section{Haut}
-
-\begin{itemize}
- \item Was für Algorithmen gibt es, die zu einem vorhandenen 3D-Modell eine Hülle mit gewissen Eigenschaften generieren? \\
- es gibt eine solche Funktion z.B. in AutoCAD \url{https://knowledge.autodesk.com/de/support/autocad/learn-explore/caas/CloudHelp/cloudhelp/2016/DEU/AutoCAD-Core/files/GUID-B7F99810-765E-4E7E-ABDD-275C64147CCC-htm.html}
- \item Einfach nur eine Hülle mit gewissem Abstand sieht wahrscheinlich sehr unrealistisch aus. "`Bony Landmarks"' (Stellen an denen das Gewebe über den Knochen sehr dünn ist) könnten helfen (siehe \url{https://www.proko.com/landmarks-of-the-human-body/}) oder "`bone weights"'
-\end{itemize}
