@@ -2,32 +2,29 @@
 %-------------------
 \chapter{Einleitung}
 
-Wirbeltiere sind allgegenwärtig. Nicht nur im alltäglichen Leben, sondern auch in Computerspielen und Filmen. Es besteht also ein stetiger Bedarf an 3D-Modellen von Wirbeltieren. Dieser wird in den meisten Fällen durch KünstlerInnen gedeckt, die viel Zeit und Arbeit in die Modelle stecken. Algorithmen, die diese Abläufe vereinfachen könnten, beispielsweise durch prozedurale Generierung, gibt es nicht viele \cite{PCGSurvey_videoGames}.
+Wirbeltiere sind allgegenwärtig. Nicht nur im alltäglichen Leben, sondern auch in Computerspielen und Filmen. Es besteht also ein stetiger Bedarf an 3D-Modellen von Wirbeltieren. Dieser wird in den meisten Fällen durch KünstlerInnen gedeckt, die viel Zeit und Arbeit in die Modelle stecken. 
+Algorithmen, die diese Abläufe vereinfachen könnten, beispielsweise durch prozedurale Generierung, gibt es nicht viele \cite{PCGSurvey_videoGames}.\\
+Die meisten Ansätze, die es gibt, generieren 3D-Modelle mit einem sehr abstrakten Skelett (Rig) für die Animation (siehe \mbox{Abschnitt \ref{procedural_generation}}). 
+Der Algorithmus, der in dieser Arbeit vorgestellt wird, konzentriert sich jedoch nur auf das Skelett. Es werden abstrahierte, aber dennoch recht wirklichkeitsnahe, Modelle generiert. Diese können dann die Grundlage für die Modellierung eines kompletten Tieres bilden.
 
 % Ziel
-Das Ziel dieser Arbeit ist es, den Arbeitsaufwand der KünstlerInnen zu verringern, indem eine Möglichkeit geschaffen wird, Wirbeltierskelette automatisiert zu generieren. Diese Skelette können dann die Grundlage für die Modellierung eines kompletten Wirbeltiers bilden.
-Einerseits können sie dabei als Inspiration dienen. Sie können einen Anhaltspunkt zu Körperform und Proportionen bieten und zu möglichen Bewegungsabläufen. Außerdem kann schnell eine große Auswahl an Skeletten generiert werden.\\
-Andererseits können die Skelette eine Grundlage für Modelle bilden, die zusätzlich auch Muskeln und Haut simulieren.
+Einerseits können die generierten Skelette als Inspiration dienen. Sie können einen Anhaltspunkt zu Körperform, Proportionen und zu möglichen Bewegungsabläufen bieten und es kann schnell eine große Auswahl von ihnen generiert werden.
+Andererseits können die Skelette eine Grundlage für Modelle sein, die zusätzlich auch Muskeln und Haut simulieren.
 In beiden Fällen darf das Modell nicht zu abstrakt sein, da es sonst zu wenig Informationen zum Aufbau des konkreten Tiers liefert.\\
-Es soll also ein Skelett generiert werden, dass genug Knochen enthält um realistisch zu wirken, aber auch nicht zu viele um den Aufwand für die Generierung und die Programmierung des Algorithmus im Rahmen zu halten.
+Es soll also ein Skelett generiert werden, das genug Knochen enthält um realistisch zu wirken, aber auch nicht zu viele um den Aufwand für die Generierung und die Programmierung des Algorithmus im Rahmen zu halten.
 
 % Warum nur Wirbeliere?
-Der Grund dafür, dass sich diese Arbeit auf Wirbeltierskelette einschränkt, ist, dass der Skelettaufbau von Wirbeltieren nicht sehr variiert. 
-Je mehr Details betrachtet werden, desto mehr Unterschiede treten hervor. Der grobe Aufbau ist aber bei allen Wirbeltieren sehr ähnlich. Die Grundlagen zur Biologie der Wirbeltiere, die für diese Arbeit notwendig sind, werden in Kapitel \ref{chapter:biology} vorgestellt, die technischeren Grundlagen in Kapitel \ref{chapter:basics}.
+Diese Arbeit beschränkt sich auf Wirbeltierskelette, da ihr Aufbau nicht sehr variiert. 
+Je mehr Details betrachtet werden, desto mehr Unterschiede treten hervor. Der grobe Aufbau ist aber bei allen Wirbeltieren sehr ähnlich. Die Grundlagen zur Biologie der Wirbeltiere, die für diese Arbeit notwendig sind, werden in Kapitel \ref{chapter:biology} vorgestellt, die technischen Grundlagen in Kapitel \ref{chapter:basics}.
 
 % Methoden+Aufbau
-Die wichtigsten Schritte des Algorithmus werden im Folgenden kurz angerissen, um einen Überblick über die Arbeit zu geben. Einen Überblick über den Algorithmus gibt auch Abschnitt \ref{section:overview}.\\
-Die Datengrundlage für den Algorithmus schafft eine \emph{Principal Component Analyis} (Hauptkomponentenanalyse) auf annotierten 2D-Skelett"-bildern (Kapitel \ref{chapter:pca}). Ohne sie wäre es schwer Skelette in einer natürlichen und stabilen Haltung zu generieren.
+Die wichtigsten Schritte des Algorithmus werden im Folgenden kurz angerissen, um einen Überblick über die Arbeit zu geben. Ein Überblick über den Algorithmus ist auch in Abschnitt \ref{section:overview} zu finden.\\
+Die Datengrundlage für den Algorithmus schafft eine \emph{Principal Component Analysis} (Hauptkomponentenanalyse) auf annotierten 2D-Skelett"-bildern (Kapitel \ref{chapter:pca}). Ohne sie wäre es schwer Skelette in einer natürlichen und stabilen Haltung zu generieren.
 Die Knochen des Skeletts werden dann mit Hilfe einer kontextfreien Grammatik generiert und gleichzeitig angeordnet (Kapitel \ref{chapter:skeleton_generation}). 
 Zum Schluss wird aus existierenden 3D-Modellen von einzelnen Knochen ein 3D-Modell des generierten Skeletts erstellt (Abschnitt \ref{bone_models})).
 
-\newpage
 Prinzipiell generiert der Algorithmus zufällige Skelette. Es können aber auch Benutzereingaben, \zb zur Anzahl der Extremitäten, berücksichtigt werden oder Variationen zu schon bestehenden Skeletten generiert werden (Kapitel \ref{chapter:additional_features}). \\
 Zusätzliche Informationen zu Implementierungsdetails sind in Kapitel \ref{chapter:implementation_detail} zu finden und abgerundet wird die Arbeit mit Fazit und Ausblick in Kapitel \ref{chapter:conclusion}.
 
-% Aufbau der Arbeit
-% In Kapitel \ref{chapter:biology} werden zunächst einige Grundlagen zur Biologie der Wirbeltiere vorgestellt, die später zum Verständnis des Algorithmus nötig sind. Die technischeren Grundlagen werden in Kapitel \ref{chapter:basics} erklärt.\\
-% Kapitel \ref{chapter:pca} widmet sich der \emph{Principal Component Analyis}. Es wird beschrieben auf welchen Daten und mit welchen Ergebnissen sie im Rahmen des Algorithmus angewandt wird. Diese Analyse ist auch der erste Schritt des Algorithmus, der in Kapitel \ref{chapter:skeleton_generation} ausführlich beschrieben wird. Zusätzliche Funktionen, wie das Laden und Speichern von Skeletten oder die Erzeugung von Variationen zu gespeicherten Skeletten werden in Kapitel \ref{chapter:additional_features} vorgestellt.
-% Kapitel \ref{chapter:implementation_detail} versammelt alle Details zur Implementierung und abgerundet wird die Arbeit mit Fazit und Ausblick in Kapitel \ref{chapter:conclusion}.
 
 
