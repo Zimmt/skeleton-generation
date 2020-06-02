@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200511120409" modified="D:20200511121117"/>
+<info created="D:20200511120409" modified="D:20200602120830"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -332,7 +332,7 @@ h
 <use matrix="-1 0 0 1 420.93 10.9732" name="mark/fdisk(sfx)" pos="190.243 476.519" size="large" stroke="black" fill="white"/>
 <text matrix="-1 0 0 1 541.846 -35.5785" transformations="translations" pos="237.735 793.122" stroke="black" type="label" width="93.45" height="9.963" depth="0" valign="baseline" size="Large">Beckenknochen</text>
 <text matrix="-1 0 0 1 494.082 -119.803" transformations="translations" pos="237.735 793.122" stroke="black" type="label" width="81.239" height="9.963" depth="0" valign="baseline" size="Large">Oberschenkel</text>
-<text matrix="-1 0 0 1 478.103 -232.517" transformations="translations" pos="237.735 793.122" stroke="black" type="label" width="65.163" height="9.963" depth="0" valign="baseline" size="Large">Schienbein</text>
+<text matrix="-1 0 0 1 478.103 -232.517" transformations="translations" pos="237.735 793.122" stroke="black" type="label" width="85.527" height="9.963" depth="0" valign="baseline" size="Large">Unterschenkel</text>
 <text matrix="-1 0 0 1 494.017 -310.198" transformations="translations" pos="237.735 793.122" stroke="black" type="label" width="22.824" height="9.963" depth="0" valign="baseline" size="Large">Fu\ss</text>
 </page>
 </ipe>

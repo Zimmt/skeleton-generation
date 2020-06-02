@@ -94,13 +94,13 @@ In Abschnitt \ref{section:grammar} wird die Grammatik vorgestellt, die verwendet
 Bevor die Grammatik verwendet werden kann, müssen verschiedene Dinge festgelegt werden. Dazu gehören die Anzahl der Wirbel auf den einzelnen Teilen der Wirbelsäule und die Anzahl der Rippen. Auch die Anzahl der Vorder- und Hinterextremitäten muss festgelegt werden. Siehe dazu Abschnitt \ref{section:extremity_generation}.
 
 \paragraph{Wirbel}
-Die Anzahl der Wirbel orientiert sich an echten Wirbeltierskeletten (siehe Absatz \ref{biology_skeleton}). Auf dem Hals werden $7$ Wirbel generiert, außer das Tier hat Flügel. Dann wird angenommen, dass ein Vogel generiert wird. Dementsprechend wird die Anzahl dann zufällig zwischen $10$ und $30$ geählt. Auf dem Rücken liegen $25$ Wirbel und auf dem Schwanz $5$ bis $20$.
+Die Anzahl der Wirbel orientiert sich an echten Wirbeltierskeletten (siehe Absatz \ref{biology_skeleton}). Auf dem Hals werden $7$ Wirbel generiert, außer das Tier hat Flügel. Dann wird angenommen, dass ein Vogel generiert wird. Dementsprechend wird die Anzahl dann zufällig zwischen $10$ und $30$ gewählt. Auf dem Rücken liegen $25$ Wirbel und auf dem Schwanz $5$ bis $20$.
 Da der Wurzelknochen in der Mitte der Rückenwirbelsäule liegt (oder zumindest ungefähr, da Bezierkurve bei $0{,}5$ ausgewertet), wird die Rückenwirbelsäule in zwei Teile geteilt. Es werden $13$ Wirbel auf der vorderen Hälfte und $12$ auf der hinteren generiert.
 
 Eine Bézierkurve ist ein Weg im $\mathbb{R}^2$. Sie ist parametrisiert auf $[0, 1]$ und im Allgemeinen nicht nach Bogenlänge parametrisiert. Das heißt die Geschwindigkeit, mit der die Kurve durchlaufen wird, ist nicht konstant. Wertet man die Kurve also bei $0,5$ aus, wurde nicht notwendigerweise die Hälfte der Strecke zurückgelegt.\\
-Für die Generierung von $n$ Wirbeln wurde die Kurve einfach an den Stellen $\frac{i}{n}$ ausgewertet, für $0 \leq i \leq n$. Die Länge des $i$-ten Wirbels ergibt sich dann einfach aus den Abstand zwischen den Stellen $\frac{i-1}{n}$ und $\frac{i}{n}$ auf der Bézierkurve. Durch den oben genannten Effekt variiert dann die Länge der Wirbel über den Kurvenverlauf. Die Wirbel werden auf der Bézierkurve aufgereit und so positioniert, dass sie an den ausgewerteten Stellen aneinander stoßen.
+Für die Generierung von $n$ Wirbeln wurde die Kurve einfach an den Stellen $\frac{i}{n}$ ausgewertet, für $0 \leq i \leq n$. Die Länge des $i$-ten Wirbels ergibt sich dann einfach aus dem Abstand zwischen den Stellen $\frac{i-1}{n}$ und $\frac{i}{n}$ auf der Bézierkurve. Durch den oben genannten Effekt variiert dann die Länge der Wirbel über den Kurvenverlauf. Die Wirbel werden auf der Bézierkurve aufgereiht und so positioniert, dass sie an den ausgewerteten Stellen aneinander stoßen.
 
-Wird die Bézierkurve $B$ nach Bogenlänge umparametrisieren, so erhält man als neuen Paramter:
+Wird die Bézierkurve $B$ nach Bogenlänge umparametrisiert, so erhält man als neuen Parameter:
 \[p(t) = \int_0^t \| B'(s) \| ~\mathrm{d}s. \]
 Die umparametrisierte Bézierkurve ist dann $t \mapsto B(p(t))$.
 
@@ -111,7 +111,7 @@ Betrachtet man echte Wirbeltiere, so sind keine einfachen Regeln für die Länge
 \paragraph{Rippen}
 Die Anzahl der Rippen und auch die Ausdehnung des Brustkorbs variiert zwischen Wirbeltieren sehr stark. Es gibt Tiere, die an jedem Wirbel der Rückenwirbelsäule Rippen haben und es gibt Tiere die haben nur ein paar wenige auf dem vorderen Teil. Einige Beispiele mit unterschiedlich vielen Rippen sind auch unter den Beispielbildern für die PCA in Abbildung \ref{all_images} im Anhang zu finden.
 
-Deshalb wird die Anzahl der Wirbel $r$ zufällig aus dem Intervall $ [0, n]$, mit $n =$ Anzahl der Rückenwirbel, bestimmt.
+Deshalb wird die Anzahl der Rippen $r$ zufällig aus dem Intervall $ [0, n]$, mit $n =$ Anzahl der Rückenwirbel, bestimmt.
 Die Rippen beginnen an aufeinanderfolgenden Wirbeln der Rückenwirbelsäule, Lücken sind nicht erlaubt. Außerdem starten sie immer am ersten Wirbel der Rückenwirbelsäule, wie auch auf dem Grundbauplan in Abbildung \ref{bauplan_skelett} zu sehen ist. Aus $n$ und $r$ ergeben sich also die Eingabeparameter für die Grammatik, die angeben wieviele Wirbel insgesamt auf der vorderen \bzw hinteren Hälfte der Wirbelsäule zu finden sind ($w_{rv}, w_{rh}$) und wieviele davon jeweils Rippen haben ($w_{rv}^r, w_{rh}^r$) (siehe Abschnitt \ref{section:grammar}).
 
 
@@ -132,7 +132,7 @@ Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P, p)$ unterstützt Kl
  N &= \{&&\text{\emph{Skelett}, \emph{Vorderteil}, \emph{Hinterteil}, \emph{Schultergürtel}, \emph{Beckengürtel}}\\
         & &&\text{\emph{Hals}, \emph{Vorderextremität}, \emph{Hinterextremität}}\}\\
  S &= &&\text{\emph{Skelett}}\\
- p &= \{&&w_{rv}, w_{rh}, h, s, w_h, w_s, r, e_v, e_h \}
+ p &= \{&&w_{rv}, w_{rv}^r, w_{rh}, w_{rh}^r, h, s, w_h, w_s, r, e_s, e_b \}
 \end{alignat*}
 
 Die Parameter werden im vorherigen Schritt des Algorithmus bestimmt (siehe Überblick \ref{section:overview}). Sie haben folgende Bedeutungen:
@@ -152,7 +152,7 @@ Die Parameter werden im vorherigen Schritt des Algorithmus bestimmt (siehe Über
 Wie die Anzahl der Wirbel auf Hals ($w_h$), Schwanz ($w_s$) und Rücken ($w_{rv}^r + w_{rv} + w_{rh}^r + w_{rh}$) bestimmt werden, wird in Abschnitt \ref{section:vertebrae_ribs} erklärt.
 Wieviele Rippen ($w_{rv}^r + w_{rh}^r$) generiert werden wird zufällig bestimmt (siehe ebenfalls Abschnitt \ref{section:vertebrae_ribs}).
 Ob eine Hals- \bzw Schwanzwirbelsäule ($h, s$) generiert wird, hängt davon ab, ob dieser Teil der Wirbelsäule in derjenigen Wirbelsäule, die durch Punkt $q$ im PCA-Raum vorgegeben wird, vorhanden ist.
-Und schließlich werden \emph{Schultergürtel} und \emph{Beckengürtel} nur generiert wenn das Skelett Vorder- \bzw Hinterextremitäten besitzt ($e_s, e_b$). Um das zu bestimmen wird \ua betrachtet, welche Werte der Punkt $q$ in den Merkmalen \emph{Beine mit Bodenkontakt} und \emph{Flügel} annimmt. Genaueres dazu ist in Abschnitt \ref{section:extremity_generation} zu finden.
+Und schließlich werden \emph{Schultergürtel} und \emph{Beckengürtel} nur generiert, wenn das Skelett Vorder- \bzw Hinterextremitäten besitzt ($e_s, e_b$). Um das zu bestimmen wird \ua betrachtet, welche Werte der Punkt $q$ in den Merkmalen \emph{Beine mit Bodenkontakt} und \emph{Flügel} annimmt. Genaueres dazu ist in Abschnitt \ref{section:extremity_generation} zu finden.
 
 Im folgenden sind alle Produktionen aus $P$ aufgeführt.
 \begin{align*}
@@ -173,7 +173,7 @@ Im folgenden sind alle Produktionen aus $P$ aufgeführt.
  \text{\emph{Hinterextremität}} \rightarrow &\text{ Oberschenkel Unterschenkel Fuß}^{\vphantom{(}}
 \end{align*}
 
-Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^*$ bedeutet, dass $A$ genau $x$-mal hintereinander vorkommt. Der Ausdruck $A^{(x)^+}$ kann ersetzt werden durch $A^{\text{max}(0, x)}$. Die angegebene \mbox{Anzahl $x$} wird also nur verwendet, wenn sie positiv ist. Sonst wird $x$ durch $0$ ersetzt.
+Der Ausdruck $A^x$ mit $A \in (\Sigma \cup N)^+$ bedeutet, dass $A$ genau $x$-mal hintereinander vorkommt. Der Ausdruck $A^{(x)^+}$ kann ersetzt werden durch $A^{\text{max}(0, x)}$. Die angegebene \mbox{Anzahl $x$} wird also nur verwendet, wenn sie positiv ist. Sonst wird $x$ durch $0$ ersetzt. Dadurch kann es passieren, dass leere Klammern, also Ausdrücke der Form $\alpha$ ( ) $\beta$ mit $\alpha, \beta \in (\Sigma \cup N)^*$, entstehen. Leere Klammern haben keine Bedeutung. Ein Ausdruck \mbox{$\alpha$ ( ) $\beta$} ist hier also gleichbedeutend zu $\alpha$ $\beta$.
 
 % es wird genau ein Wort generiert
 Für jedes Nichtterminal gibt es in $P$ genau eine Produktion und alle Parameter $p$ sind vor der Anwendung der Grammatik $G$ festgelegt. Das bedeutet $G$ ist deterministisch und es wird genau ein Wort erzeugt. Die Darstellung als Grammatik ist also gar nicht unbedingt nötig. Die Grammatik sorgt jedoch dafür, dass Teile des Skeletts einfach verfeinert werden können. Es ist \zb leicht $G$ so anzupassen, dass der Fuß kein Terminalsymbol mehr ist, sondern in kleinere Einzelteile verfeinert werden kann. Außerdem können natürlich auch zusätzliche Produktionen für bestehende Nichtterminalsymbole eingefügt werden, \zb für einen anders gearteten Schultergürtel.\\
@@ -201,7 +201,7 @@ Der Baum $B = (V, E)$ hat eine Knotenmenge $V \subset (\Sigma \cup N)$ und eine 
 % konkreter Aufbau
 Die Skelettgenerierung startet konkret mit einem Graphen $B$, der nur aus dem nichtterminalen Knoten \emph{Skelett} besteht. Der initiale Graph $B$ ist also ein Baum.\\
 Die Ersetzungsregeln, die im weiteren Verlauf verwendet werden, sind in Abbildung \ref{grammar_graph} dargestellt.
-Elliptische Knoten stellen nichtterminale Knoten dar, eckige sind terminale Knoten. Die türkisfarbenen Kanten, die von einem nichtterminalen Knoten $v$ ausgehen, führen zu den Knoten des Baumes $B_v$, durch den $v$ bei Anwendung der Ersetzungsregel ersetzt wird. Die grauen Kanten, die von nichtterminalen Knoten ausgehen, führen zum jeweiligen Elternelement des Knotens. Terminale Knoten liegen auf durchgehenden, gerichteten Kurven. Die Richtung der Kurve gibt jeweils an in welcher Richtung das dazugehörige Elternelement liegt.\\
+Elliptische Knoten stellen nichtterminale Knoten dar, eckige sind terminale Knoten. Die türkisfarbenen Kanten, die von einem nichtterminalen Knoten $v$ ausgehen, führen zu den Knoten des größten Baumes $B_v$, durch den $v$ bei Anwendung der Ersetzungsregel ersetzt werden kann. Die grauen Kanten, die von nichtterminalen Knoten ausgehen, führen zum jeweiligen Elternelement des Knotens. Terminale Knoten liegen auf durchgehenden, gerichteten Kurven. Die Richtung der Kurve gibt jeweils an, in welcher Richtung das dazugehörige Elternelement liegt.\\
 Aufeinanderfolgende Wirbel sind in der Abbildung teilweise zu einem Knoten vereinfacht. Alle Benennungen von Wirbeln stehen für das Terminal "`Wirbel"'. Sie sind nur der Übersichtlichkeit halber unterschiedlich benannt. Auch die Rippen sind eigentlich separate Knoten, die jeweils Kindknoten genau eines Rückenwirbels sind.
 
  \begin{figure}
@@ -210,9 +210,10 @@ Aufeinanderfolgende Wirbel sind in der Abbildung teilweise zu einem Knoten verei
   \caption{Darstellung der Ersetzungsregeln \bzw Produktionen der Grammatik $G$ als Graph. Elliptische Knoten sind Nichtterminalsymbole, rechteckige Knoten Terminalsymbole. Türkisfarbene Kanten zeigen auf diejenigen Symbole, durch die ein Nichtterminal bei Anwendung der entsprechenden Regel ersetzt wird. Graue Pfeile zeigen auf das Elternelement eines nichtterminalen Knotens und schwarze Kurven zeigen für Terminale in welcher Richtung das jeweilige Elternelement liegt.}
   \label{grammar_graph}
  \end{figure}
+ 
 
-% optionale Elemente
-Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts optional. Gegebenenfalls werden also nichtterminale Knoten nur durch Teilmengen der hier angegebenen Knoten ersetzt. Schulterblatt und Beckenknochen werden beispielsweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
+Abbildung \ref{grammar_graph} zeigt nicht den Baum $B$, sondern visualisiert die Produktionen $P$ und ihre Auswirkungen auf $B$. Alle schwarzen und grauen Kanten, deren Anfangs- und Endknoten in $V$ enthalten sind, bilden die Kantenmenge $E$ von $G$. Bei Anwendung einer Produktion verschwindet der dazugehörige, nichtterminale Knoten $v$ aus $B$ und dafür wird eine Teilmenge der Knoten $v_i$ eingefügt, die durch türkisfarbene Kanten $(v, v_i)$ mit $v$ verbunden waren.\\
+Gegebenenfalls werden also nichtterminale Knoten nur durch Teilmengen der hier angegebenen Knoten ersetzt. Dies ist durch die oben angegebenen Produktionen $P$ und die Parameter $p$ festgelegt. Schulterblatt und Beckenknochen werden beispielsweise nur dann generiert, wenn es auch Extremitäten gibt, die daran ansetzen sollen. Der Schultergürtel ist Kindknoten der Rippe am Schulterwirbel. Existiert diese Rippe jedoch nicht, ist er direkter Kindknoten des Schulterwirbels. Bei allen anderen Knoten gilt: fehlt das Elternelement, so wird dieser Knoten nicht eingefügt.
 
 
 %---------------------
@@ -220,7 +221,7 @@ Außerdem sind, wie in den Produktionen $P$ definiert, manche Teile des Skeletts
 \label{section:extremity_generation}
 
 % was ist schon vorgegeben
-Die Bestandteile einer Extremität sind durch den Grundbauplan (Abbildung \ref{bauplan_skelett}) vorgegeben und die Länge der Bestandteile durch die entsprechenden Merkmale des PCA-Datenpunkts $q$. Die Schwierigkeit besteht nun darin in den entsprechenden Ersetzungsregeln (siehe Abbildung \ref{grammar_graph}) auch die Positionierung vorzunehmen.
+Die Bestandteile einer Extremität sind durch den Grundbauplan (Abbildung \ref{bauplan_skelett}) vorgegeben und die Länge der Bestandteile durch die entsprechenden Merkmale des PCA-Datenpunkts $q$. Die Schwierigkeit besteht nun darin, in den entsprechenden Ersetzungsregeln (siehe Abbildung \ref{grammar_graph}) auch die Positionierung vorzunehmen.
 
 \paragraph{Positionierung}
 % Allgemeine Schwierigkeit Extremitäten zu positionieren
@@ -230,9 +231,9 @@ Wie in Kapitel \ref{chapter:pca} zur PCA schon erwähnt, ist es deshalb auch sch
 Die Positionierung der Extremitäten bleibt also ein Problem mit unklaren Anforderungen und vielen Freiheitsgraden.
 
 % Einteilung in Kategorien
-Ein erster Schritt an das Problem heranzugehen ist es in kleinere Unterprobleme zu zerteilen.
+Ein erster Schritt an das Problem heranzugehen ist, es in kleinere Unterprobleme zu zerteilen.
 Extremitäten können anhand ihrer Funktion in vier Kategorien eingeteilt werden:
-Flügel, Flossen, Extremitäten mit Bodenkontakt (im Folgenden als Beine bezeichnet), und Extremitäten ohne Bodenkontakt, die weder Flügel noch Flossen sind, (im Folgenden als Arme bezeichnet).
+Flügel, Flossen, Extremitäten mit Bodenkontakt (im Folgenden als Beine bezeichnet), und Extremitäten ohne Bodenkontakt, die weder Flügel noch Flossen sind, (im Folgenden als Arme bezeichnet). Die Anzahl der Flossen und Arme wurde, im Gegensatz zu Beinen und Flügeln, nicht als Merkmal für die PCA erhoben. Im folgenden Absatz wird beschrieben wie stattdessen entschieden wird, ob eine Extremität eine Flosse oder ein Arm ist (wenn keine Benutzereingabe dazu vorhanden ist). Das ist aber relativ beliebig gewählt. Es wäre sicherlich auch eine gute Möglichkeit Arme und Flossen stattdessen als zusätzliche Merkmale mitaufzunehmen.
 
 \begin{figure}
  \subfloat[$2$ Beine, $2$ Flügel]{\includegraphics[height=9cm]{../java_skeleton_generation/example_skeletons/bird.jpg}}~
@@ -253,7 +254,7 @@ Für Flügel, Flossen und Arme gibt es keine besonderen Anforderungen außer, da
  \item Flügel: Jedes beteiligte Gelenk hat ein Intervall mit festen Grenzen speziell für Flügel, aus dem zufällig ein Winkel gewählt wird.
 \end{itemize}
 
-Nun bleibt nur doch die Ausrichtung der Beine, für die die zusätzliche Anforderung gilt, dass sie den Boden berühren sollen.
+Nun bleibt nur noch die Ausrichtung der Beine, für die die zusätzliche Anforderung gilt, dass sie den Boden berühren sollen.
 
 
 \paragraph{Bestimmung von Art und Anzahl}
@@ -261,13 +262,13 @@ Nun bleibt nur doch die Ausrichtung der Beine, für die die zusätzliche Anforde
 Je nach Art wird die Anzahl der entsprechenden Extremitäten unterschiedlich bestimmt. Als Grundlagen dient der gewählte Punkt $q$ im PCA-Raum. Hier werden die Werte $v_b$ und $v_f$ betrachtet, die $q$, zurücktransformiert ins ursprünglichen Koordinatensystem, für \emph{Beine mit Bodenkontakt} und \emph{Flügel} annimmt. Priorisiert werden die verschiedenen Arten von Extremitäten in der Reihenfolge, wie sie im Folgenden aufgezählt sind.
 
 \begin{itemize}
- \item Beine: Der Wert $v_b$ liegt im Intervall $[0, 2]$ \bzw wenn $v_b < 0$ oder $v_b > 2$, so wird $v_b$ auf $0$ \bzw $2$ festgelegt. Gilt $v_b \in [0, 1]$, so wird mit Wahrscheinlichkeit $v_b$ ein Hinterbein und kein Vorderbein generiert. Gilt $v_b \in [1, 2]$, so wird mit Wahrscheinlichkeit $1$ ein Hinterbein und mit Wahrscheinlichkeit $v_b - 1$ ein Vorderbein generiert.
+ \item Beine: Der Wert $v_b$ liegt im Intervall $[0, 2]$ \bzw wenn $v_b < 0$ oder $v_b > 2$, so wird $v_b$ auf $0$ \bzw $2$ festgelegt. Gilt $v_b \in [0, 1]$, so wird kein Vorderbein und mit Wahrscheinlichkeit $v_b$ ein Hinterbein generiert. Gilt $v_b \in [1, 2]$, so wird mit Wahrscheinlichkeit $1$ ein Hinterbein und mit Wahrscheinlichkeit $v_b - 1$ ein Vorderbein generiert.
  
  \item Flügel: Der Wert $v_f$ liegt in $[0, 1]$ \bzw wird, wie bei den Beinen, darauf eingeschränkt. Wenn am Schultergürtel noch keine Extremität festgelegt ist, so wird dort mit Wahrscheinlichkeit $v_f$ ein Flügel generiert.
  
  \item Arme: Die Berechnung basiert auf $v_f$ und funktioniert gleich wie bei den Flügeln.
  
- \item Flossen: Wenn die Gesamtlänge der entsprechenden Extremität klein genug\footnote{Die maximale Länge wurde im Code auf 200px festgelegt. Das ist aber ein beliebig gewählter Wert.} ist, so wird an jedem Extremitätengürtel ohne Extremität eine Flosse generiert.
+ \item Flossen: Wenn die Gesamtlänge der entsprechenden Extremität klein genug\footnote{Die maximale Länge wurde im Code auf 200px festgelegt. Das ist aber ein beliebig gewählter Wert.} ist und es Extremitätengürtel gibt, denen durch die obigen Regeln noch keine Extremität zugewiesen wurde, so wird an diesen Extremitätengürteln eine Flosse generiert.
 \end{itemize}
 
 Diese Berechnungen können dazu führen, dass Tiere, wie der Tyrannosaurus Rex, keine Arme bekommen, oder Fische ohne Flossen generiert werden. Das liegt daran, dass weder Arme noch Flossen Eingabemerkmale für die PCA sind. Deshalb verlässt sich der Algorithmus zusätzlich auf Benutzereingaben, die höher priorisiert werden, als die hier angegebenen Berechnungen.
@@ -286,9 +287,9 @@ Das führt aber zu unnatürlich aussehenden Beinen, da das kürzeste Bein dann g
 Deshalb wird nur ein bestimmter Anteil\footnote{Dieser Anteil ist in der Implementierung mit $0{,}8$ festgelegt, lässt sich aber natürlich auch variieren.} der Länge der Beine betrachtet. So wird erzwungen, dass die Beine, wenn sie auf dem neu definierten Boden stehen, auch etwas gekrümmt sind.
 
 Wie in Kapitel \ref{chapter:biology} beschrieben, gibt es verschiedene Arten von Füßen \bzw Händen. Die oben beschriebene Berechnung geht davon aus, dass der Boden mit der Fußspitze berührt wird. Aber natürlich gibt es auch Wirbeltiere, die mit dem flachen Fuß auf der Erde stehen.
-Deshalb wird zusätzlich zur Bodenhöhe noch eine Wahrscheinlichkeit berechnet, dass die Ferse \bzw das Handgelenk den Boden berühren.
+Deshalb wird zusätzlich zur Bodenhöhe noch eine Wahrscheinlichkeit berechnet, dass die Ferse den Boden berührt. Dies bestimmt im Algorithmus zur Ausrichtung der Beine (Abschnitt \ref{leg_algo}) ob die Fußspitze oder die Ferse auf den Boden bewegt werden soll.
 
-Wird die Bodenhöhe nach oben verschoben, weil die Beine insgesamt zu kurz sind, ist diese Wahrscheinlichkeit null.
+Wird die Bodenhöhe nach oben verschoben, weil die Beine insgesamt zu kurz sind, ist diese Wahrscheinlichkeit Null.
 Sind die Beine so lang, dass schon ohne die Bodenhöhe anzupassen die Ferse \bzw das Handgelenk auf den Boden reicht, so ist sie eins.
 Ansonsten ist die Wahrscheinlichkeit 
 \[\frac{\text{Beinlänge} - \text{Höhe des Extremitätengürtels über }0}{\text{Länge des Fußes}}\]
@@ -325,32 +326,33 @@ Obwohl es natürlich in der Natur auch viele Tiere mit nach außen gestellten Be
  \end{figure}
 
 \paragraph{Ablauf}
-% iterativ, Drehrichtung
 Der Algorithmus geht iterativ vor.
-In jedem Schritt wird für jedes Gelenk berechnet ob sein Winkel vergrößert oder verkleinert werden muss, um den dazugehörigen Knochen näher zum Boden zu bewegen.
-Mit dem dazugehörigen Knochen ist hier derjenige der beiden an das Gelenk anschließenden Knochen gemeint, der das Kindelement des anderen ist.
-Die Drehrichtung lässt sich relativ leicht herausfinden indem die Ausrichtung des Knochens mit der Welt-$y$-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
-Es gibt also globale Randbedingungen und lokale Einschränkungen je nach Gelenk. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
-
 % Startposition, Bewegungseinschränkungen
-In der Startposition ist die Extremität maximal angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den folgenden Iterationen wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. 
+In der Startposition ist die Extremität maximal angewinkelt. Die Gelenke beginnen also mit ihren kleinst- \bzw größtmöglichen Winkeln. In den folgenden Iterationen wird dann derjenige Endpunkt der Extremität dem Boden genähert, der zum Schluss Bodenkontakt haben soll. Je nach dem was während der Berechnung der Bodenhöhe (siehe Abschnitt \ref{floor_height}) festgelegt wurde, soll entweder die Fußspitze oder die Ferse Bodenkontakt haben.\\
 Eine andere Möglichkeit wäre mit einer komplett ausgestreckten Extremität zu beginnen und den Fuß von unten der Bodenhöhe anzunähern. Das würde wahrscheinlich genauso gut funktionieren.
 
+% Drehrichtung
+In jedem Schritt werden nacheinander alle Gelenke einer Extremität betrachtet, beginnend mit dem obersten in der Knochenhierarchie. Dabei wird berechnet, ob der Winkel des entsprechenden Gelenks vergrößter oder verkleinert werden muss, um den dazugehörigen Kindknochen näher zum Boden zu bewegen. Dann wird das Gelenk um einen vorher bestimmten Winkel $\alpha$ in die berechnete Richtung gedreht.\\
+Die Drehrichtung lässt sich relativ leicht herausfinden, indem die Ausrichtung des Knochens mit der Welt-$y$-Achse verglichen wird. Je senkrechter der Knochen ausgerichtet ist, desto ausgestreckter ist das Bein.
+Es gibt also globale Randbedingungen und lokale Einschränkungen je nach Gelenk. % Problematik mit lokalen Winkelkonstraints vs. globalen Berechnungen für Abstand zum Boden?
+
+% Randbedingungen
 Ohne weitere Einschränkungen kann es nun passieren, dass unnatürliche Positionen auftreten, in denen sich \zb der Fußspann näher am Boden befindet als die Fußsohle.
 Oder es kann passieren, dass ein Knochen über die positive Welt-$y$-Achse hinaus gedreht wird. Das Problem dabei ist, dass die Einschränkungen an den Gelenken nicht zulassen, dass der Knochen sich unbegrenzt in diese Richtung weiterdreht und der Knochen dann "`feststeckt"'. Deshalb wird nach jeder Drehung festgestellt ob solch eine Situation eingetreten ist und wenn ja, wird die Drehung rückgängig gemacht.
 Die Drehung wird ebenfalls rückgängig gemacht, falls sie bewirkt, dass ein Knochen unterhalb der Bodenhöhe liegt.
 So ist zu jeder Zeit durch Invarianten garantiert, dass die Knochen auf der "`richtigen"' Seite der $y$-Achse und oberhalb der Bodenhöhe liegen.
 
 % Verkleinerung der Größe der Drehwinkel
-In jeder Iteration werden die Winkel, um den die Gelenke gedreht werden, um einen bestimmten Anteil verkleinert. Zu Beginn soll mit großen Veränderungen eine grobe Ausrichtung der Gelenke vorgenommen werden, die dann immer weiter verfeinert wird.
+Der Winkel $\alpha$, um den die Gelenke gedreht werden, wird in jeder Iteration um einen bestimmten Anteil verkleinert. In einem Schritt werden aber alle Gelenke um den gleichen Winkel gedreht.\\
+Zu Beginn soll mit großen Veränderungen eine grobe Ausrichtung der Gelenke vorgenommen werden, die dann immer weiter verfeinert wird.
 Der Startwinkel darf nicht zu klein sein, weil die Gelenke sonst ihre Zielpositionen nicht erreichen können. Ist der Startwinkel allerdings zu groß, bewirkt das in vielen Fällen, dass in den ersten Schritten des Algorithmus keine Drehung durchgeführt werden kann, weil die oben genannten Randbedingungen durch den großen Winkel verletzt werden.\\
-Die Verkleinerung des Winkels darf nicht zu schnell geschehen, weil dann auch die Endposition nicht erreicht werden kann. Wenn sie aber zu langsam geschieht passiert in vielen Schritten wiederum nichts wegen verletzter Randbedingungen.\\
-Durch Ausprobieren wurden folgende Zahlen als sinnvoll erachtet: Startwinkel $40^{\circ}$, später dann jeweils $\frac{6}{7}$ davon.
+Die Verkleinerung des Winkels darf nicht zu schnell geschehen, weil dann auch die Endposition nicht erreicht werden kann. Wenn sie aber zu langsam geschieht, passiert in vielen Schritten wiederum nichts wegen verletzter Randbedingungen.\\
+Durch Ausprobieren wurden folgende Zahlen als sinnvoll erachtet: Startwinkel $\alpha = 40^{\circ}$, später dann jeweils $\frac{6}{7}$ davon.
 
-Falls sich der Abstand zum Boden kaum verändert, liegt also die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen invalide sind. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration stärker verkleinert (halbiert).
+Falls sich der Abstand zum Boden kaum verändert, liegt die Vermutung nahe, dass die Gradzahl zu groß ist und deshalb alle möglichen Winkeländerungen invalide sind. Deshalb wird in diesem Fall die Gradzahl für die nächste Iteration stärker verkleinert (halbiert).
 
 % Probleme bei sehr kurzen Beinen
-Treten sehr kurzen Beinen auf, hat der Algorithmus außerdem einige kleine Probleme. Diese werden genauer in Abschnitt \ref{leg_positioning_short_legs} beschrieben. Da die Beine aber in diesen Fällen, wie gesagt, sehr kurz sind, ist es für den Gesamteindruck gar nicht besonders wichtig wie genau sie angeordnet sind.
+Hat das Tier sehr kurze Beine, hat der Algorithmus außerdem einige kleine Probleme. Diese werden genauer in Abschnitt \ref{leg_positioning_short_legs} beschrieben. Da die Beine aber in diesen Fällen, wie gesagt, sehr kurz sind, ist es für den Gesamteindruck gar nicht besonders wichtig wie genau sie angeordnet sind.
 
 \paragraph{Vergleich mit echten Beinstellungen}
 % Vergleich echter und generierter Beinstellungen
@@ -368,13 +370,13 @@ Vergleicht man nun die Beinstellung, die der oben beschriebene Algorithmus gener
 
 
 % Mehr Infos nötig für Verbesserungen
-Um in allen Fällen eine realistisch wirkende Positionierung der Beine zu bekommen, müsste noch sehr viel mehr Arbeit in den Algorithmus gesteckt werden. Außerdem bräuchte der Algorithmus mehr Informationen zum Tier. Solche Zusatzinformationen könnten beispielsweise die Art des Fußes oder die Fortbewegungsart sein. Auch könnte es helfen, wenn es eine sinnvolle Möglichkeit gäbe die Winkel an den Gelenken als Dimension für die PCA mitaufzunehmen. Dafür müsste man sich aber, wie zu Beginn des Kapitels schon erwähnt, auf eine kanonische Ruheposition einigen und dann auch noch Beispiele in genau dieser Position finden.
+Um in allen Fällen eine realistisch wirkende Positionierung der Beine zu bekommen, müsste noch sehr viel mehr Arbeit in den Algorithmus gesteckt werden. Außerdem bräuchte der Algorithmus mehr Informationen zum Tier. Solche Zusatzinformationen könnten beispielsweise die Art des Fußes oder die Fortbewegungsart sein. Auch könnte es helfen, wenn es eine sinnvolle Möglichkeit gäbe, die Winkel an den Gelenken als Dimension für die PCA mitaufzunehmen. Dafür müsste man sich aber, wie zu Beginn des Kapitels schon erwähnt, auf eine kanonische Ruheposition einigen und dann auch noch Beispiele in genau dieser Position finden.
 
 % für Weiterverwendung werden Beine sowieso angepasst
 Ein fertig generiertes Skelett wird höchstwahrscheinlich auch noch weiterverarbeitet. Soll \zb ein animiertes Tier daraus werden, so müssen Bewegungszyklen geschaffen werden. Dafür muss jedes Gelenk vielfach bewegt werden. Soll ein Tier mit Haut und Muskeln daraus werden, so müssen Muskeln an den Knochen ansetzen, die dann einen nicht unerheblichen Anteil an der Positionierung der Beine haben.
 
 % Beinalgo nicht weiter anpassen
-Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als erster Eindruck dienen muss aber in den meisten Fällen noch angepasst werden. Ausgehend von der gegebenen Datenlagen und von den zu erwartenden Anwendungen ist es aber nicht sinnvoll den Algorithmus weiter zu verfeinern.
+Die von dem hier beschriebenen Algorithmus generierte Position kann also gut als erster Eindruck dienen, muss aber in den meisten Fällen noch angepasst werden. Ausgehend von der gegebenen Datenlagen und von den zu erwartenden Anwendungen ist es aber nicht sinnvoll den Algorithmus weiter zu verfeinern.
 
 %-----------------------------------------------------
 \subsection{Zusätzliche Ansatzpunkte für Extremitäten}
@@ -425,7 +427,7 @@ Asiatische Drachen sind Spezialfälle, bei denen die zusätzlichen Hüften nicht
 \paragraph{Zweiter Schultergürtel}
 Eine weitere Möglichkeit ist Tiere, ähnlich zu Zentauren, zu ermöglichen. Zentauren haben zwei Schultergürtel. Hat das Tier, das generiert wird, einen Hals, der lang genug ist, kann darauf ein weiterer Schultergürtel kurz unterhalb vom Kopf angebracht werden. An diesem Schultergürtel dürfen dann alle Arten von Extremitäten außer Beinen ansetzen. Das wirkt tatsächlich meist auch anatomisch einigermaßen sinnvoll (siehe Abbildung \ref{zentauren}).
 
-Hierfür wird die Grammatik $G' = (\Sigma', N', S, P', p')$ aus dem obigen Abschnitt zu einer Grammatik \mbox{$G'' = (\Sigma', N', S, P'', p'')$} mit $p'' = p' \cup \{e_h, e_{h2}\}$ erweitert. Die Parameter $e_h \in \{0,1\}$ und $e_{h2} \in \{0, 1\}$ steht jeweils dafür ob eine erste \bzw eine zweite Vorderextremitäten am zweiten Schultergürtel am Hals generiert werden soll. Es gilt $e_h = 0 \Rightarrow e_{h2} = 0$. Hier gilt wiederum: ist $e_{h} = 0$ und $e_{h2} = 0$, so verhält sich $G''$ gleich wie $G'$.
+Hierfür wird die Grammatik $G' = (\Sigma', N', S, P', p')$ aus dem obigen Abschnitt zu einer Grammatik \mbox{$G'' = (\Sigma', N', S, P'', p'')$} mit $p'' = p' \cup \{e_h, e_{h2}\}$ erweitert. Die Parameter $e_h \in \{0,1\}$ und $e_{h2} \in \{0, 1\}$ stehen jeweils dafür, ob eine erste \bzw eine zweite Vorderextremitäten am zweiten Schultergürtel am Hals generiert werden soll. Es gilt $e_h = 0 \Rightarrow e_{h2} = 0$. Hier gilt wiederum: ist $e_{h} = 0$ und $e_{h2} = 0$, so verhält sich $G''$ gleich wie $G'$.
 
 Die Produktion für den \emph{Hals} in $P'$ \bzw $P$ wird in $P''$ durch folgende Produktion ersetzt.
 \begin{align*}
@@ -439,7 +441,7 @@ Die Produktion für den \emph{Hals} in $P'$ \bzw $P$ wird in $P''$ durch folgend
 
 Wie an der Schulter, können auf dem Hals, mit dem Abstand von einem Wirbel, zwei Schultergürtel erzeugt werden. Die Gesamtzahl der Wirbel bleibt dabei gleich.  Dies funktioniert auch problemlos, da der Hals, falls vorhanden, immer $\geq 7$ Wirbel besitzt.
 
-Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben (siehe Abschnitt \ref{gui}). Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
+Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug ist. Deshalb wird die Benutzereingabe, die einen zweiten Schultergürtel erzwingt, in eine Bedingung für die Halslänge umgewandelt und an die PCA weitergegeben (siehe Abschnitt \ref{gui}). Gibt es keine Benutzereingabe, so wird ein zweiter Schultergürtel nur generiert, wenn der Hals lang genug ist.
 
 \begin{figure}
  \subfloat[]{\includegraphics[height=5.5cm]{../java_skeleton_generation/example_skeletons/zentaur1.jpg}}~
@@ -459,23 +461,23 @@ Um ein 3D-Modell des gesamten Skeletts zu erstellen, wird zunächst jeder termin
 
 Die Knochenmodelle müssen im .obj-Format vorliegen, da auch das resultierende Modell dieses Format hat. Außerdem muss jedes Modell an den Koordinatenachsen ausgerichtet und so verzerrt sein, dass es einen Würfel mit Kantenlänge $1$ in jeder Richtung möglichst gut ausfüllt. So ist es sehr einfach die Längen der Knochen auf das entsprechende 3D-Modell zu übertragen.
 
-Bei dieser Vorgehensweise treten jedoch einige Schwierigkeiten auf. Es ist \zb  relativ schwierig herauszufinden wie man die einzelnen Knochen skalieren muss, sodass sie an den Gelenken gut zusammenpassen und nicht verzerrt aussehen. Im Folgenden sind einige Anpassungen aufgezählt, die die Positionierung vereinfachen.
+Bei dieser Vorgehensweise treten jedoch einige Schwierigkeiten auf. Es ist \zb  relativ schwierig herauszufinden, wie man die einzelnen Knochen skalieren muss, sodass sie an den Gelenken gut zusammenpassen und nicht verzerrt aussehen. Im Folgenden sind einige Anpassungen aufgezählt, die die Positionierung vereinfachen.
 \begin{itemize}
  \item Kleine Fortsätze, die nicht wirklich zur (optischen) Größe des Knochens beitragen, \zb die Fortsätze der Wirbel, ragen aus dem Würfel heraus. Der Knochen ist somit an manchen Stellen etwas länger als vorgegeben.
  
- \item Kanten, bei denen es wichtig ist, dass sie eine bestimmte Länge haben, sind genau auf die Kantenlänge des Würfels abgestimmt. So können sie leicht auf die richtige Länge skaliert werden. 
+ \item Teile eines Knochens, bei denen es wichtig ist, dass sie eine bestimmte Länge haben, sind genau auf die Kantenlänge des Würfels abgestimmt. So können sie leicht auf die richtige Länge skaliert werden. 
  Ein Beispiel dafür ist die Länge der Wirbel entlang der Wirbelsäule. Die Wirbel müssen genau aneinander ansetzen. Mit dieser Skalierung lässt sich einfach die Länge des Wirbels auf das Modell übertragen.\\
  Es kann aber auch um Längen gehen, die nur einen Teil des Knochens betreffen.
  Rippen müssen \zb mit ihrer Breite in $x$-Richtung zur Breite des Wirbels passen, an welchem sie ansetzen. Deshalb ist das 3D-Modell der Rippe so skaliert, dass die Kantenlänge des Würfels in $x$-Richtung genau auf die Breite des Wirbels skaliert werden kann und die resultierende Breite der Rippe dann genau dazu passt.\\
- Da die Rippe stark gebogen ist, führt das dazu, dass die Gesamtlänge der Rippe in $x$-Richtung viel länger ist als die Kantenlänge des Würfels. Das Problem daran ist, dass die gegebenen Abmessungen des Knochens dann nicht mehr viel mit der Ausdehnung des eingesetzten 3D-Modells haben. Je nach dem um welchen Knochen es sich handelt, möchte man diesen Effekt evtl.\ vermeiden.
+ Da die Rippe in $x$- und $z$-Richtung stark gebogen ist, führt das dazu, dass die Gesamtlänge der Rippe in $x$-Richtung viel länger ist als die Kantenlänge des Würfels. Das Problem daran ist, dass die gegebenen Abmessungen des Knochens dann nicht mehr viel mit der Ausdehnung des eingesetzten 3D-Modells haben. Je nach dem um welchen Knochen es sich handelt, möchte man diesen Effekt evtl.\ vermeiden.
  
- \item Kantenlängen, die nicht speziell vorgegeben werden, \zb die Dicke der Extermiätenknochen, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die $x$- und $y$-Skalierung eines Knochens vorgegeben, und die Skalierung in $z$-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die $z$-Richtung relativ zu einer anderen Richtungen angegeben werden kann. Tut man dies nicht, so führt das leicht dazu, dass die Knochen verzerrt aussehen.
+ \item Kantenlängen, die nicht speziell vorgegeben werden, \zb die Dicke der Extremitätenknochen, sind einfacher passend zu bestimmen, wenn sie nicht komplett unabhängig von den anderen Raumrichtungen sind. Ist \zb die $x$- und $y$-Skalierung eines Knochens vorgegeben, und die Skalierung in $z$-Richtung soll nur möglichst gut dazu passen, so ist es sinnvoll das 3D-Modell schon so zu speichern, dass die $z$-Richtung relativ zu einer anderen Richtungen angegeben werden kann. Tut man dies nicht, so führt das leicht dazu, dass die Knochen verzerrt aussehen.
 \end{itemize}
 
 
 \paragraph{Offsets zwischen Knochen}
 % Gelenke korrekt ausrichten
-Es ist eventuell nicht ganz leicht zu erkennen wie die Knochen ineinander greifen \bzw wie die Gelenke die Ausrichtung der Knochen beeinflussen. Das erfordert etwas Wissen zur Anatomie und viel "`Finetuning"'. 
+Es ist eventuell nicht ganz leicht zu erkennen, wie die Knochen ineinander greifen \bzw wie die Gelenke die Ausrichtung der Knochen beeinflussen. Das erfordert etwas Wissen zur Anatomie und viel "`Finetuning"'. 
 
 Für jeden Knochen sind für diese Ausrichtung zwei Offsets gespeichert: das Offset zu dem Gelenk, das ihn mit seinem Elternknochen verbindet und das Offset zu dem Gelenk, das ihn mit seinem Kindknochen verbindet (oder mehrere, falls vorhanden). Dies sorgt dafür, dass die Positionierung der Knochen stimmt, egal wie groß sie sind. Ist ein Knochen sehr groß und ein anschließender sehr klein (oder anders herum), so kommt es natürlich trotzdem vor, dass die Gelenke nicht wirklich ineinander passen. Für solche Situationen bräuchte man verschiedene 3D-Modelle, die je nach Gegebenheit eingesetzt werden.
 
@@ -487,7 +489,7 @@ Um andere 3D-Modelle für Knochen zu verwenden, müsste nicht nur das Modell aus
 
 \paragraph{Spezielle Knochen}
 
-Für die meisten Knochentypen wird genau ein 3D-Modell verwendet. Bei manchen Knochen und in manchen Fällen wirkt das recht seltsam. Man möchte eigentlich etwas mehr Variation haben.
+Für die meisten Knochen wird genau ein 3D-Modell verwendet. Bei manchen Knochen und in manchen Fällen wirkt das aber recht seltsam. Man möchte eigentlich etwas mehr Variation haben.
 
 % Köpfe
 % Köpfe sind kompliziert $\rightarrow$ Auswahl an Köpfen bereitstellen (evtl. leicht skalier-/verformbar oder ineinander überführbar)
@@ -500,8 +502,8 @@ Hier wurde die Unterscheidung verwendet, die auch bei der Positionierung der Ext
 Es gibt also Flügel, Arme, Flossen und Beine mit Bodenkontakt. Wobei bei Beinen mit Bodenkontakt zusätzlich noch nach dem Winkel unterschieden wird mit dem der Fuß auf den Boden aufkommt. Bei weniger als $45^\circ$ wird eine menschliche Hand eingesetzt, sonst ein Pferdehuf. Arme bekommen ebenfalls eine Hand. Für Flossen wurde kein spezielles Modell eingefügt, bei ihnen wird ebenfalls eine Hand eingesetzt. Flügel haben ein eigenes Modell. In Ermangelung gemeinfreier Modelle fehlen hier aber leider einzelne Bestandteile.
 
 % (Schwanz)Wirbel
-Es wurde ein Modell für alle \emph{Wirbel} verwendet. Bei Wirbeltieren gibt es aber sehr viele unterschiedliche Wirbel, die auch in ihrer größe stark variieren. Ein Beispiel ist das Ende der Schwanzwirbelsäule. Hier werden die Wirbel bei echten Tieren kleiner.
-Um das Gesamtmodell realistischer zu machen, lassen sich die Modelle der Wirbel verfeinern. Als Beispiel wurde ein zusätzliches Modell eingeführt, dass die letzten drei Schwanzwirbel ersetzt. Es besteht aus drei aufeinanderfolgenden Wirbeln, die zum Ende hin kleiner werden. Das sieht in den meisten Fällen auch gut aus. Ein Nachteil davon ein einzelnes Modell mit drei Wirbeln zu haben ist aber, dass die Positionierung dann nicht mehr so fein erfolgen kann. Anfangs- und Endpunkt des Modells werden auf der Bézierkurve positioniert. Aber die Anfangs- und Enpunkte der einzelnen Wirbel können teilweise stark vom Verlauf der Kurve abweichen.
+Es wurde ein Modell für alle \emph{Wirbel} verwendet. Bei Wirbeltieren gibt es aber sehr viele unterschiedliche Wirbel, die auch in ihrer Größe stark variieren. Ein Beispiel ist das Ende der Schwanzwirbelsäule. Hier werden die Wirbel bei echten Tieren kleiner.
+Um das Gesamtmodell realistischer zu machen, lassen sich die Modelle der Wirbel verfeinern. Als Beispiel wurde ein zusätzliches Modell eingeführt, dass die letzten drei Schwanzwirbel ersetzt. Es besteht aus drei aufeinanderfolgenden Wirbeln, die zum Ende hin kleiner werden. Das sieht in den meisten Fällen auch gut aus. Ein Nachteil davon, ein einzelnes Modell mit drei Wirbeln zu haben, ist aber, dass die Positionierung dann nicht mehr so fein erfolgen kann. Anfangs- und Endpunkt des Modells werden auf der Bézierkurve positioniert. Aber die Anfangs- und Endpunkte der einzelnen Wirbel können teilweise stark vom Verlauf der Kurve abweichen.
 Dies lässt sich natürlich leicht durch eine weitere Verfeinerung der Modelle beheben, indem jeder der drei Wirbel ein eigenes Modell bekommt.
 
 % mehrere Extremitäten an einer Hüfte
