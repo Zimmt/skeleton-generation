@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200527110350" modified="D:20200527115005"/>
+<info created="D:20200527110350" modified="D:20200603115254"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -254,155 +254,158 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black" fill="white" pen="heavier" arrow="normal/normal">
-449.035 767.671 m
-360.148 768.181 l
-</path>
-<path stroke="black" fill="white" arrow="normal/normal">
-304 704 m
-304 752 l
-</path>
-<path matrix="1 0 0 1 32 0" stroke="black" pen="heavier" arrow="normal/normal">
+<path layer="alpha" matrix="1 0 0 1 48 304" stroke="black" pen="heavier" arrow="normal/normal">
 368 464 m
 400 464 l
 </path>
-<path matrix="1 0 0 1 32 0" stroke="black" pen="heavier" arrow="normal/normal">
+<path matrix="1 0 0 1 48 304" stroke="black" pen="heavier" arrow="normal/normal">
 400 448 m
 368 448 l
 </path>
-<path stroke="black" fill="white" pen="heavier" arrow="normal/normal">
-160 464 m
-224 464 l
-</path>
-<path matrix="1 0 0 1 0.392596 0" stroke="black" pen="heavier" arrow="normal/normal">
-80 672 m
-224 496 l
-</path>
-<path stroke="black" pen="heavier" arrow="normal/normal">
-96 688 m
-224 624 l
-</path>
-<path matrix="1 0 0 1 -32 0" stroke="black">
-256 704 m
-256 544 l
-432 544 l
-432 704 l
+<path stroke="black">
+416 672 m
+416 512 l
+592 512 l
+592 672 l
 h
 </path>
-<text matrix="1 0 0 1 -31.6978 3.02196" transformations="translations" pos="272 688" stroke="black" type="minipage" width="128" height="6.642" depth="1.66" valign="top" size="large">\textbf{SkeletonGenerator}</text>
-<text matrix="1 0 0 1 -48 1.96298" transformations="translations" pos="288 656" stroke="black" type="minipage" width="144.132" height="27.869" depth="22.94" valign="top" size="large">List$\langle$TerminalElement$\rangle$\\
+<text matrix="1 0 0 1 160.302 -28.978" transformations="translations" pos="272 688" stroke="black" type="minipage" width="128" height="6.642" depth="1.66" valign="top" size="large">\textbf{SkeletonGenerator}</text>
+<text matrix="1 0 0 1 144 -30.037" transformations="translations" pos="288 656" stroke="black" type="minipage" width="144.132" height="27.869" depth="22.94" valign="top" size="large">List$\langle$TerminalElement$\rangle$\\
 List$\langle$NonTerminalElement$\rangle$\\
 RuleDictionary\\
 SkeletonMetaData</text>
-<text matrix="1 0 0 1 -47.2148 -12.074" transformations="translations" pos="288 592" stroke="black" type="minipage" width="112" height="15.433" depth="10.47" valign="top" size="large">doOneStep()\\
+<text matrix="1 0 0 1 144.785 -44.074" transformations="translations" pos="288 592" stroke="black" type="minipage" width="112" height="15.433" depth="10.47" valign="top" size="large">doOneStep()\\
 calculateMirroredElements()</text>
-<path matrix="1 0 0 1 -32 0" stroke="black">
+<path matrix="1 0 0 1 160 -32" stroke="black">
 256 672 m
 432 672 l
 </path>
-<path matrix="1 0 0 1 -32 0" stroke="black">
+<path matrix="1 0 0 1 160 -32" stroke="black">
 256 592 m
 432 592 l
 </path>
-<path matrix="1 0 0 1 -32 0" stroke="black">
+<path matrix="1 0 0 1 -16 304" stroke="black">
 256 512 m
 256 432 l
 432 432 l
 432 512 l
 h
 </path>
-<path matrix="1 0 0 1 -32 0" stroke="black">
+<path matrix="1 0 0 1 -16 304" stroke="black">
 256 480 m
 432 480 l
 </path>
-<text matrix="1 0 0 1 -31.2148 3.92596" transformations="translations" pos="272 496" stroke="black" type="minipage" width="144" height="6.642" depth="1.66" valign="top" size="large">\textbf{PcaHandler}</text>
-<text matrix="1 0 0 1 -32 3.14076" transformations="translations" pos="272 464" stroke="black" type="minipage" width="144" height="15.433" depth="10.47" valign="top" size="large">getRandomPcaDataPoint()\\
+<text matrix="1 0 0 1 -15.2148 307.926" transformations="translations" pos="272 496" stroke="black" type="minipage" width="144" height="6.642" depth="1.66" valign="top" size="large">\textbf{PcaHandler}</text>
+<text matrix="1 0 0 1 -16 307.141" transformations="translations" pos="272 464" stroke="black" type="minipage" width="144" height="15.433" depth="10.47" valign="top" size="large">getRandomPcaDataPoint()\\
 visualize()</text>
-<path matrix="1 0 0 1 32 0" stroke="black">
+<path matrix="1 0 0 1 48 304" stroke="black">
 400 512 m
 400 416 l
 544 416 l
 544 512 l
 h
 </path>
-<path matrix="1 0 0 1 32 0" stroke="black">
+<path matrix="1 0 0 1 48 304" stroke="black">
 400 480 m
 544 480 l
 </path>
-<text matrix="1 0 0 1 176.115 3.76006" transformations="translations" pos="272 496" stroke="black" type="minipage" width="79.721" height="6.593" depth="1.61" valign="top" size="large">\textbf{PCA}</text>
-<text matrix="1 0 0 1 160.393 -188.467" transformations="translations" pos="288 656" stroke="black" type="minipage" width="112" height="22.401" depth="17.45" valign="top" size="large">getEigenvector(int n)\\
+<text matrix="1 0 0 1 192.115 307.76" transformations="translations" pos="272 496" stroke="black" type="minipage" width="79.721" height="6.593" depth="1.61" valign="top" size="large">\textbf{PCA}</text>
+<text matrix="1 0 0 1 176.393 115.533" transformations="translations" pos="288 656" stroke="black" type="minipage" width="112" height="22.401" depth="17.45" valign="top" size="large">getEigenvector(int n)\\
 getEigenvalue(int n)\\
 getVariance(int n)</text>
-<path matrix="1 0 0 1 32 0" stroke="black" pen="heavier" arrow="normal/normal">
-272 512 m
-272 544 l
-</path>
-<path matrix="1 0 0 1 -16 0" stroke="black">
+<path matrix="1 0 0 1 -32 160" stroke="black">
 48 512 m
 48 448 l
 176 448 l
 176 512 l
 h
 </path>
-<path matrix="1 0 0 1 -16 0" stroke="black">
+<path matrix="1 0 0 1 -32 160" stroke="black">
 48 480 m
 176 480 l
 </path>
-<text matrix="1 0 0 1 -223.607 2.74817" transformations="translations" pos="272 496" stroke="black" type="minipage" width="96" height="6.642" depth="1.66" valign="top" size="large">\textbf{PcaDataReader}</text>
-<text matrix="1 0 0 1 -224.785 4.71115" transformations="translations" pos="272 464" stroke="black" type="minipage" width="96" height="8.465" depth="3.49" valign="top" size="large">readInputData()</text>
-<path matrix="1 0 0 1 24.1481 -0.392596" stroke="black">
+<text matrix="1 0 0 1 -239.607 162.748" transformations="translations" pos="272 496" stroke="black" type="minipage" width="96" height="6.642" depth="1.66" valign="top" size="large">\textbf{PcaDataReader}</text>
+<text matrix="1 0 0 1 -240.785 164.711" transformations="translations" pos="272 464" stroke="black" type="minipage" width="96" height="8.465" depth="3.49" valign="top" size="large">readInputData() </text>
+<path matrix="1 0 0 1 -30.3643 -303.818" stroke="black">
 224 784 m
 224 752 l
 336 752 l
 336 784 l
 h
 </path>
-<text matrix="1 0 0 1 7.3629 4.31855" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="7.807" depth="2.82" valign="top" size="large">\textbf{ObjGenerator}</text>
-<path matrix="1 0 0 1 -32 0" stroke="black">
+<text matrix="1 0 0 1 -47.1495 -299.107" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="7.807" depth="2.82" valign="top" size="large">\textbf{ObjGenerator}</text>
+<path matrix="1 0 0 1 16 -128" stroke="black">
 64 704 m
 64 672 l
 128 672 l
 128 704 l
 h
 </path>
-<text matrix="1 0 0 1 -207.941 -76.5834" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="6.593" depth="1.61" valign="top" size="large">\textbf{GUI}</text>
-<path matrix="1 0 0 1 -135.623 -192.27" stroke="black" fill="1">
-224 784 m
-224 752 l
-336 752 l
-336 784 l
-h
-</path>
-<text matrix="1 0 0 1 -156.099 -187.973" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="6.642" depth="1.66" valign="top" size="large">\textbf{PcaConditions}</text>
-<path matrix="1 0 0 1 8.37682 -0.27022" stroke="black" fill="1">
-112 672 m
-112 640 l
-191.821 639.821 l
-191.821 671.821 l
-h
-</path>
-<text matrix="1 0 0 1 -124.995 -107.794" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="7.757" depth="2.77" valign="top" size="large">\textbf{UserInput}</text>
-<path matrix="1 0 0 1 -2.30198 39.3982" stroke="black" fill="white">
+<text matrix="1 0 0 1 -159.941 -204.583" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="6.593" depth="1.61" valign="top" size="large">\textbf{GUI}</text>
+<path matrix="1 0 0 1 -433.132 -265.45" stroke="black" fill="white">
 448 768
 448 752
 528 752
 528 768 u
 </path>
-<path matrix="1 0 0 1 -2.30198 -24.6018" stroke="black" fill="white">
+<path matrix="1 0 0 1 -433.132 -329.45" stroke="black" fill="white">
 448 768
 448 752
 528 752
 528 768 u
 </path>
-<path matrix="1 0 0 1 -2.30198 39.3982" stroke="black" fill="white">
+<path matrix="1 0 0 1 -433.132 -265.45" stroke="black" fill="white">
 451.333 760 m
 451.342 695.827 l
 </path>
-<path matrix="1 0 0 1 -2.30198 39.3982" stroke="black" fill="white">
+<path matrix="1 0 0 1 -433.132 -265.45" stroke="black" fill="white">
 524.667 760 m
 524.56 695.38 l
 </path>
-<text matrix="1 0 0 1 204.996 7.50444" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="14.725" depth="9.75" valign="top" size="large" style="center">\textbf{Bone\\
+<text matrix="1 0 0 1 -225.834 -297.344" transformations="translations" pos="256 768" stroke="black" type="minipage" width="48" height="14.725" depth="9.75" valign="top" size="large" style="center">\textbf{Bone\\
 Library}</text>
+<path stroke="black">
+192 624 m
+192 576 l
+320 576 l
+320 624 l
+h
+</path>
+<text matrix="1 0 0 1 -54.1965 -157.176" transformations="translations" pos="256 768" stroke="black" type="minipage" width="112" height="13.61" depth="8.64" valign="top" size="large" style="center">\textbf{SkeletonGenerator\\
+Handler}</text>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+144 560.449 m
+192 591.259 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+144 640.436 m
+192 607.849 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+256 624 m
+320 736 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+336 736 m
+272 624 l
+</path>
+<text matrix="1 0 0 1 25.1274 3.51054" transformations="translations" pos="192 704" stroke="black" type="minipage" width="80" height="6.579" depth="1.59" valign="top" size="large">PcaDataPoints</text>
+<text matrix="1 0 0 1 12.6379 -14.9468" transformations="translations" pos="192 704" stroke="black" type="minipage" width="80" height="6.642" depth="1.66" valign="top" size="large">PcaConditions</text>
+<path matrix="1 0 0 1 0 7.74607" stroke="black" pen="heavier" arrow="normal/normal">
+320 599.575 m
+416 599.575 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+256 576 m
+256 480 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+91.4829 463.294 m
+193.636 463.295 l
+</path>
+<path stroke="black" pen="heavier" arrow="normal/normal">
+416 591.814 m
+320 592.27 l
+</path>
 </page>
 </ipe>

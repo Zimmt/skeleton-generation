@@ -11,7 +11,8 @@
 
 \paragraph{Zusammenfassung}
 
-Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generieren kann, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern zur Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten (siehe Kapitel \ref{chapter:pca}) erhält man eine Möglichkeit zufällig normalverteilte Punkte, mit dem Mittelpunkt der Datenpunkte als Erwartungswert, zu erzeugen. Ein so erzeugter Punkt liefert alle Informationen, die nötig sind um ein Skelett zu generieren.
+Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generieren kann, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern zur Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten (siehe Kapitel \ref{chapter:pca}) erhält man eine Möglichkeit zufällig normalverteilte Punkte, mit dem Mittelpunkt der Datenpunkte %besser beschreiben?
+als Erwartungswert, zu erzeugen. Ein so erzeugter Punkt liefert alle Informationen, die nötig sind, um ein Skelett zu generieren.
 Diese Technik liefert ohne weitere Einschränkungen viele unterschiedliche Skelette, die in den allermeisten Fällen auch gut aussehen.\\
 Außerdem können gezielt Skelette mit bestimmten Eigenschaften generiert werden, indem die \emph{Principal Component Analysis} auf bedingten Verteilungen ausgeführt wird oder Variationen zu schon generierten Skeletten erzeugt werden. Dies ist sehr hilfreich, wenn man schon eine Vorstellung davon hat, wie das zu generierende Skelett ungefähr aussehen soll.
 
