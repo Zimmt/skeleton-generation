@@ -11,16 +11,19 @@
 
 \paragraph{Zusammenfassung}
 
-Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generieren kann, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern zur Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten (siehe Kapitel \ref{chapter:pca}) erhält man eine Möglichkeit zufällig normalverteilte Punkte, mit dem Mittelpunkt der Datenpunkte %besser beschreiben?
-als Erwartungswert, zu erzeugen. Ein so erzeugter Punkt liefert alle Informationen, die nötig sind, um ein Skelett zu generieren.
+Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generieren kann, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern der Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten (siehe Kapitel \ref{chapter:pca}) erhält man eine Möglichkeit zufällig normalverteilte Punkte zu erzeugen, die der gleichen Verteilung folgen wie die Datenpunkte.
+Ein so erzeugter Punkt liefert alle Informationen, die nötig sind, um ein Skelett zu generieren.
 Diese Technik liefert ohne weitere Einschränkungen viele unterschiedliche Skelette, die in den allermeisten Fällen auch gut aussehen.\\
 Außerdem können gezielt Skelette mit bestimmten Eigenschaften generiert werden, indem die \emph{Principal Component Analysis} auf bedingten Verteilungen ausgeführt wird oder Variationen zu schon generierten Skeletten erzeugt werden. Dies ist sehr hilfreich, wenn man schon eine Vorstellung davon hat, wie das zu generierende Skelett ungefähr aussehen soll.
 
-Zusätzlich zu "`realistischen"' Wirbeltierskeletten lassen sich mit dem Algorithmus auch fantastische Skelette generieren. Es können zusätzliche Extremitäten und ein zusätzlicher Schultergürtel erzeugt werden. Als Datengrundlage werden dafür die gleichen Skelettbilder verwendet wie für die anderen Skelette auch. Deshalb wurde darauf geachtet, dass sich die generierten Skelette durch die genannten Veränderungen nicht zu stark von echten Wirbeltierskeletten entfernen.  
+Zusätzlich zu "`realistischen"' Wirbeltierskeletten lassen sich mit dem Algorithmus auch fantastische Skelette generieren. Es können zusätzliche Extremitäten und ein zusätzlicher Schultergürtel erzeugt werden.
+Die Datengrundlage bleibt jedoch die selbe. Es werden die gleichen Bilder von echten Wirbeltierskeletten verwendet.
+Deshalb wurde darauf geachtet, dass sich die generierten Skelette durch die genannten Veränderungen nicht zu stark von echten Wirbeltierskeletten entfernen.  
 
-Die Vorschrift zur Generierung der Knochen und einer Baumstruktur auf ihnen ist durch eine kontextfreie Grammatik festgelegt. Diese Grammatik sorgt dafür, dass die Ersetzungsregeln relativ übersichtlich dargestellt und leicht erweiterbar sind. Aber da die Grammatik im Voraus, durch den zufällig erzeugten Punkt, schon so stark festgelegt wird, dass immer genau ein Wort generiert wird, ist sie nicht unbedingt notwendig.
+Eine kontextfreie Grammatik legt fest, welche Knochen generiert werden und wie die Baumstruktur des Skeletts aufgebaut ist.
+Diese Grammatik sorgt dafür, dass die Ersetzungsregeln relativ übersichtlich dargestellt und leicht erweiterbar sind. Da sie aber im Voraus, durch den zufällig erzeugten Punkt, schon so stark festgelegt wird, dass immer genau ein Wort generiert wird, ist sie nicht unbedingt notwendig.
 
-Die Positionierung der Beine liefert in vielen Fällen keine schönen Ergebnisse, da hierzu keine Informationen aus den 2D-Skelettbildern erhoben werden. Trotzdem kann das generierte Skelett als erster Eindruck \bzw Inspiration für ein Modell dienen. Wenn das erzeugte Skelett als Grundlage für ein animiertes Wesen dienen soll, muss die Positionierung der Knochen sowieso noch öfter angepasst werden.
+Die Positionierung der Beine liefert in vielen Fällen keine schönen Ergebnisse, da hierzu keine Informationen aus den 2D-Bildern erhoben werden. Trotzdem kann das generierte Skelett als erster Eindruck \bzw Inspiration für ein Modell dienen. Wenn das erzeugte Skelett die Grundlage für ein animiertes Wesen sein soll, muss die Positionierung der Knochen sowieso noch öfter angepasst werden.
 
 
 \paragraph{Zukünftige Arbeiten}
