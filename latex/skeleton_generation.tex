@@ -454,7 +454,15 @@ Ein solcher Schultergürtel wirkt aber nur sinnvoll, wenn der Hals lang genug is
 \section{Knochenmodelle}
 \label{bone_models}
 
-Um ein 3D-Modell des gesamten Skeletts zu erstellen, wird zunächst jeder terminale Knochen als Quader dargestellt. Diese Quader ergeben sich aus Position, Orientierung und Abmessungen des zugehörigen Knochens. Alle Quader zusammen ergeben ein rudimentäres Modell. Jedoch lassen sie sich auch relativ leicht durch feinere 3D-Modelle der entsprechenden Knochen ersetzen. 
+Um ein 3D-Modell des gesamten Skeletts zu erstellen, wird zunächst jeder terminale Knochen als Quader dargestellt. Diese Quader ergeben sich aus Position, Orientierung und Abmessungen des zugehörigen Knochens. Alle Quader zusammen ergeben ein rudimentäres Modell (siehe Abbildung \ref{4legs_boxes}). Jedoch lassen sie sich auch relativ leicht durch feinere 3D-Modelle der entsprechenden Knochen ersetzen. Die Quellen für alle Modelle, die vom Algorithmus verwendet werden sind im Anhang \ref{model_sources} zu finden.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.8\textwidth]{../java_skeleton_generation/example_skeletons/4legs_boxes.jpg}
+ \caption{Ein Skelett, bei dem die Knochen als einfache Quader dargestellt sind. Es wurden keine externen 3D-Modelle eingesetzt. Die Bedingung, die für die Generierung verwendet wurde ist, dass das Skelett $4$ Beine haben soll. Als Hintergrund wurde \cite{background} verwendet.}
+ \label{4legs_boxes}
+\end{figure}
+
 
 \paragraph{Vorverarbeitung der Knochenmodelle}
 

@@ -3,15 +3,19 @@
 \chapter{PCA Daten}
 \label{appendix_pca}
 
-%-----------------------------
-\section{Eingabedaten für PCA}
+%----------------------------------------
+\section{Quellen und Abbildungen zur PCA}
+
+Alle Bilder, die als Eingabe für die PCA verwendet wurden, sind in Abbildung \ref{all_images} zu finden und ihre Quellen in Abschnitt \ref{picture_sources}. In Abschnitt \ref{appendix_pca_weight} sind die Quellen für die erhobenen Gewichte für jedes Beispiel aufgezählt. 
+Abbildungen \ref{input_data} und \ref{input_data_weight} zeigen die Verteilung aller erhobenen Merkmale und in den Abbildungen \ref{qq_diagrams_spine} und  \ref{qq_diagrams_rest} sind die zugehörigen Quantil-Quantil-Diagramme der kontinuierlichen Merkmale zu sehen.
+Einige Visualisierungen von Punkten im PCA-Koordinatensystem sind in Abbildung \ref{pca_results_sqrtEV} zu finden.
 
 %- - - - - - - - - 
-\subsection{Bilder}
+\subsection{Bildquellen}
 \label{picture_sources}
  
- Alle Bilder, die als Eingabe für die PCA verwendet wurden, sind in Abbildung \ref{all_images} zu finden. Im Folgenden sind die Bildquellen aufgezählt.
  Alle Tiere, die nicht aufgezählt sind, sind aus \cite{Spezielle_Zoologie} entnommen.
+ 
  \begin{itemize}
   \item Archaeopteryx, Ichthyosaurus, Ichthyostega, Urpferdchen aus \cite{Zoologie24Wehner}
   \item Blauwal \url{https://www.quagga-illustrations.de/wp-content/uploads/2014/05/h0001705.jpg}
@@ -92,9 +96,8 @@
 \label{all_images}
 \end{figure}
 
-
- 
- \subsection{Gewichte}
+\clearpage
+\subsection{Quellen der Tiergewichte}
  \label{appendix_pca_weight}
  
  \begin{itemize}
@@ -143,6 +146,7 @@
   \item Tyrannosaurus 9 Tonnen, \url{https://de.wikipedia.org/wiki/Tyrannosaurus}
   \item Urpferdchen (Propalaeotherium) 30kg, \url{https://de.wikipedia.org/wiki/Propalaeotherium}
  \end{itemize}
+ 
  
 
 % --------------
@@ -300,3 +304,20 @@
    \caption{Datenpunkte im PCA-Koordinatensystem. Eine Koordinate nimmt den Wert der positiven (+) \bzw negativen (-) Standardabweichung in die entsprechende Richtung an, alle anderen sind null. Von oben nach unten sind die Ergebnisse für den größten (1) bis zum sechstgrößten (6) Eigenwert dargestellt. \emph{Beine} steht für \emph{Beine mit Bodenkontakt}.}
    \label{pca_results_sqrtEV}
   \end{figure}
+
+\clearpage  
+%-----------------------------------------------
+\section{Quellen für die verwendeten 3D-Modelle}
+\label{model_sources}
+
+\begin{itemize}
+ \item Wirbel \url{https://sketchfab.com/3d-models/vertebra-collection-of-thunthu-a343d51c7ee0497ab6b1bb93921d9b8d}
+ \item Oberschenkel\\ \url{https://sketchfab.com/3d-models/human-femur-bone-0647ff9a00924f40a06e08361cea176c}
+ \item Unterschenkel\\ \url{https://sketchfab.com/3d-models/tibia-and-fibula-58f24c2322814c17a614e77e18cf73ac}
+ \item Fuß \url{https://sketchfab.com/3d-models/foot-4c79b247004348548fe05587feac7f83}
+ \item Hand \url{https://sketchfab.com/3d-models/hand-efd1df50e4a2457d91045a1727db7679}
+ \item Carpometacarpus (Teil der Hand eines Vogels)\\ \url{https://sketchfab.com/3d-models/uf-5769-r-cmc-c49b9928e89f4abdaa99423bd4cbb76c}
+ \item Pferdeskelett\\ \url{https://sketchfab.com/3d-models/horse-skeleton-eaca504567604e879b8ab2cf2763025e}
+\end{itemize}
+
+ 
