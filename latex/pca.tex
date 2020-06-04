@@ -112,6 +112,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{itemize}
  
  
+ \newpage
  %---------------------------------
  \section{Analyse der Eingabedaten}
  \label{pca_input_analysis}
@@ -259,7 +260,6 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{figure}
  
 
- \newpage
  %-----------------------------------
  \section{Analyse der Ergebnisse}
  \label{section_pca_result_analysis}
@@ -270,6 +270,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Die Eigenwerte $\lambda_i$ geben die Varianz der Normalverteilung entlang der Achse des zugehörigen Eigenvektors $v_i$ an. Die Summe aller Varianzen $\Sigma_{i=0}^n \lambda_i$ ist ein Maß für den Informationsgehalt. Werden alle Eigenvektoren verwendet um die Daten darzustellen, so ist $100\%$ der Information vorhanden, bei $m \le n$ Eigenvektoren jeweils der Anteil $\Sigma_{i=0}^m \lambda_i / \Sigma_{i=0}^n \lambda_i$.\\
  Die ersten $6$ Eigenvektoren enthalten $92{,}2\%$ der Informationen, die ersten $10$ enthalten $96{,}9\%$ und die ersten $20$ enthalten $99{,}8\%$.
  
+ \newpage
  Versucht man die Eingabedaten durch die Eigenvektoren mit den größten Eigenwerten anzunähern, so funktioniert das bei manchen Tieren ganz gut, wie \zb beim \mbox{Archaeopteryx} (siehe Abbildung \ref{archaeopteryx}) schon mit den größten $6$ Eigenvektoren, bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).\\
  Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
  
@@ -304,10 +305,10 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  
  
  Um zu verstehen in welchem Bereich sich die zufällig generierten Punkte bewegen, ist es sinnvoll sich anzuschauen was die Hauptkomponenten "`bedeuten"'. In Abbildung \ref{pca_results_sqrtEV_biggest} sind zwei Datenpunkte zu sehen, die auf der Koordinatenachse liegen, die zum Eigenvektor mit dem größten Eigenwert gehört. Ihr Wert in dieser Dimension ist jeweils die positive \bzw negative Standardabweichung. Die Varianz entlang eines Eigenvektors ist gegeben durch den Eigenwert. Die Standardabweichung ist also die Wurzel des entsprechenden Eigenwerts. Es ist zu sehen wie sich die Punkte verändern, wenn sie sich entlang dieser Achse bewegen \bzw welchen Einfluss der Eigenvektor ausübt.\\
- Die Abbildung \ref{pca_results_sqrtEV_biggest} zeigt, dass der Eigenvektor zum größten Eigenwert einen großen Einfluss auf die Halswirbelsäule hat. Bestätigt wird dies dadurch, dass die größten Einträge des Eigenvektors die $y$-Koordinaten des ersten, zweiten und dritten Kontrollpunkts der Bézierkurve der Halswirbelsäule sind.\\
+ Abbildung \ref{pca_results_sqrtEV_biggest} zeigt, dass der Eigenvektor zum größten Eigenwert einen großen Einfluss auf die Halswirbelsäule hat. Bestätigt wird dies dadurch, dass die größten Einträge des Eigenvektors die $y$-Koordinaten des ersten, zweiten und dritten Kontrollpunkts der Bézierkurve der Halswirbelsäule sind.\\
  Abbildungen nach dem gleichen Schema für die sechs größten Eigenvektoren sind im Anhang in Abbildung \ref{pca_results_sqrtEV} zu finden.
  
- \begin{figure}[h]
+ \begin{figure}
    \subfloat[$-\sigma$, \emph{Flügel} $0{,}38$, \emph{Beine mit Bodenkontakt} $1{,}6$, \mbox{\emph{Gewicht} $92$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
    \qquad
    \subfloat[$+\sigma$, \emph{Flügel} $-0{,}057$, \emph{Beine mit Bodenkontakt} $1{,}2$, \mbox{\emph{Gewicht} $94$kg}]{\includegraphics[width=0.5\textwidth]{../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
@@ -328,7 +329,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Ein weiteres Problem daran, die Daten in mehrere Mengen aufzuteilen, ist, dass dann keine Skelette mehr erzeugt werden können, die zwischen den beiden Gruppen liegen. Tatsächlich sehen die Datenpunkte, die zwischen den Gruppen erzeugt werden, aber relativ sinnvoll aus (siehe Abbildung \ref{between_clusters}).
  Auch das ist ein Argument dafür keine Aufteilung vorzunehmen.
  
- \begin{figure}[H]
+ \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{graphics/betweenClusters.jpg}
   \caption{Visualisierung eines Punktes, der, projiziert auf die ersten beiden Eigenvektoren, zwischen den Eingabedaten mit Flügeln und jenen ohne Flügel liegt. Die Werte, die auf den jeweiligen Achsen angenommen werden, sind $-0{,}4$ für den ersten Eigenvektor und $0{,}2$ für den zweiten. Werte für die ursprünglichen Merkmale, die nicht visualisiert sind, sind folgende: \emph{Flügel} $0{,}402$, \emph{Beine mit Bodenkontakt} $1{,}46$ und \emph{Gewicht} $92{,}2$kg.}
@@ -336,7 +337,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  \end{figure}
 
  
- \newpage
+ \clearpage
  %-------------------------------------------------
  \section{Bedingte Verteilungen}
  \label{pca_conditions}

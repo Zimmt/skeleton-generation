@@ -135,6 +135,7 @@ Die verwendete kontextfreie Grammatik $G = (\Sigma, N, S, P, p)$ unterstützt Kl
  p &= \{&&w_{rv}, w_{rv}^r, w_{rh}, w_{rh}^r, h, s, w_h, w_s, r, e_s, e_b \}
 \end{alignat*}
 
+\newpage
 Die Parameter werden im vorherigen Schritt des Algorithmus bestimmt (siehe Überblick \ref{section:overview}). Sie haben folgende Bedeutungen:
 \begin{itemize}
  \item $w_{rv}$: Anzahl der Wirbel auf der vorderen Hälfte der Rückenwirbelsäule, mit $w_{rv} \geq 3$
@@ -386,6 +387,7 @@ Ansatzpunkte für Extremitäten sind zunächst der Hüftgürtel und der Schulter
 \paragraph{Zwei Extremitätenpaare pro Extremitätengürtel}
 Eine einfache Möglichkeit ist zunächst die Anzahl der möglichen Extremitätenpaare von zwei auf vier zu erhöhen, indem einfach an der Hüfte und der Schulter jeweils zwei Paare ansetzen dürfen. Dafür wurden an der Hüfte \bzw der Schulter mehrere Gelenke direkt hintereinander angelegt. Das ermöglicht beispielsweise Tiere wie den Pegasus (siehe Abbildung \ref{pegasus}).
 
+\newpage
 Um das zu ermöglichen, wird die Grammatik $G = (\Sigma, N, S, P, p)$ aus Abschnitt \ref{section:grammar} zu einer Grammatik $G' = (\Sigma', N', S, P', p')$ erweitert, mit $\Sigma' = \Sigma \cup \{\text{Beckenknochen2}\}$ und \mbox{$N' = N \cup \{\text{\emph{Schulterpartie2}}\}$}. Das Terminal "`Beckenknochen2"' steht hier für einen Beckenknochen mit zwei Gelenken für Extremitäten.\\
 Die Menge der Parameter $p$ wird zu $p' = p \cup \{ e_{s2}, e_{b2} \}$ erweitert. Die neuen Parameter können jeweils Werte aus $\{0,1\}$ annehmen und stehen dafür, ob eine zweite Vorder- \bzw Hinterextremität generiert werden soll. Es gilt $e_s = 0 \Rightarrow e_{s2} = 0$ und $e_b = 0 \Rightarrow e_{b2} = 0$.
 Gilt $e_{s2} = 0$ und $e_{b2} = 0$, so verhält sich $G'$ wie $G$.

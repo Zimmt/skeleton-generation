@@ -4,8 +4,8 @@
 \label{chapter:basics}
 %  Vergleich von Techniken, was gibt es alles, was wurde am Ende verwendet und warum
 
-Dieses Kapitel stellt diejenigen Techniken und Ansätze vor, die zum Verständnis dieser Arbeit nötig \bzw hilfreich sind. Zunächst wird die prozedurale Generierung vorgestellt (\ref{procedural_generation}). Dann geht es um die Animation von 3D-Modellen von Figuren (\ref{character_animation}), da dies ein möglicher Schritt ist wie die erzeugten Skelette weiterverarbeitet werden könnten.
-Ein kurzer Abschnitt widmet sich der inversen Kinematik (\ref{IK}), da ihre Konzepte zum Verständnis hilfreich sind. Sie kommt aber im Algorithmus nicht zur Anwendung. Wichtige Konzepte die im Algorithmus verwendet werden sind Grammatiken (\ref{grammars}) und \emph{Principal Component Analysis} (PCA)(\ref{PCA}). Um die Verteilung der Beispiele, auf denen eine PCA durchgeführt werden soll, zu untersuchen werden Quantil-Quantil-Diagramme (\ref{qqdiagrams}) eingesetzt.
+Dieses Kapitel stellt diejenigen Techniken und Ansätze vor, die zum Verständnis dieser Arbeit nötig \bzw hilfreich sind. Zunächst wird die prozedurale Generierung (\ref{procedural_generation}) vorgestellt. Dann geht es um die Animation von 3D-Modellen von Figuren (\ref{character_animation}), da dies ein möglicher Schritt ist wie die erzeugten Skelette weiterverarbeitet werden könnten.
+Ein kurzer Abschnitt widmet sich der inversen Kinematik (\ref{IK}), da ihre Konzepte zum Verständnis hilfreich sind. Sie kommt aber im Algorithmus nicht zur Anwendung. Wichtige Konzepte die im Algorithmus verwendet werden sind Grammatiken (\ref{grammars}) und \emph{Principal Component Analysis} (PCA) (\ref{PCA}). Um die Verteilung der Beispiele, auf denen eine PCA durchgeführt werden soll, zu untersuchen, werden Quantil-Quantil-Diagramme (\ref{qqdiagrams}) eingesetzt.
 Der letzte Abschnitt widmet sich genetischen Algorithmen (\ref{genetic_algorithms}), da sie nah am Themengebiet dieser Arbeit liegen und in alternativen Ansätzen verwendet werden könnten.
 
 
@@ -13,17 +13,17 @@ Der letzte Abschnitt widmet sich genetischen Algorithmen (\ref{genetic_algorithm
 \section{Prozedurale Generierung}
 \label{procedural_generation}
 
-Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der Ausführung des Algorithmus festgelegt wurden, so wird dies als \emph{prozedurale Generierung} (PG) bezeichnet.
+Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der Ausführung des Algorithmus festgelegt wurden, so wird dies als prozedurale Generierung (PG) bezeichnet.
 Ursprünglich wurde PG verwendet, weil der Speicherplatz auf Computern sehr begrenzt war. Große 3D-Landschaften oder andere vorgefertigte künstlerische Werke konnten nicht gespeichert werden.\\
-Die Demoszene entstand in den 1980er Jahren und treibt PG ins Extreme. Sie zeigt mit künstlerischen Inhalten, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft  \cite{DemoScene}. 
+Die Demoszene treibt PG ins Extreme. Sie entstand in den 1980er Jahren und zeigt mit künstlerischen Inhalten, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft \cite{DemoScene}. 
 
 Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt, \zb für PC-Spiele, von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, da der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, aufwändig ist und viel Zeit benötigt. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl fertige 3D-Modelle generieren, als auch Inspiration und Hilfe für den Künstler sein. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
 
-Dinge, die prozedural generiert werden, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt. Die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. \\
-Ein Beispiel, das erst nach Erscheinen dieser Zusammenstellung auf den Markt gekommen ist, ist das Computerspiel "`No Man's Sky"' \cite{NoMansSky}. Darin gibt es viele prozedural generierte fantastische Tiere. Die Generierung dieser Tiere funktioniert so, dass zunächst prozedural ein 3D-Modell generiert wird, in welches anschließend ein Rig eingepasst wird \cite{NoMansSkyDevelopment}.
+Dinge, die prozedural generiert werden können, sind Landschaften, Straßennetze, Gebäude, Menschen, Tiere oder auch Geschichten \cite{PCGSurvey}. 
+Oft werden für ihre Generierung Rauschfunktionen nach Perlin (oder auch Perlin-Noise) \cite{perlinNoise} verwendet. Klassische Anwendungsgebiete für Perlin-Noise sind \zb die Generierung von Texturen, Höhenfeldern oder Volumina, wie Feuer oder Wolken. Zur Generierung von Lebewesen oder deren Skeletten ist Perlin-Noise nicht geeignet, da diese zu viele festgelegte Strukturen haben.\\
+Humanoide Charaktere für Computerspiele werden \zb in der Masterarbeit \cite{ProceduralCharacterGeneration} erzeugt und die Zusammenstellung \cite{PCGSurvey_videoGames} untersucht die PG von Wesen, die Videospiele bevölkern. Obwohl einige Arbeiten genannt werden, die sich mit diesem Thema beschäftigen, wird auch festgestellt, dass dieser Themenbereich noch wenig erforscht ist. \\
+Ein Beispiel, das erst nach Erscheinen dieser Zusammenstellung auf den Markt gekommen ist, ist das Computerspiel "`No Man's Sky"' \cite{NoMansSky}. Darin gibt es viele prozedural generierte fantastische Tiere. Zur Generierung dieser Tiere wird zunächst prozedural ein 3D-Modell generiert, in welches anschließend ein Rig eingepasst wird \cite{NoMansSkyDevelopment}.
 Die dort verwendeten Rigs sind keine wirklichkeitsgetreuen Skelette, sondern werden nur für die Animation verwendet (siehe Abschnitt \ref{character_animation}).
-
-\todo{Beispiele für Methoden der prozeduralen Generierung angeben, \zb perlin noise}
 
 
 %-------------------------------------------
@@ -48,6 +48,7 @@ Der Algorithmus, der hier erarbeitet wird, erzeugt Skelette mit lebensechten Kno
 % \end{itemize}
 
 
+\newpage
 %--------------------------
 \section{Inverse Kinematik}
 \label{IK}
