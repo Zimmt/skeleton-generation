@@ -4,8 +4,10 @@
 \label{chapter:basics}
 %  Vergleich von Techniken, was gibt es alles, was wurde am Ende verwendet und warum
 
-%-----------------!
-% Kurze Einleitung?
+Dieses Kapitel stellt diejenigen Techniken und Ansätze vor, die zum Verständnis dieser Arbeit nötig \bzw hilfreich sind. Zunächst wird die prozedurale Generierung vorgestellt (\ref{procedural_generation}). Dann geht es um die Animation von 3D-Modellen von Figuren (\ref{character_animation}), da dies ein möglicher Schritt ist wie die erzeugten Skelette weiterverarbeitet werden könnten.
+Ein kurzer Abschnitt widmet sich der inversen Kinematik (\ref{IK}), da ihre Konzepte zum Verständnis hilfreich sind. Sie kommt aber im Algorithmus nicht zur Anwendung. Wichtige Konzepte die im Algorithmus verwendet werden sind Grammatiken (\ref{grammars}) und \emph{Principal Component Analysis} (PCA)(\ref{PCA}). Um die Verteilung der Beispiele, auf denen eine PCA durchgeführt werden soll, zu untersuchen werden Quantil-Quantil-Diagramme (\ref{qqdiagrams}) eingesetzt.
+Der letzte Abschnitt widmet sich genetischen Algorithmen (\ref{genetic_algorithms}), da sie nah am Themengebiet dieser Arbeit liegen und in alternativen Ansätzen verwendet werden könnten.
+
 
 %--------------------------------
 \section{Prozedurale Generierung}
@@ -57,41 +59,8 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
 % IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
 
 
-%--------------------
-\section{Grammatiken}
-\label{grammars}
-
-Eine \emph{Grammatik} ist ein Tupel $G = (\Sigma, N, S, P)$ mit 
-\begin{itemize}
- \item dem endlichen Alphabet $\Sigma$ der Terminalsymbole
- \item dem endlichen Alphabet $N$ der Nichtterminalsymbole
- \item dem Startsymbol $S \in N$ und
- \item der Menge von Produktionen $P \subseteq (N \cup \Sigma)^* N (N \cup \Sigma)^* \rightarrow (N \cup \Sigma)^*$
-\end{itemize}
-
-Eine Teilmenge der Grammatiken bilden die \emph{kontextsensitiven} Grammatiken. Ihre Produktionen haben die Form
-\[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in N,~ \alpha, \beta, \gamma \in ((N \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text{ und dem leeren Wort } \epsilon.\]
-
-Wiederum eine Teilmenge davon bilden die \emph{kontextfreien} Grammatiken mit Produktionen der Form 
-\[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (\Sigma \cup N)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
-
-\emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen alle Symbole gleichzeitig ersetzt. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.\\
-Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
-Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. 
-
-Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden in L-Systemen Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
-Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(BC)D$ mit $A, B, C, D \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelement von $B$ als auch von $D$ ist. Das Elternelement von $C$ ist $B$. Es können auch Mehrfachverzweigungen auftreten. In $A(B)(C)D$, was gleichbedeutend ist zu $A(B)(C)(D)$, ist $A$ das Elternelement von $B, C$ und $D$. Eine Visualisierung der beiden Beispiele ist in Abbildung \ref{branching_examples} zu finden. \cite[Kapitel 1]{AlgorithmicBeautyOfPlants}
-
-\begin{figure}
- \centering
- \includegraphics[width=0.6\textwidth]{graphics/branchingExamples}
- \caption{Visualisierung der Beispiele für Klammerausdrücke aus dem Text,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
- \label{branching_examples}
-\end{figure}
-
-
-%------------
-\section{Principal Component Analysis} % a priori algorithmus?
+%-------------------------------------
+\section{Principal Component Analysis}
 \label{PCA}
  
  % Ziel
@@ -125,6 +94,39 @@ Trägt man nun die sortierte Stichprobe gegen die entsprechenden Quantile in ein
 Den Werten $x_{(i)}$ einfach das $\frac{i}{n}$-Quantil zuzuordnen ist aber insofern schwierig, als dass es suggeriert, dass alle Werte, die mit der angenommenen Verteilung generiert werden, kleiner als $x_{(n)}$ sind. Deshalb gibt es verschiedene andere Möglichkeiten die Quantile zuzuordnen. Sie liefern aber für $n \rightarrow \infty$ alle das gleiche Ergebnis. Sogenannte "`Rankit Plots"' verwenden folgende Zuordnung:
 \[ x_{(i)} \approx F^{-1}\left(\frac{i - 0{,}5}{n}\right). \]
 Diese Zuordnung wird auch in dieser Arbeit verwendet.
+
+
+%--------------------
+\section{Grammatiken}
+\label{grammars}
+
+Eine \emph{Grammatik} ist ein Tupel $G = (\Sigma, N, S, P)$ mit 
+\begin{itemize}
+ \item dem endlichen Alphabet $\Sigma$ der Terminalsymbole
+ \item dem endlichen Alphabet $N$ der Nichtterminalsymbole
+ \item dem Startsymbol $S \in N$ und
+ \item der Menge von Produktionen $P \subseteq (N \cup \Sigma)^* N (N \cup \Sigma)^* \rightarrow (N \cup \Sigma)^*$
+\end{itemize}
+
+Eine Teilmenge der Grammatiken bilden die \emph{kontextsensitiven} Grammatiken. Ihre Produktionen haben die Form
+\[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in N,~ \alpha, \beta, \gamma \in ((N \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text{ und dem leeren Wort } \epsilon.\]
+
+Wiederum eine Teilmenge davon bilden die \emph{kontextfreien} Grammatiken mit Produktionen der Form 
+\[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (\Sigma \cup N)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
+
+\emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen alle Symbole gleichzeitig ersetzt. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.\\
+Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
+Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. 
+
+Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden in L-Systemen Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
+Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Element das Elternelement des rechten ist. Kommt in einem Wort $A(BC)D$ mit $A, B, C, D \in \Sigma \cup N$ ein Klammerausdruck vor, so bedeutet dies, dass $A$ sowohl das Elternelement von $B$ als auch von $D$ ist. Das Elternelement von $C$ ist $B$. Es können auch Mehrfachverzweigungen auftreten. In $A(B)(C)D$, was gleichbedeutend ist zu $A(B)(C)(D)$, ist $A$ das Elternelement von $B, C$ und $D$. Eine Visualisierung der beiden Beispiele ist in Abbildung \ref{branching_examples} zu finden. \cite[Kapitel 1]{AlgorithmicBeautyOfPlants}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.6\textwidth]{graphics/branchingExamples}
+ \caption{Visualisierung der Beispiele für Klammerausdrücke aus dem Text,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
+ \label{branching_examples}
+\end{figure}
 
 
 %-------------------------------
