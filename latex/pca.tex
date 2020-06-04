@@ -57,7 +57,14 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  
  \paragraph{Erhobene Merkmale}
  % welche Merkmale
- Die Merkmale, die zur Datenerhebung ausgesucht wurden, sind charakteristisch für ein Skelett, tragen also viel zum Gesamteindruck bei. Das sind vor allem der Verlauf der Wirbelsäule und der Aufbau der Extremitäten.
+ Die Merkmale, die zur Datenerhebung ausgesucht wurden, sind charakteristisch für ein Skelett, tragen also viel zum Gesamteindruck bei. Das sind vor allem der Verlauf der Wirbelsäule und der Aufbau der Extremitäten (siehe Abbildung \ref{kaninchen}).
+ 
+ \begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{../PCA/Skelettbilder/Kaninchen_farbig.png}
+  \caption{Skelett eines Kaninchens mit Annotationen zum Verlauf der Wirbelsäule und der Länge der Knochen der Extremitäten (Bildquelle siehe \ref{picture_sources}). Die Teile der Wirbelsäule und die Knochen der Extremitäten sind hier jeweils mit der gleichen Farbe markiert wie in der Visualisierung des Mittelwerts der Daten (Abbildung \ref{mean})}
+  \label{kaninchen}
+ \end{figure}
 
  % Einschränkungen der Merkmale
  Eingeschränkt wurde die Erhebung natürlich auch durch die begrenzte Datenlage. 2D-Bilder mit Seitenansichten von Skeletten waren gut verfügbar. Merkmale, die Tiefeninformationen benötigen, \zb den Abstand der Füße, sind durch sie aber nicht zu bekommen. Auch Informationen zu sehr kleinen Knochen, wie Handwurzelknochen oder die unterschiedlichen Fingerknochen, sind schwierig zu erheben, da sie teilweise schwer zu erkennen und zu markieren sind. 
@@ -82,7 +89,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
 
  % Verweis auf Implementierungsdetails
  Wie genau die Datenerhebung auf den Bildern der Skelette durchgeführt wurde ist im Kapitel "`Implementierungsdetails"' im Abschnitt \ref{implementation_detail_pca} nachzulesen.
- Das Ergebnis der Erhebung sind annotierte Bilddateien und eine Textdatei, in der Tierklasse, Flügel, Beine und Gewicht erfasst werden.
+ Das Ergebnis der Erhebung sind annotierte Bilddateien (siehe \zb Abbildung \ref{kaninchen}) und eine Textdatei, in der Tierklasse, Flügel, Beine und Gewicht erfasst werden.
  
  % Wirbelsäule als Bézierkurven
  Die Lage der Wirbelsäule wird durch drei kubische Bézierkurven erfasst, jeweils eine für Hals, Rücken und Schwanz. Hals und Rücken gehen an der Schulter ineinander über und Rücken und Schwanz an der Hüfte.
@@ -263,7 +270,7 @@ Ein geeignetes Werkzeug hierfür ist die \emph{Principal Component Analysis} (si
  Die Eigenwerte $\lambda_i$ geben die Varianz der Normalverteilung entlang der Achse des zugehörigen Eigenvektors $v_i$ an. Die Summe aller Varianzen $\Sigma_{i=0}^n \lambda_i$ ist ein Maß für den Informationsgehalt. Werden alle Eigenvektoren verwendet um die Daten darzustellen, so ist $100\%$ der Information vorhanden, bei $m \le n$ Eigenvektoren jeweils der Anteil $\Sigma_{i=0}^m \lambda_i / \Sigma_{i=0}^n \lambda_i$.\\
  Die ersten $6$ Eigenvektoren enthalten $92{,}2\%$ der Informationen, die ersten $10$ enthalten $96{,}9\%$ und die ersten $20$ enthalten $99{,}8\%$.
  
- Versucht man die Eingabedaten durch die Eigenvektoren mit den größten Eigenwerten anzunähern, so funktioniert das bei manchen Tieren ganz gut, wie \zb beim Archaeopteryx (siehe Abbildung \ref{archaeopteryx}) schon mit den größten $6$ Eigenvektoren, bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).\\
+ Versucht man die Eingabedaten durch die Eigenvektoren mit den größten Eigenwerten anzunähern, so funktioniert das bei manchen Tieren ganz gut, wie \zb beim \mbox{Archaeopteryx} (siehe Abbildung \ref{archaeopteryx}) schon mit den größten $6$ Eigenvektoren, bei anderen aber eher schlechter (siehe Frosch, Abbildung \ref{frosch}).\\
  Trotzdem sind die berechneten Eigenvektoren hilfreich um zufällige Punkte mit der Verteilung der Eingabebeispiele zu generieren (wie auch beschrieben in Abschnitt \ref{PCA}).
  
  \begin{figure}
