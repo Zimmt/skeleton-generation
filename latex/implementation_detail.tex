@@ -3,13 +3,26 @@
 \chapter{Implementierungsdetails}
 \label{chapter:implementation_detail}
 
+Die Laufzeit des Algorithmus wurde auf einem Acer Aspire E5 Laptop mit einem Intel Core \mbox{i5-4210U} Prozessor mit zwei Kernen gemessen. Verwendet wurde die Programmiersprache Java, Version $11$, ohne Parallelisierung. Es wurden jeweils von $1000$ Durchläufen die Zeit gemessen und davon der Durchschnitt berechnet. Damit ergeben sich folgende Laufzeiten:
+\begin{itemize}
+ \item Einlesen der $44$ Beispiele für die PCA: $111$ms
+ \item PCA ohne Zusatzbedingungen: $0{,}812$ms
+ \item Generierung eines Skeletts (Schritte $2$ bis $5$ des Algorithmus) mit verschiedenen 3D-Modellen für die Knochen (siehe dazu auch Abschnitt \ref{bone_models}):
+ \begin{itemize}
+  \item Quader: $3{,}05$ms
+  \item kleine 3D-Modelle (das resultierende Modell des Skeletts hat ein Größe von etwa $5$ bis $10$MB): $247$ms
+  \item große 3D-Modelle (das resultierende Modell des Skeletts hat ein Größe von etwa $30$ bis $75$MB): $1330$ms
+ \end{itemize}
+\end{itemize}
+
+
 
 %----------------------------
 \section{Aufbau der Software}
 \label{software_architecture}
 % Erweiterbarkeit?
 
-Die Implementierung wurde mit der Programmiersprache Java durchgeführt. In Abbildung \ref{classDiagram} ist der Programmaufbau stark vereinfacht dargestellt. Das Diagramm ist an UML-Klassendiagramme angelehnt. Pfeile stehen jedoch nicht für Teilbeziehungen oder Vererbung, sondern für den Datenfluss.\\
+In Abbildung \ref{classDiagram} ist der Programmaufbau stark vereinfacht dargestellt. Das Diagramm ist an UML-Klassendiagramme angelehnt. Pfeile stehen jedoch nicht für Teilbeziehungen oder Vererbung, sondern für den Datenfluss.\\
 Die zentrale Klasse ist der "`SkeletonGeneratorHandler"'. Er steuert das Zusammenspiel der einzelnen Komponenten.
 Externe Daten bekommt er über den "`PcaDataReader"' und die Benutzeroberfläche (GUI). Der "`PcaDataReader"' liest die Beispiele für die PCA (PcaDataPoints) ein. Aus den Benutzereingaben ergeben sich die Bedingungen für die Verteilung, die durch die PCA untersucht werden soll. Diese und die eingelesenen Beispiele werden dann dem "`PcaHandler"' übergeben, der alles verwaltet, was mit der PCA zu tun hat.\\
 Der "`SkeletonGenerator"' ist dafür verantwortlich die Einzelteile des Skeletts zu generieren. Zu jedem Zeitpunkt hält er alle aktuell generierten terminalen und nichtterminalen Elemente. Die Elemente speichern jeweils selbst welches ihr Elternelement und welches ihre Kindelemente sind. Es reicht also die Elemente unsortiert in Listen zu speichern. Die Ersetzungsregeln der Grammatik sind im "`RuleDictionary"' und die Parameter für die Grammatik in "`SkeletonMetaData"' gespeichert. Die Klasse "`SkeletonMetaData"' implementiert das "`Serializable"' Interface \cite{JavaSerialization} und wird, wenn ein Skelett gespeichert werden soll, als Textdatei herausgeschrieben (siehe Abschnitt \ref{load_skeletons}).\\
