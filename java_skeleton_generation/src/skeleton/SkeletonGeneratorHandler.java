@@ -29,6 +29,28 @@ public class SkeletonGeneratorHandler {
         EventQueue.invokeLater(() -> gui.startGUI());
     }
 
+    /**
+     * Attention! This can take a while!
+     */
+    public void measureRuntime() throws IOException {
+        int[] ns = new int[]{10, 100, 1000};
+        for (int i : ns) {
+            System.out.println(String.format("%d times input read took %fms", i, (float) measureReadInput(i)));
+        }
+        for (int i : ns) {
+            System.out.println(String.format("%d times pca took %fms", i, (float) measurePCA(i)));
+        }
+        for (int i : ns) { // all cubes
+            System.out.println(String.format("%d skeleton generations all cubes took %fms", i, (float) measureAlgorithmWithoutPCA(i, true, true)));
+        }
+        for (int i : ns) { // low res
+            System.out.println(String.format("%d skeleton generations low res took %fms", i, (float) measureAlgorithmWithoutPCA(i, false, true)));
+        }
+        for (int i : ns) { // high res
+            System.out.println(String.format("%d skeleton generations high res took %fms", i, (float) measureAlgorithmWithoutPCA(i, false, false)));
+        }
+    }
+
     private void runSkeletonGenerator() throws IOException {
         UserInput userInput = new UserInput(
                 gui.getLegInput(), gui.getWingInput(), gui.getArmInput(), gui.getFinInput(),
@@ -43,6 +65,7 @@ public class SkeletonGeneratorHandler {
             conditions = new PcaConditions();
         }
         PcaHandler pcaHandler = new PcaHandler(pcaDataPoints, conditions);
+        pcaHandler.runPCA();
 
         int skeletonCount = gui.getSkeletonCount();
         for (int i = 0; i < skeletonCount; i++) {
@@ -57,10 +80,8 @@ public class SkeletonGeneratorHandler {
                     skeletonGenerator = new SkeletonGenerator(metaDataFilePath);
                 }
             } else if (gui.getConstructFromExample()) {
-                pcaHandler.runPCA();
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, gui.getPcaDataPointName(), userInput, gui.getCreateVariationsInput());
             } else {
-                pcaHandler.runPCA();
                 skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
             }
 
@@ -86,5 +107,48 @@ public class SkeletonGeneratorHandler {
             }
         }
         System.out.println("Finished.");
+    }
+
+    private long measureReadInput(int n) throws IOException {
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < n; i++) {
+            PcaDataReader.readInputData(true);
+        }
+        return System.currentTimeMillis() - time;
+    }
+
+    private long measurePCA(int n) throws IOException {
+        List<PcaDataPoint> points = PcaDataReader.readInputData(true);
+
+        long time = System.currentTimeMillis();
+
+        for (int i = 0; i < n; i++) {
+            PcaHandler pcaHandler = new PcaHandler(points, new PcaConditions());
+            pcaHandler.runPCA();
+        }
+        return System.currentTimeMillis() - time;
+    }
+
+    private long measureAlgorithmWithoutPCA(int n, boolean allCubes, boolean lowRes) throws IOException {
+        List<PcaDataPoint> points = PcaDataReader.readInputData(true);
+        PcaHandler pcaHandler = new PcaHandler(points, new PcaConditions());
+        pcaHandler.runPCA();
+        UserInput userInput = new UserInput();
+
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < n; i++) {
+            SkeletonGenerator skeletonGenerator = new SkeletonGenerator(pcaHandler, userInput);
+
+            while (!skeletonGenerator.isFinished()) {
+                boolean stepDone = skeletonGenerator.doOneStep();
+                if (!stepDone) { // there might be missing rules
+                    System.err.println("Could not measure time!");
+                    break;
+                }
+            }
+            skeletonGenerator.calculateMirroredElements();
+            new ObjGenerator().generateObjFrom(skeletonGenerator, "skeleton" + i, allCubes, lowRes);
+        }
+        return System.currentTimeMillis() - time;
     }
 }

@@ -18,6 +18,17 @@ public class UserInput {
 
     private final Random random = new Random();
 
+    public UserInput() {
+        this.flooredLegs = null;
+        this.wings = null;
+        this.arms = null;
+        this.fins = null;
+        this.allowTwoExtremitiesPerGirdle = true;
+        this.neckYLength = null;
+        this.tailXLength = null;
+        this.head = "horse_skull";
+    }
+
     public UserInput(Integer flooredLegs, Integer wings, Integer arms, Integer fins, boolean allowTwoExtremitiesPerGirdle,
                      Boolean secondShoulder, Double neckYLength, Double tailXLength, String head) {
         this.flooredLegs = flooredLegs;
