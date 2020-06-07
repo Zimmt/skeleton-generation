@@ -4,8 +4,8 @@
 \label{chapter:basics}
 %  Vergleich von Techniken, was gibt es alles, was wurde am Ende verwendet und warum
 
-Dieses Kapitel stellt diejenigen Techniken und Ansätze vor, die zum Verständnis dieser Arbeit nötig \bzw hilfreich sind. Zunächst wird die prozedurale Generierung (\ref{procedural_generation}) vorgestellt. Dann geht es um die Animation von 3D-Modellen von Figuren (\ref{character_animation}), da dies ein möglicher Schritt ist wie die erzeugten Skelette weiterverarbeitet werden könnten.
-Ein kurzer Abschnitt widmet sich der inversen Kinematik (\ref{IK}), da ihre Konzepte zum Verständnis hilfreich sind. Sie kommt aber im Algorithmus nicht zur Anwendung. Wichtige Konzepte die im Algorithmus verwendet werden sind Grammatiken (\ref{grammars}) und \emph{Principal Component Analysis} (PCA) (\ref{PCA}). Um die Verteilung der Beispiele, auf denen eine PCA durchgeführt werden soll, zu untersuchen, werden Quantil-Quantil-Diagramme (\ref{qqdiagrams}) eingesetzt.
+Dieses Kapitel stellt diejenigen Techniken und Ansätze vor, die zum Verständnis dieser Arbeit nötig \bzw hilfreich sind. Zunächst wird die prozedurale Generierung (\ref{procedural_generation}) vorgestellt. Dann geht es um die Animation von 3D-Modellen von Figuren (\ref{character_animation}), da dies ein möglicher Schritt ist, wie die erzeugten Skelette weiterverarbeitet werden können.
+Ein kurzer Abschnitt widmet sich der inversen Kinematik (\ref{IK}), da ihre Konzepte zum Verständnis hilfreich sind. Sie kommt aber im Algorithmus nicht zur Anwendung. Wichtige Konzepte, die im Algorithmus verwendet werden, sind Grammatiken (\ref{grammars}) und \emph{Principal Component Analysis} (PCA) (\ref{PCA}). Um die Beispiele, auf denen eine PCA durchgeführt werden soll, zu untersuchen, werden Quantil-Quantil-Diagramme (\ref{qqdiagrams}) eingesetzt.
 Der letzte Abschnitt widmet sich genetischen Algorithmen (\ref{genetic_algorithms}), da sie nah am Themengebiet dieser Arbeit liegen und in alternativen Ansätzen verwendet werden könnten.
 
 
@@ -15,7 +15,7 @@ Der letzte Abschnitt widmet sich genetischen Algorithmen (\ref{genetic_algorithm
 
 Werden Inhalte, wie Texturen oder 3D-Objekte, generiert, ohne dass diese vor der Ausführung des Algorithmus festgelegt wurden, so wird dies als prozedurale Generierung (PG) bezeichnet.
 Ursprünglich wurde PG verwendet, weil der Speicherplatz auf Computern sehr begrenzt war. Große 3D-Landschaften oder andere vorgefertigte künstlerische Werke konnten nicht gespeichert werden.\\
-Die Demoszene treibt PG ins Extreme. Sie entstand in den 1980er Jahren und zeigt mit künstlerischen Inhalten, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie man das volle Potential von Computerhardware ausschöpft \cite{DemoScene}. 
+Die Demoszene treibt PG ins Extreme. Sie entstand in den 1980er Jahren und zeigt mit künstlerischen Inhalten, dass beeindruckende Ergebnisse trotz stark limitiertem Speicherplatz möglich sind \bzw wie das volle Potential von Computerhardware ausgeschöpft werden kann \cite{DemoScene}. 
 
 Auf heutigen Rechnern ist der Speicherplatz nicht mehr so begrenzt und es kann viel Inhalt, \zb für PC-Spiele, von Künstlern vorgefertigt werden. Trotzdem behält PG ihre Daseinsberechtigung, da der Entwurf komplexer Inhalte, wie beispielsweise Landschaften mit viel Vegetation, aufwändig ist und viel Zeit benötigt. Hier können wieder Algorithmen aus der PG eingesetzt werden um Zeit und Arbeit zu sparen. Sie können sowohl fertige 3D-Modelle generieren, als auch Inspiration und Hilfe für den Künstler sein. \emph{SpeedTree} \cite{SpeedTree} ist ein Beispiel für Software, die für die Generierung von Vegetation verwendet wird. Sie unterstützt und beschleunigt die Erstellung von Szenen mit viel Vegetation. \cite{PCGSurvey_videoGames}
 
@@ -30,10 +30,10 @@ Die dort verwendeten Rigs sind keine wirklichkeitsgetreuen Skelette, sondern wer
 \section{Animation von Figuren}
 \label{character_animation}
 
-Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett \bzw Rig nötig. Dieses Rig ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Rig wird meist ein Knochen nahe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
+Um Figuren für Computerspiele oder Filme zu animieren, ist außer dem 3D-Modell ein Skelett \bzw Rig nötig. Dieses Rig ist oft sehr abstrakt und hat wenig mit lebensechten Skeletten zu tun. Es gibt eine Baumstruktur auf den Einzelteilen der Figur vor. Diese Baumstruktur ist für viele Algorithmen, die zur Animation verwendet werden, essentiell, \zb für inverse Kinematik (siehe Abschnitt \ref{IK}). Als Wurzel für das Rig wird meist ein Knochen in der Nähe des Schwerpunkts der Figur verwendet. Das ist bei humanoiden Figuren die Hüfte.\\
 Weit verbreitete Editoren für Animation, Modellierung, Simulation und Rendering sind Maya \cite{Maya} und 3ds Max \cite{3dsMax}. Auch hier werden solche Rigs verwendet \cite{MayaSkeletonHierarchy}. 3ds Max stellt \zb in einer Komponente namens Biped vorgefertigte Rigs für humanoide Figuren zur Verfügung, die einfach in schon existierende 3D-Modelle eingefügt werden können \cite{3dsMaxBiped}.
 
-Animationen werden dann mit Hilfe sogenannte Keyframes erzeugt. Keyframes sind Positionen, die die Figur im Laufe der Bewegung einnehmen soll. Interpolation zwischen den einzelnen Keyframes ergibt dann eine flüssige Bewegung. \cite[Kapitel 3]{sporeanim}\\
+Animationen werden dann mit Hilfe sogenannter Keyframes erzeugt. Keyframes sind Positionen, die die Figur im Laufe der Bewegung einnehmen soll. Interpolation zwischen den einzelnen Keyframes ergibt dann eine flüssige Bewegung. \cite[Kapitel 3]{sporeanim}\\
 Im Computerspiel Spore \cite{Spore} werden sogar zur Laufzeit Animationen für Figuren erzeugt, deren Aufbau vorher noch nicht bekannt war. Dazu werden vorher abstrakte Animationen, unabhängig vom Aufbau der speziellen Figur, erstellt. Diese werden dann zur Laufzeit auf die konkreten Figuren angewandt. \cite{sporeanim}
 
 Um besonders lebensecht wirkende Tiere zu erzeugen, ist es nötig den Aufbau des entprechenden Tieres möglichst wirklichkeitsgetreu zu modellieren. Dazu sind Modelle für Skelett, Muskeln und Haut nötig. Solche Modelle lassen sich beispielsweise mit dem Maya-Plugin Ziva \cite{Ziva} gestalten. \cite{ZivaGeneralSetup}
@@ -55,7 +55,7 @@ Der Algorithmus, der hier erarbeitet wird, erzeugt Skelette mit lebensechten Kno
 
 Inverse Kinematik wird beispielsweise in der Robotik zur Bewegung von Roboterarmen verwendet. Gegeben ist eine Kette von Gelenken, die über starre Verbindungsteile miteinander verbunden sind. Für ein oder mehrere Punkte dieser Kette können Zielpunkte im Raum angegeben werden. Das Ziel ist es dann eine Konfiguration der Gelenke zu berechnen, so dass alle Punkte ihr Ziel erreichen.
 
-Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise geht es in \cite{IKLegs} um die Animation von Beinen. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
+Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu lösen. Diese finden jeweils in Abhängigkeit von der konkreten Problemstellung ihre Anwendung. Beispielsweise wird in \cite{IKLegs} die Animation von Beinen untersucht. Ein Überblick über die verschiedenen Techniken ist in der Zusammenstellung \cite{IKSurvey} zu finden.
 
 % IK die gelernte Posen bevorzugt: style-based inverse kinematics (\url{https://grail.cs.washington.edu/projects/styleik/})
 
@@ -66,17 +66,18 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
  
  % Ziel
  \emph{Principal Component Analysis} (PCA) oder auch Hauptkomponentenanalyse \cite{PCA} wird meist mit dem Ziel angewendet die Dimensionalität einer Menge von Datenpunkten zu verringern, dabei aber möglichst wenig Information zu verlieren.
- Beispielsweise wird dies in \cite{PCA_faces} bei 3D-Modellen von Gesichtern oder in \cite{PCA_bodies} bei 3D-Modellen von menschlichen Körpern gemacht. Auch im Zusammenhang mit prozeduraler Generierung wird PCA oft verwendet, \zb zur Generierung von humanoiden Charakteren für Videospiele \cite{ProceduralCharacterGeneration} oder Texturen für Gesichter \cite{GeneratingFacialTextures}.
+ Beispielsweise wird sie im Zusammenhang mit 3D-Modellen von Gesichtern (\cite{PCA_faces}) oder 3D-Modellen von menschlichen Körpern (\cite{PCA_bodies}) eingesetzt. Auch im Zusammenhang mit prozeduraler Generierung wird PCA oft verwendet, \zb zur Generierung von humanoiden Charakteren für Videospiele \cite{ProceduralCharacterGeneration} oder Texturen für Gesichter \cite{GeneratingFacialTextures}.
  
  Als Ausgangspunkt für eine PCA dient eine Menge von Datenpunkten (oder Beispielen) $D$ im $n$-dimensionalen Raum. Voraussetzung ist, dass die Punkte in jeder Dimension normalverteilt sind. 
- Die Datenpunkte $D$ sind dann nach einer $n$-dimensionalen Normalverteilung verteilt. Betrachtet man nun die Wahrscheinlichkeitsdichte dieser Normalverteilung, so bilden alle Punkte, bei denen die Dichte einen Wert größer als $\epsilon$ annimmt das Innere eines $(n-1)$-dimensionalen Hyperellipsoids. In diesem Volumen liegen die meisten der Datenpunkte $D$. Den Mittelpunkt bildet ihr Mittelwert.
+ Die Datenpunkte $D$ sind dann nach einer $n$-dimensionalen Normalverteilung verteilt. Betrachtet man nun die Wahrscheinlichkeitsdichte dieser Normalverteilung, so bilden alle Punkte, bei denen die Dichte einen Wert größer als $\epsilon$ annimmt, das Innere eines $(n-1)$-dimensionalen Hyperellipsoids. In diesem Volumen liegen die meisten der Datenpunkte $D$. Ihr Mittelwert bildet den Mittelpunktt.
  
  Nun ist das Ziel herauszufinden wo die Achsen des Hyperellipsoids liegen. Betrachtet man die Komponenten der Datenpunkte $D$ in den Richtungen der Achsen, so sind diese wiederum normalverteilt und die Verteilungen sind jeweils unabhängig voneinander.
- Um die Achsen des Hyperellipsoids zu berechnen, wird zunächst die Kovarianzmatrix der Datenpunkte $D$ aufgestellt und dann diagonalisiert. In den Spalten der damit berechneten Basiswechselmatrix stehen dann die Eigenvektoren und auf der Diagonalen der diagonalisierten Kovarianzmatrix die Eigenwerte.
+ Um die Achsen des Hyperellipsoids zu berechnen, wird zunächst die Kovarianzmatrix der Datenpunkte $D$ aufgestellt und diese dann diagonalisiert. In den Spalten der damit berechneten Basiswechselmatrix stehen dann die Eigenvektoren und auf der Diagonalen der diagonalisierten Kovarianzmatrix die Eigenwerte.
  Die Eigenvektoren sind die Achsen des Hyperellipsoids und die Eigenwerte geben die Varianz der Normalverteilung entlang der Achsen an.
  
- Jetzt können die Datenpunkte $D$ vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Hyperellipsoids aufgespannt wird. Dazu stellt man die Punkte als Linearkombinationen der Eigenvektoren dar. 
- Um nun die Dimensionalität der Eingabedaten zu reduzieren, werden alle Dimensionen weggelassen, die nicht zu den Hauptkomponenten gehören. Je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden, desto weniger Information wird verworfen.
+ Jetzt können die Datenpunkte $D$ vom Eingabekoordinatensystem in dasjenige Koordinatensystem transformiert werden, das von den Achsen des Hyperellipsoids aufgespannt wird. Dazu stellt man die Punkte als Linearkombinationen der Eigenvektoren dar.
+ Die Eigenvektoren, die zu den größten Eigenwerten gehören, sind die Hauptkomponenten oder "`principal components"'.
+ Um nun die Dimensionalität der Eingabedaten zu reduzieren, werden sie auf den Raum projiziert, der von den Hauptkomponenten aufgespannt wird. Je weniger Streuung die Datenpunkte auf denjenigen Achsen aufweisen, die weggelassen werden, desto weniger Information wird verworfen.
  
  Will man einen zufälligen Datenpunkt erzeugen, der die gleichen Verteilungen aufweist, wie die Eingabebeispiele, so funktioniert das im transformierten Koordinatensystem sehr gut. Da die einzelnen Dimensionen unabhängig voneinander sind, kann man einfach für jede Dimension eine normalverteilte Zufallszahl mit entsprechender Varianz generieren.
  
@@ -86,9 +87,9 @@ Es gibt viele verschiedene Methoden Probleme aus der inversen Kinematik zu löse
 \label{qqdiagrams}
 
 Quantil-Quantil-Diagramme sind eine grafische Methode um zu testen, ob eine Stichprobe einer bestimmten Verteilung unterliegt. \\
-Seien $x_1, x_2,\dots, x_n$ die Elemente einer Stichprobe und $F$ die Verteilungsfunktion derjenigen Verteilung, gegen die getestet werden soll. Die Verteilungsfunktion gibt für einen Wert $x$ an, wie groß die Wahrscheinlichkeit ist, dass die Zufallsvariable einen Wert $\leq x$ annimmt.\\
+Seien $x_1, x_2,\dots, x_n$ die Elemente einer Stichprobe und $F$ die Verteilungsfunktion derjenigen Verteilung, gegen die getestet werden soll. Die Verteilungsfunktion gibt für einen Wert $x$ an, wie groß die Wahrscheinlichkeit ist, dass eine nach $F$ verteilte Zufallsvariable einen Wert $\leq x$ annimmt.\\
 Nun werden die empirischen Quantile der Stichprobe mit den entsprechenden Quantilen von $F$ verglichen. Dazu wird die Stichprobe aufsteigend sortiert, was $x_{(1)}, x_{(2)},\dots, x_{(n)}$ ergibt. 
-Das empirische $\frac{i}{n}$-Quantil der Stichprobe ist $x_{(i)}$, da $i$ Werte $\leq x_{(i)}$ beobachtet wurden. Die inverse Verteilungsfunktion gibt für einen Wert $y$ den kleinsten Wert $x$ an, für den gilt, dass $F(x) > y$, also das $y$-Quantil. Das $\frac{i}{n}$-Quantil von $F$ ist also $F^{-1}\left(\frac{i}{n}\right)$.
+Das empirische $\frac{i}{n}$-Quantil der Stichprobe ist $x_{(i)}$, da $i$ Werte $\leq x_{(i)}$ beobachtet wurden. Die inverse Verteilungsfunktion gibt für einen Wert $y$ den kleinsten Wert $x$ an, für den gilt, dass $F(x) > y$ ist, also das $y$-Quantil. Das $\frac{i}{n}$-Quantil von $F$ ist also $F^{-1}\left(\frac{i}{n}\right)$.
 
 Trägt man nun die sortierte Stichprobe gegen die entsprechenden Quantile in ein Diagramm ab, und die angenommene Verteilung ist korrekt, so liegen die Punkte annähernd auf einer Geraden mit Steigung $1$ durch den Ursprung. \cite[Kapitel 1 und 2]{QQPlots}
 
@@ -110,13 +111,14 @@ Eine \emph{Grammatik} ist ein Tupel $G = (\Sigma, N, S, P)$ mit
 \end{itemize}
 
 Eine Teilmenge der Grammatiken bilden die \emph{kontextsensitiven} Grammatiken. Ihre Produktionen haben die Form
-\[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in N,~ \alpha, \beta, \gamma \in ((N \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text{ und dem leeren Wort } \epsilon.\]
+\[\alpha A \beta \rightarrow \alpha \gamma \beta \text{ oder } S \rightarrow \epsilon\] \[\text{ mit } A \in N,~ \alpha, \beta, \gamma \in ((N \setminus \{ S \}) \cup \Sigma)^*,~ \gamma \neq \epsilon \text.\]
+Dabei ist $\epsilon$ das leere Wort.
 
 Wiederum eine Teilmenge davon bilden die \emph{kontextfreien} Grammatiken mit Produktionen der Form 
-\[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (\Sigma \cup N)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
+\[A \rightarrow w \text{ mit } A \in N \text{ und } w \in (N \cup \Sigma)^*.\] \cite[Abschnitte 1.4 und 1.5]{FormalLanguageTheory}
 
 \emph{L-Systeme} oder Lindenmayer-Systeme sind spezielle Grammatiken. Sie wurden 1968 von dem Biologen Aristid Lindenmayer vorgestellt, mit dem Zweck das Wachstum vielzelliger Lebewesen zu modellieren. Im Unterschied zu Grammatiken, bei denen Produktionen einzeln nacheinander angewendet werden, werden bei L-Systemen alle Symbole gleichzeitig ersetzt. Dies soll modellieren, dass viele Zellteilungen zur gleichen Zeit stattfinden können.\\
-Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber beispielsweise keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
+Es gibt auch hier wieder verschiedene Teilmengen wie \zb kontextfreie und kontextsensitive L-Systeme. Kontextfreie L-Systeme sind aber keine Teilmenge kontextfreier Grammatiken. Es gibt Sprachen, die von kontextfreien L-Systemen, aber nicht von kontextfreien Grammatiken erzeugt werden können und anders herum \cite[Abbildung 1.2]{AlgorithmicBeautyOfPlants}.\\
 Oft werden L-Systeme verwendet um das Wachstum von Pflanzen zu modellieren. Es gibt aber auch andere Anwendungsbeispiele, wie \zb die Generierung von Städten \cite{cityGeneration}. 
 
 Bei Pflanzen treten oft Verzweigungen auf. Um diese zu modellieren, werden in L-Systemen Klammerstrukturen verwendet. Das Teilwort innerhalb einer Klammer repräsentiert einen "`Ast"', der wiederum in sich verzweigt sein kann.
@@ -125,7 +127,7 @@ Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Ele
 \begin{figure}
  \centering
  \includegraphics[width=0.6\textwidth]{graphics/branchingExamples}
- \caption{Visualisierung der Beispiele für Klammerausdrücke aus dem Text,\\ links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
+ \caption{Visualisierung der Beispiele für Klammerausdrücke, links der \mbox{Ausdruck $A(BC)D$}, rechts $A(B)(C)D$.}
  \label{branching_examples}
 \end{figure}
 
@@ -135,10 +137,10 @@ Wenn zwei Symbole direkt aufeinander folgen, so bedeutet das, dass das linke Ele
 \label{genetic_algorithms}
 
 Ein sehr bekannter Zweig der evolutionären Algorithmen sind die genetischen Algorithmen.
-Die Grundprinzipien, die von genetischen Algorithmen verwendet werden, sind von Evolution und natürlicher Auslese abgeschaut. Im einfachsten Fall ist eine Menge von Individuen (oder eine Population) gegeben, die durch "`Gene"' kodiert sind, und eine Fitnessfunktion. Die Fitnessfunktion bewertet die Individuen. Das Ziel ist Individuen zu entwickeln, die möglichst gut bewertet werden. 
+Die Grundprinzipien, die von genetischen Algorithmen verwendet werden, sind von Evolution und natürlicher Auslese inspiriert. Im einfachsten Fall sind eine Menge von Individuen (oder eine Population) gegeben, die durch "`Gene"' kodiert sind, und eine Fitnessfunktion. Die Fitnessfunktion bewertet die Individuen. Das Ziel ist Individuen zu entwickeln, die möglichst gut bewertet werden. 
 Dazu werden aus der aktuellen Population zufällig, aber nach Fitness priorisiert, Individuen ausgewählt. Diese produzieren dann "`Nachkommen"' indem sie ihre Gene nach einer bestimmten Vorschrift vermischen.
 Diese "`Nachkommen"' bilden dann eine neue Population, die wiederum anhand der Fitnessfunktion bewertet wird. Damit startet eine neue Iteration.
-Dies wird so lange gemacht bis ein Individuum gefunden wurde, das die Fitnessfunktion gut genug erfüllt. \cite{Holland} \cite[Abschnitt 1.3.1]{EvolutionaryDesign_Introduction}\\
+Dies wird so lange durchgeführt bis ein Individuum gefunden wurde, das die Fitnessfunktion gut genug erfüllt. \cite{Holland} \cite[Abschnitt 1.3.1]{EvolutionaryDesign_Introduction}\\
 In interaktiven Versionen evolutionärer Algorithmen können sogar Benutzer die Fitnessfunktion ersetzen, indem sie selbst die erzeugten Individuen bewerten. \cite{InteractiveEvolutionaryComputation}
 
 In der Masterarbeit \cite{JonHudson} werden 3D-Modelle von Lebewesen und ein passendes Rig (siehe Abschnitt \ref{character_animation}) mit Hilfe von genetischen Algorithmen generiert. Das Augenmerk liegt dort aber nicht auf realistischen Tieren oder realistischen Skeletten, im Gegensatz zu dieser Arbeit.
