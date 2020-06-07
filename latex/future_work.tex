@@ -9,31 +9,30 @@
 % 
 % 3. Aufbauende/Zukünftige Arbeiten: Welche nächsten Schritte sind geplant (erst kurzfristige, dann längerfristige)? Welche möglichen Lösungsansätze für noch bestehende Probleme sind denkbar? Wie könnten Folgearbeiten aussehen?
 
-\paragraph{Zusammenfassung}
+Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generiert, und eine Implementierung desselben. Die Daten, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern der Zoologie. 
+Mit Hilfe einer \emph{Principal Component Analysis} (PCA) erhält man die Möglichkeit zufällig normalverteilte Punkte zu erzeugen, die der gleichen Verteilung folgen wie die Beispieldaten.
+Ein so erzeugter Punkt liefert alle benötigten Informationen um ein Skelett zu generieren.
+Diese Technik liefert ohne weitere Einschränkungen viele unterschiedliche Skelette, die in den allermeisten Fällen auch realistisch wirken.\\
+Nur die Positionierung der Beine liefert in vielen Fällen keine schönen Ergebnisse. Um das zu verbessern wären weitere Informationen, \zb aus den 2D-Bildern, notwendig. Trotzdem kann das generierte Skelett als erster Eindruck \bzw Inspiration für ein Modell dienen. Wenn das erzeugte Skelett die Grundlage für ein animiertes Wesen sein soll, muss die Positionierung der Knochen ohnehin situationsgerecht angepasst werden.
 
-Das Ergebnis dieser Arbeit ist ein Algorithmus, der 3D-Modelle von Wirbeltierskeletten generiert, und eine Implementierung desselben. Die Informationen, auf deren Grundlage der Algorithmus arbeitet, sind annotierte 2D-Bilder von Wirbeltierskeletten, \zb aus Lehrbüchern der Zoologie. Mit Hilfe einer \emph{Principal Component Analysis} auf diesen Datenpunkten erhält man eine Möglichkeit zufällig normalverteilte Punkte zu erzeugen, die der gleichen Verteilung folgen wie die Datenpunkte.
-Ein so erzeugter Punkt liefert alle Informationen, die nötig sind, um ein Skelett zu generieren.
-Diese Technik liefert ohne weitere Einschränkungen viele unterschiedliche Skelette, die in den allermeisten Fällen auch gut aussehen.\\
-Außerdem können gezielt Skelette mit bestimmten Eigenschaften generiert werden, indem die \emph{Principal Component Analysis} auf bedingten Verteilungen ausgeführt wird oder Variationen zu schon generierten Skeletten erzeugt werden. Dies ist sehr hilfreich, wenn man schon eine Vorstellung davon hat, wie das zu generierende Skelett ungefähr aussehen soll.
-
-Zusätzlich zu "`realistischen"' Wirbeltierskeletten lassen sich mit dem Algorithmus auch fantastische Skelette generieren. Es können zusätzliche Extremitäten und ein zusätzlicher Schultergürtel erzeugt werden.
-Die Datengrundlage bleibt jedoch die selbe. Es werden die gleichen Bilder von echten Wirbeltierskeletten verwendet.
-Deshalb wurde darauf geachtet, dass sich die fantastischen Skelette durch die genannten Veränderungen nicht zu stark von echten Wirbeltierskeletten entfernen.  
+Außerdem können gezielt Skelette mit bestimmten Eigenschaften generiert werden, indem PCA auf bedingten Verteilungen ausgeführt wird oder Variationen zu schon generierten Skeletten erzeugt werden. Dies ist sehr hilfreich, wenn man schon eine Vorstellung davon hat, wie das zu generierende Skelett ungefähr aussehen soll.
 
 Eine kontextfreie Grammatik legt fest, welche Knochen generiert werden und wie das Skeletts aufgebaut ist.
-Diese Grammatik sorgt dafür, dass die Ersetzungsregeln relativ übersichtlich dargestellt und leicht erweiterbar sind. Da sie aber im Voraus, durch den zufällig erzeugten Punkt, schon so stark festgelegt wird, dass immer genau ein Wort generiert wird, ist sie nicht unbedingt notwendig.
+Diese Grammatik sorgt dafür, dass die Ersetzungsregeln relativ übersichtlich dargestellt und leicht erweiterbar sind. Da sie aber in den vorhergehenden Schritten des Algorithmus schon so stark eingeschränkt wird, dass immer genau ein Skelett generiert wird, ist sie nicht unbedingt notwendig.
 
-Die Positionierung der Beine liefert in vielen Fällen keine schönen Ergebnisse. Um das zu verbessern wären weitere Informationen, \zb aus den 2D-Bildern, notwendig. Trotzdem kann das generierte Skelett als erster Eindruck \bzw Inspiration für ein Modell dienen. Wenn das erzeugte Skelett die Grundlage für ein animiertes Wesen sein soll, muss die Positionierung der Knochen ohnehin noch öfter angepasst werden.
+Zusätzlich zu "`realistischen"' Wirbeltierskeletten lassen sich mit dem Algorithmus auch fantastische Skelette generieren. Es können zusätzliche Extremitäten und ein zusätzlicher Schultergürtel erzeugt werden.
+Die Datengrundlage bleibt jedoch dieselbe. Es werden die gleichen Bilder von echten Wirbeltierskeletten verwendet.
+Deshalb unterscheiden sich die fantastischen Skelette nicht zu sehr von echten Wirbeltierskeletten.  
 
 
-\paragraph{Zukünftige Arbeiten}
+\paragraph{Ausblick}
 
 In zukünftigen Arbeiten könnte es sinnvoll sein die Datengrundlage, also die Auswahl an 2D-Skelettbildern, zu erweitern. Das Beispiel Mensch wurde \zb außen vor gelassen. Es könnte also getestet werden wie gut Skelette mit sehr aufrechter Wirbelsäule generiert werden können.\\
-Außerdem könnte das Merkmal \emph{Gewicht}, das hier zwar erhoben, aber nicht verwendet wurde, in die Generierung mit einfließen, \zb in die Dicke der Knochen. Hier sollte aber beachtet werden, dass das Gewicht der Tiere nicht proportional zu ihrer Knochendicke ist (siehe Abschnitt \ref{bigAndSmall}).
+Außerdem könnte das Merkmal \emph{Gewicht}, das hier zwar erhoben, aber nicht verwendet wurde, in die Generierung mit einfließen, \zb in die Dicke der Knochen. Hier sollte aber beachtet werden, dass die Knochendicke der Tiere nicht proportional zu ihrem Gewicht ist (siehe Abschnitt \ref{bigAndSmall}).
 
 Die Sammlung der verwendeten 3D-Modelle von Knochen lässt sich relativ leicht durch weitere \bzw alternative Modelle erweitern (siehe Abschnitt \ref{bone_models}). Um die Benutzung des Programms noch flexibler zu machen, könnte es so ergänzt werden, dass die zu verwendenden Knochenmodelle vom Benutzer selbst vorgegeben werden können.\\
-Um dem Benutzer noch mehr Kontrolle über die Generierung zu geben, könnte der Algorithmus auch interaktiv gestaltet werden. Die Generierung könnte \zb schrittweise erfolgen mit der Möglichkeit nach jedem Schritt einzugreifen. Oder es könnte die Möglichkeit geschaffen werden Skelettteile, die dem Benutzer nicht gefallen, neu zu generieren.
+Der Algorithmus könnte auch interaktiv gestaltet werden, um dem Benutzer noch mehr Kontrolle über die Generierung zu geben. Diese könnte \zb schrittweise erfolgen, mit der Möglichkeit nach jedem Schritt einzugreifen. Der Benutzer könnte dabei beispielsweise Schritte rückgängig machen, Skelettteile, die ihm nicht gefallen, neu generieren oder zusätzliche Bedingungen angeben.
 
-Aufgrund der Zeitbeschränkung hat sich diese Arbeit auf die Generierung von Skeletten beschränkt. Es werden weder Muskeln noch Haut generiert. Es wäre aber eine Möglichkeit den hier vorgestellten Algorithmus damit zu erweitern. Dies würde einen noch plastischeren Eindruck des generierten Tieres liefern und bei der Modellierung von sehr wirklichkeitsnahen Wirbeltieren noch mehr Arbeit vereinfachen.
+Aufgrund der Zeitvorgabe beschränkt sich diese Arbeit auf die Generierung von Skeletten. Es werden weder Muskeln noch Haut generiert. Es wäre aber möglich den hier vorgestellten Algorithmus entsprechend zu erweitern. Dies würde einen noch plastischeren Eindruck der generierten Tiere liefern und die Modellierung von sehr wirklichkeitsnahen Wirbeltieren noch mehr vereinfachen.
 
 

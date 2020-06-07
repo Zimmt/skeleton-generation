@@ -13,7 +13,7 @@
 
 \NeedsTeXFormat{LaTeX2e}										% We do need LaTeX2e
 \ProvidesClass{thesisclass}
-\LoadClass[a4paper,11pt,titlepage]{scrbook}	% Class based on scrbook
+\LoadClass[a4paper,11pt,titlepage,oneside]{scrbook}	% Class based on scrbook
 
 % following line removed by M. Retzlaff, 20121114, conflict with Babel and outdated:
 %\RequirePackage{ngerman}										% New german orthography
