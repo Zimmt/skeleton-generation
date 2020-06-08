@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70212" creator="Ipe 7.2.13">
-<info created="D:20200512152719" modified="D:20200603164940"/>
+<info created="D:20200512152719" modified="D:20200608111138"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -481,12 +481,12 @@ wirbel}</text>
 wirbel}</text>
 <text matrix="1 0 0 1 -113.13 -30.4778" transformations="translations" pos="368 720" stroke="black" type="minipage" width="64" height="11.924" depth="6.95" valign="top" style="center">\textbf{Wurzel-\\
 knochen}</text>
-<text matrix="1 0 0 1 17.0683 -12.5625" transformations="translations" pos="256 816" stroke="black" type="label" width="29.888" height="6.918" depth="0" valign="top">Skelett</text>
-<text transformations="translations" pos="128 736" stroke="black" type="minipage" width="64" height="5.958" depth="0.96" valign="top" style="center">Vorderteil</text>
-<text matrix="1 0 0 1 -37.3274 -10.0725" transformations="translations" pos="416 736" stroke="black" type="minipage" width="80" height="5.958" depth="0.96" valign="top" style="center">Hinterteil</text>
-<text matrix="1 0 0 1 -169.062 -124.78" transformations="translations" pos="464 560" stroke="black" type="label" width="73.392" height="6.808" depth="0" valign="top">Hinterextremit\&quot;at</text>
-<text matrix="1 0 0 1 -97.9178 -124.784" transformations="translations" pos="112 560" stroke="black" type="label" width="75.08" height="6.918" depth="0" valign="top">Vorderextremit\&quot;at</text>
-<text matrix="1 0 0 1 -139.077 -61.4201" transformations="translations" pos="160 592" stroke="black" type="label" width="60.938" height="6.926" depth="1.93" valign="top">Schulterg\&quot;urtel</text>
+<text matrix="1 0 0 1 17.0683 -12.5625" transformations="translations" pos="256 816" stroke="black" type="label" width="29.46" height="6.918" depth="0" valign="top">\textit{Skelett}</text>
+<text transformations="translations" pos="128 736" stroke="black" type="minipage" width="64" height="5.958" depth="0.96" valign="top" style="center">\textit{Vorderteil}</text>
+<text matrix="1 0 0 1 -37.3274 -10.0725" transformations="translations" pos="416 736" stroke="black" type="minipage" width="80" height="5.958" depth="0.96" valign="top" style="center">\textit{Hinterteil}</text>
+<text matrix="1 0 0 1 -169.062 -124.78" transformations="translations" pos="464 560" stroke="black" type="label" width="72.294" height="6.808" depth="0" valign="top">\textit{Hinterextremit\&quot;at}</text>
+<text matrix="1 0 0 1 -97.9178 -124.784" transformations="translations" pos="112 560" stroke="black" type="label" width="73.439" height="6.918" depth="0" valign="top">\textit{Vorderextremit\&quot;at}</text>
+<text matrix="1 0 0 1 -139.077 -61.4201" transformations="translations" pos="160 592" stroke="black" type="label" width="60.351" height="6.926" depth="1.93" valign="top">\textit{Schulterg\&quot;urtel}</text>
 <path stroke="darkgray" pen="fat">
 256 816
 256 784
@@ -605,14 +605,14 @@ h
 <text matrix="1 0 0 1 193.528 -215.096" transformations="translations" pos="224 656" stroke="black" type="minipage" width="48" height="11.881" depth="6.91" valign="top" style="center">\textbf{Unter-\\
 schenkel}</text>
 <text matrix="1 0 0 1 193.886 -268.721" transformations="translations" pos="224 656" stroke="black" type="minipage" width="48" height="5.958" depth="0.96" valign="top" style="center">\textbf{Fu\ss}</text>
-<text matrix="1 0 0 1 -67.7253 -15.4339" transformations="translations" pos="128 736" stroke="black" type="minipage" width="64" height="5.958" depth="0.96" valign="top" style="center">Hals</text>
+<text matrix="1 0 0 1 -67.7253 -15.4339" transformations="translations" pos="128 736" stroke="black" type="minipage" width="64" height="5.958" depth="0.96" valign="top" style="center">\textit{Hals}</text>
 <path matrix="0.665585 0 0 0.735488 -98.8958 128.217" stroke="darkgray" pen="fat">
 256 816
 256 784
 320 784
 320 816 u
 </path>
-<text matrix="1 0 0 1 -137.253 2.4295" transformations="translations" pos="160 592" stroke="black" type="label" width="60.938" height="6.926" depth="1.93" valign="top">Schulterpartie</text>
+<text matrix="1 0 0 1 -137.253 2.4295" transformations="translations" pos="160 592" stroke="black" type="label" width="60.834" height="6.926" depth="1.93" valign="top">\textit{Schulterpartie}</text>
 <path matrix="1 0 0 1 -41.611 46.624" stroke="darkgray" pen="fat">
 48 560
 48 528
@@ -640,7 +640,7 @@ knochen}</text>
 460.995 717.929 m
 478.224 636.862 l
 </path>
-<text matrix="1 0 0 1 -158.487 -28.3299" transformations="translations" pos="464 560" stroke="black" type="label" width="56.068" height="6.926" depth="1.93" valign="top">Beckeng\&quot;urtel</text>
+<text matrix="1 0 0 1 -158.487 -28.3299" transformations="translations" pos="464 560" stroke="black" type="label" width="56.034" height="6.926" depth="1.93" valign="top">\textit{Beckeng\&quot;urtel}</text>
 <path matrix="1 0 0 1 237.882 -15.6785" stroke="darkgray" pen="fat">
 48 560
 48 528
@@ -650,6 +650,42 @@ knochen}</text>
 <path stroke="darkgray" pen="fat" arrow="pointed/small">
 374.882 534.155 m
 419.247 610.79 l
+</path>
+<text matrix="1 0 0 1 85.9132 -263.72" transformations="translations" pos="112 560" stroke="black" type="label" width="61.01" height="6.918" depth="0" valign="top">\textit{Nichtterminal}</text>
+<path matrix="0.871349 0 0 1 145.639 -251.402" stroke="darkgray" pen="fat">
+48 560
+48 528
+144 528
+144 560 u
+</path>
+<path matrix="1.10857 0 0 1.03453 129.465 22.402" stroke="black" fill="white" pen="fat">
+147.543 272.388 m
+147.543 250.796 l
+195.832 250.796 l
+195.832 272.388 l
+h
+</path>
+<text matrix="1 0 0 1 71.2729 -360.304" transformations="translations" pos="224 656" stroke="black" type="minipage" width="48" height="5.958" depth="0.96" valign="top" style="center">\textbf{Terminal}</text>
+<path matrix="1 0 0 1 55.0284 41.1731" stroke="black" pen="ultrafat" arrow="normal/normal">
+80 208 m
+128 208 l
+</path>
+<path matrix="1 0 0 1 55.0284 41.1731" stroke="darkgray" pen="fat" arrow="pointed/small">
+80 192 m
+128 192 l
+</path>
+<path matrix="1 0 0 1 212.257 82.2986" stroke="darkcyan" pen="fat" arrow="pointed/small">
+80 160 m
+128 160 l
+</path>
+<text matrix="1 0 0 1 -192.093 -64.6446" transformations="translations" pos="384 304" stroke="black" type="label" width="73.89" height="6.918" depth="0" valign="baseline">Kindelement von</text>
+<text matrix="1 0 0 1 -33.4161 -17.4785" transformations="translations" pos="384 256" stroke="black" type="label" width="79.563" height="6.918" depth="0" valign="baseline">wird ersetzt durch</text>
+<path matrix="1 0 0 1 0 32" stroke="black" pen="fat">
+128 288 m
+128 192 l
+448 192 l
+448 288 l
+h
 </path>
 </page>
 </ipe>
