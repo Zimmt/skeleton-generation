@@ -5,14 +5,14 @@
 Wirbeltiere sind allgegenwärtig. Sie sind nicht nur im alltäglichen Leben anzutreffen, sondern auch in Computerspielen und Filmen. In der Produktion dieser Medien besteht also ein stetiger Bedarf an 3D-Modellen von Wirbeltieren.
 Trotzdem gibt es nur wenige Algorithmen, die die KünstlerInnen bei dieser zeitintensiven Arbeit unterstützen \cite{PCGSurvey_videoGames}.\\
 In dieser Arbeit wird ein Algorithmus zur Generierung abstrahierter, aber dennoch wirklichkeitsnaher, 3D-Modelle von Skeletten vorgestellt, die die Grundlage für die Modellierung eines kompletten Tieres bilden können.
-Viele andere Ansätze generieren hingegen zunächst 3D-Modelle der "`Außenhaut"' der Tiere und erstellen dann ein passendes, sehr abstraktes Skelett (Rig) für die Animation (siehe \mbox{Abschnitt \ref{procedural_generation}}). 
+Viele andere Ansätze generieren hingegen zunächst 3D-Modelle der "`Außenhaut"' der Tiere und erstellen dann ein passendes, sehr abstraktes Skelett (Rig) für die Animation (siehe Abschnitte \ref{procedural_generation} und \ref{character_animation}). 
 Dieses Rig hat nicht viel mit einem echten Wirbeltierskelett zu tun und ist nur für die Animation gedacht.
 
 % Ziel
 Diese Arbeit konzentriert sich auf die Generierung von relativ wirklichkeitsnahen Skeletten, die dann unterschiedlich weiterverwendet werden können.
-Einerseits können die Skelette als Inspiration dienen, \zb für Körperform, Proportionen oder mögliche Bewegungsabläufe.
+Einerseits können die Skelette als Inspiration dienen, \zb zu Körperform, Proportionen oder möglichen Bewegungsabläufen der zu modellierenden Wirbeltiere.
 Andererseits können sie eine Grundlage für sehr realistische Modelle sein, die zusätzlich zum Skelett auch Muskeln und Haut modellieren.
-In beiden Fällen darf das Modell nicht zu abstrakt sein, da es sonst zu wenig Informationen zum Aufbau des konkreten Tiers liefert. Zusätzlich erlaubt es die algorithmische Vorgehensweise schnell eine große Auswahl von Skeletten zu erzeugen.\\
+In beiden Fällen darf das erzeugte Modell nicht zu abstrakt sein, da es sonst zu wenig Informationen zum Aufbau des konkreten Tiers liefert. Außerdem erlaubt es die algorithmische Vorgehensweise schnell eine große Auswahl von Skeletten zu erzeugen.\\
 Ziel ist es also Skelette zu generieren, welche genug Knochen enthalten um realistisch zu wirken, aber auch nicht zu viele um den Aufwand für die Generierung und die Programmierung des Algorithmus im Rahmen zu halten.
 
 % Warum nur Wirbeliere?
@@ -21,8 +21,8 @@ Deshalb werden abstrahierte Skelette mit vereinfachten und in der Anzahl reduzie
 
 % Methoden+Aufbau
 Im Folgenden werden die wichtigsten Schritte des Algorithmus kurz angerissen. Ein Überblick über den Ablauf des Algorithmus ist in Abschnitt \ref{section:overview} zu finden und Abbildung \ref{intro_pic} gibt einige grafische Einblicke.\\
-Die Datengrundlage für den Algorithmus schafft eine \emph{Principal Component Analysis} (Hauptkomponentenanalyse) auf annotierten 2D-Skelett"-bildern (Kapitel \ref{chapter:pca}). Ohne sie wäre es schwer Skelette in einer natürlichen und stabilen Haltung zu generieren.
-Die Knochen des Skeletts werden dann mit Hilfe einer kontextfreien Grammatik generiert und gleichzeitig angeordnet (Kapitel \ref{chapter:skeleton_generation}). 
+Die Datengrundlage für den Algorithmus schafft eine \emph{Principal Component Analysis} (Hauptkomponentenanalyse) auf annotierten 2D-Skelett"-bildern (Kapitel \ref{chapter:pca}). Die Principal Component Analysis findet Zusammenhänge in den gegebenen Daten. Dadurch ist es möglich Skelette mit natürlichen Proportionen und einer realistischen Haltung zu erzeugen.
+Die Knochen des Skeletts werden mit Hilfe einer kontextfreien Grammatik generiert und gleichzeitig angeordnet (Kapitel \ref{chapter:skeleton_generation}). 
 Zum Schluss wird aus existierenden 3D-Modellen von Knochen ein 3D-Modell des generierten Skeletts erstellt (Abschnitt \ref{bone_models})).\\
 Prinzipiell generiert der Algorithmus zufällige Skelette. Es können aber auch Benutzereingaben, \zb zur Anzahl der Extremitäten, berücksichtigt oder Variationen zu schon bestehenden Skeletten generiert werden (Kapitel \ref{chapter:additional_features}).
 Zusätzliche Informationen zu Implementierungsdetails sind in Kapitel \ref{chapter:implementation_detail} zu finden. Abgerundet wird die Arbeit mit Fazit und Ausblick in Kapitel \ref{chapter:conclusion}.
@@ -40,6 +40,6 @@ Zusätzliche Informationen zu Implementierungsdetails sind in Kapitel \ref{chapt
   \\
   \subfloat[generiertes Skelett]{\includegraphics[height=0.25\textheight]{../java_skeleton_generation/example_skeletons/4legs_groundPlane.jpg}}
   
-  \caption{(a - c) Beispiele für annotierte Skelette, die als Eingabe für die PCA verwendet wurden. (d - f) Visualisierung der Ergebnise der PCA, (d) ist der Mittelwert der Beispiele, (c) und (e) entstehen jeweils, wenn die Koordinate für den Eigenvektor zum größten Eigenwert die entsprechende positive \bzw negative Standardabweichung annimmt. (g) Beispiel für ein generiertes Skelett (als Hintergrund wurde \cite{background} verwendet).}
+  \caption{(a - c) Beispiele für annotierte Skelette, die als Eingabe für die PCA verwendet wurden (Bildquellen siehe \ref{picture_sources}). (d - f) Visualisierung der Ergebnisse der PCA, (d) ist der Mittelwert der Beispiele, (c) und (e) entstehen jeweils, wenn die Koordinate für den Eigenvektor zum größten Eigenwert die entsprechende positive \bzw negative Standardabweichung annimmt. (g) Beispiel für ein generiertes Skelett (als Hintergrund wurde \cite{background} verwendet).}
   \label{intro_pic}
  \end{figure}
