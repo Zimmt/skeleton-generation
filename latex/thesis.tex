@@ -6,6 +6,7 @@
 % No empty in-between chapters, remove this line if desired for double-page printing
 \let\cleardoublepage\clearpage
 
+
 %% -------------------------------
 %% |  Information for PDF file   |
 %% -------------------------------
@@ -124,7 +125,7 @@
 
 \frontmatter
 \pagenumbering{roman}
-\include{titlepage}
+\input{titlepage}
 \blankpage
 {\pagestyle{empty}\null\newpage}
 
@@ -148,14 +149,14 @@
 %% -----------------
 \mainmatter
 \pagenumbering{arabic}
-\include{introduction}
-\include{biology}
-\include{basics}
-\include{pca}
-\include{skeleton_generation}
-\include{additional_features}
-\include{implementation_detail}
-\include{future_work}
+\input{introduction}
+\input{biology}
+\input{basics}
+\input{pca}
+\input{skeleton_generation}
+\input{additional_features}
+\input{implementation_detail}
+\input{future_work}
 
 
 %% --------------------
