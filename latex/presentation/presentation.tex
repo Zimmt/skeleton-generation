@@ -63,20 +63,11 @@
 \section{Principal Component Analysis}
 %-------------------------------------
 \begin{frame}{Warum PCA?}
- \only<1>{
-  \begin{figure}
-   \centering
-   \includegraphics[height=0.7\textheight]{graphics/skeleton_set.jpg}
-   \caption{\cite{skeleton_set}}
-  \end{figure}
- }
- \only<2->{
-  \begin{figure}
-   \centering
-   \includegraphics[height=0.7\textheight]{../../PCA/Skelettbilder/Kaninchen_farbig.png}
-   \caption{Annotiertes Skelett eines Kaninchens, zusätzlich erhobene Merkmale: Anzahl \emph{Flügel}, Anzahl \emph{Beine} mit Bodenkontakt, \emph{Gewicht}}
-  \end{figure}
- }
+ \begin{figure}
+  \centering
+  \includegraphics[height=0.7\textheight]{graphics/skeleton_set.jpg}
+  \caption{\cite{skeleton_set}}
+ \end{figure}
 \end{frame}
 
 \begin{frame}{PCA}
@@ -111,18 +102,21 @@
   \end{itemize}
  \end{minipage}~
  \begin{minipage}{0.5\textwidth}
+  \begin{figure}
+  \centering
   \includegraphics[width=\textwidth]{../../PCA/Skelettbilder/Kaninchen_farbig.png}
+  \caption{Annotiertes Skelett eines Kaninchens}
+ \end{figure}
  \end{minipage}
 \end{frame}
 
 
 \begin{frame}{Analyse der Eingabedaten}
- %TODO: Skalierung erwähnen?
   \begin{figure}
   \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}~
   \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
   
-  \caption{Projektion der Eingabedaten auf die Ebene, die durch den ersten und zweiten Eigenvektor aufgespannt wird.}
+  \caption{Projektion der Eingabedaten auf die Ebene, die durch die erste und zweite Achse des Hyperellipsoids aufgespannt wird.}
  \end{figure}
 \end{frame}
 
@@ -164,9 +158,11 @@
   \setcounter{enumi}{-1}
   \item Benutzereingabe einlesen
   \item PCA auf Beispielskeletten durchführen
-  \item Punkt $q$ im Konfigurationsraum (zufällig) bestimmen und daraus die Parameter für die Grammatik $G$
-  \item Bestandteile des Skeletts mit $G$ zu erzeugen und positionieren
-  \item Alle Elemente, die nicht auf der Wirbelsäule liegen, spiegeln
+  \item[2a.] Punkt $q$ im Konfigurationsraum (zufällig) bestimmen 
+  \item[2b.] Parameter für die kontextfreie Grammatik $G$ aus $q$ und Benutzereingabe bestimmen
+  \setcounter{enumi}{2}
+  \item Bestandteile des Skeletts mit $G$ erzeugen und positionieren
+  \item Alle Bestandteile, die nicht auf der Wirbelsäule liegen, spiegeln
   \item 3D-Modell generieren
  \end{enumerate}
 \end{frame}
@@ -187,6 +183,8 @@
 
 \begin{frame}{Positionierung der Extremitäten}
  \begin{itemize}
+  \item Längen der Knochen bekannt
+  \item Winkel an Gelenken unbekannt
   \item keine kanonische Ruheposition
   \item Unterscheidung anhand der Funktion:
   \begin{itemize}
@@ -222,18 +220,33 @@
  \begin{enumerate}
   \item Bedingte Verteilung als Eingabe für PCA
   \begin{itemize}
-   \item Anzahl Flügel, Beine, Flossen und Arme
+   \item Anzahl Flügel und Beine
+   \item Anzahl Flossen und Arme
    \item Länge des Halses in $y$-Richtung
    \item Länge des Schwanzes in $x$-Richtung
   \end{itemize}
   \item Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)
   \item Schon einmal generierte Skelette laden
  \end{enumerate}
- 
- \begin{block}{Variationen}
-   können in Fall 2 und 3 erzeugt werden.
- \end{block}
 \end{frame}
+
+\begin{frame}{Variationen}
+ \begin{block}{Gegeben}
+  \begin{itemize}
+   \item Punkt $q$ aus dem Konfigurationsraum
+   \item generiertes Skelett $S$ (optional)
+   \item Benutzereingaben $B$ (optional)
+  \end{itemize}
+ \end{block}
+ 
+ Vorgehen (statt den Schritten $1+2$ des Algorithmus):
+ \begin{enumerate}
+  \item zufällig normalverteilten Punkt $q'$ mit Erwartungswert $q$ bestimmen
+  \item Parameter $p$ für die Grammatik $G$ aus $q'$ und $B$ bestimmen, falls nicht schon durch $S$ vorgegeben
+  \item Parameter $p$ variieren (\va Anzahl, Art und Position der Extremitäten)
+ \end{enumerate}
+\end{frame}
+
 
 \begin{frame}{Erzeugung eines 3D-Modells}
  \centering
@@ -264,7 +277,7 @@
  \begin{itemize}
   \item Auch Skelette mit sehr aufrechter Wirbelsäule wie beim Menschen generierbar?
   \item Gewicht der Tiere verwenden \zb als Einfluss auf Dicke der Knochen
-  \item mehr und leichter austauschbare Knochenmodelle
+  \item mehr verschiedene und leichter austauschbare Knochenmodelle
   \item interaktiver Algorithmus
   \item Muskeln und Haut generieren
  \end{itemize}
@@ -303,7 +316,7 @@
 
 \begin{frame}{Gewichtung der Merkmale}
  \begin{itemize}
-  \item Alle Merkmale zunächst auf $[0, 1]$ skaliert $\rightarrow$ Merkmale mit wenig Varianz haben weniger Einfluss
+  \item Alle Merkmale zunächst auf $[0, 1]$ skaliert
   \item Diskrete Merkmale (Anzahl Flügel und Beine) nicht normalverteilt, liefern aber hilfreiche Informationen $\rightarrow$ kleiner skalieren
   \item Gewicht nicht Hauptmerkmal $\rightarrow$ kleiner skalieren
  \end{itemize}
