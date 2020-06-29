@@ -16,7 +16,7 @@
 \title{Prozedurale Generierung\\ von Wirbeltierskeletten}
 \author{Nina Zimbel}
 \institute{KIT - Institut für Visualisierung und Datenanalyse}
-\date{\today}
+\date{7.\ Juli 2020}
 
 % Shorcuts
 \newcommand{\zb}{z.\,B.\ }
@@ -62,14 +62,6 @@
 %-------------------------------------
 \section{Principal Component Analysis}
 %-------------------------------------
-\begin{frame}{Warum PCA?}
- \begin{figure}
-  \centering
-  \includegraphics[height=0.7\textheight]{graphics/skeleton_set.jpg}
-  \caption{\cite{skeleton_set}}
- \end{figure}
-\end{frame}
-
 \begin{frame}{PCA}
  \begin{minipage}{0.6\textwidth}
    \begin{itemize}
@@ -86,10 +78,17 @@
  \end{itemize}
 \end{frame}
 
+\begin{frame}{Warum PCA?}
+ \begin{figure}
+  \centering
+  \includegraphics[height=0.7\textheight]{graphics/skeleton_set.jpg}
+  \caption{\cite{skeleton_set}}
+ \end{figure}
+\end{frame}
+
 \begin{frame}{Datenerhebung}
  \begin{minipage}{0.5\textwidth}
   \begin{itemize}
-   \item $44$ Beispiele
    \item 2D-Skelettbilder, \va aus Zoologiebüchern
    \item Merkmale: 
    \begin{itemize}
@@ -99,6 +98,7 @@
     \item Anzahl der Beine mit Bodenkontakt
     \item Gewicht
    \end{itemize}
+   \item $44$ Beispiele
   \end{itemize}
  \end{minipage}~
  \begin{minipage}{0.5\textwidth}
@@ -221,7 +221,6 @@
   \item Bedingte Verteilung als Eingabe für PCA
   \begin{itemize}
    \item Anzahl Flügel und Beine
-   \item Anzahl Flossen und Arme
    \item Länge des Halses in $y$-Richtung
    \item Länge des Schwanzes in $x$-Richtung
   \end{itemize}
@@ -242,7 +241,7 @@
  Vorgehen (statt den Schritten $1+2$ des Algorithmus):
  \begin{enumerate}
   \item zufällig normalverteilten Punkt $q'$ mit Erwartungswert $q$ bestimmen
-  \item Parameter $p$ für die Grammatik $G$ aus $q'$ und $B$ bestimmen, falls nicht schon durch $S$ vorgegeben
+  \item Parameter $p$ für die Grammatik $G$ aus $q'$ und $B$ und $S$ bestimmen, falls vorhanden
   \item Parameter $p$ variieren (\va Anzahl, Art und Position der Extremitäten)
  \end{enumerate}
 \end{frame}
@@ -276,7 +275,7 @@
 \begin{frame}{Ausblick}
  \begin{itemize}
   \item Auch Skelette mit sehr aufrechter Wirbelsäule wie beim Menschen generierbar?
-  \item Gewicht der Tiere verwenden \zb als Einfluss auf Dicke der Knochen
+  \item Gewicht der Tiere verwenden \zb als Einfluss auf Größe der Tiere oder Dicke der Knochen
   \item mehr verschiedene und leichter austauschbare Knochenmodelle
   \item interaktiver Algorithmus
   \item Muskeln und Haut generieren
@@ -286,6 +285,8 @@
 
 \begin{frame}[focus]
  Vielen Dank für die Aufmerksamkeit!
+ \vfill
+ \small weitere Informationen unter \url{https://github.com/Zimmt/skeleton-generation}
 \end{frame}
 
 \appendix
