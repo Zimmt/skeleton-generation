@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{subfig}
+\renewcommand{\thesubfigure}{\arabic{subfigure}}
 \usepackage{ngerman}
 \usetheme{focus}
 
@@ -15,7 +16,7 @@
 
 \title{Prozedurale Generierung\\ von Wirbeltierskeletten}
 \author{Nina Zimbel}
-\institute{KIT - Institut für Visualisierung und Datenanalyse}
+\institute{KIT -- Institut für Visualisierung und Datenanalyse}
 \date{7.\ Juli 2020}
 
 % Shorcuts
@@ -35,7 +36,15 @@
 %-------------------
 %\section{Einleitung}
 %-------------------
-\begin{frame}[focus]
+\begin{frame}[plain]
+ \centering
+ \begin{figure}
+  \includegraphics[width=\textwidth]{graphics/ziva-post2.jpg}
+ \end{figure}
+ \uncover<2>{\small Maya Plugin Ziva, wirklichkeitsgetreues Modell eines Löwen \cite{Ziva_Lion}}
+\end{frame}
+
+\begin{frame}[plain]
  \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{graphics/kaninchen.jpg}
@@ -43,21 +52,25 @@
  \end{figure}
 \end{frame}
 
-\begin{frame}[focus]
- \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{graphics/ziva-post2.jpg}
-  \caption{Maya Plugin Ziva, wirklichkeitsgetreues Modell eines Löwen \cite{Ziva_Lion}}
- \end{figure}
-\end{frame}
-
-\begin{frame}[plain]
+\begin{frame}{Abstrahierter Grundbauplan}
  \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{../graphics/skeletonPlan}
-  \caption{Abstrahierter Grundbauplan eines Wirbeltierskeletts}
+  %\caption{Abstrahierter Grundbauplan eines Wirbeltierskeletts}
  \end{figure}
 \end{frame}
+
+\begin{frame}{Gliederung}
+ \begin{figure} 
+  \subfloat[PCA]{\includegraphics[height=0.4\textheight]{graphics/pca_without_global_coords}}~
+  \subfloat[Ergebnisse]{\includegraphics[height=0.4\textheight]{../../PCA/mean_log_weight_downscaled_wings_legs_and_weight(onlyBox,stroke4).jpg}}~
+  \subfloat[Algorithmus]{\includegraphics[height=0.4\textheight]{../../java_skeleton_generation/example_skeletons/bird.jpg}}~
+%   \subfloat{\includegraphics[height=0.4\textheight]{../../java_skeleton_generation/example_skeletons/pegasus.jpg}}
+ \end{figure}
+ \vfill
+ \scriptsize Als Hintergrund wurde bei allen erzeugten Skeletten \cite{background} verwendet. Die Quellen der verwendeten externen 3D-Modelle sind in der Ausarbeitung zu finden.
+\end{frame}
+
 
 %-------------------------------------
 \section{Principal Component Analysis}
@@ -73,9 +86,11 @@
   \includegraphics[width=\textwidth]{graphics/pca}
  \end{minipage}
  
- \begin{itemize}
-  \item Verteilungen entlang der Achsen sind unabhängig voneinander $\rightarrow$ Erzeugung zufälliger Punkte mit gleicher Verteilung wie Eingabe möglich
- \end{itemize}
+ \uncover<2>{
+  \begin{itemize}
+   \item Verteilungen entlang der Achsen sind unabhängig voneinander $\rightarrow$ Erzeugung zufälliger Punkte mit gleicher Verteilung wie Eingabe möglich
+  \end{itemize}
+ }
 \end{frame}
 
 \begin{frame}{Warum PCA?}
@@ -93,61 +108,39 @@
    \item Merkmale: 
    \begin{itemize}
     \item Verlauf der Wirbelsäule (Bézierkurven)
-    \item Länge der Knochen der Extremitäten
-    \item Anzahl der Flügel
-    \item Anzahl der Beine mit Bodenkontakt
-    \item Gewicht
+    \item<2-> Länge der Knochen der Extremitäten
+    \item<3-> Anzahl der Flügel
+    \item<3-> Anzahl der Beine mit Bodenkontakt
+    \item<4-> Gewicht
    \end{itemize}
-   \item $44$ Beispiele
   \end{itemize}
  \end{minipage}~
  \begin{minipage}{0.5\textwidth}
+  \captionsetup{justification=centering}
   \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{../../PCA/Skelettbilder/Kaninchen_farbig.png}
-  \caption{Annotiertes Skelett eines Kaninchens}
+  \includegraphics[width=\textwidth]{../../PCA/Skelettbilder/Klippschliefer_farbig.png}
+  \caption{Annotiertes Skelett eines Klippschliefers \cite{Spezielle_Zoologie}}
  \end{figure}
  \end{minipage}
 \end{frame}
 
-
-\begin{frame}{Analyse der Eingabedaten}
-  \begin{figure}
-  \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}~
-  \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
-  
-  \caption{Projektion der Eingabedaten auf die Ebene, die durch die erste und zweite Achse des Hyperellipsoids aufgespannt wird.}
- \end{figure}
-\end{frame}
-
 \begin{frame}{Mittelwert}
+ \captionsetup{justification=centering}
  \begin{figure}
   \centering
   \includegraphics[height=0.6\textheight]{../../PCA/mean_log_weight_downscaled_wings_legs_and_weight(onlyBox,stroke4).jpg}
-  \caption{Visualisierung des Mittelwerts der Eingabedaten. Werte, die nicht grafisch visualisiert sind, sind folgende:\\\emph{Flügelpaare} $0{,}159$, \emph{Beinepaare mit Bodenkontakt}~$1{,}39$, \emph{Gewicht} $93$kg}
+  \caption{Mittelwert der Eingabedaten\\ Flügelpaare $0{,}159$, Beinepaare mit Bodenkontakt $1{,}39$, Gewicht $93$kg}
  \end{figure}
 \end{frame}
 
 \begin{frame}{"`Bedeutung"' der Achsen}
- \begin{minipage}{0.6\textwidth}
-  \begin{figure}
-   \centering
-   \subfloat{\includegraphics[height=0.3\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}
-   \qquad
-   \subfloat{\includegraphics[height=0.3\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
-   \\
-   \subfloat{\includegraphics[height=0.3\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV2_neg.jpg}}
-   \qquad
-   \subfloat{\includegraphics[height=0.3\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV2_pos.jpg}}
-  \end{figure}
- \end{minipage}~
- \begin{minipage}{0.4\textwidth}
-  Koordinaten der visualisierten Datenpunkte in Zeile $i$:
-  \begin{itemize}
-   \item $i$-te Koordinate: positive \bzw negative Standardabweichung
-   \item $j \neq i$: $0$
-  \end{itemize}
- \end{minipage}
+ \begin{figure}
+  \centering
+  \subfloat{\includegraphics[height=0.5\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_neg.jpg}}~
+  \subfloat{\includegraphics[height=0.5\textheight]{../../PCA/sqrtEV_log_weight_downscaled_wings_legs_and_weight/EV1_pos.jpg}}
+  \caption{längste Achse: positive/negative Standardabweichung}
+ \end{figure}
 \end{frame}
 
 %--------------------
@@ -159,41 +152,35 @@
   \item Benutzereingabe einlesen
   \item PCA auf Beispielskeletten durchführen
   \item[2a.] Punkt $q$ im Konfigurationsraum (zufällig) bestimmen 
-  \item[2b.] Parameter für die kontextfreie Grammatik $G$ aus $q$ und Benutzereingabe bestimmen
+  \item[2b.] Parameter für das Skelett aus $q$ und Benutzereingabe bestimmen
   \setcounter{enumi}{2}
-  \item Bestandteile des Skeletts mit $G$ erzeugen und positionieren
-  \item Alle Bestandteile, die nicht auf der Wirbelsäule liegen, spiegeln
-  \item 3D-Modell generieren
+  \item<2-> Bestandteile des Skeletts mit kontextfreier Grammatik $G$ erzeugen und positionieren
+  \item<3-> Alle Knochen, die nicht auf der Wirbelsäule liegen, spiegeln
+  \item<4-> 3D-Modell generieren
  \end{enumerate}
-\end{frame}
-
-\begin{frame}
-  \begin{figure}
-   \includegraphics[height=0.9\textheight]{../graphics/grammarGraph_withoutLegend}
-  \end{figure}
 \end{frame}
 
 \begin{frame}[focus]
  \begin{figure}
   \centering
-  \includegraphics[height=0.85\textheight]{../../java_skeleton_generation/example_skeletons/bird.jpg}
-  \caption{\scriptsize Als Hintergrund wurde bei allen erzeugten 3D-Modellen \cite{background} verwendet.}
+  \includegraphics[height=0.9\textheight]{../../java_skeleton_generation/example_skeletons/bird.jpg}
  \end{figure}
 \end{frame}
 
-\begin{frame}{Positionierung der Extremitäten}
- \begin{itemize}
-  \item Längen der Knochen bekannt
-  \item Winkel an Gelenken unbekannt
-  \item keine kanonische Ruheposition
-  \item Unterscheidung anhand der Funktion:
-  \begin{itemize}
-   \item Flügel: zufällige Position
-   \item Flossen und Arme: ausgerichtet an globalen Achsen
-   \item Beine: eigener iterativer Algorithmus
-  \end{itemize}
-  \item bei Weiterverarbeitung, \zb Animation,\\ wird Positionierung nocheinmal angepasst
- \end{itemize}
+% Positionierung der Extremitäten
+
+\begin{frame}[focus]
+ \begin{figure}
+  \includegraphics[width=\textwidth]{../../java_skeleton_generation/example_skeletons/elefant.jpg}
+  \caption{Elefant}
+ \end{figure}
+\end{frame}
+
+\begin{frame}[focus]
+ \begin{figure}
+  \includegraphics[height=0.85\textheight]{../../java_skeleton_generation/example_skeletons/kaenguru.jpg}
+ \caption{Känguru}
+ \end{figure}
 \end{frame}
 
 \begin{frame}[focus]
@@ -204,79 +191,67 @@
 \end{frame}
 
 \begin{frame}[focus]
+\begin{flushleft}
+  \Large 3D-Modelle erstellen
+ \end{flushleft}
+ \vfill
  \begin{figure}
-  \includegraphics[height=0.8\textheight]{../../java_skeleton_generation/example_skeletons/kaenguru.jpg}
- \caption{Känguru}
+  \centering
+  \includegraphics[width=\textwidth]{../../java_skeleton_generation/example_skeletons/4legs_boxes.jpg}
  \end{figure}
 \end{frame}
 
-\begin{frame}[focus]
- \begin{figure}
-  \includegraphics[width=\textwidth]{../../java_skeleton_generation/example_skeletons/elefant.jpg}
-  \caption{Elefant}
- \end{figure}
-\end{frame}
-
+\addtocounter{framenumber}{5}
 \begin{frame}{Bedingungen}
  \begin{enumerate}
+  \item Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)
   \item Bedingte Verteilung als Eingabe für PCA
   \begin{itemize}
-   \item Anzahl Flügel und Beine
-   \item Länge des Halses in $y$-Richtung
-   \item Länge des Schwanzes in $x$-Richtung
+   \item explizite Merkmale (\zb Anzahl Flügel und Beine)
+   \item implizite Merkmale (\zb Länge des Schwanzes in $x$-Richtung)
   \end{itemize}
-  \item Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)
   \item Schon einmal generierte Skelette laden
  \end{enumerate}
-\end{frame}
-
-\begin{frame}{Variationen}
- \begin{block}{Gegeben}
+ \begin{block}<2>{Variationen}
   \begin{itemize}
-   \item Punkt $q$ aus dem Konfigurationsraum
-   \item generiertes Skelett $S$ (optional)
-   \item Benutzereingaben $B$ (optional)
+   \item Gegeben: Punkt $q$ im Konfigurationsraum
+   \item Bestimme Punkt $q'$ zufällig normalverteilt mit Erwartungswert $q$
   \end{itemize}
  \end{block}
- 
- Vorgehen (statt den Schritten $1+2$ des Algorithmus):
- \begin{enumerate}
-  \item zufällig normalverteilten Punkt $q'$ mit Erwartungswert $q$ bestimmen
-  \item Parameter $p$ für die Grammatik $G$ aus $q'$ und $B$ und $S$ bestimmen, falls vorhanden
-  \item Parameter $p$ variieren (\va Anzahl, Art und Position der Extremitäten)
- \end{enumerate}
-\end{frame}
-
-
-\begin{frame}{Erzeugung eines 3D-Modells}
- \centering
- \includegraphics[width=\textwidth]{../../java_skeleton_generation/example_skeletons/4legs_boxes.jpg}
 \end{frame}
 
 %---------------------------
 \section{Fantastische Tiere}
 %---------------------------
 
-\begin{frame}{Pegasus -- $2$ Extremitätenpaare pro Gürtel}
+\begin{frame}[focus]
+ \begin{flushleft}
+  \Large Pegasus -- $2$ Extremitätenpaare pro Gürtel
+ \end{flushleft}
+ \vfill
  \begin{figure}
   \centering
   \includegraphics[height=0.75\textheight]{../../java_skeleton_generation/example_skeletons/pegasus.jpg}
-  \caption{Bedingungen: $4$ Beine, $2$ Flügel}
  \end{figure}
 \end{frame}
 
-\begin{frame}{Zentaur -- Zweiter Schultergürtel}
+\begin{frame}[focus]
+ \begin{flushleft}
+  \Large Zentaur -- Zweiter Schultergürtel
+ \end{flushleft}
+ \vfill
  \begin{figure}
   \centering
   \includegraphics[height=0.75\textheight]{../../java_skeleton_generation/example_skeletons/zentaur2.jpg}
-  \caption{Bedingungen: $4$ Beine, $2$ Flügel}
  \end{figure}
 \end{frame}
+
+\addtocounter{framenumber}{2}
 
 \begin{frame}{Ausblick}
  \begin{itemize}
   \item Auch Skelette mit sehr aufrechter Wirbelsäule wie beim Menschen generierbar?
-  \item Gewicht der Tiere verwenden \zb als Einfluss auf Größe der Tiere oder Dicke der Knochen
+  \item Wert des Gewichts der Tiere verwenden \zb als Einfluss auf die Größe der Tiere oder die Dicke ihrer Knochen
   \item mehr verschiedene und leichter austauschbare Knochenmodelle
   \item interaktiver Algorithmus
   \item Muskeln und Haut generieren
@@ -324,6 +299,15 @@
  \end{itemize}
 \end{frame}
 
+\begin{frame}{Analyse der Eingabedaten}
+  \begin{figure}
+  \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_wing_tag/projection_eigenvectors12.pdf}}~
+  \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/gnuplot_log_weight_with_downscaled_wings_legs_and_weight/results_with_leg_tag/projection_eigenvectors12.pdf}}
+  
+  \caption{Projektion der Eingabedaten auf die Ebene, die durch die erste und zweite Achse des Hyperellipsoids aufgespannt wird.}
+ \end{figure}
+\end{frame}
+
 \begin{frame}{Reduzierung der Dimensionalität mit PCA}
   \begin{figure}
   \centering
@@ -346,10 +330,13 @@
  \end{figure}
 \end{frame}
 
-
+\begin{frame}
+  \begin{figure}
+   \includegraphics[height=0.9\textheight]{../graphics/grammarGraph_withoutLegend}
+  \end{figure}
+\end{frame}
 
 \begin{frame}{Elefant: Vergleich mit dem Originalbild}
- % TODO: ans Ende schieben?
  \begin{figure}
   \subfloat{\includegraphics[width=0.5\textwidth]{../../java_skeleton_generation/example_skeletons/elefant.jpg}}~
   \subfloat{\includegraphics[width=0.5\textwidth]{../../PCA/Skelettbilder/Afrikanischer_Elefant.jpg}}
