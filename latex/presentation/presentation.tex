@@ -41,7 +41,9 @@
  \begin{figure}
   \includegraphics[width=\textwidth]{graphics/ziva-post2.jpg}
  \end{figure}
- \uncover<2>{\small Maya Plugin Ziva, wirklichkeitsgetreues Modell eines Löwen \cite{Ziva_Lion}}
+ %\uncover<2>{
+ \small Maya Plugin Ziva, wirklichkeitsgetreues Modell eines Löwen \cite{Ziva_Lion}
+ %}
 \end{frame}
 
 \begin{frame}[plain]
@@ -204,20 +206,51 @@
 \addtocounter{framenumber}{5}
 \begin{frame}{Bedingungen}
  \begin{enumerate}
-  \item Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)
-  \item Bedingte Verteilung als Eingabe für PCA
+   \item Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)
+  \end{enumerate}
+  \begin{figure}
+   \subfloat[Känguru]{\includegraphics[height=0.5\textheight]{../../java_skeleton_generation/example_skeletons/kaenguru.jpg}}
+   \quad
+   \subfloat[Elefant]{\includegraphics[width=0.5\textwidth]{../../java_skeleton_generation/example_skeletons/elefant.jpg}}
+   \phantomcaption
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Bedingungen}
+ \begin{enumerate}
+   \setcounter{enumi}{1}
+   \item Bedingte Verteilung als Eingabe für PCA
+   \begin{itemize}
+    \item explizite Merkmale (\zb Anzahl Flügel und Beine)
+    \item implizite Merkmale (\zb Länge des Schwanzes in $x$-Richtung)
+   \end{itemize}
+  \end{enumerate}
+  \begin{figure}
+   \subfloat[$0$ Flügel]{\includegraphics[width=0.3\textwidth]{../graphics/0wings_withoutAdditionalVariance.png}}~
+   \subfloat[$0$ Flügel $\pm 0{,}5$]{\includegraphics[width=0.3\textwidth]{../graphics/0wings_withAdditionalVariance.png}}~
+   \subfloat[$1$ Paar Beine $\pm 0{,}5$]{\includegraphics[width=0.3\textwidth]{../graphics/1leg_withAdditionalVariance.png}}
+   \phantomcaption
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Bedingungen}
+ \begin{enumerate}
+  \item \textcolor{gray}{Vorgegebene Punkte aus Konfigurationsraum laden\\ (\zb Eingabebeispiele)}
+  \item \textcolor{gray}{Bedingte Verteilung als Eingabe für PCA}
   \begin{itemize}
-   \item explizite Merkmale (\zb Anzahl Flügel und Beine)
-   \item implizite Merkmale (\zb Länge des Schwanzes in $x$-Richtung)
+   \item \textcolor{gray}{explizite Merkmale (\zb Anzahl Flügel und Beine)}
+   \item \textcolor{gray}{implizite Merkmale (\zb Länge des Schwanzes in $x$-Richtung)}
   \end{itemize}
   \item Schon einmal generierte Skelette laden
  \end{enumerate}
- \begin{block}<2>{Variationen}
-  \begin{itemize}
-   \item Gegeben: Punkt $q$ im Konfigurationsraum
-   \item Bestimme Punkt $q'$ zufällig normalverteilt mit Erwartungswert $q$
-  \end{itemize}
- \end{block}
+ \uncover<2>{
+  \begin{block}{Variationen}
+   \begin{itemize}
+    \item Gegeben: Punkt $q$ im Konfigurationsraum
+    \item Bestimme Punkt $q'$ zufällig normalverteilt mit Erwartungswert $q$
+   \end{itemize}
+  \end{block}
+ }
 \end{frame}
 
 %---------------------------
