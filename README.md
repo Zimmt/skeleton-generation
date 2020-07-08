@@ -1,5 +1,13 @@
 # skeleton-generation #
 
+In this repository you find my master's thesis on the generation of vertebrate skeletons.
+I implemented an algorithm that automatically generates (conditionally) random 3D-models of vertebrate skeletons (in .obj format).
+Detailed information on how this is done can be found in my thesis `latex/thesis.pdf` (in german).
+
+![example skeleton](java_skeleton_generation/example_skeletons/bird.jpg)
+
+# Usage #
+
 To use the skeleton generator you only need the folder `executable_skeleton_generation` and java SE 11.
 Execute the .jar file in the folder with the command `java -jar java_skeleton_generation.jar`.
 The generator works with relative file paths, so the .jar file has to be executed inside the folder.
