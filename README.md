@@ -6,6 +6,15 @@ Detailed information on how this is done can be found in my thesis `latex/thesis
 
 ![example skeleton](java_skeleton_generation/example_skeletons/bird.jpg)
 
+The algorithm uses 2D-graphics of vertebrate skeletons as basis to be able to position and scale the bones realistically.
+
+Without further input random skeletons are generated. But it is also possible to generate skeletons with predefined properties or variations of an exisiting skeleton (see picture of UI and description below). The example above was generated with the following conditions: 2 legs and 2 wings.
+Additionally it is possible to generate fantastic animals with more than for extremities and up to two shoulder girdles.
+
+The generated skeletons consist of boxes in the lowest resolution. When higher resolutions are used the boxes are replaced by 3D-models of real vertebrate bones.
+
+![ui](latex/graphics/gui.png)
+
 # Usage #
 
 To use the skeleton generator you only need the folder `executable_skeleton_generation` and java SE 11.
